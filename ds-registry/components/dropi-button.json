@@ -1,0 +1,74 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-button",
+  "selector": "app-dropi-button",
+  "atomicLevel": "atom",
+  "source": "Figma — Button (80:2404)",
+  "description": "Primary action button. Has New (current DS) and Old (legacy) variants. Use New for all new flows. Old is only for legacy screens.",
+  "designRules": [
+    "Use Primary hierarchy for main CTAs",
+    "Use Secondary (outline) for secondary actions",
+    "Use Tertiary for low-emphasis actions and text-only buttons",
+    "Feedback buttons (Success/Error/Info/Warning) are ONLY for modals and white-label flows",
+    "Never use Old type in new flows — it is legacy DS 1.0",
+    "Dropdown buttons are for actions that deploy additional options"
+  ],
+  "inputs": {
+    "label": { "type": "string", "required": true, "description": "Button text" },
+    "type": {
+      "type": "enum",
+      "values": ["new", "old"],
+      "default": "new",
+      "description": "DS version. Always use 'new' for new flows."
+    },
+    "hierarchy": {
+      "type": "enum",
+      "values": ["primary", "secondary", "tertiary"],
+      "default": "primary",
+      "description": "Visual hierarchy. Primary = filled orange, Secondary = outline, Tertiary = text-only"
+    },
+    "size": {
+      "type": "enum",
+      "values": ["small", "normal", "large"],
+      "default": "normal",
+      "description": "Small=29px, Normal=40px, Large=48px height"
+    },
+    "state": {
+      "type": "enum",
+      "values": ["default", "hover", "disabled", "loader"],
+      "default": "default"
+    },
+    "preIcon": { "type": "string", "required": false, "description": "Icon class before label" },
+    "postIcon": { "type": "string", "required": false, "description": "Icon class after label" },
+    "fullWidth": { "type": "boolean", "default": false }
+  },
+  "outputs": {
+    "clicked": { "type": "EventEmitter<void>" }
+  },
+  "styles": {
+    "primary": {
+      "background": "var(--primary-500, #f49a3d)",
+      "color": "var(--white, #ffffff)",
+      "hoverBackground": "var(--primary-600, #e58017)",
+      "borderRadius": "var(--border-2, 8px)"
+    },
+    "secondary": {
+      "background": "transparent",
+      "border": "1px solid var(--primary-500, #f49a3d)",
+      "color": "var(--primary-500, #f49a3d)",
+      "borderRadius": "var(--border-2, 8px)"
+    },
+    "tertiary": {
+      "background": "transparent",
+      "color": "var(--primary-500, #f49a3d)",
+      "borderRadius": "var(--border-2, 8px)"
+    },
+    "font": "Inter, Bold, 16px (Large), 14px (Normal), 12px (Small)"
+  },
+  "feedbackVariants": {
+    "description": "Only for feedback modals and white-label. NOT for general use.",
+    "severities": ["success", "error", "info", "warning"]
+  },
+  "specialVariants": ["text-button", "dropdown-button", "segmented-button", "float-button", "like-button"],
+  "usageExample": "<app-dropi-button label=\"Confirmar\" hierarchy=\"primary\" size=\"normal\"></app-dropi-button>"
+}

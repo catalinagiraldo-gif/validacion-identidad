@@ -1,0 +1,18 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-breadcrumb",
+  "selector": "app-dropi-breadcrumb",
+  "atomicLevel": "atom",
+  "source": "Figma — Breadcrumb (50:1035)",
+  "description": "Breadcrumb navigation. Supports Primary and Secondary hierarchy with Default/Active states.",
+  "inputs": {
+    "items": { "type": "BreadcrumbItem[]", "required": true }
+  },
+  "breadcrumbItemInterface": {
+    "label": "string",
+    "route": "string",
+    "hierarchy": "primary | secondary",
+    "isActive": "boolean"
+  },
+  "usageExample": "<app-dropi-breadcrumb [items]=\"[{label: 'Home', route: '/'}, {label: 'Pedidos', route: '/orders', isActive: true}]\"></app-dropi-breadcrumb>"
+}

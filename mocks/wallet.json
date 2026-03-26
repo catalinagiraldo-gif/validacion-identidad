@@ -1,0 +1,48 @@
+{
+  "balance": 2450000,
+  "currency": "COP",
+  "pendingWithdrawals": 350000,
+  "availableForWithdrawal": 2100000,
+  "transactions": [
+    {
+      "id": "TXN-001",
+      "type": "sale",
+      "amount": 44950,
+      "description": "Venta ORD-001 — Sérum Vitamina C x2",
+      "date": "2026-03-20T10:30:00Z",
+      "status": "completed"
+    },
+    {
+      "id": "TXN-002",
+      "type": "sale",
+      "amount": 45000,
+      "description": "Venta ORD-002 — Crema Hidratante",
+      "date": "2026-03-19T14:15:00Z",
+      "status": "completed"
+    },
+    {
+      "id": "TXN-003",
+      "type": "withdrawal",
+      "amount": -500000,
+      "description": "Retiro a Bancolombia ****4567",
+      "date": "2026-03-18T09:00:00Z",
+      "status": "completed"
+    },
+    {
+      "id": "TXN-004",
+      "type": "withdrawal",
+      "amount": -350000,
+      "description": "Retiro a Nequi ****8901",
+      "date": "2026-03-21T11:00:00Z",
+      "status": "pending"
+    },
+    {
+      "id": "TXN-005",
+      "type": "refund",
+      "amount": -44950,
+      "description": "Devolución ORD-005 — Sérum Vitamina C",
+      "date": "2026-03-16T10:00:00Z",
+      "status": "completed"
+    }
+  ]
+}

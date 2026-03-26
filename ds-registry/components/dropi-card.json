@@ -1,0 +1,19 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-card",
+  "selector": "app-dropi-card",
+  "atomicLevel": "atom",
+  "description": "Content container card with optional header, body, and footer sections.",
+  "inputs": {
+    "title": { "type": "string", "required": false, "description": "Card header title" },
+    "subtitle": { "type": "string", "required": false },
+    "elevated": { "type": "boolean", "default": true, "description": "Apply box shadow" },
+    "padding": { "type": "enum", "values": ["none", "sm", "md", "lg"], "default": "md" }
+  },
+  "slots": {
+    "default": "Card body content",
+    "header": "Custom header content (overrides title/subtitle)",
+    "footer": "Card footer actions"
+  },
+  "usageExample": "<app-dropi-card title=\"Resumen de ventas\"><p>Contenido aquí</p></app-dropi-card>"
+}

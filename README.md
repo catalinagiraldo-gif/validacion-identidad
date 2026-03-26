@@ -1,27 +1,65 @@
-# DropiPrototypes
+# dropi-prototypes
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.17.
+Angular 17 prototype repository for the Dropi RPP (Rapid Prototyping Pipeline). Product Designers use Claude Code to generate interactive wireframes that follow Dropi's real codebase conventions.
 
-## Development server
+## Stack
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+| Technology | Version |
+|---|---|
+| Angular CLI | 17 |
+| Node.js | 22.7.0 (use `nvm use`) |
+| Yarn | 1.22.x |
+| PrimeNG | 17.x |
+| Styles | SCSS |
+| Components | Standalone |
 
-## Code scaffolding
+## Quick Start
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+nvm use
+yarn install
+yarn start
+```
 
-## Build
+Open [http://localhost:4200](http://localhost:4200) to see the Prototype Gallery.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Project Structure
 
-## Running unit tests
+```
+src/app/
+  ui/                    # Atoms (dropi-button, dropi-card, etc.)
+  components/            # Molecules, Organisms, Templates
+  pages/                 # Full page views per prototype
+  services/              # HTTP services (intercepted by mock layer)
+  models/                # TypeScript interfaces
+  layout/                # App shell (sidebar, header)
+  common/interceptors/   # Mock API interceptor
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+ds-registry/             # Design System component specs + tokens (JSON)
+mocks/                   # Mock data (JSON) — replaces database
+prototypes/              # Prototype documentation index
+```
 
-## Running end-to-end tests
+## How It Works
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- **No backend needed** — an Angular HTTP interceptor responds with mock JSON data
+- **No database** — all data lives in `mocks/*.json`, mutable in memory per session
+- **Services call `/api/*`** — identical patterns to the production codebase
+- **DS Registry** — JSON specs for each Design System component, consumed by Claude Code
 
-## Further help
+## Branching Model
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+| Type | Format | Example |
+|---|---|---|
+| Wireframe | `wireframe/DROPI-XXXX-name` | `wireframe/DROPI-1234-bulk-actions` |
+| DS Registry | `registry/name` | `registry/add-dropi-table` |
+| Mock data | `mocks/name` | `mocks/add-wallet-data` |
+| Infra | `infra/name` | `infra/fix-routing` |
+
+## Roles
+
+| Role | Responsibility |
+|---|---|
+| **Product Designer** | Generates wireframes with Claude Code |
+| **UX Engineer** | Reviews PRs, maintains DS Registry, merges |
+| **FE Champion** | Evaluates technical feasibility |

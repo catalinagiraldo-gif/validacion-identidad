@@ -1,0 +1,9 @@
+{
+  "$schema": "dropi-ds-token",
+  "category": "shadows",
+  "source": "Figma — -WEB- components",
+  "tokens": {
+    "small": "0 0 12px rgba(0, 0, 0, 0.04)",
+    "medium": "0.5px 4px 8px rgba(0, 0, 0, 0.08)"
+  }
+}

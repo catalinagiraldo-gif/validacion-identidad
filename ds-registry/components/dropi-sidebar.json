@@ -1,0 +1,58 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-sidebar",
+  "selector": "app-sidebar",
+  "atomicLevel": "organism",
+  "source": "Figma — Sidebar-new (2969:6311)",
+  "description": "Main navigation sidebar. 250px wide (94px collapsed). White background with medium shadow. Contains logo, menu items with icons, and supports collapsible state.",
+  "designRules": [
+    "Sidebar is white background, NOT dark",
+    "Active item does NOT have a colored background — just text color change",
+    "Items with sub-items show a down arrow chevron",
+    "Logo is the Dropi orange logo (top-left)",
+    "Hamburger icon for collapse toggle (top-right)",
+    "Menu items use Inter Medium 14px, gray-500 color",
+    "Icon size is 20x20px",
+    "Item padding: 12px horizontal, 12px vertical",
+    "Gap between icon and text: 12px",
+    "Gap between items: 4px (--size-1)",
+    "Sidebar supports scroll indicator (thin gray bar)"
+  ],
+  "inputs": {
+    "userRole": {
+      "type": "enum",
+      "values": ["dropshipper", "proveedor", "admin"],
+      "default": "dropshipper"
+    },
+    "activePage": { "type": "string", "required": false },
+    "collapsed": { "type": "boolean", "default": false }
+  },
+  "menuItems": {
+    "dropshipper": [
+      "Inicio", "Dashboard", "Productos", "Pedidos", "Reportes",
+      "Financiero", "Marketing", "Dropi Card", "CAS", "Academy", "Configurar"
+    ],
+    "proveedor": [
+      "Productos", "Mis pedidos", "Garantias", "Configuraciones",
+      "Marketing", "Reportes", "Facturas", "Transportadora", "CAS"
+    ],
+    "admin": [
+      "Usuarios", "Transportadora", "Ordenes", "Garantias", "Logistic",
+      "Configuraciones", "Reportes", "Marca blanca", "Soporte", "Facturas", "Marketing", "CAS"
+    ]
+  },
+  "sidebarItemStates": ["default", "hover", "active", "hover-select"],
+  "styles": {
+    "width": "250px",
+    "collapsedWidth": "94px",
+    "background": "var(--white, #ffffff)",
+    "shadow": "0.5px 4px 8px rgba(0, 0, 0, 0.08)",
+    "padding": "16px horizontal, 14px vertical",
+    "itemBorderRadius": "3px",
+    "itemPadding": "12px",
+    "itemGap": "4px",
+    "itemFont": "Inter, Medium, 14px",
+    "itemColor": "var(--gray-500, #69738c)",
+    "iconSize": "20px"
+  }
+}

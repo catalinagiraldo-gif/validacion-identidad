@@ -1,0 +1,44 @@
+{
+  "$schema": "dropi-ds-token",
+  "category": "colors",
+  "source": "Figma — -WEB- components (ONiVQJJ2qrJ6tmJnpNrrKE)",
+  "tokens": {
+    "primary": {
+      "300": "#f2bc85",
+      "500": "#f49a3d",
+      "600": "#e58017"
+    },
+    "secondary": {
+      "300": "#62bad9",
+      "500": "#008dbf",
+      "600": "#007199"
+    },
+    "gray": {
+      "50": "#f7f8fa",
+      "100": "#eef0f4",
+      "200": "#c3c9d9",
+      "300": "#a3abbf",
+      "400": "#858ea6",
+      "500": "#69738c",
+      "600": "#475066",
+      "700": "#333b4d",
+      "800": "#232938",
+      "900": "#151921"
+    },
+    "white": "#ffffff",
+    "semantic": {
+      "success": "#4caf50",
+      "warning": "#ff9800",
+      "error": "#f46a6b",
+      "info": "#008dbf"
+    },
+    "status": {
+      "pending": "#ff9800",
+      "confirmed": "#008dbf",
+      "shipped": "#9c27b0",
+      "delivered": "#4caf50",
+      "returned": "#f46a6b",
+      "cancelled": "#858ea6"
+    }
+  }
+}

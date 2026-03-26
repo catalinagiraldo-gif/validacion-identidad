@@ -1,0 +1,18 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-steps",
+  "selector": "app-dropi-steps",
+  "atomicLevel": "atom",
+  "source": "Figma — Steps (64:926)",
+  "description": "Step indicator for multi-step flows (checkout, onboarding, etc). Supports horizontal and vertical directions.",
+  "inputs": {
+    "steps": { "type": "StepItem[]", "required": true },
+    "direction": { "type": "enum", "values": ["horizontal", "vertical"], "default": "horizontal" }
+  },
+  "stepItemInterface": {
+    "label": "string",
+    "state": "pending | focus | completed | error",
+    "position": "start | middle | end"
+  },
+  "usageExample": "<app-dropi-steps [steps]=\"steps\" direction=\"horizontal\"></app-dropi-steps>"
+}

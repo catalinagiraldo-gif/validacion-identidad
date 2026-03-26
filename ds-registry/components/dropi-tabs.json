@@ -1,0 +1,27 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-tabs",
+  "selector": "app-dropi-tabs",
+  "atomicLevel": "atom",
+  "source": "Figma — Tabs (85:13785)",
+  "description": "Tab navigation component. Supports Active/Inactive states with Normal, Pending, and Complete styles. Used for section-level navigation within a page.",
+  "designRules": [
+    "Use for switching between sections within a page",
+    "Active tab has visual emphasis (underline or fill)",
+    "Pending style shows items awaiting action",
+    "Complete style shows finished items",
+    "Can include Counter badge on tabs"
+  ],
+  "inputs": {
+    "tabs": { "type": "TabItem[]", "required": true },
+    "activeIndex": { "type": "number", "default": 0 }
+  },
+  "tabItemInterface": {
+    "label": "string",
+    "style": "normal | pending | complete",
+    "count": "number (optional)"
+  },
+  "states": ["active", "inactive"],
+  "styles": ["normal", "pending", "complete"],
+  "usageExample": "<app-dropi-tabs [tabs]=\"[{label: 'Todos', style: 'normal'}, {label: 'Pendientes', style: 'pending', count: 5}]\" [activeIndex]=\"0\"></app-dropi-tabs>"
+}

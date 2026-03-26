@@ -1,0 +1,41 @@
+[
+  {
+    "id": "USR-001",
+    "name": "Valentina Mejía",
+    "email": "valentina@example.com",
+    "role": "dropshipper",
+    "storeName": "Belleza Val",
+    "storeSlug": "belleza-val",
+    "plan": "pro",
+    "totalOrders": 245,
+    "totalRevenue": 12500000,
+    "joinedAt": "2025-06-15T00:00:00Z",
+    "isActive": true
+  },
+  {
+    "id": "USR-002",
+    "name": "Santiago Ruiz",
+    "email": "santiago@example.com",
+    "role": "dropshipper",
+    "storeName": "TechDrop CO",
+    "storeSlug": "techdrop-co",
+    "plan": "basic",
+    "totalOrders": 78,
+    "totalRevenue": 3200000,
+    "joinedAt": "2025-11-01T00:00:00Z",
+    "isActive": true
+  },
+  {
+    "id": "USR-003",
+    "name": "Camila Duarte",
+    "email": "camila@example.com",
+    "role": "supplier",
+    "storeName": "NaturaCol Labs",
+    "storeSlug": "naturacol-labs",
+    "plan": "enterprise",
+    "totalOrders": 1520,
+    "totalRevenue": 85000000,
+    "joinedAt": "2024-03-10T00:00:00Z",
+    "isActive": true
+  }
+]

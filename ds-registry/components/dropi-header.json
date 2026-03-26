@@ -1,0 +1,34 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-header",
+  "selector": "app-header",
+  "atomicLevel": "organism",
+  "source": "Figma — Header (401:3856)",
+  "description": "Top header bar. 70px height. Shows community badge, language selector, wallet balance, notifications bell with badge, and user avatar with name.",
+  "designRules": [
+    "White background with small shadow",
+    "Left side: community membership text (if applicable)",
+    "Right side: language, wallet balance, notification bell, user profile",
+    "Notification bell shows Badge-counters component for unread count",
+    "User avatar is 35px circle with initial letter on gray-200 background",
+    "All text is Inter Regular 14px, gray-500 color"
+  ],
+  "inputs": {
+    "userName": { "type": "string", "required": true },
+    "communityName": { "type": "string", "required": false },
+    "walletBalance": { "type": "number", "required": false },
+    "notificationCount": { "type": "number", "default": 0 },
+    "showCommunity": { "type": "boolean", "default": true }
+  },
+  "styles": {
+    "height": "70px",
+    "background": "var(--white, #ffffff)",
+    "shadow": "0 0 12px rgba(0, 0, 0, 0.04)",
+    "padding": "8px",
+    "font": "Inter, Regular, 14px",
+    "textColor": "var(--gray-500, #69738c)",
+    "avatarSize": "35px",
+    "avatarBackground": "var(--gray-200, #c3c9d9)",
+    "avatarFont": "Montserrat, ExtraBold, 16px"
+  }
+}

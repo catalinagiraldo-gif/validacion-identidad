@@ -1,0 +1,128 @@
+@import 'styles/variables';
+
+.header {
+  height: $header-height;
+  background: $white;
+  box-shadow: $shadow-small;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $size-2;
+
+  &__left {
+    display: flex;
+    align-items: center;
+  }
+
+  &__community {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    padding: $size-2 $size-3;
+  }
+
+  &__community-text {
+    font-size: $font-sm;
+    color: $gray-500;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+  }
+
+  &__wallet {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: $size-2 $size-3;
+    font-size: $font-sm;
+    color: $gray-500;
+
+    i {
+      font-size: 22px;
+    }
+  }
+
+  &__notifications {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: $size-2;
+    cursor: pointer;
+
+    i {
+      font-size: 22px;
+      color: $gray-500;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 16px;
+    height: 16px;
+    background: $error;
+    color: $white;
+    font-family: $font-primary;
+    font-weight: $font-semibold;
+    font-size: 9px;
+    border-radius: $radius-pill;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: $size-2 $size-3;
+    cursor: pointer;
+  }
+
+  &__avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: $radius-full;
+    background: $gray-200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', $font-primary;
+    font-weight: 800;
+    font-size: $font-base;
+    color: $white;
+    flex-shrink: 0;
+
+    &--community {
+      width: 35px;
+      height: 35px;
+    }
+  }
+
+  &__user-name {
+    font-size: $font-sm;
+    color: $gray-500;
+    white-space: nowrap;
+  }
+
+  &__user-chevron {
+    font-size: 11px;
+    color: $gray-400;
+  }
+
+  &__env-tag {
+    font-size: 11px;
+    font-weight: $font-semibold;
+    background: rgba($primary-500, 0.1);
+    color: $primary-600;
+    padding: $size-1 $size-3;
+    border-radius: $radius-lg;
+    letter-spacing: 0.5px;
+    margin-left: $size-2;
+  }
+}

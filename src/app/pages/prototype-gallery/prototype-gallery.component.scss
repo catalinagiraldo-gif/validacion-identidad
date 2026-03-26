@@ -1,0 +1,134 @@
+@import 'styles/variables';
+
+.gallery {
+  padding: $size-8;
+
+  &__header {
+    margin-bottom: $size-8;
+
+    h2 {
+      font-size: $font-2xl;
+      font-weight: $font-bold;
+      color: $gray-800;
+      margin: 0 0 $size-2;
+    }
+  }
+
+  &__subtitle {
+    color: $gray-500;
+    font-size: $font-md;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 80px 0;
+    color: $gray-400;
+
+    i {
+      font-size: 48px;
+      margin-bottom: $size-4;
+      color: $gray-300;
+    }
+
+    h3 {
+      font-size: $font-xl;
+      color: $gray-500;
+      margin: 0 0 $size-2;
+    }
+
+    p {
+      font-size: $font-sm;
+    }
+
+    code {
+      background: $gray-100;
+      padding: 2px $size-2;
+      border-radius: $radius-sm;
+      font-size: $font-xs;
+      color: $primary-600;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: $size-5;
+  }
+
+  &__card {
+    display: block;
+    padding: $size-5;
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: $primary-500;
+      box-shadow: 0 4px 12px rgba($primary-500, 0.12);
+    }
+  }
+
+  &__card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $size-3;
+  }
+
+  &__ticket {
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    color: $secondary-500;
+  }
+
+  &__status {
+    font-size: 11px;
+    padding: 2px $size-2;
+    border-radius: $radius-lg;
+    font-weight: $font-semibold;
+    text-transform: uppercase;
+
+    &[data-status='draft'] {
+      background: rgba($primary-500, 0.1);
+      color: $primary-600;
+    }
+    &[data-status='review'] {
+      background: rgba($secondary-500, 0.1);
+      color: $secondary-600;
+    }
+    &[data-status='approved'] {
+      background: rgba($success, 0.1);
+      color: darken($success, 10%);
+    }
+  }
+
+  &__card-title {
+    font-size: $font-base;
+    font-weight: $font-semibold;
+    color: $gray-800;
+    margin: 0 0 $size-2;
+  }
+
+  &__module {
+    font-size: 13px;
+    color: $gray-500;
+    margin-bottom: $size-3;
+  }
+
+  &__components {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $size-1;
+  }
+
+  &__component-tag {
+    font-size: 11px;
+    background: $gray-100;
+    color: $gray-500;
+    padding: 2px $size-2;
+    border-radius: $radius-sm;
+  }
+}

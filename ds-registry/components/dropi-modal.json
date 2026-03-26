@@ -1,0 +1,23 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-modal",
+  "selector": "app-dropi-modal",
+  "atomicLevel": "atom",
+  "description": "Dialog/modal overlay. Wraps PrimeNG p-dialog with Dropi conventions.",
+  "inputs": {
+    "header": { "type": "string", "required": true },
+    "visible": { "type": "boolean", "required": true },
+    "width": { "type": "string", "default": "500px" },
+    "closable": { "type": "boolean", "default": true },
+    "modal": { "type": "boolean", "default": true }
+  },
+  "outputs": {
+    "visibleChange": { "type": "EventEmitter<boolean>" },
+    "closed": { "type": "EventEmitter<void>" }
+  },
+  "slots": {
+    "default": "Modal body content",
+    "footer": "Modal footer actions"
+  },
+  "usageExample": "<app-dropi-modal header=\"Confirmar acción\" [(visible)]=\"showModal\"><p>¿Estás seguro?</p></app-dropi-modal>"
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-input",
+  "selector": "app-dropi-input",
+  "atomicLevel": "atom",
+  "source": "Figma — Input (126:9), Incremental Input (9539:1664), Code Input (130:546)",
+  "description": "Text input field with label, helper text, icon support, and validation states. Available in Default and Password types, Normal and Large sizes.",
+  "designRules": [
+    "Always include a Label above the input",
+    "Helper text goes below the input — use for hints or error messages",
+    "Error state shows red border and error helper text",
+    "Focus state shows primary-500 border color",
+    "Disabled state reduces opacity and blocks interaction"
+  ],
+  "inputs": {
+    "label": { "type": "string", "required": true },
+    "placeholder": { "type": "string", "default": "" },
+    "type": {
+      "type": "enum",
+      "values": ["default", "password"],
+      "default": "default"
+    },
+    "size": {
+      "type": "enum",
+      "values": ["normal", "large"],
+      "default": "normal",
+      "description": "Normal=40px, Large=varies by context"
+    },
+    "state": {
+      "type": "enum",
+      "values": ["default", "focus", "fill", "error", "disabled"],
+      "default": "default"
+    },
+    "helperText": { "type": "string", "required": false },
+    "errorMessage": { "type": "string", "required": false },
+    "preIcon": { "type": "string", "required": false, "description": "Icon inside input left side (e.g. User icon)" },
+    "postIcon": { "type": "string", "required": false, "description": "Icon inside input right side (e.g. Eye icon for password)" },
+    "showTooltip": { "type": "boolean", "default": false, "description": "Shows tooltip icon next to label" }
+  },
+  "outputs": {
+    "valueChange": { "type": "EventEmitter<string>" }
+  },
+  "styles": {
+    "inputHeight": "40px (Normal)",
+    "borderRadius": "8px",
+    "borderColor": "var(--gray-200, #c3c9d9)",
+    "focusBorderColor": "var(--primary-500, #f49a3d)",
+    "errorBorderColor": "var(--error-500, #f46a6b)",
+    "labelFont": "Inter, 14px, Regular",
+    "inputFont": "Inter, 14px, Regular",
+    "helperFont": "Inter, 12px, Regular",
+    "placeholderColor": "var(--gray-400, #858ea6)",
+    "textColor": "var(--gray-600, #475066)"
+  },
+  "specialVariants": ["incremental-input", "code-input"],
+  "usageExample": "<app-dropi-input label=\"Buscar producto\" type=\"default\" placeholder=\"Escribe aquí...\"></app-dropi-input>"
+}
