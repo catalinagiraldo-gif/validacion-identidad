@@ -12,6 +12,16 @@ let orders = [...ordersData];
 let products = [...productsData];
 
 export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
+  // POST /api/auth/login
+  if (req.url.includes('/api/auth/login') && req.method === 'POST') {
+    const { email } = req.body as { email: string };
+    const user = usersData.find((u: any) => u.email === email);
+    if (user) {
+      return of(new HttpResponse({ status: 200, body: user }));
+    }
+    return of(new HttpResponse({ status: 401, body: { error: 'Invalid credentials' } }));
+  }
+
   // GET /api/orders
   if (req.url.includes('/api/orders') && req.method === 'GET') {
     return of(new HttpResponse({ status: 200, body: orders }));

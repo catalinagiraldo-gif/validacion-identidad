@@ -2,7 +2,7 @@
   {
     "id": "USR-001",
     "name": "Valentina Mejía",
-    "email": "valentina@example.com",
+    "email": "valentina@dropi.co",
     "role": "dropshipper",
     "storeName": "Belleza Val",
     "storeSlug": "belleza-val",
@@ -14,28 +14,28 @@
   },
   {
     "id": "USR-002",
-    "name": "Santiago Ruiz",
-    "email": "santiago@example.com",
-    "role": "dropshipper",
-    "storeName": "TechDrop CO",
-    "storeSlug": "techdrop-co",
-    "plan": "basic",
-    "totalOrders": 78,
-    "totalRevenue": 3200000,
-    "joinedAt": "2025-11-01T00:00:00Z",
-    "isActive": true
-  },
-  {
-    "id": "USR-003",
     "name": "Camila Duarte",
-    "email": "camila@example.com",
-    "role": "supplier",
+    "email": "camila@dropi.co",
+    "role": "proveedor",
     "storeName": "NaturaCol Labs",
     "storeSlug": "naturacol-labs",
     "plan": "enterprise",
     "totalOrders": 1520,
     "totalRevenue": 85000000,
     "joinedAt": "2024-03-10T00:00:00Z",
+    "isActive": true
+  },
+  {
+    "id": "USR-003",
+    "name": "Michel Pino",
+    "email": "michel@dropi.co",
+    "role": "admin",
+    "storeName": "Dropi Admin",
+    "storeSlug": "dropi-admin",
+    "plan": "enterprise",
+    "totalOrders": 0,
+    "totalRevenue": 0,
+    "joinedAt": "2024-01-01T00:00:00Z",
     "isActive": true
   }
 ]

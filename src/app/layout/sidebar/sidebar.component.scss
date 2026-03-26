@@ -94,17 +94,26 @@
       color: $gray-600;
     }
 
+    // Active state from Figma: bg primary-50, text primary-500
     &--active {
-      background: rgba($primary-500, 0.08);
+      background: #fef8f1;
       color: $primary-500;
+      border-radius: $radius-xs;
 
       .sidebar__item-icon {
         color: $primary-500;
       }
     }
 
+    // Expanded parent item
     &--expanded {
-      color: $gray-600;
+      background: #fef8f1;
+      color: $primary-500;
+      border-radius: $radius-xs;
+
+      .sidebar__item-icon {
+        color: $primary-500;
+      }
     }
   }
 
@@ -137,29 +146,44 @@
   &__subitems {
     display: flex;
     flex-direction: column;
-    padding-left: 44px;
-    gap: 0;
+    padding-left: 48px;
+    gap: 12px;
+    margin-top: 12px;
   }
 
   &__subitem {
-    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: $size-1 0;
     font-size: $font-sm;
     font-weight: $font-regular;
-    color: $gray-400;
+    color: $gray-500;
     border-radius: $radius-xs;
     cursor: pointer;
     text-decoration: none;
     transition: all 0.12s ease;
 
     &:hover {
-      color: $gray-600;
-      background: $gray-50;
+      color: $gray-700;
     }
 
     &--active {
       color: $primary-500;
       font-weight: $font-medium;
+
+      .sidebar__subitem-dot {
+        background: $primary-500;
+      }
     }
+  }
+
+  &__subitem-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: $gray-400;
+    flex-shrink: 0;
   }
 }
 

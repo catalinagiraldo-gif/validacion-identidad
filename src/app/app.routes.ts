@@ -1,12 +1,32 @@
 import { Routes } from '@angular/router';
-import { PrototypeGalleryComponent } from './pages/prototype-gallery/prototype-gallery.component';
+import { authGuard } from './common/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: PrototypeGalleryComponent },
-  // Wireframe routes are added here as prototypes are created:
-  // {
-  //   path: 'orders/DROPI-1234-bulk-actions',
-  //   loadComponent: () => import('./pages/orders-bulk-actions/orders-bulk-actions.component')
-  //     .then(m => m.OrdersBulkActionsComponent)
-  // },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./pages/login/login.component').then(m => m.LoginComponent),
+  },
+  {
+    path: '',
+    canActivate: [authGuard],
+    children: [
+      {
+        path: 'home',
+        loadComponent: () =>
+          import('./pages/prototype-gallery/prototype-gallery.component').then(
+            m => m.PrototypeGalleryComponent,
+          ),
+      },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      // Catch-all for prototype routes — renders gallery as placeholder
+      {
+        path: '**',
+        loadComponent: () =>
+          import('./pages/prototype-gallery/prototype-gallery.component').then(
+            m => m.PrototypeGalleryComponent,
+          ),
+      },
+    ],
+  },
 ];

@@ -2,7 +2,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'dropshipper' | 'supplier';
+  role: 'dropshipper' | 'proveedor' | 'admin';
   storeName: string;
   storeSlug: string;
   plan: 'basic' | 'pro' | 'enterprise';
