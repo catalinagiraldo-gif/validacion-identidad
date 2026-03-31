@@ -41,6 +41,28 @@ Before writing ANY UI code (components, pages, templates, styles), you MUST:
 - Mock API via HTTP interceptor (`src/app/common/interceptors/mock-api.interceptor.ts`)
 - Yarn 1.22, Node 22.7 (use nvm: `export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use`)
 
+## Navigation Context Map (MANDATORY)
+
+Before generating any prototype, read `navigation-map.json` at the repo root. It maps:
+- **Modules** with defaultView, roles, figmaSource
+- **Views** with route, type (page/modal), prototype status, layout description, CTAs
+- **Origin points** — where users come from to reach each view
+- **Post-action flows** — what happens after success/cancel
+
+Rules:
+- **Never create a prototype in a route that doesn't match the module** in the navigation map
+- **Always update the `prototype` field** in `navigation-map.json` when a wireframe is created
+- **Match sidebar labels exactly** — the sidebar config (`src/app/config/sidebar-nav.config.ts`) is sourced from Figma DS node 243:14156
+
+## Sidebar (Source of Truth: Figma)
+
+- Config: `src/app/config/sidebar-nav.config.ts` — labels, icons, subitems per role
+- Icons: Custom SVGs from Figma at `src/assets/icons/sidebar/` (30 icons, 20x20px)
+- Rendered as `<img>` tags, NOT PrimeIcons `<i>` tags
+- 3 roles with distinct nav: dropshipper (21 items), proveedor (20 items), admin (23 items)
+- **DO NOT modify sidebar without Figma context** — labels, icons, and subitems must match exactly
+- Figma source: `ONiVQJJ2qrJ6tmJnpNrrKE` node `243:14156`
+
 ## Auth System
 
 - 3 user roles: `dropshipper`, `proveedor`, `admin`
@@ -49,12 +71,75 @@ Before writing ANY UI code (components, pages, templates, styles), you MUST:
 - Auth service manages session via localStorage
 - Login page at `/login`, protected routes via `authGuard`
 
-## Prototype Generation Pattern
+## Frontend Design Quality (MANDATORY)
 
-When generating a new prototype wireframe from a Jira ticket:
+Apply production-grade design quality to every interface. Focus on:
 
-1. Read DS Registry specs for all components you'll use
-2. Create the page component in `src/app/pages/<ticket-slug>/`
-3. Add lazy-loaded route in `src/app/app.routes.ts` (inside the auth-guarded children)
-4. Use SCSS variables, PrimeNG components, and DS design rules
-5. Wire up mock data through the interceptor if needed
+- **Spatial Composition**: Intentional layouts, asymmetry where it adds value, generous negative space, grid-breaking elements when appropriate
+- **Motion & Microinteractions**: CSS transitions for hover states, staggered reveals on page load (animation-delay), scroll-triggered effects. Prioritize CSS-only solutions. High-impact moments over scattered animations
+- **Backgrounds & Depth**: Atmosphere through subtle gradients, layered transparencies, shadows with purpose. Avoid flat solid-color backgrounds when depth improves the experience
+- **Visual Details**: Decorative borders, custom iconography placement, grain overlays, and textures that match the Dropi brand personality
+
+### What this does NOT override:
+
+- **Typography**: Always use the DS Registry fonts (Inter, IBM Plex Sans, Montserrat). Never substitute with other fonts
+- **Colors**: Always use DS tokens from `_variables.scss`. Never invent new colors
+- **Component styles**: Always follow DS Registry specs exactly. Never redesign existing components
+- **Spacing & Radius**: Always use DS tokens ($size-N, $radius-N)
+
+The DS Registry is the source of truth for all design tokens and component specs. Frontend design quality enhances the experience within those constraints — it does not replace them.
+
+## Wireframe Generation Protocol (MANDATORY)
+
+### Step 0: Receive the Wireframe Prompt
+
+Every wireframe request MUST include at minimum:
+- **Vista**: nombre, módulo, rol de usuario
+- **Figma URL**: con node-id (obligatorio)
+- **Tipo**: page o modal (si modal: vista padre, CTA que lo abre, on_success, on_cancel)
+- **Datos mock**: entidad, cantidad mínima de items, propiedades
+
+See `docs/wireframe-prompt-template.md` for the full template any designer can use.
+
+### Step 1: Read Before Writing (NO CODE YET)
+
+Before writing a single line of code, complete this checklist IN ORDER:
+
+1. ☐ **Navigation Map** — Read `navigation-map.json`, locate the module/view, verify type (page/modal), origin_points, on_success
+2. ☐ **Figma Design Context** — Call `get_design_context` for EACH section of the design (filters, cards, forms, headers, etc.). If a node is too large, drill into sub-nodes. NEVER assume any UI element.
+3. ☐ **DS Registry** — Read specs for every component you'll use (`ds-registry/components/` + `ds-registry/tokens/`)
+4. ☐ **Download Assets** — Download ALL images, icons, and badges from Figma to `src/assets/images/[module]/` BEFORE coding
+5. ☐ **Mock Data** — Create rich mock data (20+ items minimum) with ALL properties the design needs, saved in `mocks/`
+
+### Step 2: Build
+
+6. ☐ Create Angular standalone component with SCSS using tokens from `src/styles/_variables.scss`
+7. ☐ Add lazy-loaded route in `src/app/app.routes.ts` as a child of the module
+8. ☐ If **modal**: implement as overlay (`position: fixed`, backdrop blur, animation) on top of the parent view. NEVER navigate to a separate route for modals. Scroll must be INSIDE the modal container, with header/footer fixed.
+9. ☐ If **page**: implement as a routed component with proper breadcrumb
+
+### Step 3: Verify
+
+10. ☐ Verify compilation without errors
+11. ☐ Update `prototype` field in `navigation-map.json` with the component route
+12. ☐ Verify images load correctly via dev server
+
+### Anti-Hallucination Rules
+
+| NEVER do this | ALWAYS do this |
+|---|---|
+| Invent UI controls (button vs switch vs dropdown) | Copy exactly what Figma shows |
+| Add labels above inputs if Figma only has placeholders | Respect if it's label, placeholder, or both |
+| Use generic placeholder images | Download real images from Figma |
+| Navigate to a route when navigation-map says "modal" | Stack as modal overlay on parent view |
+| Create 5-8 mock items | Create 20+ items for natural scroll |
+| Translate or rename texts from the design | Copy exact texts from Figma (e.g. "Número de télefono" not "Teléfono") |
+| Assume form field structure | Read the form node in Figma field by field |
+| Fill in gaps with guesses | Ask the designer before proceeding |
+
+### Prototype Inventory
+
+| Module | View | Route | Type | Status |
+|---|---|---|---|---|
+| productos | catálogo | /productos/catalogo | page | WORKING |
+| pedidos | orden-manual | (modal on catálogo) | modal | WORKING |

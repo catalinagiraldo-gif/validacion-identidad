@@ -2,132 +2,212 @@
   <div class="modal-container">
     <!-- Header -->
     <div class="modal-header">
-      <h3 class="modal-title">Editar orden</h3>
-      <button class="close-btn">
+      <h3 class="modal-title">Crear orden</h3>
+      <button class="close-btn" (click)="closeModal.emit()">
         <i class="pi pi-times"></i>
       </button>
     </div>
 
-    <!-- Body: 3 columns -->
+    <!-- Body: 3 columns (scrollable) -->
     <div class="modal-body">
       <!-- Column 1: Client info + Product -->
       <div class="column column-1">
-        <!-- Client info section -->
-        <div class="section">
-          <h4 class="section-title">Información del cliente</h4>
+        <!-- Client info section — matches Figma node 5308:34966 -->
+        <div class="section client-section">
+          <h4 class="section-title">Información del cliente:</h4>
 
-          <div class="form-row">
-            <div class="form-group half">
-              <label class="input-label">Nombre</label>
-              <input type="text" class="dropi-input filled" [(ngModel)]="client.nombre" />
+          <div class="client-fields">
+            <!-- Row: Nombres + Apellidos -->
+            <div class="form-row">
+              <input
+                type="text"
+                class="dropi-input flex-1"
+                placeholder="Nombres"
+                [class.error]="submitted && !client.nombre"
+                [(ngModel)]="client.nombre"
+              />
+              <input
+                type="text"
+                class="dropi-input flex-1"
+                placeholder="Apellidos"
+                [class.error]="submitted && !client.apellido"
+                [(ngModel)]="client.apellido"
+              />
             </div>
-            <div class="form-group half">
-              <label class="input-label">Apellido</label>
-              <input type="text" class="dropi-input filled" [(ngModel)]="client.apellido" />
-            </div>
-          </div>
 
-          <div class="form-row phone-row">
-            <div class="form-group phone-country">
-              <label class="input-label">Teléfono</label>
-              <div class="phone-input-group">
+            <!-- Row: Phone + Notification button -->
+            <div class="form-row">
+              <div class="phone-input-group flex-1">
                 <div class="country-select">
                   <span class="flag">&#x1F1E8;&#x1F1F4;</span>
                   <span class="country-code">{{ client.countryCode }}</span>
-                  <i class="pi pi-chevron-down"></i>
                 </div>
-                <input type="text" class="dropi-input filled phone-number" [(ngModel)]="client.phone" />
+                <input
+                  type="text"
+                  class="dropi-input phone-number"
+                  placeholder="Número de télefono"
+                  [class.error]="submitted && !isPhoneValid()"
+                  [(ngModel)]="client.phone"
+                />
               </div>
-            </div>
-            <div class="form-group whatsapp-verify">
-              <label class="input-label">&nbsp;</label>
-              <button class="btn-whatsapp">
+              <button class="btn-notification-icon" title="Notificación">
                 <i class="pi pi-bell"></i>
-                Verificar WhatsApp
               </button>
             </div>
-          </div>
 
-          <div class="form-row">
-            <div class="form-group half">
-              <label class="input-label">Departamento</label>
-              <select class="dropi-input dropi-select filled" [(ngModel)]="client.departamento">
+            <!-- Row: Departamento + Ciudad -->
+            <div class="form-row">
+              <select
+                class="dropi-input dropi-select flex-1"
+                [(ngModel)]="client.departamento"
+                (ngModelChange)="onDepartamentoChange()"
+              >
+                <option value="" disabled>Departamento</option>
                 <option *ngFor="let d of departamentos" [value]="d">{{ d }}</option>
               </select>
-            </div>
-            <div class="form-group half">
-              <label class="input-label">Ciudad</label>
-              <select class="dropi-input dropi-select filled" [(ngModel)]="client.ciudad">
+              <select
+                class="dropi-input dropi-select flex-1"
+                [disabled]="!client.departamento"
+                [(ngModel)]="client.ciudad"
+                (ngModelChange)="recalculateShipping()"
+              >
+                <option value="" disabled>Ciudad</option>
                 <option *ngFor="let c of ciudades" [value]="c">{{ c }}</option>
               </select>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label class="input-label">Dirección</label>
-            <input type="text" class="dropi-input filled" [(ngModel)]="client.direccion" />
-          </div>
+            <!-- Row: Dirección -->
+            <input
+              type="text"
+              class="dropi-input"
+              placeholder="Dirección"
+              [class.error]="submitted && !client.direccion"
+              [(ngModel)]="client.direccion"
+            />
 
-          <div class="form-group">
-            <label class="input-label">Email</label>
-            <input type="email" class="dropi-input filled" [(ngModel)]="client.email" />
-          </div>
+            <!-- Row: Correo electrónico -->
+            <input
+              type="email"
+              class="dropi-input"
+              placeholder="Correo electrónico"
+              [(ngModel)]="client.email"
+            />
 
-          <div class="form-group">
-            <label class="input-label">Tienda</label>
-            <select class="dropi-input dropi-select filled" [(ngModel)]="client.tienda">
+            <!-- Row: Tienda -->
+            <select class="dropi-input dropi-select" [(ngModel)]="client.tienda">
+              <option value="" disabled>Tienda</option>
               <option *ngFor="let t of tiendas" [value]="t">{{ t }}</option>
             </select>
-          </div>
 
-          <div class="toggle-row">
-            <label class="toggle-label">
-              <span class="toggle-text">¿Desea agregar notas para el proveedor?</span>
+            <!-- Switch: Notas proveedor -->
+            <div class="toggle-row">
               <div class="toggle-switch" [class.active]="client.addNotes" (click)="client.addNotes = !client.addNotes">
                 <div class="toggle-thumb"></div>
               </div>
-            </label>
+              <span class="toggle-text">¿Desea agregar notas para el proveedor?</span>
+            </div>
+
+            <textarea
+              *ngIf="client.addNotes"
+              class="dropi-input dropi-textarea"
+              [(ngModel)]="client.notes"
+              rows="3"
+              placeholder="Escribe una nota para el proveedor..."
+            ></textarea>
           </div>
         </div>
 
         <!-- Product section -->
         <div class="section">
-          <h4 class="section-title">Producto seleccionado</h4>
+          <h4 class="section-title">Producto seleccionado:</h4>
 
-          <div class="product-card">
+          <!-- Product search -->
+          <div class="form-group" *ngIf="showProductSearch">
+            <div class="input-with-icon">
+              <i class="pi pi-search search-icon"></i>
+              <input
+                type="text"
+                class="dropi-input has-pre-icon"
+                placeholder="Buscar producto por nombre o ID..."
+                [(ngModel)]="productSearchQuery"
+                (input)="filterProducts()"
+              />
+            </div>
+            <div class="product-search-results" *ngIf="filteredProducts.length > 0">
+              <div
+                class="product-search-item"
+                *ngFor="let p of filteredProducts"
+                (click)="addProduct(p)"
+              >
+                <div class="product-search-image"><i class="pi pi-box"></i></div>
+                <div class="product-search-info">
+                  <span class="product-name">{{ p.name }}</span>
+                  <span class="product-id">ID: {{ p.id }} · Stock: {{ p.stock }}</span>
+                </div>
+                <span class="product-search-price">{{ formatCurrency(p.supplierPrice) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Added products list -->
+          <div *ngFor="let item of orderProducts; let i = index" class="product-card">
             <div class="product-image">
               <div class="product-image-placeholder">
                 <i class="pi pi-box"></i>
               </div>
             </div>
             <div class="product-info">
-              <span class="product-name">{{ product.name }}</span>
-              <span class="product-id">ID: {{ product.id }}</span>
-              <span class="product-supplier">Proveedor: {{ product.supplier }}</span>
-              <span class="product-price">Precio proveedor: {{ formatCurrency(product.supplierPrice) }}</span>
+              <span class="product-name">{{ item.name }}</span>
+              <span class="product-id">ID: {{ item.id }} | Proveedor: {{ item.supplier }}</span>
+              <span class="product-price">Precio proveedor: {{ formatCurrency(item.supplierPrice) }}</span>
             </div>
+            <button class="btn-remove-product" *ngIf="orderProducts.length > 1" (click)="removeProduct(i)" title="Quitar producto">
+              <i class="pi pi-trash"></i>
+            </button>
           </div>
 
-          <div class="form-row">
-            <div class="form-group half">
-              <label class="input-label">Precio de venta</label>
-              <div class="input-with-prefix">
-                <span class="input-prefix">$</span>
-                <input type="text" class="dropi-input filled has-prefix" [(ngModel)]="product.salePrice" />
+          <!-- Price & quantity for each product -->
+          <div *ngFor="let item of orderProducts; let i = index" class="product-pricing">
+            <span class="product-pricing-label" *ngIf="orderProducts.length > 1">{{ item.name }}</span>
+            <div class="form-row">
+              <div class="form-group half">
+                <label class="input-label">Precio de venta</label>
+                <div class="input-with-prefix">
+                  <span class="input-prefix">$</span>
+                  <input
+                    type="number"
+                    class="dropi-input has-prefix"
+                    [class.filled]="item.salePrice"
+                    [class.error]="submitted && !isSalePriceValid(item)"
+                    [(ngModel)]="item.salePrice"
+                  />
+                </div>
+                <span class="helper-text">Precio sugerido: {{ formatCurrency(item.suggestedPrice) }}</span>
+                <span class="error-text" *ngIf="submitted && item.salePrice < getMinPrice(item)">
+                  Mínimo: {{ formatCurrency(getMinPrice(item)) }} ({{ orderProducts.length > 1 ? '50%' : '80%' }})
+                </span>
               </div>
-              <span class="helper-text">Precio sugerido: {{ formatCurrency(product.suggestedPrice) }}</span>
-            </div>
-            <div class="form-group half">
-              <label class="input-label">
-                Cantidad
-                <i class="pi pi-info-circle tooltip-icon"></i>
-              </label>
-              <input type="number" class="dropi-input filled" [(ngModel)]="product.quantity" min="1" />
-              <span class="helper-text">Stock: {{ product.stock }}</span>
+              <div class="form-group half">
+                <label class="input-label">
+                  Cantidad
+                  <i class="pi pi-info-circle tooltip-icon"></i>
+                </label>
+                <input
+                  type="number"
+                  class="dropi-input"
+                  [class.filled]="item.quantity"
+                  [class.error]="submitted && (item.quantity < 1 || item.quantity > item.stock)"
+                  [(ngModel)]="item.quantity"
+                  min="1"
+                  [max]="item.stock"
+                />
+                <span class="helper-text">Stock: {{ item.stock }}</span>
+                <span class="error-text" *ngIf="submitted && item.quantity > item.stock">Excede stock disponible</span>
+              </div>
             </div>
           </div>
 
-          <button class="btn-add-product">
+          <button class="btn-add-product" (click)="showProductSearch = !showProductSearch">
             <i class="pi pi-plus-circle"></i>
             Agregar producto
           </button>
@@ -137,7 +217,7 @@
       <!-- Column 2: Carrier selection -->
       <div class="column column-2">
         <div class="section">
-          <h4 class="section-title">Selecciona una transportadora</h4>
+          <h4 class="section-title">Selecciona una transportadora:</h4>
 
           <div class="collection-type">
             <label
@@ -178,7 +258,7 @@
                 </div>
                 <span class="carrier-name">{{ carrier.name }}</span>
               </div>
-              <span class="carrier-price">{{ formatCurrency(carrier.price) }}</span>
+              <span class="carrier-price">{{ formatCurrency(getCarrierPrice(carrier)) }}</span>
             </div>
           </div>
         </div>
@@ -187,7 +267,7 @@
       <!-- Column 3: Order summary -->
       <div class="column column-3">
         <div class="section">
-          <h4 class="section-title">Resumen de la orden</h4>
+          <h4 class="section-title">Resumen de la orden:</h4>
 
           <table class="summary-table">
             <thead>
@@ -197,9 +277,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>{{ product.name }} ({{ product.quantity }})</td>
-                <td class="text-right">{{ formatCurrency(product.salePrice) }}</td>
+              <tr *ngFor="let item of orderProducts">
+                <td>{{ item.name }} ({{ item.quantity }})</td>
+                <td class="text-right">{{ formatCurrency(item.salePrice * item.quantity) }}</td>
               </tr>
             </tbody>
           </table>
@@ -213,7 +293,7 @@
             </div>
             <div class="summary-row">
               <span class="summary-label">Precio proveedor</span>
-              <span class="summary-value">{{ formatCurrency(product.supplierPrice) }}</span>
+              <span class="summary-value">{{ formatCurrency(totalSupplierPrice) }}</span>
             </div>
             <div class="summary-row">
               <span class="summary-label">Precio de envío</span>
@@ -233,7 +313,7 @@
           <div class="summary-row ganancia-row">
             <span class="summary-label">
               <i class="pi pi-dollar ganancia-icon"></i>
-              Ganancia
+              Ganancia:
             </span>
             <span class="summary-value ganancia-value">{{ formatCurrency(ganancia) }}</span>
           </div>
@@ -244,8 +324,8 @@
     <!-- Footer -->
     <div class="modal-footer">
       <div class="footer-actions">
-        <button class="btn-secondary">Cancelar</button>
-        <button class="btn-primary">Actualizar orden</button>
+        <button class="btn-secondary" (click)="closeModal.emit()">Cancelar</button>
+        <button class="btn-primary" (click)="submitOrder()">Crear orden</button>
       </div>
     </div>
   </div>

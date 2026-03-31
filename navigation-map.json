@@ -1,0 +1,603 @@
+{
+  "$schema": "dropi-navigation-context-map",
+  "version": "1.0.0",
+  "description": "Navigation Context Map — maps Dropi modules, views, CTAs, origin points, and post-action flows for contextual wireframe generation.",
+  "roles": ["dropshipper", "proveedor", "admin"],
+  "modules": {
+    "home": {
+      "route": "/home",
+      "label": "Inicio",
+      "icon": "pi-home",
+      "roles": ["dropshipper", "proveedor", "admin"],
+      "defaultView": "landing",
+      "figmaSource": "https://www.figma.com/design/fgCAWbyWdvCWuO3vcmJe45/Home?node-id=2004-748",
+      "views": {
+        "landing": {
+          "route": "/home",
+          "type": "page",
+          "prototype": null,
+          "description": "Landing page post-login. Mismo diseño para los 3 roles. Saludo personalizado, banner promocional, anuncio de plataforma, eventos y capacitaciones.",
+          "layout": {
+            "greeting": "¡Hola, {userName}! — texto dinámico con nombre del usuario",
+            "banner": "Imagen promocional lateral (345x620px) — contenido rotativo/campañas",
+            "announcement": "Card con icono + texto de actualizaciones de la plataforma",
+            "events": "Card con imagen, título, descripción y CTA externo (ej: Unirme al evento)",
+            "trainings": "Lista de capacitaciones (Dropshipper, Logística, Shopify, Módulo de Garantías) con botón Ver"
+          },
+          "actions": [
+            { "cta": "Quiero mi entrada", "type": "external", "description": "Link a evento externo" },
+            { "cta": "Unirme al evento", "type": "external", "description": "Link a Instagram Live o similar" },
+            { "cta": "Ver (capacitación)", "type": "external", "description": "Abre capacitación en Academy o externo" }
+          ]
+        }
+      }
+    },
+    "productos": {
+      "route": "/productos",
+      "label": "Productos",
+      "icon": "pi-search",
+      "roles": ["dropshipper", "proveedor", "admin"],
+      "views": {
+        "catalogo": {
+          "route": "/productos/catalogo",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "prototype": "/productos/catalogo",
+          "figmaSource": "https://www.figma.com/design/20WQwTPB8Ymg82NVtul86a/Búsqueda-semántica?node-id=3008-71039",
+          "description": "Catálogo de productos disponibles para vender. Incluye búsqueda semántica con IA, filtros avanzados, carousel de proveedores y grid de product cards.",
+          "layout": {
+            "breadcrumb": "Productos > Catálogo",
+            "bannerIA": "Banner promocional de búsqueda con IA — dismissible, input '¿Qué quieres encontrar hoy?'",
+            "proveedores": "Carousel horizontal de cards de proveedores (logo, nombre, cant. productos, categorías) + link 'Ver todos'",
+            "filtros": "Toggles (Favoritos, Privados, Con ordenes) + Buscador optimizado (IA) + Buscar por imagen + Dropdowns (tipo proveedor, rango precio, stock, categorías, ciudad) + botón buscar",
+            "ordenar": "Dropdown 'Ordenar por' (Aleatorio) + toggle vista Grid/Lista",
+            "productGrid": "Cards con imagen, badges (Variable/Combo, Exclusivo/Premium/Verificado, candado privado), favorito, categoría, stock, nombre, proveedor con link"
+          },
+          "actions": [
+            { "cta": "Ver todos (proveedores)", "opens": "productos.proveedores", "type": "navigate" },
+            { "cta": "Click product card", "opens": "productos.detalle-producto", "type": "navigate" },
+            { "cta": "Tienda Proveedor", "opens": "productos.perfil-proveedor", "type": "navigate" },
+            { "cta": "Buscador optimizado", "type": "search", "targets": ["nombre", "descripcion", "categoria"], "description": "Búsqueda semántica con IA" },
+            { "cta": "Buscar por imagen", "type": "search", "targets": ["imagen"], "description": "Upload de imagen para búsqueda visual" },
+            { "cta": "Filtrar", "type": "filter", "targets": ["favoritos", "privados", "conOrdenes", "tipoProveedor", "rangoPrecio", "stock", "categorias", "ciudad"] },
+            { "cta": "Ordenar por", "type": "filter", "targets": ["aleatorio", "recientes", "precio", "stock"] },
+            { "cta": "Toggle vista", "type": "action", "description": "Cambia entre vista grid y vista lista" },
+            { "cta": "Enviar a cliente", "opens": "pedidos.orden-manual", "type": "modal", "params": { "productId": ":id" }, "location": "card-product-footer", "description": "Text-button naranja con icono shopping-cart-arrow-right en el footer de cada Card-product. Inter Bold 14px, color primary-500 #f49a3d." }
+          ]
+        },
+        "detalle-producto": {
+          "route": "/productos/detalle/:id",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "description": "Ficha de un producto con galería, descripción, precio y acciones.",
+          "actions": [
+            { "cta": "Vender este producto", "opens": "pedidos.orden-manual", "type": "modal", "params": { "productId": ":id" } },
+            { "cta": "Agregar a favoritos", "type": "action" },
+            { "cta": "Ver proveedor", "opens": "productos.perfil-proveedor", "type": "navigate" }
+          ]
+        },
+        "proveedores": {
+          "route": "/productos/proveedores",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "description": "Listado de proveedores disponibles."
+        },
+        "perfil-proveedor": {
+          "route": "/productos/proveedores/:id",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "description": "Perfil del proveedor con productos y métricas."
+        },
+        "negociaciones": {
+          "route": "/productos/negociaciones",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "description": "Negociaciones de precio con proveedores."
+        },
+        "caza-productos": {
+          "route": "/productos/caza-productos",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "description": "Herramienta para descubrir productos trending."
+        },
+        "print-on-demand": {
+          "route": "/productos/print-on-demand",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "description": "Productos personalizables con print on demand."
+        },
+        "mis-productos": {
+          "route": "/productos/mis-productos",
+          "type": "page",
+          "roles": ["proveedor"],
+          "description": "Listado de productos propios del proveedor.",
+          "actions": [
+            { "cta": "Crear producto", "opens": "productos.crear-producto", "type": "navigate" },
+            { "cta": "Editar producto", "opens": "productos.editar-producto", "type": "navigate" }
+          ]
+        },
+        "categorias": {
+          "route": "/productos/categorias",
+          "type": "page",
+          "roles": ["proveedor", "admin"],
+          "description": "Gestión de categorías de productos."
+        }
+      }
+    },
+    "pedidos": {
+      "route": "/pedidos",
+      "label": "Pedidos",
+      "icon": "pi-shopping-cart",
+      "roles": ["dropshipper", "proveedor", "admin"],
+      "views": {
+        "listado": {
+          "route": "/pedidos/todos",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "description": "Listado de todas las órdenes del dropshipper con filtros por estado.",
+          "actions": [
+            { "cta": "Crear orden", "opens": "pedidos.orden-manual", "type": "modal" },
+            { "cta": "Ver detalle", "opens": "pedidos.orden-detalle", "type": "navigate" },
+            { "cta": "Filtrar por estado", "type": "filter", "targets": ["status"] },
+            { "cta": "Buscar orden", "type": "search", "targets": ["id", "cliente", "tracking"] },
+            { "cta": "Exportar", "type": "action" }
+          ]
+        },
+        "listado-proveedor": {
+          "route": "/pedidos/mis-pedidos",
+          "type": "page",
+          "roles": ["proveedor"],
+          "prototype": null,
+          "figmaSource": "https://www.figma.com/design/jVScWyetpomdiEPzjjb3Az/CAS-Diseño-2.0?node-id=10932-101172",
+          "description": "Listado de pedidos recibidos por el proveedor. Tabla con selección múltiple, acciones bulk, búsqueda, filtros y acciones por fila.",
+          "layout": {
+            "title": "Mis Pedidos",
+            "bulkActions": "Dropdown 'Acciones' para operaciones en lote sobre pedidos seleccionados",
+            "filterButton": "Botón filtro naranja (esquina superior derecha) — abre panel de filtros",
+            "pagination": "'Mostrar N registros de total' con dropdown de cantidad (10, 25, 50)",
+            "search": "Input de búsqueda a la derecha",
+            "table": "Columnas: checkbox, #ID, Nombre producto, Fecha orden, Dirección (truncada), Estado (chevron con color), Detalles (iconos de acción)",
+            "rowActions": "Iconos por fila: lupa (ver detalle), etiqueta, impresora (guía), copiar, notificación (badge rojo), WhatsApp"
+          },
+          "actions": [
+            { "cta": "Ver detalle (lupa)", "opens": "pedidos.orden-detalle", "type": "navigate" },
+            { "cta": "Acciones (bulk)", "type": "action", "description": "Dropdown con acciones masivas sobre pedidos seleccionados" },
+            { "cta": "Filtro", "type": "filter", "targets": ["status", "fecha", "transportadora", "ciudad"] },
+            { "cta": "Buscar", "type": "search", "targets": ["id", "producto", "cliente"] },
+            { "cta": "Imprimir guía", "type": "action", "description": "Genera e imprime guía de envío" },
+            { "cta": "Etiquetar", "type": "action", "description": "Asigna etiqueta al pedido" },
+            { "cta": "WhatsApp", "type": "external", "description": "Abre chat WhatsApp con el cliente" }
+          ]
+        },
+        "listado-admin": {
+          "route": "/ordenes/todas",
+          "type": "page",
+          "roles": ["admin"],
+          "description": "Vista administrativa de todas las órdenes de la plataforma.",
+          "actions": [
+            { "cta": "Ver detalle", "opens": "pedidos.orden-detalle", "type": "navigate" },
+            { "cta": "Filtrar por estado", "type": "filter", "targets": ["status", "dropshipper", "proveedor"] }
+          ]
+        },
+        "orden-manual": {
+          "route": "/pedidos/orden-manual",
+          "type": "modal",
+          "roles": ["dropshipper"],
+          "description": "Modal para crear una orden manual. Incluye datos del cliente, selección de productos, transportadora y resumen con ganancia.",
+          "jira": "DROP-9268",
+          "origin_points": [
+            "productos.catalogo.cta:enviar-a-cliente",
+            "pedidos.listado.cta:crear-orden",
+            "productos.detalle-producto.cta:vender-este-producto",
+            "home.dashboard.cta:crear-orden"
+          ],
+          "on_success": { "target": "pedidos.listado", "feedback": "toast-success", "message": "Orden creada exitosamente" },
+          "on_cancel": "back",
+          "fields": {
+            "required": ["nombre", "apellido", "telefono", "direccion", "departamento", "ciudad", "producto", "transportadora"],
+            "optional": ["email", "tienda", "notas_proveedor"]
+          },
+          "business_rules": [
+            "Validar teléfono según dígitos del país (CO=10)",
+            "Precio mínimo venta: 80% precio proveedor (orden simple), 50% (orden compuesta)",
+            "Recálculo automático de envío al cambiar ciudad/departamento/transportadora",
+            "Stock validado en tiempo real"
+          ]
+        },
+        "orden-detalle": {
+          "route": "/pedidos/detalle/:id",
+          "type": "page",
+          "roles": ["dropshipper", "proveedor", "admin"],
+          "description": "Detalle de una orden con timeline de estados, datos del cliente y producto.",
+          "actions": [
+            { "cta": "Editar orden", "opens": "pedidos.orden-manual", "type": "modal", "params": { "orderId": ":id", "mode": "edit" } },
+            { "cta": "Cancelar orden", "type": "action", "confirmation": true },
+            { "cta": "Imprimir guía", "type": "action" },
+            { "cta": "Ver tracking", "type": "expand" }
+          ]
+        },
+        "novedades": {
+          "route": "/pedidos/novedades",
+          "type": "page",
+          "roles": ["dropshipper", "proveedor"],
+          "description": "Listado de novedades (incidencias) en las órdenes."
+        },
+        "carritos": {
+          "route": "/pedidos/carritos",
+          "type": "page",
+          "roles": ["dropshipper", "proveedor"],
+          "description": "Carritos de compra abandonados con opción de recuperación.",
+          "actions": [
+            { "cta": "Enviar recordatorio", "type": "action" },
+            { "cta": "Ver detalle carrito", "type": "expand" }
+          ]
+        },
+        "etiquetas": {
+          "route": "/pedidos/etiquetas",
+          "type": "page",
+          "roles": ["dropshipper", "proveedor"],
+          "description": "Gestión de etiquetas para clasificar pedidos."
+        },
+        "configuracion": {
+          "route": "/pedidos/configuracion",
+          "type": "page",
+          "roles": ["proveedor"],
+          "description": "Configuración de pedidos del proveedor (tiempos de despacho, políticas)."
+        }
+      }
+    },
+    "reportes": {
+      "route": "/reportes",
+      "label": "Reportes",
+      "icon": "pi-chart-line",
+      "roles": ["dropshipper", "proveedor", "admin"],
+      "views": {
+        "ventas": {
+          "route": "/reportes/ventas",
+          "type": "page",
+          "description": "Reporte de ventas con gráficos y filtros por periodo.",
+          "actions": [
+            { "cta": "Exportar reporte", "type": "action" },
+            { "cta": "Filtrar por periodo", "type": "filter", "targets": ["dateRange"] }
+          ]
+        },
+        "envios": {
+          "route": "/reportes/envios",
+          "type": "page",
+          "description": "Reporte de envíos con métricas de cumplimiento."
+        },
+        "financiero": {
+          "route": "/reportes/financiero",
+          "type": "page",
+          "roles": ["admin"],
+          "description": "Reporte financiero consolidado de la plataforma."
+        }
+      }
+    },
+    "financiero": {
+      "route": "/financiero",
+      "label": "Financiero",
+      "icon": "pi-dollar",
+      "roles": ["dropshipper"],
+      "views": {
+        "wallet": {
+          "route": "/financiero/wallet",
+          "type": "page",
+          "description": "Wallet del dropshipper con saldo, movimientos y opciones de retiro.",
+          "actions": [
+            { "cta": "Solicitar retiro", "opens": "financiero.solicitar-retiro", "type": "modal" },
+            { "cta": "Ver historial", "type": "expand" }
+          ]
+        },
+        "facturas": {
+          "route": "/financiero/facturas",
+          "type": "page",
+          "description": "Facturas del dropshipper."
+        },
+        "historial": {
+          "route": "/financiero/historial",
+          "type": "page",
+          "description": "Historial completo de cartera."
+        }
+      }
+    },
+    "marketing": {
+      "route": "/marketing",
+      "label": "Marketing",
+      "icon": "pi-megaphone",
+      "roles": ["dropshipper", "proveedor", "admin"],
+      "views": {
+        "campanas": {
+          "route": "/marketing/campanas",
+          "type": "page",
+          "description": "Gestión de campañas de marketing.",
+          "actions": [
+            { "cta": "Crear campaña", "opens": "marketing.crear-campana", "type": "navigate" }
+          ]
+        },
+        "audiencias": {
+          "route": "/marketing/audiencias",
+          "type": "page",
+          "roles": ["dropshipper", "proveedor"],
+          "description": "Gestión de audiencias para campañas."
+        },
+        "banners": {
+          "route": "/marketing/banners",
+          "type": "page",
+          "roles": ["admin"],
+          "description": "Gestión de banners promocionales de la plataforma."
+        }
+      }
+    },
+    "garantias": {
+      "route": "/garantias",
+      "label": "Garantías",
+      "icon": "pi-verified",
+      "roles": ["proveedor", "admin"],
+      "views": {
+        "activas": {
+          "route": "/garantias/activas",
+          "type": "page",
+          "roles": ["proveedor"],
+          "description": "Garantías activas del proveedor."
+        },
+        "solicitudes": {
+          "route": "/garantias/solicitudes",
+          "type": "page",
+          "roles": ["admin"],
+          "description": "Solicitudes de garantía para revisión admin."
+        },
+        "historial": {
+          "route": "/garantias/historial",
+          "type": "page",
+          "description": "Historial de garantías procesadas."
+        }
+      }
+    },
+    "configurar": {
+      "route": "/configurar",
+      "label": "Configurar",
+      "icon": "pi-cog",
+      "roles": ["dropshipper", "proveedor", "admin"],
+      "views": {
+        "tienda": {
+          "route": "/configurar/tienda",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "description": "Configuración de la tienda del dropshipper (nombre, logo, dominio)."
+        },
+        "integraciones": {
+          "route": "/configurar/integraciones",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "description": "Integraciones con plataformas externas (Shopify, WooCommerce, etc)."
+        },
+        "notificaciones": {
+          "route": "/configurar/notificaciones",
+          "type": "page",
+          "roles": ["dropshipper", "admin"],
+          "description": "Configuración de notificaciones por email, SMS, push."
+        },
+        "general": {
+          "route": "/configuraciones/general",
+          "type": "page",
+          "roles": ["proveedor", "admin"],
+          "description": "Configuración general de cuenta."
+        },
+        "plataforma": {
+          "route": "/configuraciones/plataforma",
+          "type": "page",
+          "roles": ["admin"],
+          "description": "Configuración global de la plataforma."
+        },
+        "pasarela": {
+          "route": "/configuraciones/pasarela",
+          "type": "page",
+          "roles": ["proveedor"],
+          "description": "Configuración de pasarela de pago del proveedor."
+        }
+      }
+    },
+    "transportadora": {
+      "route": "/transportadora",
+      "label": "Transportadora",
+      "icon": "pi-truck",
+      "roles": ["proveedor", "admin"],
+      "views": {
+        "empresas": {
+          "route": "/transportadora/empresas",
+          "type": "page",
+          "roles": ["admin"],
+          "description": "Gestión de empresas transportadoras."
+        },
+        "mis-transportadoras": {
+          "route": "/transportadora/mis-transportadoras",
+          "type": "page",
+          "roles": ["proveedor"],
+          "description": "Transportadoras habilitadas para el proveedor."
+        },
+        "tarifas": {
+          "route": "/transportadora/tarifas",
+          "type": "page",
+          "description": "Tarifas de envío por transportadora y destino."
+        },
+        "cobertura": {
+          "route": "/transportadora/cobertura",
+          "type": "page",
+          "roles": ["admin"],
+          "description": "Mapa de cobertura de transportadoras."
+        }
+      }
+    },
+    "usuarios": {
+      "route": "/usuarios",
+      "label": "Usuarios",
+      "icon": "pi-users",
+      "roles": ["admin"],
+      "views": {
+        "dropshippers": {
+          "route": "/usuarios/dropshippers",
+          "type": "page",
+          "description": "Listado y gestión de dropshippers registrados."
+        },
+        "proveedores": {
+          "route": "/usuarios/proveedores",
+          "type": "page",
+          "description": "Listado y gestión de proveedores registrados."
+        },
+        "admins": {
+          "route": "/usuarios/admins",
+          "type": "page",
+          "description": "Listado y gestión de administradores."
+        }
+      }
+    },
+    "logistic": {
+      "route": "/logistic",
+      "label": "Logistic",
+      "icon": "pi-car",
+      "roles": ["admin"],
+      "views": {
+        "envios": {
+          "route": "/logistic/envios",
+          "type": "page",
+          "description": "Gestión de envíos en curso."
+        },
+        "rutas": {
+          "route": "/logistic/rutas",
+          "type": "page",
+          "description": "Gestión de rutas logísticas."
+        }
+      }
+    },
+    "marca-blanca": {
+      "route": "/marca-blanca",
+      "label": "Marca blanca",
+      "icon": "pi-file",
+      "roles": ["admin"],
+      "views": {
+        "configuracion": {
+          "route": "/marca-blanca/configuracion",
+          "type": "page",
+          "description": "Configuración de marcas blancas."
+        },
+        "dominios": {
+          "route": "/marca-blanca/dominios",
+          "type": "page",
+          "description": "Gestión de dominios para marcas blancas."
+        }
+      }
+    },
+    "cas": {
+      "route": "/cas",
+      "label": "CAS",
+      "icon": "pi-comments",
+      "roles": ["dropshipper", "proveedor", "admin"],
+      "views": {
+        "tickets": {
+          "route": "/cas/tickets",
+          "type": "page",
+          "roles": ["proveedor", "admin"],
+          "description": "Sistema de tickets de soporte."
+        },
+        "chat": {
+          "route": "/cas/chat",
+          "type": "page",
+          "roles": ["proveedor", "admin"],
+          "description": "Chat en vivo con soporte."
+        },
+        "landing": {
+          "route": "/cas",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "description": "Centro de atención y soporte del dropshipper."
+        }
+      }
+    },
+    "standalone": {
+      "description": "Vistas que no pertenecen a un módulo con submenu.",
+      "views": {
+        "dropi-card": {
+          "route": "/dropi-card",
+          "type": "page",
+          "roles": ["dropshipper", "proveedor"],
+          "label": "Dropi Card",
+          "icon": "pi-credit-card",
+          "description": "Tarjeta virtual Dropi para pagos y retiros."
+        },
+        "academy": {
+          "route": "/academy",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "label": "Academy",
+          "icon": "pi-book",
+          "description": "Centro de formación con cursos y tutoriales."
+        },
+        "clientes": {
+          "route": "/clientes",
+          "type": "page",
+          "roles": ["proveedor", "admin"],
+          "label": "Clientes",
+          "icon": "pi-user-edit",
+          "description": "Gestión de clientes registrados."
+        },
+        "calendario": {
+          "route": "/calendario",
+          "type": "page",
+          "roles": ["proveedor", "admin"],
+          "label": "Calendario",
+          "icon": "pi-calendar",
+          "description": "Calendario de eventos y despachos."
+        },
+        "auditorias": {
+          "route": "/auditorias",
+          "type": "page",
+          "roles": ["admin"],
+          "label": "Auditorías",
+          "icon": "pi-book",
+          "description": "Registro de auditorías de la plataforma."
+        },
+        "bodegas": {
+          "route": "/bodegas",
+          "type": "page",
+          "roles": ["admin"],
+          "label": "Bodegas",
+          "icon": "pi-warehouse",
+          "description": "Gestión de bodegas y almacenes."
+        },
+        "ciudades": {
+          "route": "/ciudades",
+          "type": "page",
+          "roles": ["admin"],
+          "label": "Ciudades",
+          "icon": "pi-map-marker",
+          "description": "Gestión de ciudades habilitadas para envío."
+        },
+        "comunidades": {
+          "route": "/comunidades",
+          "type": "page",
+          "roles": ["admin"],
+          "label": "Comunidades",
+          "icon": "pi-globe",
+          "description": "Gestión de comunidades de usuarios."
+        },
+        "reel-management": {
+          "route": "/reel-management",
+          "type": "page",
+          "roles": ["admin"],
+          "label": "Reel Management",
+          "icon": "pi-ticket",
+          "description": "Gestión de reels y contenido visual."
+        },
+        "retiro-saldo": {
+          "route": "/retiro-saldo",
+          "type": "page",
+          "roles": ["admin"],
+          "label": "Retiro de Saldo",
+          "icon": "pi-money-bill",
+          "description": "Gestión de retiros de saldo de la plataforma."
+        }
+      }
+    }
+  }
+}

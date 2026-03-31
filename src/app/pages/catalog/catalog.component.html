@@ -1,0 +1,185 @@
+<!-- Modal: Orden Manual (on top of catálogo) -->
+<div class="order-modal-overlay" *ngIf="showOrderModal" (click)="closeOrderModal()">
+  <div class="order-modal-wrapper" (click)="$event.stopPropagation()">
+    <app-orders-manual (closeModal)="closeOrderModal()"></app-orders-manual>
+  </div>
+</div>
+
+<!-- Breadcrumb: icon search > Productos > Catalogo -->
+<div class="breadcrumb">
+  <span class="breadcrumb-icon"><i class="pi pi-search"></i></span>
+  <i class="pi pi-chevron-right breadcrumb-chevron"></i>
+  <span class="breadcrumb-item">Productos</span>
+  <i class="pi pi-chevron-right breadcrumb-chevron"></i>
+  <span class="breadcrumb-item active">Catalogo</span>
+</div>
+
+<!-- Proveedores Carousel -->
+<section class="proveedores-section">
+  <div class="proveedores-header">
+    <span class="proveedores-title">Proveedores</span>
+    <a class="proveedores-ver-todos">Ver todos</a>
+  </div>
+  <div class="proveedores-carousel">
+    <div class="proveedor-card" *ngFor="let s of suppliers">
+      <div class="proveedor-avatar" [style.background]="s.color">{{ s.initials }}</div>
+      <div class="proveedor-info">
+        <span class="proveedor-name">{{ s.name }}</span>
+        <span class="proveedor-count">{{ s.productsCount }} productos</span>
+        <span class="proveedor-categories">{{ s.categories }}</span>
+      </div>
+    </div>
+    <!-- Float scroll button -->
+    <button class="carousel-float-btn">
+      <i class="pi pi-chevron-right"></i>
+    </button>
+  </div>
+</section>
+
+<!-- Filtros: fiel a Figma -->
+<section class="filtros-section">
+  <div class="filtros-card">
+    <!-- Row 1: Título + Search -->
+    <div class="filtros-top">
+      <h3 class="filtros-titulo">Catalogo de productos</h3>
+      <div class="search-input">
+        <i class="pi pi-search search-icon"></i>
+        <input type="text" placeholder="Buscar" [(ngModel)]="searchQuery" />
+        <i class="pi pi-image search-image-icon"></i>
+      </div>
+    </div>
+
+    <!-- Row 2: Switches + Filtros avanzados -->
+    <div class="filtros-switches">
+      <div class="switch-group">
+        <div class="switch-item">
+          <i class="pi pi-heart-fill switch-icon"></i>
+          <span class="switch-label">Favoritos</span>
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="filterToggles.favoritos" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="switch-item">
+          <i class="pi pi-lock switch-icon"></i>
+          <span class="switch-label">Privados</span>
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="filterToggles.privados" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="switch-item">
+          <i class="pi pi-shopping-cart switch-icon"></i>
+          <span class="switch-label">Con ordenes</span>
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="filterToggles.conOrdenes" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="switch-item">
+          <i class="pi pi-th-large switch-icon"></i>
+          <span class="switch-label">Combos</span>
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="filterToggles.combos" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <button class="btn-filtros-avanzados">
+        <i class="pi pi-sliders-h"></i>
+        <span>Filtros avanzados</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Barra tabla: count + sort + view -->
+  <div class="barra-tabla">
+    <div class="barra-count">
+      <span class="count-text">Más de</span>
+      <span class="count-number">60.000</span>
+      <span class="count-text">productos</span>
+    </div>
+    <div class="barra-controls">
+      <div class="sort-control">
+        <span class="sort-label">Ordenar por:</span>
+        <button class="sort-dropdown">
+          <span>{{ sortBy }}</span>
+          <i class="pi pi-chevron-down"></i>
+        </button>
+      </div>
+      <div class="view-control">
+        <span class="view-label">Vista:</span>
+        <div class="view-segmented">
+          <button
+            class="view-btn left"
+            [class.active]="viewMode === 'grid'"
+            (click)="viewMode = 'grid'"
+          >
+            <i class="pi pi-th-large"></i>
+          </button>
+          <button
+            class="view-btn right"
+            [class.active]="viewMode === 'list'"
+            (click)="viewMode = 'list'"
+          >
+            <i class="pi pi-list"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Product Grid -->
+<section class="products-grid">
+  <div
+    class="product-card"
+    *ngFor="let product of filteredProducts; let i = index"
+    [style.animation-delay]="i * 30 + 'ms'"
+  >
+    <!-- Image area -->
+    <div class="card-image-area">
+      <div class="card-image">
+        <img [src]="product.imageUrl" [alt]="product.name" />
+      </div>
+      <!-- Tags top-left -->
+      <div class="card-tags" *ngIf="product.tags && product.tags.length">
+        <span
+          class="card-tag"
+          *ngFor="let tag of product.tags"
+          [class.tag-combo]="tag === 'Combo'"
+        >{{ tag }}</span>
+      </div>
+      <!-- Favorite btn bottom-right -->
+      <button class="card-favorite-btn">
+        <i class="pi pi-heart"></i>
+      </button>
+    </div>
+
+    <!-- Info -->
+    <div class="card-info">
+      <div class="card-meta-row">
+        <span class="card-category">{{ product.category }}</span>
+        <span class="card-stock">Stock: <strong [class.stock-ok]="product.stock > 0" [class.stock-zero]="product.stock === 0">{{ product.stock }}</strong></span>
+      </div>
+      <p class="card-name">{{ product.name }}</p>
+      <p class="card-supplier">Proveedor: <a class="supplier-link">{{ product.supplierName }}</a></p>
+      <div class="card-prices">
+        <div class="price-col">
+          <span class="price-label">Precio proveedor</span>
+          <span class="price-value">{{ formatPrice(product.price) }}</span>
+        </div>
+        <div class="price-col">
+          <span class="price-label">Precio sugerido</span>
+          <span class="price-value">{{ formatPrice(product.suggestedPrice) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA Footer: Enviar a cliente -->
+    <button class="card-cta" (click)="enviarACliente(product)">
+      <i class="pi pi-shopping-cart"></i>
+      <span>Enviar a cliente</span>
+    </button>
+  </div>
+</section>

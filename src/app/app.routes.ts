@@ -19,6 +19,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'productos/catalogo',
+        loadComponent: () =>
+          import('./pages/catalog/catalog.component').then(
+            m => m.CatalogComponent,
+          ),
+      },
+      {
         path: 'pedidos/orden-manual',
         loadComponent: () =>
           import('./pages/orders-manual/orders-manual.component').then(
