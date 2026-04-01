@@ -42,7 +42,7 @@ import { NavItem, UserRole, SIDEBAR_NAV } from '../../config/sidebar-nav.config'
             class="sidebar__item"
             [title]="collapsed ? item.label : ''"
           >
-            <i [class]="'pi ' + item.icon" class="sidebar__item-icon"></i>
+            <img [src]="item.icon" [alt]="item.label" class="sidebar__item-icon" />
             <span *ngIf="!collapsed" class="sidebar__item-label">{{ item.label }}</span>
           </a>
 
@@ -53,7 +53,7 @@ import { NavItem, UserRole, SIDEBAR_NAV } from '../../config/sidebar-nav.config'
             [class.sidebar__item--expanded]="expandedItem === item.label"
             (click)="toggleExpand(item.label)"
           >
-            <i [class]="'pi ' + item.icon" class="sidebar__item-icon"></i>
+            <img [src]="item.icon" [alt]="item.label" class="sidebar__item-icon" />
             <span *ngIf="!collapsed" class="sidebar__item-label">{{ item.label }}</span>
             <i *ngIf="!collapsed" class="pi pi-chevron-down sidebar__item-chevron"
                [class.sidebar__item-chevron--open]="expandedItem === item.label"></i>
