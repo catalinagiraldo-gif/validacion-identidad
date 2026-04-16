@@ -136,10 +136,73 @@ Before writing a single line of code, complete this checklist IN ORDER:
 | Translate or rename texts from the design | Copy exact texts from Figma (e.g. "Número de télefono" not "Teléfono") |
 | Assume form field structure | Read the form node in Figma field by field |
 | Fill in gaps with guesses | Ask the designer before proceeding |
+| Read Figma once, then code from memory | Call `get_design_context` per sub-section BEFORE coding each piece |
+| Use DS token colors when Figma shows different ones | Use the EXACT hex from Figma, document the discrepancy |
+| Use PrimeIcons `<i>` tags for action icons | Download real SVGs from Figma, fix `preserveAspectRatio` and CSS vars |
+| Hardcode `preserveAspectRatio="none"` in SVGs | Always set `preserveAspectRatio="xMidYMid meet"` |
+| Leave `var(--fill-0, COLOR)` in downloaded SVGs | Replace CSS variable syntax with hardcoded color (img tags don't support CSS vars) |
+
+### Figma-to-Code Extraction Process (MANDATORY per sub-section)
+
+For EACH section of a wireframe (action bar, table row, cell, badge, icon group, card, filter bar):
+
+1. Call `get_design_context` on that specific sub-node
+2. From the response, extract exact values: hex colors, font-family, font-weight, font-size, line-height, gap, padding, border-radius, width, height
+3. Write those values directly into SCSS — never interpolate or "close enough"
+4. If a Figma value differs from DS tokens, use the Figma value and add a comment with the discrepancy
+
+### SVG Asset Protocol
+
+After downloading any SVG from Figma:
+
+```python
+# Fix all SVGs in a directory
+import re, glob
+for f in glob.glob('*.svg'):
+    with open(f) as fh: content = fh.read()
+    content = re.sub(r'var\(--fill-0,\s*([^)]+)\)', r'\1', content)  # Remove CSS vars
+    content = content.replace('preserveAspectRatio="none"', 'preserveAspectRatio="xMidYMid meet"')
+    content = content.replace('width="100%" height="100%"', '')
+    with open(f, 'w') as fh: fh.write(content)
+```
+
+### Responsive Layout Rules
+
+Every new page component MUST follow this pattern:
+
+```scss
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $size-4 $size-8;
+}
+```
+
+- The app shell constrains content to `height: calc(100vh - 70px)` with `overflow-y: auto`
+- Each module scrolls internally — never cause page-level scroll
+- Tables go inside `.table-scroll { overflow-x: auto; }`
+- Fixed-width inputs add `max-width: 100%`
+- Filter rows add `flex-wrap: wrap`
+- Images add `max-width: 100%`
 
 ### Prototype Inventory
 
 | Module | View | Route | Type | Status |
 |---|---|---|---|---|
 | productos | catálogo | /productos/catalogo | page | WORKING |
+| productos | caza-productos | /productos/caza-productos | page | WORKING |
+| productos | proveedores | /productos/proveedores | page | WORKING |
 | pedidos | orden-manual | (modal on catálogo) | modal | WORKING |
+| pedidos | mis-pedidos | /mis-pedidos/mis-pedidos | page | WORKING |
+| financiero | historial-cartera | /historial-de-cartera | page | WORKING |
+| standalone | dropicard | /dropi-card/cards | page | WORKING |
+| standalone | academy | /academy | page | WORKING |
+| cas | bandeja | /cas/bandeja | page | WORKING |
