@@ -13,6 +13,8 @@ import cazaProductosData from '../../../../mocks/caza-productos.json';
 import proveedoresData from '../../../../mocks/proveedores.json';
 import historialCarteraData from '../../../../mocks/historial-cartera.json';
 import dropicardData from '../../../../mocks/dropicard.json';
+import ordersProviderData from '../../../../mocks/orders-provider.json';
+import billingDropshippersData from '../../../../mocks/billing-dropshippers.json';
 
 // Mutable in-memory copies (reset on page refresh)
 let orders = [...ordersData];
@@ -98,6 +100,16 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
   // GET /api/academy
   if (req.url.includes('/api/academy') && req.method === 'GET') {
     return of(new HttpResponse({ status: 200, body: academyData }));
+  }
+
+  // GET /api/orders-provider
+  if (req.url.includes('/api/orders-provider') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: ordersProviderData }));
+  }
+
+  // GET /api/billing-dropshippers
+  if (req.url.includes('/api/billing-dropshippers') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: billingDropshippersData }));
   }
 
   return next(req);

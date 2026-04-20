@@ -1,4 +1,4 @@
-## Wireframe: [DROPI-XXXX] — [Feature Name]
+## Wireframe: [DROP-XXXX] — [Feature Name]
 
 ### Contexto
 - **Ticket Jira**: [link]

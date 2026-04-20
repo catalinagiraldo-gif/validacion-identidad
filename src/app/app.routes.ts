@@ -81,6 +81,13 @@ export const routes: Routes = [
             m => m.AcademyComponent,
           ),
       },
+      {
+        path: 'pedidos/mis-pedidos-proveedor',
+        loadComponent: () =>
+          import('./pages/orders-provider/orders-provider.component').then(
+            m => m.OrdersProviderComponent,
+          ),
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       // Catch-all for prototype routes — renders gallery as placeholder
       {

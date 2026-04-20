@@ -162,29 +162,52 @@
           ]
         },
         "listado-proveedor": {
-          "route": "/pedidos/mis-pedidos",
+          "route": "/pedidos/mis-pedidos-proveedor",
           "type": "page",
           "roles": ["proveedor"],
-          "prototype": null,
+          "prototype": "/pedidos/mis-pedidos-proveedor",
           "figmaSource": "https://www.figma.com/design/jVScWyetpomdiEPzjjb3Az/CAS-Diseño-2.0?node-id=10932-101172",
-          "description": "Listado de pedidos recibidos por el proveedor. Tabla con selección múltiple, acciones bulk, búsqueda, filtros y acciones por fila.",
+          "figjamSource": "https://www.figma.com/board/vc49RZY2vR7aveAeY2p5e9/Investigación-Facturación-Proveedores?node-id=3-803",
+          "filterPanelFigma": "https://www.figma.com/design/GwQWPc0xftCOfPVvTQWEj2/Huella-digital?node-id=8563-208359",
+          "drawerDetailFigma": "https://www.figma.com/design/GwQWPc0xftCOfPVvTQWEj2/Huella-digital?node-id=7570-71065",
+          "description": "Listado de pedidos recibidos por el proveedor con 2 tabs: 'Mis Pedidos' (tabla de órdenes con acciones + panel de filtros) y 'Datos Facturación' (consulta multipaís CO/CL/MX/EC/AR de datos tributarios de dropshippers con drawer de detalle y descarga real de Excel).",
           "layout": {
+            "tabs": ["Mis Pedidos", "Datos Facturación"],
             "title": "Mis Pedidos",
-            "bulkActions": "Dropdown 'Acciones' para operaciones en lote sobre pedidos seleccionados",
-            "filterButton": "Botón filtro naranja (esquina superior derecha) — abre panel de filtros",
-            "pagination": "'Mostrar N registros de total' con dropdown de cantidad (10, 25, 50)",
-            "search": "Input de búsqueda a la derecha",
-            "table": "Columnas: checkbox, #ID, Nombre producto, Fecha orden, Dirección (truncada), Estado (chevron con color), Detalles (iconos de acción)",
-            "rowActions": "Iconos por fila: lupa (ver detalle), etiqueta, impresora (guía), copiar, notificación (badge rojo), WhatsApp"
+            "tab1_misPedidos": {
+              "bulkActions": "Dropdown 'Acciones' para operaciones en lote sobre pedidos seleccionados",
+              "filterButton": "Botón filtro naranja (esquina superior derecha) — abre panel de filtros",
+              "pagination": "'Mostrar N registros de total' con dropdown de cantidad (10, 25, 50)",
+              "search": "Input de búsqueda a la derecha",
+              "table": "Columnas: checkbox, #ID, Nombre producto, Fecha orden, Dirección (truncada), Estado (chevron con color), Detalles (iconos de acción)",
+              "rowActions": "Iconos por fila: lupa (ver detalle), etiqueta, impresora (guía), copiar, notificación (badge rojo), WhatsApp"
+            },
+            "tab2_datosFacturacion": {
+              "countryBar": "Quick filter de países (🇨🇴 CO / 🇨🇱 CL / 🇲🇽 MX / 🇪🇨 EC / 🇦🇷 AR / Todos) — cambia columnas tributarias y moneda al seleccionar",
+              "summaryCards": "4 cards: Total dropshippers, Datos completos (100%), Datos incompletos (<100%), Total ventas (formateado en moneda del país)",
+              "filters": "Modal de filtros con país, estado, completitud mínima, régimen tributario, fecha última orden (desde/hasta) + botón Aplicar filtros",
+              "habeasData": "Modal de aceptación de política de privacidad; persistido en localStorage (key: dropi.billing.habeasDataAccepted), una vez aceptado no se vuelve a pedir",
+              "table": "Columnas: Dropshipper (nombre + ciudad), País (pill con flag), ID tributario dinámico (CO:NIT, CL:RUT, MX:RFC, EC:RUC, AR:CUIT), Razón social, Régimen tributario, Email, Teléfono, Completitud (%), Acciones (lupa)",
+              "completitudIndicator": "Badge verde (100%), amarillo (50-99%), rojo (<50%) por dropshipper",
+              "drawer": "Click en lupa abre drawer lateral derecho (550px) con datos completos organizados en secciones (identificación tributaria, contacto, actividad comercial KPIs, datos faltantes) + barra de completitud visual",
+              "exportButton": "Botón 'Descargar Excel' — genera .xlsx real con xlsx library, todas las columnas, nombre de archivo datos-facturacion-{pais}-{fecha}.xlsx"
+            }
           },
           "actions": [
-            { "cta": "Ver detalle (lupa)", "opens": "pedidos.orden-detalle", "type": "navigate" },
-            { "cta": "Acciones (bulk)", "type": "action", "description": "Dropdown con acciones masivas sobre pedidos seleccionados" },
-            { "cta": "Filtro", "type": "filter", "targets": ["status", "fecha", "transportadora", "ciudad"] },
+            { "cta": "Ver detalle (lupa Tab 1)", "opens": "pedidos.orden-detalle", "type": "navigate" },
+            { "cta": "Ver detalle (lupa Tab 2)", "type": "drawer", "description": "Drawer lateral derecho con datos completos del dropshipper" },
+            { "cta": "Acciones (bulk)", "type": "action", "description": "Dropdown con Generar guías / Imprimir seleccionados / Exportar Excel; requiere ≥1 pedido seleccionado excepto Exportar" },
+            { "cta": "Filtro Tab 1", "type": "filter", "opensModal": "filters-tab1", "targets": ["estado", "transportadora", "bodega", "tipoEnvio", "fecha", "searchField"] },
+            { "cta": "Filtro Tab 2", "type": "filter", "opensModal": "filters-tab2", "targets": ["pais", "estado", "completitudMin", "regimen", "fecha"] },
+            { "cta": "Aplicar filtros", "type": "action", "description": "Confirma los filtros seleccionados en el modal y actualiza la tabla; muestra contador en el botón de filtro" },
             { "cta": "Buscar", "type": "search", "targets": ["id", "producto", "cliente"] },
+            { "cta": "País quick filter", "type": "filter", "description": "Chips de país (CO/CL/MX/EC/AR/Todos) que actualizan columnas tributarias y moneda" },
             { "cta": "Imprimir guía", "type": "action", "description": "Genera e imprime guía de envío" },
             { "cta": "Etiquetar", "type": "action", "description": "Asigna etiqueta al pedido" },
-            { "cta": "WhatsApp", "type": "external", "description": "Abre chat WhatsApp con el cliente" }
+            { "cta": "WhatsApp", "type": "external", "description": "Abre chat WhatsApp con el cliente" },
+            { "cta": "Tab Datos Facturación", "type": "tab", "description": "Cambia a vista de datos de facturación; si no hay Habeas aceptado, dispara el modal de consentimiento" },
+            { "cta": "Descargar Excel", "type": "action", "description": "Genera archivo .xlsx real con xlsx library; columnas incluyen datos tributarios completos por dropshipper; filename datos-facturacion-{codigoPais}-{YYYY-MM-DD}.xlsx" },
+            { "cta": "Aceptar Habeas Data", "type": "modal", "description": "Modal de consentimiento de política de privacidad; persiste en localStorage tras aceptar" }
           ]
         },
         "listado-admin": {

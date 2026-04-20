@@ -95,7 +95,21 @@ yarn start
 ```
 
 Abre http://localhost:4200 en tu navegador. Deberías ver la pantalla de login de Dropi.
-Presiona `Ctrl + C` en la terminal para detener el servidor cuando quieras.
+
+**Para confirmar que todo anda bien:**
+
+1. Selecciona un rol (ej: Dropshipper)
+2. El email se llena solo — el password es decorativo (es un prototipo)
+3. Click en "Ingresar"
+4. Deberías ver el sidebar con la navegación completa del rol
+
+| Rol | Usuario | Items en sidebar |
+|---|---|---|
+| Dropshipper | Valentina Mejía | 21 items |
+| Proveedor | Camila Duarte | 20 items |
+| Admin | Michel Pino | 23 items |
+
+Si ves el sidebar con los items, todo está funcionando. Presiona `Ctrl + C` en la terminal para detener el servidor cuando quieras.
 
 ---
 
@@ -117,17 +131,17 @@ git pull
 yarn install
 
 # 5. Crear tu rama de trabajo
-git checkout -b feat/DROP-XXXX-nombre-de-tu-vista
+git checkout -b wireframe/DROP-XXXX-nombre-de-tu-vista
 ```
 
 ### Cómo nombrar tu rama
 
-El formato es: `feat/DROP-[número del ticket]-[nombre corto]`
+El formato es: `wireframe/DROP-[número del ticket]-[nombre corto]`
 
 Ejemplos:
-- `feat/DROP-9300-listado-garantias`
-- `feat/DROP-9301-wallet-dropshipper`
-- `feat/DROP-9400-reportes-ventas`
+- `wireframe/DROP-9300-listado-garantias`
+- `wireframe/DROP-9301-wallet-dropshipper`
+- `wireframe/DROP-9400-reportes-ventas`
 
 > **Importante:** Cada wireframe va en su propia rama. Nunca trabajes en `main` directamente.
 
@@ -221,7 +235,7 @@ git add .
 git commit -m "feat: add listado de garantías wireframe from DROP-9300"
 ```
 
-El mensaje debe decir qué hiciste. Formato: `feat: add [nombre de la vista] wireframe from [ticket]`
+El mensaje debe decir qué hiciste. Formato: `feat: add [nombre de la vista] wireframe from DROP-[ticket]`
 
 > **Puedes hacer múltiples commits.** Cada vez que tengas un avance significativo, guarda. No esperes a tener todo perfecto.
 
@@ -232,7 +246,7 @@ El mensaje debe decir qué hiciste. Formato: `feat: add [nombre de la vista] wir
 ### 5.1 Subir tu rama a GitHub
 
 ```bash
-git push -u origin feat/DROP-XXXX-nombre-de-tu-vista
+git push -u origin wireframe/DROP-XXXX-nombre-de-tu-vista
 ```
 
 La primera vez te pide `-u origin [nombre]`. Las siguientes veces solo:
@@ -244,7 +258,7 @@ git push
 ### 5.2 Abrir el Pull Request
 
 ```bash
-gh pr create --title "feat: wireframe listado garantías (DROP-9300)" --body "## Summary
+gh pr create --title "wireframe: listado garantías (DROP-9300)" --body "## Summary
 - Wireframe del listado de garantías para rol proveedor
 - 20 items en mock data
 - Filtros por estado, búsqueda, acciones por fila
@@ -260,39 +274,30 @@ Esto crea el PR en GitHub y te da un link. Cópialo y compártelo en Slack.
 
 ### 5.3 Qué pasa después
 
-1. **GitHub Actions** valida automáticamente:
-   - Que el proyecto compila sin errores
-   - Que actualizaste `navigation-map.json`
-   - Que no tocaste archivos protegidos (sidebar, DS Registry, etc.)
-
-2. **Vercel** genera automáticamente un preview:
-   - Un bot comenta en tu PR con el link
-   - Ejemplo: `https://dropi-prototypes-git-feat-drop-9300.vercel.app`
-   - Cualquier persona del equipo puede ver tu wireframe desde ese link
-
-3. **Michel o el UX lead** revisa el PR:
+1. **Michel o el UX lead** revisa el PR:
    - Si está bien → lo aprueba y hace merge
    - Si necesita ajustes → te deja comentarios
+
+> **Próximamente:** GitHub Actions validará automáticamente que el proyecto compile y que no se toquen archivos protegidos. Vercel generará un preview URL por cada PR para que cualquier persona del equipo vea tu wireframe sin instalar nada.
 
 ---
 
 ## 6. Ver tu wireframe publicado
 
-### Preview (mientras el PR está abierto)
+### Local (mientras trabajas)
 
-Vercel genera un link por cada PR. Lo encuentras en:
-- El comentario automático del bot en tu PR
-- O en la sección "Deployments" de tu PR en GitHub
-
-### Producción (después del merge)
-
-Cuando tu PR se mergea a `main`, el wireframe se publica en:
-
-```
-https://dropi-prototypes.vercel.app
+```bash
+cd ~/Documents/dropi-prototypes
+yarn start
 ```
 
-Todos los wireframes del equipo viven ahí.
+Abre http://localhost:4200, selecciona el rol correspondiente en login, y navega al módulo de tu wireframe.
+
+### Después del merge
+
+Una vez que tu PR fue mergeado a `main`, tu wireframe queda disponible para todo el equipo al hacer `git pull` y `yarn start`.
+
+> **Próximamente:** Vercel generará una URL pública para cada PR (preview) y para `main` (producción), para que cualquiera pueda ver los wireframes sin instalar nada.
 
 ---
 
@@ -308,7 +313,7 @@ git checkout main
 git pull
 
 # Eliminar tu rama local (ya no la necesitas)
-git branch -d feat/DROP-XXXX-nombre-de-tu-vista
+git branch -d wireframe/DROP-XXXX-nombre-de-tu-vista
 ```
 
 Listo. Ahora puedes empezar otro wireframe volviendo al [Paso 2](#2-antes-de-empezar-cada-wireframe).
@@ -382,14 +387,14 @@ git branch
 La rama activa tiene un `*` al lado. Si no estás en la correcta:
 
 ```bash
-git checkout feat/DROP-XXXX-tu-rama
+git checkout wireframe/DROP-XXXX-tu-rama
 ```
 
 ### "Quiero ver los wireframes de otro designer"
 
 ```bash
 git fetch
-git checkout feat/DROP-XXXX-su-rama
+git checkout wireframe/DROP-XXXX-su-rama
 yarn start
 # Abre localhost:4200
 ```
@@ -397,7 +402,7 @@ yarn start
 Para volver a tu trabajo:
 
 ```bash
-git checkout feat/DROP-XXXX-tu-rama
+git checkout wireframe/DROP-XXXX-tu-rama
 ```
 
 ---
@@ -432,7 +437,7 @@ fix: ajustar [qué] en [vista] per review feedback
 ### Convenciones de branch
 
 ```
-feat/DROP-[número]-[nombre-corto-en-kebab-case]
+wireframe/DROP-[número]-[nombre-corto-en-kebab-case]
 ```
 
 ---
@@ -442,15 +447,14 @@ feat/DROP-[número]-[nombre-corto-en-kebab-case]
 ```
 ┌─────────────────────────────────────────────────┐
 │  1. git pull                   (traer últimos)  │
-│  2. git checkout -b feat/...   (crear rama)     │
+│  2. git checkout -b wireframe/... (crear rama)   │
 │  3. claude                     (abrir Claude)   │
 │  4. [pegar prompt template]    (generar)        │
 │  5. yarn start                 (ver local)      │
 │  6. git add . && git commit    (guardar)        │
 │  7. git push                   (subir)          │
 │  8. gh pr create               (abrir PR)       │
-│  9. [Vercel genera preview]    (automático)     │
-│ 10. [Review + merge]           (Michel)         │
-│ 11. git checkout main && pull  (limpiar)        │
+│  9. [Review + merge]           (Michel)         │
+│ 10. git checkout main && pull  (limpiar)        │
 └─────────────────────────────────────────────────┘
 ```

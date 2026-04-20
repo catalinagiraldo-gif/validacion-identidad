@@ -135,7 +135,7 @@ const proveedorNav: NavItem[] = [
     label: 'Mis pedidos',
     icon: IC + 'shopping-cart.svg',
     children: [
-      { label: 'Mis Pedidos', route: '/mis-pedidos/mis-pedidos' },
+      { label: 'Mis Pedidos', route: '/pedidos/mis-pedidos-proveedor' },
       { label: 'Novedades', route: '/mis-pedidos/novedades' },
       { label: 'Carritos abandonados', route: '/mis-pedidos/carritos-abandonados' },
       { label: 'Etiquetas', route: '/mis-pedidos/etiquetas' },
