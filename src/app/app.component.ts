@@ -11,20 +11,15 @@ import { AuthService } from './services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterOutlet, SidebarComponent, HeaderComponent],
   template: `
-    <!-- Login: no shell -->
-    <ng-container *ngIf="isLoginPage; else appShell">
+    <ng-container *ngIf="isStandalonePage; else appShell">
       <router-outlet />
     </ng-container>
 
-    <!-- App shell with sidebar + header -->
     <ng-template #appShell>
       <div class="app-shell">
         <app-sidebar />
         <div class="app-shell__main">
-          <app-header
-            [userName]="(auth.user$ | async)?.name ?? 'Usuario'"
-            [userRole]="(auth.user$ | async)?.role ?? ''"
-          />
+          <app-header />
           <main class="app-shell__content">
             <router-outlet />
           </main>
@@ -35,7 +30,7 @@ import { AuthService } from './services/auth.service';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  isLoginPage = false;
+  isStandalonePage = false;
 
   constructor(
     public auth: AuthService,
@@ -47,7 +42,7 @@ export class AppComponent {
         map((e: any) => (e as NavigationEnd).url),
       )
       .subscribe(url => {
-        this.isLoginPage = url.startsWith('/login');
+        this.isStandalonePage = url.startsWith('/login') || url.startsWith('/profile-select');
       });
   }
 }

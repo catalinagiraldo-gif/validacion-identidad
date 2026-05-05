@@ -20,6 +20,7 @@
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
     "file-saver": "^2.0.5",
+    "firebase": "^12.12.1",
     "primeicons": "7",
     "primeng": "17",
     "rxjs": "~7.8.0",

@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ProfileService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-header',
@@ -10,30 +11,28 @@ import { AuthService } from '../../services/auth.service';
   template: `
     <header class="header">
       <div class="header__left">
-        <div *ngIf="userRole" class="header__role-badge">
-          <span class="header__role-tag">{{ userRole | uppercase }}</span>
+        <div class="header__role-badge">
+          <span class="header__role-tag">{{ profileLabel | uppercase }}</span>
         </div>
       </div>
 
       <div class="header__right">
-        <div class="header__wallet">
-          <i class="pi pi-wallet"></i>
-          <span>{{ walletBalance | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
-        </div>
-
-        <div class="header__notifications">
-          <i class="pi pi-bell"></i>
-          <span *ngIf="notificationCount > 0" class="header__badge">
-            {{ notificationCount }}
-          </span>
-        </div>
+        <button class="header__profile-switch" (click)="onChangeProfile()">
+          <i class="pi pi-users"></i>
+          Cambiar perfil
+        </button>
 
         <div class="header__user">
-          <span class="header__avatar">
-            {{ userName.charAt(0).toUpperCase() }}
+          <img
+            *ngIf="user?.photoURL"
+            [src]="user?.photoURL"
+            class="header__avatar-img"
+            referrerpolicy="no-referrer"
+          />
+          <span *ngIf="!user?.photoURL" class="header__avatar">
+            {{ (user?.displayName || 'U').charAt(0).toUpperCase() }}
           </span>
-          <span class="header__user-name">{{ userName }}</span>
-          <i class="pi pi-chevron-down header__user-chevron"></i>
+          <span class="header__user-name">{{ user?.displayName || 'Usuario' }}</span>
         </div>
 
         <button class="header__logout" (click)="onLogout()" title="Cerrar sesión">
@@ -47,18 +46,26 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-  @Input() userName = 'Usuario';
-  @Input() userRole = '';
-  @Input() walletBalance = 2717360;
-  @Input() notificationCount = 1;
+  get user() {
+    return this.auth.currentUser;
+  }
+
+  get profileLabel() {
+    return this.profile.getProfileLabel();
+  }
 
   constructor(
     private auth: AuthService,
+    private profile: ProfileService,
     private router: Router,
   ) {}
 
-  onLogout() {
-    this.auth.logout();
+  onChangeProfile() {
+    this.profile.clearProfile();
+  }
+
+  async onLogout() {
+    await this.auth.logout();
     this.router.navigate(['/login']);
   }
 }

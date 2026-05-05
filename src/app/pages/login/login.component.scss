@@ -79,6 +79,13 @@
     font-size: 24px;
     line-height: 1.1;
     color: $gray-700;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $font-base;
+    color: $gray-400;
+    margin: 0;
   }
 
   // Role selector for RPP prototype

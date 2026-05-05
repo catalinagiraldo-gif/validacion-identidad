@@ -1,3 +1,11 @@
+export interface HubUser {
+  uid: string;
+  email: string;
+  displayName: string;
+  photoURL: string | null;
+  createdAt: string;
+}
+
 export interface User {
   id: string;
   name: string;
@@ -10,4 +18,9 @@ export interface User {
   totalRevenue: number;
   joinedAt: string;
   isActive: boolean;
+}
+
+export interface Allowlist {
+  emails: string[];
+  domains: string[];
 }

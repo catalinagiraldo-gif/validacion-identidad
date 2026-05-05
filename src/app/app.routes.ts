@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './common/guards/auth.guard';
+import { profileGuard } from './guards/profile.guard';
 
 export const routes: Routes = [
   {
@@ -8,8 +9,17 @@ export const routes: Routes = [
       import('./pages/login/login.component').then(m => m.LoginComponent),
   },
   {
+    path: 'profile-select',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/profile-select/profile-select.component').then(
+        m => m.ProfileSelectComponent,
+      ),
+  },
+  {
     path: '',
     canActivate: [authGuard],
+    canActivateChild: [profileGuard],
     children: [
       {
         path: 'home',
@@ -89,14 +99,8 @@ export const routes: Routes = [
           ),
       },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      // Catch-all for prototype routes — renders gallery as placeholder
-      {
-        path: '**',
-        loadComponent: () =>
-          import('./pages/prototype-gallery/prototype-gallery.component').then(
-            m => m.PrototypeGalleryComponent,
-          ),
-      },
+      { path: '**', redirectTo: 'home' },
     ],
   },
+  { path: '**', redirectTo: 'login' },
 ];

@@ -1,19 +1,33 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { User } from '../models/user.model';
-import { UserRole } from '../config/sidebar-nav.config';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { HubUser } from '../models/user.model';
+import allowlistData from '../../../allowed-emails.json';
+import { initializeApp, FirebaseApp } from 'firebase/app';
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+  Auth,
+  onAuthStateChanged,
+  UserCredential,
+} from 'firebase/auth';
+import { environment } from '../../environments/environment';
 
-const STORAGE_KEY = 'dropi_auth_user';
+const STORAGE_KEY = 'dropi_hub_user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private currentUser$ = new BehaviorSubject<User | null>(this.loadFromStorage());
+  private firebaseApp: FirebaseApp;
+  private auth: Auth;
+  private provider = new GoogleAuthProvider();
+  private currentUser$ = new BehaviorSubject<HubUser | null>(this.loadFromStorage());
+  private _authError$ = new BehaviorSubject<string | null>(null);
 
-  get user$(): Observable<User | null> {
-    return this.currentUser$.asObservable();
-  }
+  readonly user$: Observable<HubUser | null> = this.currentUser$.asObservable();
+  readonly authError$: Observable<string | null> = this._authError$.asObservable();
 
-  get currentUser(): User | null {
+  get currentUser(): HubUser | null {
     return this.currentUser$.value;
   }
 
@@ -21,43 +35,89 @@ export class AuthService {
     return this.currentUser$.value !== null;
   }
 
-  get userRole(): UserRole | null {
-    return (this.currentUser$.value?.role as UserRole) ?? null;
+  constructor() {
+    this.firebaseApp = initializeApp(environment.firebaseConfig);
+    this.auth = getAuth(this.firebaseApp);
+
+    onAuthStateChanged(this.auth, (fbUser) => {
+      if (fbUser && !this.currentUser$.value) {
+        const hubUser: HubUser = {
+          uid: fbUser.uid,
+          email: fbUser.email ?? '',
+          displayName: fbUser.displayName ?? '',
+          photoURL: fbUser.photoURL,
+          createdAt: new Date().toISOString(),
+        };
+        this.setUser(hubUser);
+      }
+    });
   }
 
-  login(email: string, _password: string, users: User[]): Observable<User | null> {
-    const user = users.find(u => u.email === email && u.isActive);
-    if (user) {
-      this.setUser(user);
-      return of(user);
+  async loginWithGoogle(): Promise<HubUser> {
+    this._authError$.next(null);
+
+    try {
+      const result: UserCredential = await signInWithPopup(this.auth, this.provider);
+      const email = result.user.email ?? '';
+
+      const allowed = this.isEmailAllowed(email);
+      if (!allowed) {
+        await signOut(this.auth);
+        const errorMsg = 'Acceso no autorizado — contacta a producto@dropi.co';
+        this._authError$.next(errorMsg);
+        throw new Error(errorMsg);
+      }
+
+      const hubUser: HubUser = {
+        uid: result.user.uid,
+        email,
+        displayName: result.user.displayName ?? '',
+        photoURL: result.user.photoURL,
+        createdAt: new Date().toISOString(),
+      };
+
+      this.setUser(hubUser);
+      return hubUser;
+    } catch (err: any) {
+      if (err?.message?.includes('Acceso no autorizado')) {
+        throw err;
+      }
+      const errorMsg = 'Error al iniciar sesión con Google. Inténtalo de nuevo.';
+      this._authError$.next(errorMsg);
+      throw new Error(errorMsg);
     }
-    return of(null);
   }
 
-  loginAs(role: UserRole, users: User[]): Observable<User | null> {
-    const user = users.find(u => u.role === role && u.isActive);
-    if (user) {
-      this.setUser(user);
-      return of(user);
-    }
-    return of(null);
-  }
-
-  logout(): void {
+  async logout(): Promise<void> {
     localStorage.removeItem(STORAGE_KEY);
+    await signOut(this.auth);
     this.currentUser$.next(null);
+    this._authError$.next(null);
   }
 
-  private setUser(user: User): void {
+  private isEmailAllowed(email: string): boolean {
+    const emailLower = email.toLowerCase();
+    const domain = emailLower.split('@')[1];
+
+    if (allowlistData.domains?.some((d: string) => d.toLowerCase() === domain)) {
+      return true;
+    }
+    if (allowlistData.emails?.some((e: string) => e.toLowerCase() === emailLower)) {
+      return true;
+    }
+    return false;
+  }
+
+  private setUser(user: HubUser): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
     this.currentUser$.next(user);
   }
 
-  private loadFromStorage(): User | null {
+  private loadFromStorage(): HubUser | null {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       try {
-        return JSON.parse(raw) as User;
+        return JSON.parse(raw) as HubUser;
       } catch {
         return null;
       }

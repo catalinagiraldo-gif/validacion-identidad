@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { ProfileService } from '../../services/profile.service';
 import { NavItem, UserRole, SIDEBAR_NAV } from '../../config/sidebar-nav.config';
 
 @Component({
@@ -84,11 +85,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   private sub?: Subscription;
 
-  constructor(private auth: AuthService) {}
+  constructor(
+    private auth: AuthService,
+    private profile: ProfileService,
+  ) {}
 
   ngOnInit() {
-    this.sub = this.auth.user$.subscribe(user => {
-      const role = (user?.role as UserRole) ?? 'dropshipper';
+    this.sub = this.profile.currentProfile$.subscribe(p => {
+      const role = (p as UserRole) ?? 'dropshipper';
       this.menuItems = SIDEBAR_NAV[role] ?? SIDEBAR_NAV['dropshipper'];
       this.expandedItem = null;
     });
