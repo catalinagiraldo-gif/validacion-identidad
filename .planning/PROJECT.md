@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A private web portal at `dropitesters.co` where stakeholders (sponsors, board members, Product Designers, devs, external testers) can browse and interact with live Angular prototypes built by the RPP pipeline. Users log in with Google, select a profile (Dropshipper, Proveedor, or Marca Blanca), and see only the prototypes relevant to that role.
+A private web portal at `dropitesters.co` where stakeholders (sponsors, board members, Product Designers, devs, external testers) can browse and interact with live Angular prototypes built by the RPP pipeline. Users log in with Google, select a profile (Dropshipper, Proveedor, or Admin), and see only the prototypes relevant to that role.
 
 ## Core Value
 
@@ -16,7 +16,7 @@ Stakeholders enter the Hub, pick their profile, and access any live prototype in
 - Badge "Nuevo" on recently added prototypes
 - Search bar for finding prototypes
 - Login via Google SSO with allowlist (auto-approve `@dropi.co`, manual allowlist for external emails)
-- Profile selection screen post-login: Dropshipper, Proveedor, Marca Blanca (3 cards)
+- Profile selection screen post-login: Dropshipper, Proveedor, Admin (3 cards)
 - Hub filtered by selected profile — only shows prototypes tagged for that role
 - Profile selection per session (not persisted — choose every visit)
 - Switch profile button in header
@@ -99,7 +99,7 @@ Epic DROP-21034, Fase 2 en curso (2/6). This Hub implementation covers DROP-2278
 | Playwright thumbnails in CI | Automatic screenshots; manual thumbnail.png respected as override | — Pending |
 | Claude Code handles git for designers | Designers say "Subir PR a git", Claude does commit + push + PR | — Pending |
 | dropitesters.co domain | Name signals testing purpose; external users understand the context | — Pending |
-| Marca Blanca as 3rd profile | In addition to Dropshipper and Proveedor; expands prototype coverage | — Pending |
+| Admin as 3rd profile | In addition to Dropshipper and Proveedor; expands prototype coverage | — Pending |
 
 ## Evolution
 

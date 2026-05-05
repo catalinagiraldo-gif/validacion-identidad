@@ -26,7 +26,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. User with a `@dropi.co` email can log in via Google and reach the profile selection screen
   2. User with an email in `allowed-emails.json` (non-Dropi) can log in and reach the profile selection screen
   3. User with an unauthorized email sees the rejection message and cannot proceed
-  4. User selects a profile (Dropshipper, Proveedor, or Marca Blanca) and the header reflects the chosen profile with a "Cambiar perfil" button
+  4. User selects a profile (Dropshipper, Proveedor, or Admin) and the header reflects the chosen profile with a "Cambiar perfil" button
   5. Closing the browser tab and reopening preserves the login session but requires profile re-selection
 **Plans**: TBD
 **UI hint**: yes

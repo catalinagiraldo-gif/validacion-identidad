@@ -15,7 +15,7 @@
 
 ### Profile Selection
 
-- [ ] **PROF-01**: After login, user sees 3 large cards: Dropshipper, Proveedor, Marca Blanca
+- [ ] **PROF-01**: After login, user sees 3 large cards: Dropshipper, Proveedor, Admin
 - [ ] **PROF-02**: Selected profile is stored in sessionStorage (resets on tab close)
 - [ ] **PROF-03**: Header shows current profile name with a "Cambiar perfil" button
 - [ ] **PROF-04**: "Cambiar perfil" returns to profile selection screen (no logout needed)
