@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Roadmap created, ready to plan Phase 1
-last_updated: "2026-05-05T19:26:00.479Z"
-last_activity: 2026-05-05 -- Phase 1 planning complete
+stopped_at: Phase 1 complete, ready to plan Phase 2
+last_updated: "2026-05-07"
+last_activity: 2026-05-07 -- Phase 1 SUMMARYs written, phase closed
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 0
-  percent: 0
+  completed_plans: 2
+  percent: 33
 ---
 
 # Project State
@@ -21,35 +21,35 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-05)
 
 **Core value:** Stakeholders enter the Hub, pick their profile, and access any live prototype in one click
-**Current focus:** Phase 1: Auth + Profile Selection
+**Current focus:** Phase 2: Hub Home + Prototype Structure
 
 ## Current Position
 
-Phase: 1 of 3 (Auth + Profile Selection)
+Phase: 2 of 3 (Hub Home + Prototype Structure)
 Plan: 0 of ? in current phase
-Status: Ready to execute
-Last activity: 2026-05-05 -- Phase 1 planning complete
+Status: Ready to plan
+Last activity: 2026-05-07 -- Phase 1 closed (SUMMARYs written)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 33%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 2
+- Average duration: ~1 session
+- Total execution time: 1 session
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 1. Auth + Profile Selection | 2/2 | 1 session | ~0.5 session |
 
 **Recent Trend:**
 
-- Last 5 plans: -
-- Trend: -
+- Last 5 plans: 01-01 done, 01-02 done
+- Trend: steady
 
 *Updated after each plan completion*
 
@@ -63,6 +63,8 @@ Recent decisions affecting current work:
 - Google SSO + allowlist (Firebase Auth free tier)
 - Profile selection per session (sessionStorage, not persisted)
 - Zero-budget constraint: all free-tier services
+- Allowlist imported directly via TS import (not HttpClient fetch)
+- Guards split: auth.guard in common/guards/, profile.guard in guards/
 
 ### Pending Todos
 
@@ -70,9 +72,8 @@ None yet.
 
 ### Blockers/Concerns
 
-- Timeline pressure: Hub + login must be functional today (2026-05-05)
 - Vercel account not yet configured
-- Firebase Auth not yet configured
+- Firebase Auth project credentials are placeholder (need real values before deploy)
 
 ## Deferred Items
 
@@ -82,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-05
-Stopped at: Roadmap created, ready to plan Phase 1
+Last session: 2026-05-07
+Stopped at: Phase 1 complete, ready to plan Phase 2
 Resume file: None
