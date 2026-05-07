@@ -1,0 +1,11 @@
+{
+  "title": "CAS Bandeja",
+  "module": "cas",
+  "slug": "cas-bandeja",
+  "route": "/cas/bandeja",
+  "description": "Bandeja de entrada CAS con panel de conversaciones y chat de soporte.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-05-01",
+  "thumbnail": "thumbnail.png"
+}

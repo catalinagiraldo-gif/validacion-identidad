@@ -1,0 +1,11 @@
+{
+  "title": "Dropi Card",
+  "module": "standalone",
+  "slug": "dropicard",
+  "route": "/dropi-card/cards",
+  "description": "Gestion de tarjetas Dropicard con banner promocional, filtros por tipo y estado, solicitar tarjeta.",
+  "profiles": ["dropshipper", "proveedor"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-05-01",
+  "thumbnail": "thumbnail.png"
+}

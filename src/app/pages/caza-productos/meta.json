@@ -1,0 +1,11 @@
+{
+  "title": "Caza Productos",
+  "module": "productos",
+  "slug": "caza-productos",
+  "route": "/productos/caza-productos",
+  "description": "Herramienta para descubrir productos trending con filtros por categoria, estado y ofertas.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-05-01",
+  "thumbnail": "thumbnail.png"
+}

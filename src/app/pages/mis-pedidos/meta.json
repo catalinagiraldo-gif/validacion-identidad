@@ -1,0 +1,11 @@
+{
+  "title": "Mis Pedidos",
+  "module": "pedidos",
+  "slug": "mis-pedidos",
+  "route": "/mis-pedidos/mis-pedidos",
+  "description": "Listado de ordenes del dropshipper con tabla, filtros, acciones masivas y detalle por fila.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-05-01",
+  "thumbnail": "thumbnail.png"
+}

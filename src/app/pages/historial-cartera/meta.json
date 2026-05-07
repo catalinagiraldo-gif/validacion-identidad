@@ -1,0 +1,11 @@
+{
+  "title": "Historial de Cartera",
+  "module": "financiero",
+  "slug": "historial-cartera",
+  "route": "/historial-de-cartera",
+  "description": "Historial de cartera con filtros de fecha, tipo y codigo. Tabs transacciones y depositos manuales.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-05-01",
+  "thumbnail": "thumbnail.png"
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Mis Pedidos Proveedor",
+  "module": "pedidos",
+  "slug": "mis-pedidos-proveedor",
+  "route": "/pedidos/mis-pedidos-proveedor",
+  "description": "Pedidos recibidos por el proveedor con tabs Mis Pedidos y Datos Facturacion, filtros y exportacion Excel.",
+  "profiles": ["proveedor"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-05-01",
+  "thumbnail": "thumbnail.png"
+}

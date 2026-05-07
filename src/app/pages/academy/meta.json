@@ -1,0 +1,11 @@
+{
+  "title": "Academy",
+  "module": "standalone",
+  "slug": "academy",
+  "route": "/academy",
+  "description": "Centro de formacion con cursos y tutoriales para dropshippers.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-05-01",
+  "thumbnail": "thumbnail.png"
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Orden Manual",
+  "module": "pedidos",
+  "slug": "orden-manual",
+  "route": "/pedidos/orden-manual",
+  "description": "Modal para crear una orden manual con datos del cliente, seleccion de productos, transportadora y resumen con ganancia.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-05-01",
+  "thumbnail": "thumbnail.png"
+}

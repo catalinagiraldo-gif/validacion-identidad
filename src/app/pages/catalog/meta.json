@@ -1,0 +1,11 @@
+{
+  "title": "Catalogo de Productos",
+  "module": "productos",
+  "slug": "catalogo",
+  "route": "/productos/catalogo",
+  "description": "Catalogo de productos con busqueda semantica IA, filtros avanzados, carousel de proveedores y grid de product cards.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-05-01",
+  "thumbnail": "thumbnail.png"
+}

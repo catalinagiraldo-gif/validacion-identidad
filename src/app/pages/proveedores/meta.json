@@ -1,0 +1,11 @@
+{
+  "title": "Proveedores",
+  "module": "productos",
+  "slug": "proveedores",
+  "route": "/productos/proveedores",
+  "description": "Listado de proveedores disponibles con grid de cards, filtros por tipo, ciudad y categorias.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-05-01",
+  "thumbnail": "thumbnail.png"
+}
