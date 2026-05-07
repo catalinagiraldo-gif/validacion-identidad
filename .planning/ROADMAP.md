@@ -12,8 +12,8 @@ Transform the existing Angular 17 prototype app into a private stakeholder porta
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Auth + Profile Selection** - Google SSO login with allowlist and per-session profile picker
-- [ ] **Phase 2: Hub Home + Prototype Structure** - Browsable prototype grid filtered by profile, with carpeta-por-prototipo migration
+- [x] **Phase 1: Auth + Profile Selection** - Google SSO login with allowlist and per-session profile picker
+- [ ] **Phase 2: Hub Home + Prototype Structure** - Browsable prototype grid filtered by profile, with in-place meta.json files
 - [ ] **Phase 3: CI/CD + Deploy + Scaffolding** - Automated validation, registry generation, thumbnail capture, Vercel deployment, and scaffolding CLI
 
 ## Phase Details
@@ -28,7 +28,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User with an unauthorized email sees the rejection message and cannot proceed
   4. User selects a profile (Dropshipper, Proveedor, or Admin) and the header reflects the chosen profile with a "Cambiar perfil" button
   5. Closing the browser tab and reopening preserves the login session but requires profile re-selection
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [x] 01-01-PLAN.md — Firebase Auth SDK + Google SSO + Allowlist
+- [x] 01-02-PLAN.md — Login Page + Profile Selection + Guards + Header
 **UI hint**: yes
 
 ### Phase 2: Hub Home + Prototype Structure
@@ -36,12 +40,18 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Depends on**: Phase 1
 **Requirements**: HUB-01, HUB-02, HUB-03, HUB-04, HUB-05, HUB-06, HUB-07, STRUC-01, STRUC-02, STRUC-03
 **Success Criteria** (what must be TRUE):
-  1. Hub home at `/` displays prototype cards showing title, module, date, owner, description, and thumbnail -- filtered to the selected profile only
+  1. Hub home at `/home` displays prototype cards showing title, module, date, owner, description (tooltip), and thumbnail -- filtered to the selected profile only
   2. Cards appear sorted newest-first, and prototypes added within the last 7 days show a "Nuevo" badge
-  3. User can type in the search bar and cards filter in real-time by title, module, or description
+  3. User can type in the search bar and cards filter in real-time by title and module
   4. User clicks a card and navigates directly to the live prototype
-  5. All 10 existing prototypes are migrated to `src/app/prototypes/<module>/<slug>/` with valid `meta.json` files
-**Plans**: TBD
+  5. All 10 existing prototypes have valid `meta.json` files created in-place next to their components (no physical migration per D-03)
+**Plans:** 4 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — PrototypeMeta interface + 10 in-place meta.json files
+- [ ] 02-02-PLAN.md — Registry generation script (meta.json -> prototypes.registry.ts)
+- [ ] 02-03-PLAN.md — Hub home page UI (card grid, search, profile filtering)
+- [ ] 02-04-PLAN.md — Playwright thumbnail capture script
 **UI hint**: yes
 
 ### Phase 3: CI/CD + Deploy + Scaffolding
@@ -66,6 +76,6 @@ Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Auth + Profile Selection | 0/? | Not started | - |
-| 2. Hub Home + Prototype Structure | 0/? | Not started | - |
+| 1. Auth + Profile Selection | 2/2 | Complete | 2026-05-05 |
+| 2. Hub Home + Prototype Structure | 0/4 | Planning complete | - |
 | 3. CI/CD + Deploy + Scaffolding | 0/? | Not started | - |
