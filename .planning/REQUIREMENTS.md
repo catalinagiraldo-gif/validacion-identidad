@@ -32,9 +32,9 @@
 
 ### Prototype Structure
 
-- [ ] **STRUC-01**: Each prototype lives in `src/app/prototypes/<module>/<slug>/` with `meta.json`
-- [ ] **STRUC-02**: `meta.json` contains: title, module, slug, description, owner, dateAdded, profile (role)
-- [ ] **STRUC-03**: Existing 10 prototypes migrated to carpeta-por-prototipo structure with `meta.json`
+- [x] **STRUC-01**: Each prototype lives in `src/app/prototypes/<module>/<slug>/` with `meta.json`
+- [x] **STRUC-02**: `meta.json` contains: title, module, slug, description, owner, dateAdded, profile (role)
+- [x] **STRUC-03**: Existing 10 prototypes migrated to carpeta-por-prototipo structure with `meta.json`
 
 ### CI/CD
 
@@ -99,9 +99,9 @@
 | HUB-05 | Phase 2 | Pending |
 | HUB-06 | Phase 2 | Pending |
 | HUB-07 | Phase 2 | Pending |
-| STRUC-01 | Phase 2 | Pending |
-| STRUC-02 | Phase 2 | Pending |
-| STRUC-03 | Phase 2 | Pending |
+| STRUC-01 | Phase 2 | Complete (02-01) |
+| STRUC-02 | Phase 2 | Complete (02-01) |
+| STRUC-03 | Phase 2 | Complete (02-01) |
 | CI-01 | Phase 3 | Pending |
 | CI-02 | Phase 3 | Pending |
 | CI-03 | Phase 3 | Pending |
