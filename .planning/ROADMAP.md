@@ -49,7 +49,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — PrototypeMeta interface + 10 in-place meta.json files
-- [ ] 02-02-PLAN.md — Registry generation script (meta.json -> prototypes.registry.ts)
+- [x] 02-02-PLAN.md — Registry generation script (meta.json -> prototypes.registry.ts)
 - [ ] 02-03-PLAN.md — Hub home page UI (card grid, search, profile filtering)
 - [ ] 02-04-PLAN.md — Playwright thumbnail capture script
 **UI hint**: yes
@@ -77,5 +77,5 @@ Phases execute in numeric order: 1 -> 2 -> 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Auth + Profile Selection | 2/2 | Complete | 2026-05-05 |
-| 2. Hub Home + Prototype Structure | 1/4 | In progress | - |
+| 2. Hub Home + Prototype Structure | 2/4 | In progress | - |
 | 3. CI/CD + Deploy + Scaffolding | 0/? | Not started | - |

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-01-PLAN.md, ready for 02-02
+stopped_at: Completed 02-02-PLAN.md, ready for 02-03
 last_updated: "2026-05-07"
-last_activity: 2026-05-07 -- 02-01 PrototypeMeta schema + 10 meta.json files
+last_activity: 2026-05-07 -- 02-02 Registry generation script + prototypes.registry.ts
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 6
-  completed_plans: 3
-  percent: 50
+  completed_plans: 4
+  percent: 67
 ---
 
 # Project State
@@ -26,17 +26,17 @@ See: .planning/PROJECT.md (updated 2026-05-05)
 ## Current Position
 
 Phase: 2 of 3 (Hub Home + Prototype Structure)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: Executing
-Last activity: 2026-05-07 -- 02-01 complete (PrototypeMeta + 10 meta.json)
+Last activity: 2026-05-07 -- 02-02 complete (registry generation script + prototypes.registry.ts)
 
-Progress: [█████░░░░░] 50%
+Progress: [██████░░░░] 67%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: ~3 min
 - Total execution time: 2 sessions
 
@@ -45,11 +45,11 @@ Progress: [█████░░░░░] 50%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Auth + Profile Selection | 2/2 | 1 session | ~0.5 session |
-| 2. Hub Home + Prototype Structure | 1/4 | 3 min | 3 min |
+| 2. Hub Home + Prototype Structure | 2/4 | 5 min | 2.5 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 01-01 done, 01-02 done, 02-01 done
+- Last 5 plans: 01-01 done, 01-02 done, 02-01 done, 02-02 done
 - Trend: steady
 
 *Updated after each plan completion*
@@ -68,6 +68,8 @@ Recent decisions affecting current work:
 - Guards split: auth.guard in common/guards/, profile.guard in guards/
 - PrototypeMeta schema: 9 fields, profiles as string[] for JSON compatibility (D-09)
 - meta.json files in-place next to components, no migration (D-03, D-05)
+- Registry script as plain .js for zero-dependency execution (D-20)
+- Generated registry committed to git, not gitignored (D-21)
 
 ### Pending Todos
 
@@ -87,5 +89,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-05-07
-Stopped at: Completed 02-01-PLAN.md
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None
