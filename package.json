@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "generate-registry": "node scripts/generate-registry.js"
+    "generate-registry": "node scripts/generate-registry.js",
+    "generate-thumbnails": "node scripts/generate-thumbnails.js"
   },
   "private": true,
   "dependencies": {
@@ -33,6 +34,7 @@
     "@angular-devkit/build-angular": "^17.3.17",
     "@angular/cli": "^17.3.17",
     "@angular/compiler-cli": "^17.3.0",
+    "@playwright/test": "^1.60.0",
     "@types/file-saver": "^2.0.7",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.1.0",
