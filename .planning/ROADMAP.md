@@ -50,7 +50,7 @@ Plans:
 Plans:
 - [x] 02-01-PLAN.md — PrototypeMeta interface + 10 in-place meta.json files
 - [x] 02-02-PLAN.md — Registry generation script (meta.json -> prototypes.registry.ts)
-- [ ] 02-03-PLAN.md — Hub home page UI (card grid, search, profile filtering)
+- [x] 02-03-PLAN.md — Hub home page UI (card grid, search, profile filtering)
 - [ ] 02-04-PLAN.md — Playwright thumbnail capture script
 **UI hint**: yes
 
