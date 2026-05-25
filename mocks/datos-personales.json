@@ -1,0 +1,122 @@
+{
+  "matrizArgentina": {
+    "source": "Reunión 20/04/2026 · Guía Fiscal Argentina DROPI · Matriz_Facturacion_Argentina.xlsx",
+    "combinaciones": [
+      {
+        "pais": "Argentina",
+        "tipoPersona": "Persona Humana",
+        "condicionIVA": "Consumidor Final",
+        "tiposDocumento": ["DNI", "CUIT", "CUIL"],
+        "documentosRequeridos": ["DNI frente y dorso (en un mismo archivo PDF/imagen)"],
+        "cantDocumentos": 1,
+        "tipoFacturaARCA": "Factura B",
+        "codigoCbteTipo": 6,
+        "iva": "21% incluido (no discriminado)"
+      },
+      {
+        "pais": "Argentina",
+        "tipoPersona": "Persona Humana",
+        "condicionIVA": "IVA Responsable Inscripto",
+        "tiposDocumento": ["CUIT"],
+        "documentosRequeridos": [
+          "DNI frente y dorso (en un mismo archivo PDF/imagen)",
+          "Constancia de inscripción ARCA como Responsable Inscripto"
+        ],
+        "cantDocumentos": 2,
+        "tipoFacturaARCA": "Factura A",
+        "codigoCbteTipo": 1,
+        "iva": "21% discriminado (IVA separado)"
+      },
+      {
+        "pais": "Argentina",
+        "tipoPersona": "Persona Humana",
+        "condicionIVA": "Responsable Monotributo",
+        "tiposDocumento": ["CUIT"],
+        "documentosRequeridos": [
+          "DNI frente y dorso (en un mismo archivo PDF/imagen)",
+          "Constancia de inscripción ARCA — categoría Monotributo vigente (A–K)"
+        ],
+        "cantDocumentos": 2,
+        "tipoFacturaARCA": "Factura A",
+        "codigoCbteTipo": 1,
+        "iva": "IVA = $0 (Monotributista no discrimina IVA)"
+      },
+      {
+        "pais": "Argentina",
+        "tipoPersona": "Persona Jurídica",
+        "condicionIVA": "IVA Responsable Inscripto",
+        "tiposDocumento": ["CUIT"],
+        "documentosRequeridos": [
+          "Constancia de inscripción ARCA (AFIP + Ingresos Brutos)",
+          "Estatuto o Contrato Social inscripto en IGJ o Registro Público"
+        ],
+        "cantDocumentos": 2,
+        "tipoFacturaARCA": "Factura A",
+        "codigoCbteTipo": 1,
+        "iva": "21% discriminado (IVA separado)"
+      },
+      {
+        "pais": "Argentina",
+        "tipoPersona": "Persona Jurídica",
+        "condicionIVA": "IVA Exento",
+        "tiposDocumento": ["CUIT"],
+        "documentosRequeridos": [
+          "Constancia de inscripción ARCA",
+          "Certificado de exención ARCA/AFIP vigente"
+        ],
+        "cantDocumentos": 2,
+        "tipoFacturaARCA": "Factura A",
+        "codigoCbteTipo": 1,
+        "iva": "Exento (no discriminado)"
+      },
+      {
+        "pais": "Extranjero",
+        "tipoPersona": "Extranjero",
+        "condicionIVA": "Consumidor Final (plataforma local)",
+        "tiposDocumento": ["Pasaporte", "Identificación extranjera"],
+        "documentosRequeridos": [
+          "Pasaporte vigente O constancia tributaria del país de origen"
+        ],
+        "cantDocumentos": 1,
+        "tipoFacturaARCA": "Factura B",
+        "codigoCbteTipo": 6,
+        "iva": "21% incluido (no discriminado)"
+      }
+    ]
+  },
+  "reglasValidacionDocumento": {
+    "CUIT": { "codigoARCA": 80, "formato": "XX-XXXXXXXX-X", "digitos": 11, "tipo": "numerico", "limpieza": "Eliminar guiones y puntos" },
+    "CUIL": { "codigoARCA": 86, "formato": "XX-XXXXXXXX-X", "digitos": 11, "tipo": "numerico", "limpieza": "Eliminar guiones y puntos" },
+    "CDI": { "codigoARCA": 87, "formato": "Numérico", "digitos": "variable", "tipo": "numerico", "limpieza": "Eliminar guiones y espacios" },
+    "DNI": { "codigoARCA": 96, "formato": "Numérico", "digitos": "7-8", "tipo": "numerico", "limpieza": "Eliminar puntos y espacios" },
+    "Pasaporte": { "codigoARCA": 94, "formato": "Alfanumérico", "caracteres": "6-15", "tipo": "alfanumerico", "limpieza": "No limpiar" },
+    "Identificación extranjera": { "codigoARCA": 91, "formato": "Alfanumérico", "caracteres": "variable", "tipo": "alfanumerico", "limpieza": "Eliminar espacios" }
+  },
+  "provinciasArgentina": [
+    "Buenos Aires", "CABA", "Catamarca", "Chaco", "Chubut", "Córdoba",
+    "Corrientes", "Entre Ríos", "Formosa", "Jujuy", "La Pampa", "La Rioja",
+    "Mendoza", "Misiones", "Neuquén", "Río Negro", "Salta", "San Juan",
+    "San Luis", "Santa Cruz", "Santa Fe", "Santiago del Estero",
+    "Tierra del Fuego", "Tucumán"
+  ],
+  "ciudadesArgentina": [
+    "La Plata", "Mar del Plata", "Bahía Blanca", "Tandil", "Quilmes",
+    "Lanús", "Avellaneda", "Lomas de Zamora", "San Isidro", "Vicente López",
+    "Morón", "Tres de Febrero", "San Martín", "Tigre", "Pilar",
+    "Campana", "Zárate", "Pergamino", "Junín", "Olavarría",
+    "Necochea", "Azul", "Dolores", "Chascomús", "Mercedes"
+  ],
+  "condicionales": [
+    { "id": "C-01", "trigger": "País = Argentina", "efecto": "Provincia → selector con lista AR" },
+    { "id": "C-02", "trigger": "País ≠ Argentina", "efecto": "Provincia → input texto libre (Departamento / Estado)" },
+    { "id": "C-03", "trigger": "Tipo persona seleccionado", "efecto": "Habilita Condición IVA + Documentos a subir" },
+    { "id": "C-04", "trigger": "Persona Humana", "efecto": "IVA: Consumidor Final, IVA Resp. Inscripto, Resp. Monotributo" },
+    { "id": "C-05", "trigger": "Persona Jurídica", "efecto": "IVA: IVA Resp. Inscripto, IVA Exento" },
+    { "id": "C-06", "trigger": "Extranjero", "efecto": "IVA: Consumidor Final (plataforma local)" },
+    { "id": "C-07", "trigger": "Condición IVA seleccionada", "efecto": "Habilita Tipo de documento" },
+    { "id": "C-08", "trigger": "Tipo documento seleccionado", "efecto": "Habilita Número de documento" },
+    { "id": "C-09", "trigger": "Input número documento", "efecto": "Limpieza automática (guiones, puntos, espacios)" },
+    { "id": "C-14", "trigger": "Checkboxes NO marcados", "efecto": "Botón Guardar DESHABILITADO" },
+    { "id": "C-15", "trigger": "Checkboxes + campos válidos", "efecto": "Botón Guardar HABILITADO" }
+  ]
+}

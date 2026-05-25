@@ -1,0 +1,438 @@
+<!-- Demo controls — visible for stakeholders to test all states -->
+<div class="demo-bar">
+  <span class="demo-bar__label">Demo:</span>
+  <button class="demo-btn" (click)="resetState()">Reset</button>
+  <button class="demo-btn" (click)="simulateDatosRejection()">Datos → Rechazado</button>
+  <button class="demo-btn" (click)="simulateDatosFieldRejection()">Datos → Error campo</button>
+  <button class="demo-btn" (click)="simulateFacturacionRejection()">Fact. → Rechazado</button>
+  <button class="demo-btn" (click)="simulateFacturacionFieldRejection()">Fact. → Error campo</button>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" [class.visible]="showToast" [ngClass]="'toast-' + toastType">
+  <svg *ngIf="toastType === 'success'" width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Z" stroke="white" stroke-width="2"/>
+    <path d="M8 12l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <svg *ngIf="toastType === 'error'" width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Z" stroke="white" stroke-width="2"/>
+    <path d="M15 9l-6 6M9 9l6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <svg *ngIf="toastType === 'info'" width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Z" stroke="white" stroke-width="2"/>
+    <path d="M12 8v4M12 16h.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span>{{ toastMessage }}</span>
+</div>
+
+<div class="page-wrapper">
+  <div class="breadcrumb">
+    <span class="breadcrumb-icon">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M2 6L8 1.33L14 6V13.33C14 13.69 13.86 14.03 13.61 14.28C13.36 14.53 13.02 14.67 12.67 14.67H3.33C2.98 14.67 2.64 14.53 2.39 14.28C2.14 14.03 2 13.69 2 13.33V6Z" stroke="#858ea6" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <span class="breadcrumb-separator">›</span>
+    <span class="breadcrumb-text">Configuraciones</span>
+    <span class="breadcrumb-separator">›</span>
+    <span class="breadcrumb-text breadcrumb-current">Datos Personales</span>
+  </div>
+
+  <h1 class="page-title">Datos Personales y Facturación</h1>
+
+  <!-- Tabs -->
+  <div class="tabs-container">
+    <button class="tab" [class.tab--active]="activeTab === 'datos'" (click)="activeTab = 'datos'">
+      <span class="tab__label">Datos personales</span>
+      <span class="tab__badge" [class.tab__badge--complete]="datosTabStatus === 'complete'" [class.tab__badge--pending]="datosTabStatus === 'pending'"></span>
+    </button>
+    <button class="tab" [class.tab--active]="activeTab === 'facturacion'" (click)="activeTab = 'facturacion'">
+      <span class="tab__label">Facturación electrónica</span>
+      <span class="tab__badge" [class.tab__badge--complete]="facturacionTabStatus === 'complete'" [class.tab__badge--pending]="facturacionTabStatus === 'pending'"></span>
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- TAB 1: Datos personales            -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="tab-content" *ngIf="activeTab === 'datos'">
+    <div class="tab-header">
+      <h2 class="section-title section-title--h4">Datos personales</h2>
+      <span class="tag" [ngClass]="'tag--' + datosTagStyle">{{ datosTagText }}</span>
+    </div>
+
+    <div class="datos-layout">
+      <div class="avatar-section">
+        <div class="avatar-circle">
+          <svg width="99" height="96" viewBox="0 0 99 96" fill="none">
+            <path d="M49.5 48C62.76 48 73.5 37.26 73.5 24C73.5 10.74 62.76 0 49.5 0C36.24 0 25.5 10.74 25.5 24C25.5 37.26 36.24 48 49.5 48ZM49.5 60C33.48 60 1.5 68.04 1.5 84V96H97.5V84C97.5 68.04 65.52 60 49.5 60Z" fill="white"/>
+          </svg>
+        </div>
+        <button class="text-button" *ngIf="!datosFieldsLocked">Cambiar foto</button>
+      </div>
+
+      <div class="datos-form">
+        <!-- Dynamic alert -->
+        <ng-container *ngIf="datosAlert">
+          <div class="alert" [ngClass]="'alert--' + datosAlert.severity">
+            <div class="alert__icon">
+              <svg *ngIf="datosAlert.severity === 'warning'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334ZM8 5.333V8M8 10.667h.007" stroke="#f1b44c" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg *ngIf="datosAlert.severity === 'info'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334ZM8 5.333V8M8 10.667h.007" stroke="#50a5f1" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg *ngIf="datosAlert.severity === 'error'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334Z" stroke="#f46a6b" stroke-width="1.33"/>
+                <path d="M10 6L6 10M6 6l4 4" stroke="#f46a6b" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg *ngIf="datosAlert.severity === 'success'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334Z" stroke="#4caf50" stroke-width="1.33"/>
+                <path d="M5.333 8l2 2L10.667 6" stroke="#4caf50" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <p class="alert__text">{{ datosAlert.message }}
+              <a class="alert__link" *ngIf="datosAlert.link" href="javascript:void(0)"> {{ datosAlert.link }}</a>
+            </p>
+            <button class="alert__cta" *ngIf="datosAlert.cta"
+              [ngClass]="'alert__cta--' + datosAlert.severity"
+              (click)="datosAlert.ctaAction && datosAlert.ctaAction()">
+              {{ datosAlert.cta }}
+            </button>
+          </div>
+        </ng-container>
+
+        <p class="instructions" *ngIf="!datosFieldsLocked">
+          <strong>Si eres persona natural</strong>, ingresa tus datos según tu documento de identidad.
+          <strong>Si eres persona jurídica </strong>(empresa), ingresa únicamente los datos personales del representante legal, no los datos de la empresa.
+        </p>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label" [class.field-label--disabled]="datosFieldsLocked">Primer nombre</label>
+            <input type="text" class="field-input" [class.field-input--disabled]="datosFieldsLocked" [(ngModel)]="primerNombre" [disabled]="datosFieldsLocked" />
+          </div>
+          <div class="form-field">
+            <label class="field-label" [class.field-label--disabled]="datosFieldsLocked">Segundo nombre (Opcional)</label>
+            <input type="text" class="field-input" [class.field-input--disabled]="datosFieldsLocked" [(ngModel)]="segundoNombre" [disabled]="datosFieldsLocked" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label" [class.field-label--disabled]="datosFieldsLocked">Primer apellido</label>
+            <input type="text" class="field-input" [class.field-input--disabled]="datosFieldsLocked" [(ngModel)]="primerApellido" [disabled]="datosFieldsLocked" />
+          </div>
+          <div class="form-field">
+            <label class="field-label" [class.field-label--disabled]="datosFieldsLocked">Segundo apellido (Opcional)</label>
+            <input type="text" class="field-input" [class.field-input--disabled]="datosFieldsLocked" [(ngModel)]="segundoApellido" [disabled]="datosFieldsLocked" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label" [class.field-label--disabled]="datosFieldsLocked">Fecha de nacimiento</label>
+            <div class="field-input field-input--icon" [class.field-input--disabled]="datosFieldsLocked">
+              <svg class="input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M15.833 3.333H4.167c-.92 0-1.667.747-1.667 1.667v11.667c0 .92.746 1.666 1.667 1.666h11.666c.92 0 1.667-.746 1.667-1.666V5c0-.92-.747-1.667-1.667-1.667ZM13.333 1.667V5M6.667 1.667V5M2.5 8.333h15" stroke="#475066" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <input type="text" [(ngModel)]="fechaNacimiento" [disabled]="datosFieldsLocked" />
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="field-label" [class.field-label--disabled]="datosFieldsLocked">Nacionalidad</label>
+            <select class="field-select" [class.field-select--disabled]="datosFieldsLocked" [(ngModel)]="nacionalidad" [disabled]="datosFieldsLocked">
+              <option value="" disabled selected>Seleccionar</option>
+              <option *ngFor="let n of nacionalidades" [value]="n">{{ n }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h3 class="section-subtitle">Identificación</h3>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label field-label--disabled">Tipo de documento</label>
+            <select class="field-select field-select--disabled" [(ngModel)]="tipoDocIdentidad" disabled>
+              <option value="" disabled selected>Seleccionar</option>
+              <option *ngFor="let t of tiposDocIdentidad" [value]="t">{{ t }}</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="field-label field-label--disabled">Documento</label>
+            <input type="text" class="field-input field-input--disabled" [(ngModel)]="documento" disabled />
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h3 class="section-subtitle">Contacto</h3>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label" [class.field-label--disabled]="datosFieldsLocked">Email de contacto</label>
+            <input type="email" class="field-input" [class.field-input--disabled]="datosFieldsLocked" [(ngModel)]="emailContacto" [disabled]="datosFieldsLocked" />
+          </div>
+          <div class="form-field">
+            <label class="field-label" [class.field-label--disabled]="datosFieldsLocked">Teléfono celular</label>
+            <div class="phone-input">
+              <div class="phone-prefix">
+                <span class="flag-ar">🇦🇷</span>
+                <span class="phone-code">54</span>
+              </div>
+              <input type="tel" class="field-input" [class.field-input--disabled]="datosFieldsLocked" [(ngModel)]="telefonoCelular" [disabled]="datosFieldsLocked" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row form-row--single">
+          <div class="form-field form-field--full">
+            <label class="field-label" [class.field-label--disabled]="datosFieldsLocked">Dirección</label>
+            <input type="text" class="field-input" [class.field-input--disabled]="datosFieldsLocked" [(ngModel)]="direccionPersonal" [disabled]="datosFieldsLocked" />
+          </div>
+        </div>
+
+        <div class="form-actions" *ngIf="showGuardarDatos">
+          <button class="btn-primary" (click)="guardarDatos()">Guardar datos</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TAB 2: Facturación electrónica             -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="tab-content tab-content--facturacion" *ngIf="activeTab === 'facturacion'">
+    <div class="tab-header">
+      <h2 class="section-title section-title--h3">Facturación electrónica</h2>
+      <span class="tag" [ngClass]="'tag--' + facturacionTagStyle">{{ facturacionTagText }}</span>
+      <button class="text-button text-button--with-icon" *ngIf="facturacionState === 'draft'">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M6.75 3.375L14.625 9L6.75 14.625V3.375Z" fill="#f49a3d"/>
+        </svg>
+        Ver tutorial
+      </button>
+    </div>
+
+    <!-- Dynamic alert -->
+    <ng-container *ngIf="facturacionAlert">
+      <div class="alert" [ngClass]="'alert--' + facturacionAlert.severity">
+        <div class="alert__icon">
+          <svg *ngIf="facturacionAlert.severity === 'warning'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334ZM8 5.333V8M8 10.667h.007" stroke="#f1b44c" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg *ngIf="facturacionAlert.severity === 'info'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334ZM8 5.333V8M8 10.667h.007" stroke="#50a5f1" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg *ngIf="facturacionAlert.severity === 'error'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334Z" stroke="#f46a6b" stroke-width="1.33"/>
+            <path d="M10 6L6 10M6 6l4 4" stroke="#f46a6b" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg *ngIf="facturacionAlert.severity === 'success'" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334Z" stroke="#4caf50" stroke-width="1.33"/>
+            <path d="M5.333 8l2 2L10.667 6" stroke="#4caf50" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="alert__text">{{ facturacionAlert.message }}
+          <a class="alert__link" *ngIf="facturacionAlert.link" href="javascript:void(0)"> {{ facturacionAlert.link }}</a>
+        </p>
+        <button class="alert__cta" *ngIf="facturacionAlert.cta"
+          [ngClass]="'alert__cta--' + facturacionAlert.severity"
+          (click)="facturacionAlert.ctaAction && facturacionAlert.ctaAction()">
+          {{ facturacionAlert.cta }}
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- Información de Contacto -->
+    <h3 class="section-subtitle">Información de Contacto</h3>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label" [class.field-label--disabled]="facturacionFieldsLocked">País</label>
+        <select class="field-select" [class.field-select--disabled]="facturacionFieldsLocked" [(ngModel)]="pais" (ngModelChange)="onPaisChange()" [disabled]="facturacionFieldsLocked">
+          <option value="" disabled selected>País</option>
+          <option *ngFor="let p of paises" [value]="p">{{ p }}</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="field-label" [class.field-label--disabled]="facturacionFieldsLocked">{{ provinciaLabel }}</label>
+        <select *ngIf="isArgentina" class="field-select" [class.field-select--disabled]="facturacionFieldsLocked" [(ngModel)]="provincia" [disabled]="facturacionFieldsLocked">
+          <option value="" disabled selected>{{ provinciaPlaceholder }}</option>
+          <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
+        </select>
+        <input *ngIf="!isArgentina" type="text" class="field-input" [class.field-input--disabled]="facturacionFieldsLocked" [placeholder]="provinciaPlaceholder" [(ngModel)]="provincia" [disabled]="facturacionFieldsLocked" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label" [class.field-label--disabled]="facturacionFieldsLocked">Ciudad / Localidad</label>
+        <select *ngIf="isArgentina" class="field-select" [class.field-select--disabled]="facturacionFieldsLocked" [(ngModel)]="ciudadLocalidad" [disabled]="facturacionFieldsLocked">
+          <option value="" disabled selected>Selecciona Ciudad o localidad</option>
+          <option *ngFor="let c of ciudades" [value]="c">{{ c }}</option>
+        </select>
+        <input *ngIf="!isArgentina" type="text" class="field-input" [class.field-input--disabled]="facturacionFieldsLocked" placeholder="Ingresa tu ciudad" [(ngModel)]="ciudadLocalidad" [disabled]="facturacionFieldsLocked" />
+      </div>
+      <div class="form-field">
+        <label class="field-label" [class.field-label--disabled]="facturacionFieldsLocked">Dirección</label>
+        <input type="text" class="field-input" [class.field-input--disabled]="facturacionFieldsLocked" placeholder="Ingresa la dirección" [(ngModel)]="direccionFacturacion" [disabled]="facturacionFieldsLocked" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label" [class.field-label--disabled]="facturacionFieldsLocked">Email para facturación</label>
+        <input type="email" class="field-input" [class.field-input--disabled]="facturacionFieldsLocked" placeholder="Email para facturacion" [(ngModel)]="emailFacturacion" [disabled]="facturacionFieldsLocked" />
+      </div>
+      <div class="form-field">
+        <label class="field-label" [class.field-label--disabled]="facturacionFieldsLocked">Número de teléfono</label>
+        <div class="phone-input">
+          <div class="phone-prefix">
+            <span class="flag-ar">🇦🇷</span>
+            <span class="phone-code">54</span>
+          </div>
+          <input type="tel" class="field-input" [class.field-input--disabled]="facturacionFieldsLocked" placeholder="Ingresa el número de teléfono" [(ngModel)]="telefonoFacturacion" [disabled]="facturacionFieldsLocked" />
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Información Tributaria -->
+    <h3 class="section-subtitle">Información Tributaria</h3>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label" [class.field-label--disabled]="facturacionFieldsLocked">Nombre o razón social</label>
+        <input type="text" class="field-input" [class.field-input--disabled]="facturacionFieldsLocked" placeholder="Nombre o razón social" [(ngModel)]="nombreRazonSocial" [disabled]="facturacionFieldsLocked" />
+      </div>
+      <div class="form-field">
+        <label class="field-label" [class.field-label--disabled]="isExtranjeroForced || facturacionFieldsLocked">Tipo de persona</label>
+        <select class="field-select"
+          [class.field-select--disabled]="isExtranjeroForced || facturacionFieldsLocked"
+          [(ngModel)]="tipoPersona"
+          (ngModelChange)="onTipoPersonaChange()"
+          [disabled]="isExtranjeroForced || facturacionFieldsLocked">
+          <option value="" disabled selected>Selecciona el tipo de persona</option>
+          <option *ngFor="let tp of tiposPersonaOptions" [value]="tp">{{ tp }}</option>
+        </select>
+        <span class="field-helper" *ngIf="isExtranjeroForced && !facturacionFieldsLocked">Forzado por país distinto a Argentina</span>
+      </div>
+    </div>
+
+    <div class="form-row form-row--single">
+      <div class="form-field form-field--full">
+        <label class="field-label" [class.field-label--disabled]="condicionIVADisabled">Condición frente al IVA</label>
+        <select class="field-select"
+          [class.field-select--disabled]="condicionIVADisabled"
+          [(ngModel)]="condicionIVA"
+          (ngModelChange)="onCondicionIVAChange()"
+          [disabled]="condicionIVADisabled">
+          <option value="" disabled selected>Selecciona condición frente al IVA</option>
+          <option *ngFor="let c of condicionesIVAOptions" [value]="c">{{ c }}</option>
+        </select>
+        <span class="field-helper" *ngIf="condicionIVADisabled && !tipoPersona && !facturacionFieldsLocked">Selecciona primero el tipo de persona</span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label" [class.field-label--disabled]="tipoDocFacturacionDisabled">Tipo de documento</label>
+        <select class="field-select"
+          [class.field-select--disabled]="tipoDocFacturacionDisabled"
+          [(ngModel)]="tipoDocFacturacion"
+          (ngModelChange)="onTipoDocFacturacionChange()"
+          [disabled]="tipoDocFacturacionDisabled">
+          <option value="" disabled selected>Selecciona el tipo de documento</option>
+          <option *ngFor="let td of tiposDocFacturacionOptions" [value]="td">{{ td }}</option>
+        </select>
+        <span class="field-helper" *ngIf="tipoDocFacturacionDisabled && !condicionIVA && !facturacionFieldsLocked">Selecciona primero la condición frente al IVA</span>
+      </div>
+      <div class="form-field">
+        <label class="field-label" [class.field-label--disabled]="numeroDocumentoDisabled">Número de documento</label>
+        <input type="text" class="field-input"
+          [class.field-input--disabled]="numeroDocumentoDisabled"
+          [placeholder]="numeroDocumentoPlaceholder"
+          [(ngModel)]="numeroDocumento"
+          (input)="onNumeroDocumentoInput()"
+          [disabled]="numeroDocumentoDisabled" />
+        <span class="field-helper" *ngIf="numeroDocumentoDisabled && !tipoDocFacturacion && !facturacionFieldsLocked">Selecciona primero el tipo de documento</span>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Document upload -->
+    <div class="upload-section" *ngIf="showDocumentUpload">
+      <h3 class="section-subtitle">{{ documentUploadTitle }}</h3>
+      <p class="upload-subtitle" *ngIf="tipoPersona !== 'Extranjero'">Constancia de inscripción ARCA (ex-AFIP)</p>
+      <p class="upload-subtitle" *ngIf="tipoPersona === 'Extranjero'">Pasaporte vigente o constancia tributaria del país de origen (uno u otro)</p>
+
+      <div class="upload-slots">
+        <div class="upload-slot" *ngFor="let slot of documentSlots; let i = index">
+          <div class="upload-slot__label">
+            <span class="upload-slot__number">{{ i + 1 }}.</span>
+            <span>{{ slot.label }}</span>
+            <span class="upload-slot__required" *ngIf="slot.required">*</span>
+          </div>
+
+          <div class="upload-area" *ngIf="!slot.fileName && !facturacionFieldsLocked">
+            <div class="upload-content">
+              <span class="upload-text">Suelta un documento aquí o</span>
+              <label class="upload-button">
+                Seleccionar documento
+                <input type="file" accept=".jpg,.jpeg,.png,.pdf" (change)="onFileSelected($event, i)" hidden />
+              </label>
+            </div>
+            <p class="upload-hint">Formatos admitidos: JPG, PDF, JPEG, PNG. Tamaño máximo: 10 MB.</p>
+          </div>
+
+          <div class="uploaded-file" *ngIf="slot.fileName">
+            <svg class="uploaded-file__icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M9.33 1.33H4a1.33 1.33 0 0 0-1.33 1.34v10.66A1.33 1.33 0 0 0 4 14.67h8a1.33 1.33 0 0 0 1.33-1.34V5.33L9.33 1.33Z" stroke="#69738c" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9.33 1.33v4h4" stroke="#69738c" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="uploaded-file__name">{{ slot.fileName }}</span>
+            <button class="uploaded-file__remove" *ngIf="!facturacionFieldsLocked" (click)="removeFile(i)">✕</button>
+          </div>
+
+          <div class="upload-area upload-area--locked" *ngIf="!slot.fileName && facturacionFieldsLocked">
+            <span class="upload-text upload-text--disabled">Documento pendiente</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="upload-section upload-section--disabled" *ngIf="!showDocumentUpload && !facturacionFieldsLocked">
+      <h3 class="section-subtitle section-subtitle--disabled">Subir documento que confirme tu situación fiscal</h3>
+      <p class="upload-subtitle upload-subtitle--disabled">Selecciona el tipo de persona para ver los documentos requeridos</p>
+    </div>
+
+    <!-- Checkboxes -->
+    <div class="checkbox-row">
+      <input type="checkbox" class="checkbox" id="terminos" [(ngModel)]="aceptaTerminos" [disabled]="facturacionFieldsLocked" />
+      <label for="terminos" class="checkbox-label">
+        Acepto los Términos y Condiciones de Dropi Argentina para la emisión de facturas.
+        <a class="checkbox-link" href="javascript:void(0)">Ver Términos y Condiciones</a>
+      </label>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" class="checkbox" id="politica" [(ngModel)]="aceptaPolitica" [disabled]="facturacionFieldsLocked" />
+      <label for="politica" class="checkbox-label">
+        Acepto la política de tratamiendo de datos personales para fines de facturación
+        <a class="checkbox-link" href="javascript:void(0)">Ver política de tratamiento de privacidad</a>.
+      </label>
+    </div>
+
+    <!-- CTA -->
+    <div class="form-actions" *ngIf="showGuardarFacturacion">
+      <button class="btn-primary"
+        [class.btn-primary--disabled]="!guardarFacturacionEnabled"
+        (click)="guardarFacturacion()">
+        Guardar facturación
+      </button>
+    </div>
+  </div>
+</div>

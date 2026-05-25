@@ -98,6 +98,13 @@ export const routes: Routes = [
             m => m.OrdersProviderComponent,
           ),
       },
+      {
+        path: 'configuraciones/datos-personales',
+        loadComponent: () =>
+          import('./pages/datos-personales/datos-personales.component').then(
+            m => m.DatosPersonalesComponent,
+          ),
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: '**', redirectTo: 'home' },
     ],

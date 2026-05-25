@@ -15,6 +15,17 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     thumbnail: "thumbnail.png",
   },
   {
+    title: "Datos Personales y Facturación",
+    module: "configuraciones",
+    slug: "datos-personales",
+    route: "/configuraciones/datos-personales",
+    description: "Formulario de datos personales y facturación electrónica para dropshippers en Argentina. Dos tabs: datos personales con validación de identidad, y facturación electrónica con información tributaria ARCA.",
+    profiles: ["dropshipper"],
+    owner: "producto@dropi.co",
+    dateAdded: "2026-05-25",
+    thumbnail: "thumbnail.png",
+  },
+  {
     title: "Historial de Cartera",
     module: "financiero",
     slug: "historial-cartera",

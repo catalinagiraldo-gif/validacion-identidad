@@ -421,6 +421,14 @@
           "roles": ["dropshipper", "admin"],
           "description": "Configuración de notificaciones por email, SMS, push."
         },
+        "datos-personales": {
+          "route": "/configuraciones/datos-personales",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "prototype": "/configuraciones/datos-personales",
+          "figmaSource": "https://www.figma.com/design/HvoEmrK4bRGgOg1NrUFrjV/Cuenta-V2.0?node-id=8265-347233",
+          "description": "Formulario de datos personales y facturación electrónica para dropshippers en Argentina. Dos tabs: datos personales con validación de identidad y foto, y facturación electrónica con info tributaria ARCA (ex-AFIP), upload de constancia fiscal, y checkboxes de aceptación."
+        },
         "general": {
           "route": "/configuraciones/general",
           "type": "page",
