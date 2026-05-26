@@ -123,5 +123,16 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-01",
     thumbnail: "thumbnail.png",
+  },
+  {
+    title: "Parametrizar Tarifas",
+    module: "logística",
+    slug: "parametrizar-tarifas",
+    route: "/parametrizar-tarifas",
+    description: "Panel de parametrización de tarifas por transportadora con carrusel de carriers, edición de variables financieras por trayecto, heat map comparativo entre carriers del mismo país, descuentos por volumen e historial de cambios.",
+    profiles: ["admin"],
+    owner: "producto@dropi.co",
+    dateAdded: "2026-05-26",
+    thumbnail: "thumbnail.png",
   }
 ];

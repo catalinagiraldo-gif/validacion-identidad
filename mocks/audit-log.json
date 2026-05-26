@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "fecha": "2026-05-25T14:32:00",
+    "usuario": "Carolina Herrera",
+    "carrierId": "urbano",
+    "trayecto": "Trayecto 1",
+    "campo": "Incremento Dropi",
+    "anterior": 1300,
+    "nuevo": 1500
+  },
+  {
+    "id": 2,
+    "fecha": "2026-05-25T14:30:00",
+    "usuario": "Carolina Herrera",
+    "carrierId": "urbano",
+    "trayecto": "TDF",
+    "campo": "Incremento Dropi",
+    "anterior": 1500,
+    "nuevo": 1740
+  },
+  {
+    "id": 3,
+    "fecha": "2026-05-24T09:15:00",
+    "usuario": "Juan Diego Bautista",
+    "carrierId": "urbano",
+    "trayecto": "Global",
+    "campo": "COD Argentina",
+    "anterior": 0.7,
+    "nuevo": 1.5
+  },
+  {
+    "id": 4,
+    "fecha": "2026-05-20T11:42:00",
+    "usuario": "Nicolás Ruiz",
+    "carrierId": "urbano",
+    "trayecto": "Trayecto 3",
+    "campo": "Flete base",
+    "anterior": 8500,
+    "nuevo": 9212
+  },
+  {
+    "id": 5,
+    "fecha": "2026-05-18T16:05:00",
+    "usuario": "Carolina Herrera",
+    "carrierId": "fixi",
+    "trayecto": "CABA",
+    "campo": "Flete base",
+    "anterior": 2950,
+    "nuevo": 3207
+  },
+  {
+    "id": 6,
+    "fecha": "2026-05-15T10:20:00",
+    "usuario": "Juan Diego Bautista",
+    "carrierId": "envia",
+    "trayecto": "Local",
+    "campo": "Sobreflete mínimo",
+    "anterior": 1200,
+    "nuevo": 1500
+  },
+  {
+    "id": 7,
+    "fecha": "2026-05-12T08:45:00",
+    "usuario": "Nicolás Ruiz",
+    "carrierId": "envia",
+    "trayecto": "Regional",
+    "campo": "Flete base",
+    "anterior": 8800,
+    "nuevo": 9500
+  },
+  {
+    "id": 8,
+    "fecha": "2026-05-10T14:00:00",
+    "usuario": "Carolina Herrera",
+    "carrierId": "urbano",
+    "trayecto": "Trayecto 2",
+    "campo": "Seguro",
+    "anterior": 1.2,
+    "nuevo": 1.5
+  }
+]

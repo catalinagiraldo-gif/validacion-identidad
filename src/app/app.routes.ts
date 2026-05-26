@@ -105,6 +105,13 @@ export const routes: Routes = [
             m => m.DatosPersonalesComponent,
           ),
       },
+      {
+        path: 'parametrizar-tarifas',
+        loadComponent: () =>
+          import('./pages/parametrizar-tarifas/parametrizar-tarifas.component').then(
+            m => m.ParametrizarTarifasComponent,
+          ),
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: '**', redirectTo: 'home' },
     ],

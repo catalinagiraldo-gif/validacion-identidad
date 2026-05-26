@@ -281,6 +281,7 @@ const adminNav: NavItem[] = [
   },
   { label: 'Auditorias', icon: IC + 'book-admin.svg', route: '/auditorias' },
   { label: 'Historial de cartera', icon: IC + 'time-past.svg', route: '/historial-de-cartera' },
+  { label: 'Parametrizar Tarifas', icon: IC + 'settings.svg', route: '/parametrizar-tarifas' },
   { label: 'Bodegas', icon: IC + 'warehouse.svg', route: '/bodegas' },
   { label: 'Calendario', icon: IC + 'calendar.svg', route: '/calendario' },
   {

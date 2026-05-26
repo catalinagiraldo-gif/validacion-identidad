@@ -659,6 +659,51 @@
           "description": "Gestión de retiros de saldo de la plataforma."
         }
       }
+    },
+    "configuraciones-tarifas": {
+      "route": "/configuraciones/parametrizar-tarifas",
+      "label": "Parametrizar Tarifas",
+      "icon": "pi-tag",
+      "roles": ["admin"],
+      "defaultView": "lista",
+      "figmaSource": "https://www.figma.com/design/PDeeZVQMyF3i6SUFCWyuQa/Parametrizaci%C3%B3n-de-tarifas?node-id=3-23",
+      "views": {
+        "lista": {
+          "route": "/configuraciones/parametrizar-tarifas",
+          "type": "page",
+          "roles": ["admin"],
+          "prototype": "/configuraciones/parametrizar-tarifas",
+          "description": "Grid de cards de transportadoras con filtros por país y tipo de servicio. Click en card navega al detalle.",
+          "layout": {
+            "breadcrumb": "Configuraciones > Parametrizar Tarifas",
+            "filters": "2 selects: País, Tipo de servicio",
+            "grid": "Cards responsivas (min 320px) con nombre, país, badges de tipo, stats (trayectos, IVA, servicios)"
+          },
+          "actions": [
+            { "cta": "Click carrier card", "opens": "configuraciones-tarifas.detalle", "type": "navigate", "params": { "carrierId": ":id" } }
+          ]
+        },
+        "detalle": {
+          "route": "/configuraciones/parametrizar-tarifas/:carrierId",
+          "type": "page",
+          "roles": ["admin"],
+          "prototype": "/configuraciones/parametrizar-tarifas/:carrierId",
+          "description": "Detalle del carrier con tabs: Paquetería Express, Mercancía Industrial, Descuentos Volumen, Auditoría. Incluye simulador de rentabilidad flotante.",
+          "layout": {
+            "header": "Back button, carrier name, type badges, meta info",
+            "tabs": "Condicionales según tipos del carrier + Auditoría",
+            "express": "Accordion de trayectos con sub-tabs: Variables Financieras y Rangos de Peso (editable inline)",
+            "industrial": "Peso volumétrico + tabla O-D editable inline",
+            "volumen": "Tabla de descuentos por rango de guías",
+            "auditoria": "Tabla read-only de historial de cambios",
+            "simulator": "Panel flotante bottom-right con cálculo de rentabilidad"
+          },
+          "actions": [
+            { "cta": "← Volver", "opens": "configuraciones-tarifas.lista", "type": "navigate" },
+            { "cta": "FAB calculadora", "type": "action", "description": "Abre/cierra simulador de rentabilidad" }
+          ]
+        }
+      }
     }
   }
 }

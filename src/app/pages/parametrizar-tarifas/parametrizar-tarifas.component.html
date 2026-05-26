@@ -1,0 +1,599 @@
+<div class="page-wrapper">
+
+  <!-- ===== ZONE 1: HEADER ===== -->
+  <nav class="breadcrumb" aria-label="Navegación">
+    <a class="breadcrumb-item" role="link" tabindex="0"><i class="pi pi-home"></i></a>
+    <span class="breadcrumb-separator" aria-hidden="true">›</span>
+    <span class="breadcrumb-item active" aria-current="page">Parametrizar Tarifas</span>
+  </nav>
+
+  <div class="page-header">
+    <h1 class="page-title">Parametrizar Tarifas</h1>
+    <div class="country-selector">
+      <label class="country-label" for="country-select">
+        <i class="pi pi-globe" aria-hidden="true"></i> País
+      </label>
+      <select
+        id="country-select"
+        class="filter-select"
+        [(ngModel)]="selectedCountry"
+      >
+        <option value="">Todos</option>
+        <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ===== ZONE 2: CARRIER CAROUSEL ===== -->
+  <div class="carousel-section">
+    <div class="carousel-track" #carouselTrack>
+      <article
+        class="carrier-card"
+        *ngFor="let carrier of filteredCarriers; let i = index"
+        [class.selected]="isCarrierSelected(carrier.id)"
+        [style.animation-delay]="(i * 40) + 'ms'"
+      >
+        <label class="card-check-label">
+          <input
+            type="checkbox"
+            class="card-checkbox"
+            [checked]="isCarrierSelected(carrier.id)"
+            (change)="toggleCarrier(carrier.id)"
+          />
+          <span class="checkmark"></span>
+        </label>
+        <div class="card-body" (click)="toggleCarrier(carrier.id)">
+          <div class="carrier-logo-wrap">
+            <img
+              [src]="carrier.logo"
+              [alt]="carrier.name"
+              class="carrier-logo"
+              (error)="onLogoError($event)"
+            />
+            <span class="carrier-initial" *ngIf="!carrier.logo">{{ carrier.name.charAt(0) }}</span>
+          </div>
+          <div class="carrier-meta">
+            <span class="carrier-name">{{ carrier.name }}</span>
+            <span class="carrier-detail">{{ carrier.code }} · {{ carrier.trayectos.length }} trayectos · IVA {{ carrier.iva }}%</span>
+          </div>
+        </div>
+      </article>
+    </div>
+    <button
+      class="carousel-scroll-btn"
+      (click)="scrollCarousel()"
+      aria-label="Desplazar carrusel"
+      *ngIf="filteredCarriers.length > 4"
+    >
+      <i class="pi pi-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- ===== ZONE 3: CONTENT AREA ===== -->
+
+  <!-- No selection state -->
+  <div class="empty-state module-card" *ngIf="selectedCarrierIds.size === 0">
+    <div class="empty-icon-wrap">
+      <i class="pi pi-truck"></i>
+    </div>
+    <h3>Selecciona una transportadora</h3>
+    <p>Haz clic en una o más tarjetas del carrusel para ver y editar sus tarifas. Selecciona dos o más para comparar.</p>
+  </div>
+
+  <!-- ===== MODE A: SINGLE CARRIER ===== -->
+  <div class="module-card" *ngIf="singleSelectedCarrier">
+    <div class="single-header">
+      <div class="single-identity">
+        <img
+          [src]="singleSelectedCarrier.logo"
+          [alt]="singleSelectedCarrier.name"
+          class="single-logo"
+          (error)="onLogoError($event)"
+        />
+        <div>
+          <h2 class="single-name">{{ singleSelectedCarrier.name }}</h2>
+          <div class="single-badges">
+            <span class="badge badge-country">{{ singleSelectedCarrier.code }}</span>
+            <span class="badge badge-iva">IVA {{ singleSelectedCarrier.iva }}%</span>
+            <span
+              class="badge"
+              *ngFor="let tipo of singleSelectedCarrier.tipos"
+              [ngClass]="tipo === 'express' ? 'badge-express' : 'badge-industrial'"
+            >
+              <i class="pi" [ngClass]="tipo === 'express' ? 'pi-bolt' : 'pi-box'" aria-hidden="true"></i>
+              {{ tipo === 'express' ? 'Express' : 'Industrial' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion of trayectos -->
+    <div class="trayectos-accordion">
+      <div
+        class="trayecto-item"
+        *ngFor="let trayecto of singleSelectedCarrier.trayectos"
+        [class.saved-flash]="saveSuccessId === singleSelectedCarrier.id + '-' + trayecto.id"
+      >
+        <button
+          class="trayecto-header"
+          (click)="toggleTrayecto(trayecto.id)"
+          [class.expanded]="expandedTrayectoId === trayecto.id"
+          [class.has-changes]="hasTrayectoChanges(singleSelectedCarrier, trayecto.id)"
+        >
+          <div class="trayecto-header-left">
+            <i
+              class="pi"
+              [ngClass]="expandedTrayectoId === trayecto.id ? 'pi-chevron-down' : 'pi-chevron-right'"
+            ></i>
+            <span class="trayecto-name">{{ trayecto.name }}</span>
+            <span class="badge" [ngClass]="getTypeBadgeClass(trayecto.type)">{{ trayecto.type }}</span>
+          </div>
+          <div class="trayecto-header-right">
+            <span class="trayecto-preview">
+              Flete: {{ formatCurrency(trayecto.flete_base) }} · {{ trayecto.tiers.length }} rangos
+            </span>
+            <span class="changes-dot" *ngIf="hasTrayectoChanges(singleSelectedCarrier, trayecto.id)"></span>
+          </div>
+        </button>
+
+        <div class="trayecto-body" *ngIf="expandedTrayectoId === trayecto.id">
+          <!-- 2-column fields grid -->
+          <div class="fields-grid">
+            <!-- Left Column: Variables Dropi -->
+            <div class="fields-column">
+              <div class="section-label">VARIABLES DROPI</div>
+
+              <div class="field-row">
+                <label class="field-label">Flete base ($)</label>
+                <div class="field-input-wrap">
+                  <span class="input-prefix">$</span>
+                  <input
+                    type="number"
+                    class="field-input"
+                    [(ngModel)]="trayecto.flete_base"
+                  />
+                </div>
+              </div>
+
+              <div class="field-row">
+                <label class="field-label">Incremento Dropi ($)</label>
+                <div class="field-input-wrap">
+                  <span class="input-prefix">$</span>
+                  <input
+                    type="number"
+                    class="field-input"
+                    [(ngModel)]="trayecto.dropi_increment"
+                  />
+                </div>
+              </div>
+
+              <div class="field-row">
+                <label class="field-label">Sobreflete Dropi (%)</label>
+                <div class="field-input-wrap">
+                  <input
+                    type="number"
+                    class="field-input"
+                    [(ngModel)]="trayecto.sob_tasa"
+                    step="0.1"
+                  />
+                  <span class="input-suffix">%</span>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <label class="field-label">Mín. sobreflete Dropi ($)</label>
+                <div class="field-input-wrap">
+                  <span class="input-prefix">$</span>
+                  <input
+                    type="number"
+                    class="field-input"
+                    [(ngModel)]="trayecto.sob_min"
+                  />
+                </div>
+              </div>
+
+              <div class="field-row">
+                <label class="field-label">Seguro Dropi (%)</label>
+                <div class="field-input-wrap">
+                  <input
+                    type="number"
+                    class="field-input"
+                    [(ngModel)]="trayecto.seg"
+                    step="0.1"
+                  />
+                  <span class="input-suffix">%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Costos Carrier -->
+            <div class="fields-column">
+              <div class="section-label">COSTOS CARRIER</div>
+
+              <div class="field-row">
+                <label class="field-label">Sobreflete carrier (%)</label>
+                <div class="field-input-wrap">
+                  <input
+                    type="number"
+                    class="field-input"
+                    [(ngModel)]="trayecto.sob_tasa_co"
+                    step="0.1"
+                  />
+                  <span class="input-suffix">%</span>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <label class="field-label">Mín. sobreflete carrier ($)</label>
+                <div class="field-input-wrap">
+                  <span class="input-prefix">$</span>
+                  <input
+                    type="number"
+                    class="field-input"
+                    [(ngModel)]="trayecto.sob_min_co"
+                  />
+                </div>
+              </div>
+
+              <div class="field-row">
+                <label class="field-label">Seguro carrier (%)</label>
+                <div class="field-input-wrap">
+                  <input
+                    type="number"
+                    class="field-input"
+                    [(ngModel)]="trayecto.seg_co"
+                    step="0.1"
+                  />
+                  <span class="input-suffix">%</span>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <label class="field-label">COD (%)</label>
+                <div class="field-input-wrap">
+                  <input
+                    type="number"
+                    class="field-input"
+                    [(ngModel)]="trayecto.cod_co"
+                    step="0.1"
+                  />
+                  <span class="input-suffix">%</span>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <label class="field-label">Devolución ($)</label>
+                <div class="field-input-wrap">
+                  <span class="input-prefix">$</span>
+                  <input
+                    type="number"
+                    class="field-input"
+                    [(ngModel)]="trayecto.devolucion"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rangos de peso table -->
+          <div class="section-label" style="margin-top: 24px;">RANGOS DE PESO</div>
+          <div class="table-scroll">
+            <table class="tiers-table">
+              <thead>
+                <tr>
+                  <th>Rango (kg)</th>
+                  <th>Modo</th>
+                  <th>Precio base</th>
+                  <th>KG adicional</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let tier of trayecto.tiers; let i = index">
+                  <td>{{ tierRangeLabel(tier) }}</td>
+                  <td>
+                    <span class="badge badge-mode">{{ tierModeLabel(tier.mode) }}</span>
+                  </td>
+                  <td>{{ tier.base !== null ? formatCurrency(tier.base) : '—' }}</td>
+                  <td>{{ tier.add !== null ? formatCurrency(tier.add) : '—' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="trayecto-actions">
+            <button
+              class="btn-secondary"
+              (click)="discardTrayecto(singleSelectedCarrier, trayecto.id)"
+              [disabled]="!hasTrayectoChanges(singleSelectedCarrier, trayecto.id)"
+            >
+              Descartar
+            </button>
+            <button
+              class="btn-primary"
+              (click)="saveTrayecto(singleSelectedCarrier, trayecto.id)"
+              [disabled]="!hasTrayectoChanges(singleSelectedCarrier, trayecto.id)"
+            >
+              Guardar cambios
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Descuentos por Volumen -->
+    <div class="volume-section" *ngIf="singleSelectedCarrier.volumen.length > 0">
+      <div class="volume-header">
+        <h3 class="volume-title">Descuentos por Volumen</h3>
+        <span class="volume-subtitle">Rangos de descuento segun cantidad de guias mensuales</span>
+      </div>
+      <table class="volume-table">
+        <thead>
+          <tr>
+            <th>Rango guias/mes</th>
+            <th>Descuento</th>
+            <th>Factor</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vol of singleSelectedCarrier.volumen; let i = index" [class.row-active]="vol.active">
+            <td>{{ vol.range }}</td>
+            <td>{{ vol.pct }}%</td>
+            <td>{{ vol.rate }}%</td>
+            <td>
+              <span *ngIf="vol.active" class="status-active">
+                <i class="pi pi-check-circle"></i> Vigente
+              </span>
+              <button *ngIf="!vol.active" class="btn-apply" (click)="applyVolumen(singleSelectedCarrier, i)">
+                Aplicar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Add trayecto button -->
+    <button class="btn-add-trayecto" (click)="addTrayecto(singleSelectedCarrier)">
+      <i class="pi pi-plus" aria-hidden="true"></i> Agregar trayecto
+    </button>
+  </div>
+
+  <!-- ===== DIALOG MODAL DROPI (Confirmación) ===== -->
+  <div class="dialog-overlay" *ngIf="showConfirmDialog" (click)="cancelConfirm()">
+    <div class="dialog-modal" (click)="$event.stopPropagation()" role="dialog" aria-label="Confirmar cambios">
+      <button class="dialog-close" (click)="cancelConfirm()" aria-label="Cerrar">
+        <i class="pi pi-times"></i>
+      </button>
+      <div class="dialog-mascot">
+        <img src="assets/images/configuraciones/naranja-pregunta.png" alt="" />
+      </div>
+      <div class="dialog-text">
+        <h4 class="dialog-title">¿Confirmar cambios?</h4>
+        <p class="dialog-body">Los siguientes cambios se aplicarán a las tarifas de este trayecto. Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="dialog-changes" *ngIf="confirmChanges.length > 0">
+        <div class="dialog-change" *ngFor="let change of confirmChanges">
+          <span class="change-campo">{{ change.campo }}</span>
+          <span class="change-values">
+            <span class="change-old">{{ change.anterior }}</span>
+            <i class="pi pi-arrow-right" aria-hidden="true"></i>
+            <span class="change-new">{{ change.nuevo }}</span>
+          </span>
+        </div>
+      </div>
+      <div class="dialog-buttons">
+        <button class="dialog-btn secondary" (click)="cancelConfirm()">Cancelar</button>
+        <button class="dialog-btn primary" (click)="executeSave()">Aplicar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Success Toast -->
+  <div class="save-toast" *ngIf="saveSuccessId" role="alert">
+    <i class="pi pi-check-circle" aria-hidden="true"></i>
+    Cambios guardados exitosamente
+  </div>
+
+  <!-- ===== MODE B: COMPARISON HEAT MAP ===== -->
+  <div class="module-card" *ngIf="isComparisonMode">
+    <div class="comparison-header">
+      <h2 class="comparison-title">Comparando: {{ comparisonTitle }}</h2>
+      <div class="comparison-controls">
+        <div class="control-group">
+          <label class="field-label" for="trayecto-type">Trayecto</label>
+          <select
+            id="trayecto-type"
+            class="filter-select"
+            [(ngModel)]="selectedTrayectoType"
+          >
+            <option *ngFor="let type of getAllTrayectoTypes()" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Heat map table -->
+    <div class="table-scroll">
+      <table class="heatmap-table">
+        <thead>
+          <tr>
+            <th class="heatmap-label-col">Variable</th>
+            <th *ngFor="let carrier of selectedCarriers" class="heatmap-carrier-col">
+              <div class="heatmap-carrier-header">
+                <img
+                  [src]="carrier.logo"
+                  [alt]="carrier.name"
+                  class="heatmap-logo"
+                  (error)="onLogoError($event)"
+                />
+                <span>{{ carrier.name }}</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let field of heatFields; let fi = index">
+            <!-- Group separator -->
+            <tr class="group-separator" *ngIf="fi === 0">
+              <td [attr.colspan]="selectedCarriers.length + 1">
+                <span class="group-label">VARIABLES DROPI</span>
+              </td>
+            </tr>
+            <tr class="group-separator" *ngIf="fi === 5">
+              <td [attr.colspan]="selectedCarriers.length + 1">
+                <span class="group-label">COSTOS CARRIER</span>
+              </td>
+            </tr>
+            <tr class="heatmap-row">
+              <td class="heatmap-field-name">{{ field.label }}</td>
+              <td
+                *ngFor="let carrier of selectedCarriers"
+                class="heatmap-cell"
+                [ngClass]="getHeatCellClass(field, carrier)"
+              >
+                <ng-container *ngIf="!isEditingHeat(carrier.id, field.key)">
+                  <span
+                    class="heatmap-value"
+                    (click)="getHeatValue(carrier, field) !== null && startHeatEdit(carrier.id, field.key, getHeatValue(carrier, field)!)"
+                    [class.editable]="getHeatValue(carrier, field) !== null"
+                  >
+                    {{ formatFieldValue(getHeatValue(carrier, field), field.format) }}
+                  </span>
+                </ng-container>
+                <ng-container *ngIf="isEditingHeat(carrier.id, field.key)">
+                  <input
+                    type="number"
+                    class="heatmap-edit-input"
+                    [(ngModel)]="editingHeatValue"
+                    (blur)="saveHeatEdit()"
+                    (keyup.enter)="saveHeatEdit()"
+                    (keyup.escape)="cancelHeatEdit()"
+                    autofocus
+                    step="0.1"
+                  />
+                </ng-container>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Simulated margin section -->
+    <div class="margin-section">
+      <div class="margin-header">
+        <h3 class="margin-title">Simulación de margen</h3>
+        <div class="margin-inputs">
+          <div class="sim-field">
+            <label class="field-label">Valor orden</label>
+            <div class="field-input-wrap compact">
+              <span class="input-prefix">$</span>
+              <input
+                type="number"
+                class="field-input"
+                [(ngModel)]="simValor"
+              />
+            </div>
+          </div>
+          <div class="sim-field">
+            <label class="field-label">Peso (kg)</label>
+            <div class="field-input-wrap compact">
+              <input
+                type="number"
+                class="field-input"
+                [(ngModel)]="simPeso"
+                step="0.5"
+              />
+              <span class="input-suffix">kg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="margin-table">
+          <thead>
+            <tr>
+              <th>Carrier</th>
+              <th>Total Seller</th>
+              <th>Total Costo</th>
+              <th>Utilidad</th>
+              <th>Margen %</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of getComparisonResults()">
+              <td>
+                <div class="margin-carrier-name">
+                  <img
+                    [src]="row.carrier.logo"
+                    [alt]="row.carrier.name"
+                    class="margin-logo"
+                    (error)="onLogoError($event)"
+                  />
+                  {{ row.carrier.name }}
+                </div>
+              </td>
+              <td>{{ formatCurrency(row.result.totalSeller) }}</td>
+              <td>{{ formatCurrency(row.result.totalCosto) }}</td>
+              <td>{{ formatCurrency(row.result.utilidad) }}</td>
+              <td>
+                <span class="margin-badge" [ngClass]="getMarginClass(row.result.margen)">
+                  {{ row.result.margen | number:'1.1-1' }}%
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historial de Cambios (collapsible) -->
+  <div class="audit-section module-card" *ngIf="selectedCarrierIds.size > 0">
+    <button class="audit-toggle" (click)="toggleAuditHistory()">
+      <div class="audit-toggle-left">
+        <i class="pi pi-history"></i>
+        <span class="audit-toggle-title">Historial de cambios</span>
+        <span class="audit-toggle-count" *ngIf="filteredAuditLog.length > 0">{{ filteredAuditLog.length }}</span>
+      </div>
+      <i class="pi" [ngClass]="showAuditHistory ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+    </button>
+    <div class="audit-body" *ngIf="showAuditHistory">
+      <table class="audit-table" *ngIf="filteredAuditLog.length > 0">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Trayecto</th>
+            <th>Campo</th>
+            <th>Anterior</th>
+            <th>Nuevo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of filteredAuditLog">
+            <td class="cell-date">{{ formatDate(entry.fecha) }}</td>
+            <td>
+              <div class="audit-user">
+                <span class="audit-avatar">{{ entry.usuario.charAt(0) }}</span>
+                {{ entry.usuario }}
+              </div>
+            </td>
+            <td><span class="audit-trayecto-pill">{{ entry.trayecto }}</span></td>
+            <td>{{ entry.campo }}</td>
+            <td><span class="audit-val old">{{ formatAuditValue(entry.campo, entry.anterior) }}</span></td>
+            <td><span class="audit-val new">{{ formatAuditValue(entry.campo, entry.nuevo) }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="audit-empty" *ngIf="filteredAuditLog.length === 0">
+        <p>No hay cambios registrados para esta transportadora.</p>
+      </div>
+    </div>
+  </div>
+
+</div>

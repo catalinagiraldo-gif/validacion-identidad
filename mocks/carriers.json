@@ -1,0 +1,489 @@
+[
+  {
+    "id": "urbano",
+    "name": "Urbano",
+    "country": "Argentina",
+    "code": "AR",
+    "iva": 21,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/urbano.png",
+    "trayectos": [
+      {
+        "id": 1,
+        "name": "Trayecto 1",
+        "type": "Local",
+        "flete_base": 5777,
+        "dropi_increment": 1500,
+        "sob_tasa": 1.5,
+        "sob_min": 1500,
+        "sob_tasa_co": 1.20,
+        "sob_min_co": 1200,
+        "seg": 1.5,
+        "seg_co": 1.20,
+        "cod_co": 4.30,
+        "devolucion": 0,
+        "tiers": [
+          { "from": 0, "to": 1, "base": 5777, "add": null, "mode": "fijo" },
+          { "from": 1, "to": 2, "base": null, "add": 3188, "mode": "adicional" },
+          { "from": 2, "to": 5, "base": null, "add": 2500, "mode": "adicional" },
+          { "from": 5, "to": 8, "base": null, "add": 2000, "mode": "adicional" },
+          { "from": 8, "to": 15, "base": 15000, "add": null, "mode": "mínimo" },
+          { "from": 15, "to": null, "base": null, "add": 5000, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Trayecto 2",
+        "type": "Regional",
+        "flete_base": 7965,
+        "dropi_increment": 1500,
+        "sob_tasa": 1.5,
+        "sob_min": 1500,
+        "sob_tasa_co": 1.20,
+        "sob_min_co": 1200,
+        "seg": 1.5,
+        "seg_co": 1.20,
+        "cod_co": 4.30,
+        "devolucion": 0,
+        "tiers": [
+          { "from": 0, "to": 1, "base": 7965, "add": null, "mode": "fijo" },
+          { "from": 1, "to": 5, "base": null, "add": 3500, "mode": "adicional" },
+          { "from": 5, "to": 15, "base": 18000, "add": null, "mode": "mínimo" },
+          { "from": 15, "to": null, "base": null, "add": 5500, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Trayecto 3",
+        "type": "Nacional",
+        "flete_base": 9212,
+        "dropi_increment": 1500,
+        "sob_tasa": 1.5,
+        "sob_min": 1500,
+        "sob_tasa_co": 1.20,
+        "sob_min_co": 1200,
+        "seg": 1.5,
+        "seg_co": 1.20,
+        "cod_co": 4.30,
+        "devolucion": 0,
+        "tiers": [
+          { "from": 0, "to": 1, "base": 9212, "add": null, "mode": "fijo" },
+          { "from": 1, "to": 5, "base": null, "add": 3200, "mode": "adicional" },
+          { "from": 5, "to": 15, "base": 22000, "add": null, "mode": "mínimo" },
+          { "from": 15, "to": null, "base": null, "add": 6000, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Trayecto 4",
+        "type": "Especial",
+        "flete_base": 10412,
+        "dropi_increment": 1500,
+        "sob_tasa": 1.5,
+        "sob_min": 1500,
+        "sob_tasa_co": 1.20,
+        "sob_min_co": 1200,
+        "seg": 1.5,
+        "seg_co": 1.20,
+        "cod_co": 4.30,
+        "devolucion": 0,
+        "tiers": [
+          { "from": 0, "to": 1, "base": 10412, "add": null, "mode": "fijo" },
+          { "from": 1, "to": 5, "base": null, "add": 3800, "mode": "adicional" },
+          { "from": 5, "to": null, "base": null, "add": 6500, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "TDF",
+        "type": "Remoto",
+        "flete_base": 11854,
+        "dropi_increment": 1740,
+        "sob_tasa": 1.5,
+        "sob_min": 1740,
+        "sob_tasa_co": 1.20,
+        "sob_min_co": 1200,
+        "seg": 1.5,
+        "seg_co": 1.20,
+        "cod_co": 4.30,
+        "devolucion": 0,
+        "tiers": [
+          { "from": 0, "to": 1, "base": 11854, "add": null, "mode": "fijo" },
+          { "from": 1, "to": 5, "base": null, "add": 4200, "mode": "adicional" },
+          { "from": 5, "to": null, "base": null, "add": 7000, "mode": "por kg" }
+        ]
+      }
+    ],
+    "od": null,
+    "volumen": [
+      { "range": "0 – 1.000", "pct": 0, "rate": 100, "active": true },
+      { "range": "1.001 – 5.000", "pct": 3, "rate": 97, "active": false },
+      { "range": "5.001+", "pct": 5.2, "rate": 94.8, "active": false }
+    ]
+  },
+  {
+    "id": "fixi",
+    "name": "FiXi",
+    "country": "Argentina",
+    "code": "AR",
+    "iva": 21,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/urbano.png",
+    "trayectos": [
+      {
+        "id": 1,
+        "name": "CABA",
+        "type": "Local",
+        "flete_base": 3207,
+        "dropi_increment": 750,
+        "sob_tasa": 1.5,
+        "sob_min": 750,
+        "sob_tasa_co": 1.0,
+        "sob_min_co": 300,
+        "seg": 1.5,
+        "seg_co": 1.0,
+        "cod_co": 1.0,
+        "devolucion": 0,
+        "tiers": [
+          { "from": 0, "to": 1, "base": 3207, "add": null, "mode": "fijo" },
+          { "from": 1, "to": 5, "base": null, "add": 2068, "mode": "adicional" },
+          { "from": 5, "to": 15, "base": 12000, "add": null, "mode": "mínimo" },
+          { "from": 15, "to": null, "base": null, "add": 4500, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "GBA 1",
+        "type": "Regional",
+        "flete_base": 5275,
+        "dropi_increment": 750,
+        "sob_tasa": 1.5,
+        "sob_min": 750,
+        "sob_tasa_co": 1.0,
+        "sob_min_co": 300,
+        "seg": 1.5,
+        "seg_co": 1.0,
+        "cod_co": 1.0,
+        "devolucion": 0,
+        "tiers": [
+          { "from": 0, "to": 1, "base": 5275, "add": null, "mode": "fijo" },
+          { "from": 1, "to": 5, "base": null, "add": 2400, "mode": "adicional" },
+          { "from": 5, "to": null, "base": null, "add": 5200, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "GBA 2",
+        "type": "Regional",
+        "flete_base": 6886,
+        "dropi_increment": 750,
+        "sob_tasa": 1.5,
+        "sob_min": 750,
+        "sob_tasa_co": 1.0,
+        "sob_min_co": 300,
+        "seg": 1.5,
+        "seg_co": 1.0,
+        "cod_co": 1.0,
+        "devolucion": 0,
+        "tiers": [
+          { "from": 0, "to": 1, "base": 6886, "add": null, "mode": "fijo" },
+          { "from": 1, "to": 5, "base": null, "add": 2800, "mode": "adicional" },
+          { "from": 5, "to": null, "base": null, "add": 5800, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "GBA 3",
+        "type": "Nacional",
+        "flete_base": 8171,
+        "dropi_increment": 750,
+        "sob_tasa": 1.5,
+        "sob_min": 750,
+        "sob_tasa_co": 1.0,
+        "sob_min_co": 300,
+        "seg": 1.5,
+        "seg_co": 1.0,
+        "cod_co": 1.0,
+        "devolucion": 0,
+        "tiers": [
+          { "from": 0, "to": 1, "base": 8171, "add": null, "mode": "fijo" },
+          { "from": 1, "to": 5, "base": null, "add": 3100, "mode": "adicional" },
+          { "from": 5, "to": null, "base": null, "add": 6200, "mode": "por kg" }
+        ]
+      }
+    ],
+    "od": null,
+    "volumen": []
+  },
+  {
+    "id": "envia",
+    "name": "Envía",
+    "country": "Colombia",
+    "code": "CO",
+    "iva": 19,
+    "tipos": ["express", "industrial"],
+    "logo": "assets/images/carriers/envia.png",
+    "trayectos": [
+      {
+        "id": 1,
+        "name": "Local",
+        "type": "Local",
+        "flete_base": 6800,
+        "dropi_increment": 1300,
+        "sob_tasa": 0.5,
+        "sob_min": 1500,
+        "sob_tasa_co": 0.5,
+        "sob_min_co": 1200,
+        "seg": 1.5,
+        "seg_co": 1.0,
+        "cod_co": 1.0,
+        "devolucion": 0,
+        "tiers": [
+          { "from": 0, "to": 5, "base": 6800, "add": null, "mode": "fijo" },
+          { "from": 5, "to": null, "base": null, "add": 3200, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Regional",
+        "type": "Regional",
+        "flete_base": 9500,
+        "dropi_increment": 1300,
+        "sob_tasa": 0.5,
+        "sob_min": 1500,
+        "sob_tasa_co": 0.5,
+        "sob_min_co": 1200,
+        "seg": 1.5,
+        "seg_co": 1.0,
+        "cod_co": 1.0,
+        "devolucion": 0,
+        "tiers": [
+          { "from": 0, "to": 5, "base": 9500, "add": null, "mode": "fijo" },
+          { "from": 5, "to": null, "base": null, "add": 4100, "mode": "por kg" }
+        ]
+      }
+    ],
+    "od": {
+      "origins": ["Bogotá", "Medellín", "Cali", "B/quilla"],
+      "destinations": ["Bogotá", "Medellín", "Cali", "B/quilla", "B/manga", "Cartagena"],
+      "prices": [
+        [5500, 8200, 9100, 11300, 9800, 11500],
+        [8200, 5500, 8700, 10900, 9400, 11100],
+        [9100, 8700, 5500, 12100, 10600, 12300],
+        [11300, 10900, 12100, 5500, 11200, 7800]
+      ]
+    },
+    "volumen": [
+      { "range": "0 – 1.000", "pct": 0, "rate": 100, "active": true },
+      { "range": "1.001 – 5.000", "pct": 3, "rate": 97, "active": false }
+    ]
+  },
+  {
+    "id": "coordinadora",
+    "name": "Coordinadora",
+    "country": "Colombia",
+    "code": "CO",
+    "iva": 19,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/coordinadora.png",
+    "trayectos": [
+      {
+        "id": 1,
+        "name": "Local",
+        "type": "Local",
+        "flete_base": 7200,
+        "dropi_increment": 1400,
+        "sob_tasa": 0.8,
+        "sob_min": 1600,
+        "sob_tasa_co": 0.6,
+        "sob_min_co": 1300,
+        "seg": 1.2,
+        "seg_co": 0.9,
+        "cod_co": 1.2,
+        "devolucion": 3500,
+        "tiers": [
+          { "from": 0, "to": 3, "base": 7200, "add": null, "mode": "fijo" },
+          { "from": 3, "to": 10, "base": null, "add": 2800, "mode": "adicional" },
+          { "from": 10, "to": null, "base": null, "add": 3500, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Regional",
+        "type": "Regional",
+        "flete_base": 9800,
+        "dropi_increment": 1400,
+        "sob_tasa": 0.8,
+        "sob_min": 1600,
+        "sob_tasa_co": 0.6,
+        "sob_min_co": 1300,
+        "seg": 1.2,
+        "seg_co": 0.9,
+        "cod_co": 1.2,
+        "devolucion": 4200,
+        "tiers": [
+          { "from": 0, "to": 3, "base": 9800, "add": null, "mode": "fijo" },
+          { "from": 3, "to": 10, "base": null, "add": 3600, "mode": "adicional" },
+          { "from": 10, "to": null, "base": null, "add": 4500, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Nacional",
+        "type": "Nacional",
+        "flete_base": 12500,
+        "dropi_increment": 1400,
+        "sob_tasa": 0.8,
+        "sob_min": 1600,
+        "sob_tasa_co": 0.6,
+        "sob_min_co": 1300,
+        "seg": 1.2,
+        "seg_co": 0.9,
+        "cod_co": 1.2,
+        "devolucion": 5000,
+        "tiers": [
+          { "from": 0, "to": 3, "base": 12500, "add": null, "mode": "fijo" },
+          { "from": 3, "to": 10, "base": null, "add": 4200, "mode": "adicional" },
+          { "from": 10, "to": null, "base": null, "add": 5200, "mode": "por kg" }
+        ]
+      }
+    ],
+    "od": null,
+    "volumen": [
+      { "range": "0 – 1.000", "pct": 0, "rate": 100, "active": true },
+      { "range": "1.001 – 5.000", "pct": 2.5, "rate": 97.5, "active": false },
+      { "range": "5.001+", "pct": 4.5, "rate": 95.5, "active": false }
+    ]
+  },
+  {
+    "id": "servientrega",
+    "name": "Servientrega",
+    "country": "Colombia",
+    "code": "CO",
+    "iva": 19,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/servientrega.png",
+    "trayectos": [
+      {
+        "id": 1,
+        "name": "Local",
+        "type": "Local",
+        "flete_base": 6500,
+        "dropi_increment": 1200,
+        "sob_tasa": 0.6,
+        "sob_min": 1400,
+        "sob_tasa_co": 0.4,
+        "sob_min_co": 1100,
+        "seg": 1.3,
+        "seg_co": 0.8,
+        "cod_co": 0.9,
+        "devolucion": 3200,
+        "tiers": [
+          { "from": 0, "to": 5, "base": 6500, "add": null, "mode": "fijo" },
+          { "from": 5, "to": null, "base": null, "add": 2900, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Regional",
+        "type": "Regional",
+        "flete_base": 9200,
+        "dropi_increment": 1200,
+        "sob_tasa": 0.6,
+        "sob_min": 1400,
+        "sob_tasa_co": 0.4,
+        "sob_min_co": 1100,
+        "seg": 1.3,
+        "seg_co": 0.8,
+        "cod_co": 0.9,
+        "devolucion": 4000,
+        "tiers": [
+          { "from": 0, "to": 5, "base": 9200, "add": null, "mode": "fijo" },
+          { "from": 5, "to": null, "base": null, "add": 3800, "mode": "por kg" }
+        ]
+      }
+    ],
+    "od": null,
+    "volumen": [
+      { "range": "0 – 1.000", "pct": 0, "rate": 100, "active": true },
+      { "range": "1.001 – 3.000", "pct": 2, "rate": 98, "active": false }
+    ]
+  },
+  {
+    "id": "interrapidisimo",
+    "name": "Interrapidísimo",
+    "country": "Colombia",
+    "code": "CO",
+    "iva": 19,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/interrapidisimo.png",
+    "trayectos": [
+      {
+        "id": 1,
+        "name": "Local",
+        "type": "Local",
+        "flete_base": 5900,
+        "dropi_increment": 1100,
+        "sob_tasa": 0.4,
+        "sob_min": 1300,
+        "sob_tasa_co": 0.3,
+        "sob_min_co": 1000,
+        "seg": 1.0,
+        "seg_co": 0.7,
+        "cod_co": 0.8,
+        "devolucion": 2800,
+        "tiers": [
+          { "from": 0, "to": 3, "base": 5900, "add": null, "mode": "fijo" },
+          { "from": 3, "to": 8, "base": null, "add": 2500, "mode": "adicional" },
+          { "from": 8, "to": null, "base": null, "add": 3000, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Regional",
+        "type": "Regional",
+        "flete_base": 8600,
+        "dropi_increment": 1100,
+        "sob_tasa": 0.4,
+        "sob_min": 1300,
+        "sob_tasa_co": 0.3,
+        "sob_min_co": 1000,
+        "seg": 1.0,
+        "seg_co": 0.7,
+        "cod_co": 0.8,
+        "devolucion": 3500,
+        "tiers": [
+          { "from": 0, "to": 3, "base": 8600, "add": null, "mode": "fijo" },
+          { "from": 3, "to": 8, "base": null, "add": 3200, "mode": "adicional" },
+          { "from": 8, "to": null, "base": null, "add": 4000, "mode": "por kg" }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Nacional",
+        "type": "Nacional",
+        "flete_base": 11800,
+        "dropi_increment": 1100,
+        "sob_tasa": 0.4,
+        "sob_min": 1300,
+        "sob_tasa_co": 0.3,
+        "sob_min_co": 1000,
+        "seg": 1.0,
+        "seg_co": 0.7,
+        "cod_co": 0.8,
+        "devolucion": 4500,
+        "tiers": [
+          { "from": 0, "to": 3, "base": 11800, "add": null, "mode": "fijo" },
+          { "from": 3, "to": 8, "base": null, "add": 3800, "mode": "adicional" },
+          { "from": 8, "to": null, "base": null, "add": 4800, "mode": "por kg" }
+        ]
+      }
+    ],
+    "od": null,
+    "volumen": [
+      { "range": "0 – 1.000", "pct": 0, "rate": 100, "active": true },
+      { "range": "1.001 – 5.000", "pct": 3, "rate": 97, "active": false },
+      { "range": "5.001+", "pct": 5, "rate": 95, "active": false }
+    ]
+  }
+]

@@ -15,6 +15,8 @@ import historialCarteraData from '../../../../mocks/historial-cartera.json';
 import dropicardData from '../../../../mocks/dropicard.json';
 import ordersProviderData from '../../../../mocks/orders-provider.json';
 import billingDropshippersData from '../../../../mocks/billing-dropshippers.json';
+import carriersData from '../../../../mocks/carriers.json';
+import auditLogData from '../../../../mocks/audit-log.json';
 
 // Mutable in-memory copies (reset on page refresh)
 let orders = [...ordersData];
@@ -110,6 +112,16 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
   // GET /api/billing-dropshippers
   if (req.url.includes('/api/billing-dropshippers') && req.method === 'GET') {
     return of(new HttpResponse({ status: 200, body: billingDropshippersData }));
+  }
+
+  // GET /api/carriers
+  if (req.url.includes('/api/carriers') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: carriersData }));
+  }
+
+  // GET /api/audit-log
+  if (req.url.includes('/api/audit-log') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: auditLogData }));
   }
 
   return next(req);
