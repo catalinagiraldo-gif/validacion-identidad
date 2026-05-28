@@ -1,0 +1,716 @@
+<div class="page-wrapper">
+
+  <!-- ===== BREADCRUMB (M4: dinamico) ===== -->
+  <nav class="breadcrumb" aria-label="Navegacion">
+    <a class="breadcrumb-item" role="link" tabindex="0"><i class="pi pi-home"></i></a>
+    <span class="breadcrumb-separator" aria-hidden="true">&#x203A;</span>
+    <a class="breadcrumb-item" role="link" tabindex="0">Configuraciones</a>
+    <span class="breadcrumb-separator" aria-hidden="true">&#x203A;</span>
+    <ng-container *ngIf="!singleSelectedCarrier">
+      <span class="breadcrumb-item active" aria-current="page">Parametrizar Tarifas</span>
+    </ng-container>
+    <ng-container *ngIf="singleSelectedCarrier">
+      <a class="breadcrumb-item" role="link" tabindex="0">Parametrizar Tarifas</a>
+      <span class="breadcrumb-separator" aria-hidden="true">&#x203A;</span>
+      <span class="breadcrumb-item active" aria-current="page">{{ singleSelectedCarrier.name }} ({{ singleSelectedCarrier.code }})</span>
+    </ng-container>
+  </nav>
+
+  <div class="page-header">
+    <h1 class="page-title">Parametrizar Tarifas</h1>
+    <div class="country-selector">
+      <label class="country-label" for="country-select">Pa&iacute;s</label>
+      <div class="country-select-wrap">
+        <img
+          *ngIf="selectedCountry && countryFlags[selectedCountry]"
+          [src]="countryFlags[selectedCountry]"
+          class="country-flag-selected"
+          alt=""
+        />
+        <i *ngIf="!selectedCountry" class="pi pi-globe country-flag-placeholder" aria-hidden="true"></i>
+        <select
+          id="country-select"
+          class="filter-select filter-select--with-flag"
+          [ngModel]="selectedCountry"
+          (ngModelChange)="onCountryChange($event)"
+        >
+          <option value="">Todos los pa&iacute;ses</option>
+          <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LOADING SKELETON ===== -->
+  <ng-container *ngIf="loading">
+    <div class="skeleton-carousel">
+      <div class="skeleton-card" *ngFor="let s of [1,2,3,4]"></div>
+    </div>
+    <div class="skeleton-body"></div>
+  </ng-container>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- ===== CARRIER CAROUSEL ===== -->
+    <div class="carousel-section">
+      <div class="carousel-track" #carouselTrack>
+        <article
+          class="carrier-card"
+          *ngFor="let carrier of filteredCarriers; let i = index"
+          [class.selected]="isCarrierSelected(carrier.id)"
+          [style.animation-delay]="(i * 40) + 'ms'"
+        >
+          <label class="card-check-label">
+            <input type="checkbox" class="card-checkbox" [checked]="isCarrierSelected(carrier.id)" (change)="toggleCarrier(carrier.id)" />
+            <span class="checkmark"></span>
+          </label>
+          <div class="card-body" (click)="toggleCarrier(carrier.id)">
+            <div class="carrier-logo-wrap">
+              <img [src]="carrier.logo" [alt]="carrier.name" class="carrier-logo" (error)="onLogoError($event)" />
+              <span class="carrier-initial" *ngIf="!carrier.logo">{{ carrier.name.charAt(0) }}</span>
+            </div>
+            <div class="carrier-meta">
+              <span class="carrier-name">{{ carrier.name }}</span>
+              <span class="carrier-detail">{{ carrier.code }} &middot; {{ carrier.trayectos.length }} trayectos &middot; IVA {{ carrier.iva }}%</span>
+            </div>
+          </div>
+        </article>
+      </div>
+      <button class="carousel-scroll-btn" (click)="scrollCarousel()" aria-label="Desplazar carrusel" *ngIf="filteredCarriers.length > 4">
+        <i class="pi pi-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- ===== EMPTY: Country filter no results ===== -->
+    <div class="empty-state module-card" *ngIf="filteredCarriers.length === 0 && carriers.length > 0 && selectedCountry">
+      <div class="empty-icon-wrap">
+        <img *ngIf="countryFlags[selectedCountry]" [src]="countryFlags[selectedCountry]" class="empty-flag" alt="" />
+        <i *ngIf="!countryFlags[selectedCountry]" class="pi pi-map-marker"></i>
+      </div>
+      <h3>No hay transportadoras en {{ selectedCountry }}</h3>
+      <p>No se encontraron carriers configurados para este pa&iacute;s.</p>
+      <button class="btn-tertiary empty-cta" (click)="clearCountryFilter()">
+        <i class="pi pi-filter-slash" aria-hidden="true"></i> Ver todos los pa&iacute;ses
+      </button>
+    </div>
+
+    <!-- ===== EMPTY: No selection ===== -->
+    <div class="empty-state module-card" *ngIf="selectedCarrierIds.size === 0 && filteredCarriers.length > 0">
+      <div class="empty-icon-wrap"><i class="pi pi-truck"></i></div>
+      <h3>Selecciona una transportadora</h3>
+      <p>Haz clic en una o m&aacute;s tarjetas del carrusel para ver y editar sus tarifas. Selecciona dos o m&aacute;s para comparar.</p>
+    </div>
+
+    <!-- ===== MODE A: SINGLE CARRIER (Two-Pane Layout) ===== -->
+    <div class="detail-layout" *ngIf="singleSelectedCarrier">
+      <!-- LEFT PANE: carrier content -->
+      <div class="detail-main">
+        <div class="module-card">
+          <div class="single-header">
+            <div class="single-identity">
+              <img [src]="singleSelectedCarrier.logo" [alt]="singleSelectedCarrier.name" class="single-logo" (error)="onLogoError($event)" />
+              <div>
+                <h2 class="single-name">{{ singleSelectedCarrier.name }}</h2>
+                <div class="single-badges">
+                  <span class="badge badge-country">{{ singleSelectedCarrier.code }}</span>
+                  <span class="badge badge-iva">IVA {{ singleSelectedCarrier.iva }}%</span>
+                  <span class="badge" *ngFor="let tipo of singleSelectedCarrier.tipos"
+                    [ngClass]="tipo === 'express' ? 'badge-express' : 'badge-industrial'">
+                    <i class="pi" [ngClass]="tipo === 'express' ? 'pi-bolt' : 'pi-box'" aria-hidden="true"></i>
+                    {{ tipo === 'express' ? 'Express' : 'Industrial' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- EMPTY: Carrier 0 trayectos -->
+          <div class="empty-state empty-state--inline" *ngIf="singleSelectedCarrier.trayectos.length === 0">
+            <div class="empty-icon-wrap empty-icon-wrap--sm"><i class="pi pi-map"></i></div>
+            <h3>Sin trayectos configurados</h3>
+            <p>Esta transportadora no tiene trayectos configurados.</p>
+          </div>
+
+          <!-- Trayecto tabs -->
+          <ng-container *ngIf="singleSelectedCarrier.trayectos.length > 0">
+            <div class="trayecto-tabs-bar">
+              <div class="trayecto-tabs-scroll">
+                <button class="trayecto-tab"
+                  *ngFor="let trayecto of singleSelectedCarrier.trayectos; let i = index"
+                  [class.active]="activeTrayectoIndex === i"
+                  [class.has-changes]="hasTrayectoChanges(singleSelectedCarrier, trayecto.id)"
+                  (click)="selectTrayecto(i)">
+                  <span class="trayecto-tab-name">{{ trayecto.name }}</span>
+                  <span class="badge" [ngClass]="getTypeBadgeClass(trayecto.type)">{{ trayecto.type }}</span>
+                  <span class="changes-dot" *ngIf="hasTrayectoChanges(singleSelectedCarrier, trayecto.id)"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Active trayecto content -->
+            <div class="trayecto-body" *ngIf="activeTrayecto"
+              [class.saved-flash]="saveSuccessId === singleSelectedCarrier.id + '-' + activeTrayecto.id">
+
+              <!-- ===== PAIRED FIELDS GRID (Change #3) ===== -->
+              <div class="paired-fields">
+
+                <!-- Sobreflete (tasa) -->
+                <div class="paired-group">
+                  <div class="paired-group-label">Sobreflete (tasa)</div>
+                  <div class="paired-row">
+                    <div class="field-row">
+                      <label class="field-label">Sobreflete Dropi (%)</label>
+                      <div class="field-input-wrap" [class.input-error]="activeTrayecto.sob_tasa < 0" [class.input-warning]="activeTrayecto.sob_tasa > 100">
+                        <input type="number" class="field-input" [(ngModel)]="activeTrayecto.sob_tasa" step="0.1" min="0" />
+                        <span class="input-suffix">%</span>
+                      </div>
+                      <span class="field-hint-error" *ngIf="activeTrayecto.sob_tasa < 0">No se permiten valores negativos</span>
+                      <span class="field-hint-warning" *ngIf="activeTrayecto.sob_tasa >= 0 && activeTrayecto.sob_tasa > 100">Valor superior al 100%</span>
+                    </div>
+                    <div class="field-row">
+                      <label class="field-label">Sobreflete Carrier (%)</label>
+                      <div class="field-input-wrap" [class.input-error]="activeTrayecto.sob_tasa_co < 0" [class.input-warning]="activeTrayecto.sob_tasa_co > 100">
+                        <input type="number" class="field-input" [(ngModel)]="activeTrayecto.sob_tasa_co" step="0.1" min="0" />
+                        <span class="input-suffix">%</span>
+                      </div>
+                      <span class="field-hint-error" *ngIf="activeTrayecto.sob_tasa_co < 0">No se permiten valores negativos</span>
+                      <span class="field-hint-warning" *ngIf="activeTrayecto.sob_tasa_co >= 0 && activeTrayecto.sob_tasa_co > 100">Valor superior al 100%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sobreflete (minimo) -->
+                <div class="paired-group">
+                  <div class="paired-group-label">Sobreflete (m&iacute;nimo)</div>
+                  <div class="paired-row">
+                    <div class="field-row">
+                      <label class="field-label">M&iacute;n. sobreflete Dropi ($)</label>
+                      <div class="field-input-wrap" [class.input-error]="activeTrayecto.sob_min < 0">
+                        <span class="input-prefix">$</span>
+                        <input type="number" class="field-input" [(ngModel)]="activeTrayecto.sob_min" min="0" />
+                      </div>
+                      <span class="field-hint-error" *ngIf="activeTrayecto.sob_min < 0">No se permiten valores negativos</span>
+                    </div>
+                    <div class="field-row">
+                      <label class="field-label">M&iacute;n. sobreflete Carrier ($)</label>
+                      <div class="field-input-wrap" [class.input-error]="activeTrayecto.sob_min_co < 0">
+                        <span class="input-prefix">$</span>
+                        <input type="number" class="field-input" [(ngModel)]="activeTrayecto.sob_min_co" min="0" />
+                      </div>
+                      <span class="field-hint-error" *ngIf="activeTrayecto.sob_min_co < 0">No se permiten valores negativos</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Seguro -->
+                <div class="paired-group">
+                  <div class="paired-group-label">Seguro</div>
+                  <div class="paired-row">
+                    <div class="field-row">
+                      <label class="field-label">Seguro Dropi (%)</label>
+                      <div class="field-input-wrap" [class.input-error]="activeTrayecto.seg < 0" [class.input-warning]="activeTrayecto.seg > 100">
+                        <input type="number" class="field-input" [(ngModel)]="activeTrayecto.seg" step="0.1" min="0" />
+                        <span class="input-suffix">%</span>
+                      </div>
+                      <span class="field-hint-error" *ngIf="activeTrayecto.seg < 0">No se permiten valores negativos</span>
+                      <span class="field-hint-warning" *ngIf="activeTrayecto.seg >= 0 && activeTrayecto.seg > 100">Valor superior al 100%</span>
+                    </div>
+                    <div class="field-row">
+                      <label class="field-label">Seguro Carrier (%)</label>
+                      <div class="field-input-wrap" [class.input-error]="activeTrayecto.seg_co < 0" [class.input-warning]="activeTrayecto.seg_co > 100">
+                        <input type="number" class="field-input" [(ngModel)]="activeTrayecto.seg_co" step="0.1" min="0" />
+                        <span class="input-suffix">%</span>
+                      </div>
+                      <span class="field-hint-error" *ngIf="activeTrayecto.seg_co < 0">No se permiten valores negativos</span>
+                      <span class="field-hint-warning" *ngIf="activeTrayecto.seg_co >= 0 && activeTrayecto.seg_co > 100">Valor superior al 100%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Incremento + COD -->
+                <div class="paired-group">
+                  <div class="paired-row">
+                    <div class="field-row">
+                      <label class="field-label">Incremento Dropi ($)</label>
+                      <div class="field-input-wrap" [class.input-error]="activeTrayecto.dropi_increment < 0">
+                        <span class="input-prefix">$</span>
+                        <input type="number" class="field-input" [(ngModel)]="activeTrayecto.dropi_increment" min="0" />
+                      </div>
+                      <span class="field-hint-error" *ngIf="activeTrayecto.dropi_increment < 0">No se permiten valores negativos</span>
+                    </div>
+                    <div class="field-row">
+                      <label class="field-label">COD (%)</label>
+                      <div class="field-input-wrap" [class.input-error]="activeTrayecto.cod_co < 0" [class.input-warning]="activeTrayecto.cod_co > 100">
+                        <input type="number" class="field-input" [(ngModel)]="activeTrayecto.cod_co" step="0.1" min="0" />
+                        <span class="input-suffix">%</span>
+                      </div>
+                      <span class="field-hint-error" *ngIf="activeTrayecto.cod_co < 0">No se permiten valores negativos</span>
+                      <span class="field-hint-warning" *ngIf="activeTrayecto.cod_co >= 0 && activeTrayecto.cod_co > 100">Valor superior al 100%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Devolucion (solo carrier) -->
+                <div class="paired-group">
+                  <div class="paired-row">
+                    <div class="field-row" style="visibility: hidden;">
+                      <label class="field-label">&nbsp;</label>
+                      <div class="field-input-wrap"><input type="number" class="field-input" disabled /></div>
+                    </div>
+                    <div class="field-row">
+                      <label class="field-label">Devoluci&oacute;n ($)</label>
+                      <div class="field-input-wrap" [class.input-error]="activeTrayecto.devolucion < 0">
+                        <span class="input-prefix">$</span>
+                        <input type="number" class="field-input" [(ngModel)]="activeTrayecto.devolucion" min="0" />
+                      </div>
+                      <span class="field-hint-error" *ngIf="activeTrayecto.devolucion < 0">No se permiten valores negativos</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- ===== RANGOS DE PESO (Change #1: with Tipo column) ===== -->
+              <div class="section-label" style="margin-top: 24px;">RANGOS DE PESO</div>
+              <div class="table-scroll">
+                <table class="tiers-table">
+                  <thead>
+                    <tr>
+                      <th>Desde (kg)</th>
+                      <th>Hasta (kg)</th>
+                      <th>Tipo</th>
+                      <th>Precio base ($)</th>
+                      <th>KG adicional ($/kg)</th>
+                      <th>Modo</th>
+                      <th class="th-actions"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let tier of activeTrayecto.tiers; let ti = index">
+                      <!-- Desde -->
+                      <td>
+                        <ng-container *ngIf="!isEditingTierCell(ti, 'from')">
+                          <span class="tier-cell-value" (click)="startTierEdit(ti, 'from', tier.from)">{{ tier.from }}</span>
+                        </ng-container>
+                        <input *ngIf="isEditingTierCell(ti, 'from')" type="number" class="tier-edit-input"
+                          [(ngModel)]="editingTierValue" (blur)="saveTierEdit(activeTrayecto.tiers)"
+                          (keyup.enter)="saveTierEdit(activeTrayecto.tiers)" (keyup.escape)="cancelTierEdit()" autofocus min="0" />
+                      </td>
+                      <!-- Hasta -->
+                      <td>
+                        <ng-container *ngIf="!isEditingTierCell(ti, 'to')">
+                          <span class="tier-cell-value" (click)="startTierEdit(ti, 'to', tier.to)">
+                            {{ tier.to !== null ? tier.to : '&#x221E;' }}
+                          </span>
+                        </ng-container>
+                        <input *ngIf="isEditingTierCell(ti, 'to')" type="number" class="tier-edit-input"
+                          [(ngModel)]="editingTierValue" (blur)="saveTierEdit(activeTrayecto.tiers)"
+                          (keyup.enter)="saveTierEdit(activeTrayecto.tiers)" (keyup.escape)="cancelTierEdit()" autofocus />
+                      </td>
+                      <!-- Tipo (auto-badge based on Hasta value) -->
+                      <td>
+                        <span class="badge" [ngClass]="getTierTypeBadge(tier).cssClass">
+                          {{ getTierTypeBadge(tier).label }}
+                        </span>
+                      </td>
+                      <!-- Precio base -->
+                      <td>
+                        <ng-container *ngIf="!isEditingTierCell(ti, 'base')">
+                          <span class="tier-cell-value" (click)="startTierEdit(ti, 'base', tier.base)">
+                            {{ tier.base !== null ? formatCurrency(tier.base) : '&mdash;' }}
+                          </span>
+                        </ng-container>
+                        <input *ngIf="isEditingTierCell(ti, 'base')" type="number" class="tier-edit-input"
+                          [(ngModel)]="editingTierValue" (blur)="saveTierEdit(activeTrayecto.tiers)"
+                          (keyup.enter)="saveTierEdit(activeTrayecto.tiers)" (keyup.escape)="cancelTierEdit()" autofocus min="0" />
+                      </td>
+                      <!-- KG adicional -->
+                      <td>
+                        <ng-container *ngIf="!isEditingTierCell(ti, 'add')">
+                          <span class="tier-cell-value" (click)="startTierEdit(ti, 'add', tier.add)">
+                            {{ tier.add !== null ? formatCurrency(tier.add) : '&mdash;' }}
+                          </span>
+                        </ng-container>
+                        <input *ngIf="isEditingTierCell(ti, 'add')" type="number" class="tier-edit-input"
+                          [(ngModel)]="editingTierValue" (blur)="saveTierEdit(activeTrayecto.tiers)"
+                          (keyup.enter)="saveTierEdit(activeTrayecto.tiers)" (keyup.escape)="cancelTierEdit()" autofocus min="0" />
+                      </td>
+                      <!-- Modo -->
+                      <td>
+                        <ng-container *ngIf="!isEditingTierCell(ti, 'mode')">
+                          <span class="badge badge-mode tier-cell-value" (click)="startTierEdit(ti, 'mode', tier.mode)">
+                            {{ tierModeLabel(tier.mode) }}
+                          </span>
+                        </ng-container>
+                        <select *ngIf="isEditingTierCell(ti, 'mode')" class="tier-mode-select"
+                          [(ngModel)]="editingTierValue" (change)="saveTierEdit(activeTrayecto.tiers)" (blur)="saveTierEdit(activeTrayecto.tiers)">
+                          <option *ngFor="let m of tierModes" [value]="m">{{ tierModeLabel(m) }}</option>
+                        </select>
+                      </td>
+                      <!-- Acciones -->
+                      <td class="td-actions">
+                        <button class="tier-delete-btn" (click)="deleteTier(activeTrayecto, ti)"
+                          [disabled]="activeTrayecto.tiers.length <= 1" title="Eliminar rango">
+                          <i class="pi pi-trash" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <button class="btn-add-tier" (click)="addTier(activeTrayecto)">
+                <i class="pi pi-plus" aria-hidden="true"></i> Agregar rango
+              </button>
+
+              <!-- Action buttons -->
+              <div class="trayecto-actions">
+                <button class="btn-danger-text" (click)="requestDeleteTrayecto(singleSelectedCarrier, activeTrayecto.id)"
+                  [disabled]="!canDeleteTrayecto(singleSelectedCarrier)"
+                  [title]="canDeleteTrayecto(singleSelectedCarrier) ? 'Eliminar trayecto' : 'No se puede eliminar el unico trayecto'">
+                  <i class="pi pi-trash" aria-hidden="true"></i> Eliminar
+                </button>
+                <div class="trayecto-actions-right">
+                  <button class="btn-secondary" (click)="discardTrayecto(singleSelectedCarrier, activeTrayecto.id)"
+                    [disabled]="!hasTrayectoChanges(singleSelectedCarrier, activeTrayecto.id)">Descartar</button>
+                  <button class="btn-primary" (click)="saveTrayecto(singleSelectedCarrier, activeTrayecto.id)"
+                    [disabled]="!hasTrayectoChanges(singleSelectedCarrier, activeTrayecto.id)">Guardar cambios</button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- Descuentos por Volumen -->
+          <div class="volume-section" *ngIf="singleSelectedCarrier.volumen.length > 0">
+            <div class="volume-header">
+              <h3 class="volume-title">Descuentos por Volumen</h3>
+              <span class="volume-subtitle">Rangos de descuento segun cantidad de guias mensuales</span>
+            </div>
+            <table class="volume-table">
+              <thead>
+                <tr><th>Rango guias/mes</th><th>Descuento</th><th>Factor</th><th>Estado</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let vol of singleSelectedCarrier.volumen; let i = index" [class.row-active]="vol.active">
+                  <td>{{ vol.range }}</td>
+                  <td>{{ vol.pct }}%</td>
+                  <td>{{ vol.rate }}%</td>
+                  <td>
+                    <span *ngIf="vol.active" class="status-active"><i class="pi pi-check-circle"></i> Vigente</span>
+                    <button *ngIf="!vol.active" class="btn-apply" (click)="applyVolumen(singleSelectedCarrier, i)">Aplicar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANE: Embedded Simulator (Change #5) -->
+      <aside class="detail-sidebar">
+        <div class="sim-embedded">
+          <h4 class="sim-embedded-title">Simulador de ganancia</h4>
+          <p class="sim-embedded-subtitle">Ingresa los datos del flete para calcular la ganancia potencial.</p>
+
+          <div class="sim-panel-inputs">
+            <div class="sim-panel-field">
+              <label class="field-label">Valor de la orden ($)</label>
+              <div class="field-input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" class="field-input" [(ngModel)]="fabSimValor" min="1" />
+              </div>
+            </div>
+            <div class="sim-panel-field">
+              <label class="field-label">Peso (kg)</label>
+              <div class="field-input-wrap">
+                <input type="number" class="field-input" [(ngModel)]="fabSimPeso" step="0.5" min="0.1" />
+                <span class="input-suffix">kg</span>
+              </div>
+            </div>
+            <div class="sim-panel-field">
+              <label class="field-label">Trayecto</label>
+              <select class="filter-select" [(ngModel)]="fabSimTrayectoId">
+                <option *ngFor="let t of singleSelectedCarrier.trayectos" [ngValue]="t.id">{{ t.name }} ({{ t.type }})</option>
+              </select>
+            </div>
+          </div>
+
+          <ng-container *ngIf="fabSimTrayecto && fabSimValor > 0 && fabSimPeso > 0">
+            <div class="sim-panel-divider"></div>
+
+            <!-- Accordion: Valor de la orden -->
+            <div class="sim-accordion">
+              <button class="sim-accordion-header" (click)="toggleSimAccordion('order')">
+                <div class="sim-accordion-label">
+                  <span>Valor de la orden</span>
+                  <span class="sim-accordion-subtotal">{{ formatCurrency(fabSimOrderSubtotal) }}</span>
+                </div>
+                <i class="pi" [ngClass]="simAccordionOpen['order'] ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+              </button>
+              <div class="sim-accordion-body" *ngIf="simAccordionOpen['order']">
+                <div class="sim-row"><span>Valor del producto</span><span class="sim-val">{{ formatCurrency(fabSimValor) }}</span></div>
+                <div class="sim-row"><span>Flete base (rango de peso)</span><span class="sim-val">{{ formatCurrency(fabSimResult.flete) }}</span></div>
+              </div>
+            </div>
+
+            <!-- Accordion: Tarifas -->
+            <div class="sim-accordion">
+              <button class="sim-accordion-header" (click)="toggleSimAccordion('tarifas')">
+                <div class="sim-accordion-label">
+                  <span>Tarifas</span>
+                  <span class="sim-accordion-subtotal">{{ formatCurrency(fabSimTarifasSubtotal) }}</span>
+                </div>
+                <i class="pi" [ngClass]="simAccordionOpen['tarifas'] ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+              </button>
+              <div class="sim-accordion-body" *ngIf="simAccordionOpen['tarifas']">
+                <div class="sim-row"><span>Sobreflete Dropi</span><span class="sim-val">{{ formatCurrency(fabSimSobre) }}</span></div>
+                <div class="sim-row"><span>Seguro Dropi</span><span class="sim-val">{{ formatCurrency(fabSimSeg) }}</span></div>
+                <div class="sim-row"><span>Incremento Dropi</span><span class="sim-val">{{ formatCurrency(fabSimTrayecto.dropi_increment) }}</span></div>
+              </div>
+            </div>
+
+            <!-- Accordion: Impuestos sobre tarifas -->
+            <div class="sim-accordion">
+              <button class="sim-accordion-header" (click)="toggleSimAccordion('impuestos')">
+                <div class="sim-accordion-label">
+                  <span>Impuestos sobre tarifas</span>
+                  <span class="sim-accordion-subtotal">{{ formatCurrency(fabSimImpuestosSubtotal) }}</span>
+                </div>
+                <i class="pi" [ngClass]="simAccordionOpen['impuestos'] ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+              </button>
+              <div class="sim-accordion-body" *ngIf="simAccordionOpen['impuestos']">
+                <div class="sim-row"><span>COD Transportadora</span><span class="sim-val">{{ formatCurrency(fabSimCod) }}</span></div>
+                <div class="sim-row"><span>Sobreflete Transportadora</span><span class="sim-val">{{ formatCurrency(fabSimCostSobre) }}</span></div>
+                <div class="sim-row"><span>Seguro Transportadora</span><span class="sim-val">{{ formatCurrency(fabSimCostSeg) }}</span></div>
+                <div class="sim-row"><span>Devoluci&oacute;n</span><span class="sim-val">{{ formatCurrency(fabSimTrayecto.devolucion) }}</span></div>
+                <div class="sim-row"><span>IVA ({{ singleSelectedCarrier.iva }}%)</span>
+                  <span class="sim-val">{{ formatCurrency(fabSimResult.totalCosto - (fabSimResult.flete + fabSimCostSobre + fabSimCostSeg + fabSimTrayecto.devolucion)) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="sim-panel-divider"></div>
+
+            <!-- Total por flete -->
+            <div class="sim-total-flete">
+              <div class="sim-row sim-row--result">
+                <span>Total por flete</span>
+                <span class="sim-total-value" [ngClass]="fabSimResult.margen >= 15 ? 'sim-total-green' : 'sim-total-red'">
+                  {{ formatCurrency(fabSimResult.utilidad) }}
+                </span>
+              </div>
+              <div class="sim-row sim-row--result">
+                <span>Margen</span>
+                <span class="margin-badge" [ngClass]="getMarginClass(fabSimResult.margen)">{{ fabSimResult.margen | number:'1.1-1' }}%</span>
+              </div>
+            </div>
+          </ng-container>
+
+          <div class="sim-panel-empty" *ngIf="!fabSimTrayecto || fabSimValor <= 0 || fabSimPeso <= 0">
+            <i class="pi pi-calculator"></i>
+            <p>Ingresa valor, peso y trayecto para ver el desglose.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ===== MODE B: COMPARISON HEAT MAP ===== -->
+    <div class="module-card" *ngIf="isComparisonMode">
+      <div class="comparison-header">
+        <h2 class="comparison-title">Comparando: {{ comparisonTitle }}</h2>
+        <div class="comparison-controls">
+          <div class="control-group">
+            <label class="field-label" for="trayecto-type">Trayecto</label>
+            <select id="trayecto-type" class="filter-select" [(ngModel)]="selectedTrayectoType">
+              <option *ngFor="let type of getAllTrayectoTypes()" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state empty-state--inline" *ngIf="!comparisonHasResults && selectedTrayectoType">
+        <div class="empty-icon-wrap empty-icon-wrap--sm"><i class="pi pi-exclamation-triangle"></i></div>
+        <h3>Sin datos para "{{ selectedTrayectoType }}"</h3>
+        <p>Ninguno de los carriers seleccionados tiene trayectos de tipo "{{ selectedTrayectoType }}".</p>
+      </div>
+
+      <ng-container *ngIf="comparisonHasResults">
+        <div class="table-scroll">
+          <table class="heatmap-table">
+            <thead>
+              <tr>
+                <th class="heatmap-label-col">Variable</th>
+                <th *ngFor="let carrier of selectedCarriers" class="heatmap-carrier-col">
+                  <div class="heatmap-carrier-header">
+                    <img [src]="carrier.logo" [alt]="carrier.name" class="heatmap-logo" (error)="onLogoError($event)" />
+                    <span>{{ carrier.name }}</span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let field of heatFields; let fi = index">
+                <tr class="group-separator" *ngIf="fi === 0">
+                  <td [attr.colspan]="selectedCarriers.length + 1"><span class="group-label">VARIABLES DROPI</span></td>
+                </tr>
+                <tr class="group-separator" *ngIf="fi === 4">
+                  <td [attr.colspan]="selectedCarriers.length + 1"><span class="group-label">COSTOS CARRIER</span></td>
+                </tr>
+                <tr class="heatmap-row">
+                  <td class="heatmap-field-name">{{ field.label }}</td>
+                  <td *ngFor="let carrier of selectedCarriers" class="heatmap-cell" [ngClass]="getHeatCellClass(field, carrier)">
+                    <ng-container *ngIf="!isEditingHeat(carrier.id, field.key)">
+                      <span class="heatmap-value" (click)="getHeatValue(carrier, field) !== null && startHeatEdit(carrier.id, field.key, getHeatValue(carrier, field)!)"
+                        [class.editable]="getHeatValue(carrier, field) !== null">
+                        {{ formatFieldValue(getHeatValue(carrier, field), field.format) }}
+                      </span>
+                    </ng-container>
+                    <input *ngIf="isEditingHeat(carrier.id, field.key)" type="number" class="heatmap-edit-input"
+                      [(ngModel)]="editingHeatValue" (blur)="saveHeatEdit()" (keyup.enter)="saveHeatEdit()"
+                      (keyup.escape)="cancelHeatEdit()" autofocus step="0.1" min="0" />
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="margin-section">
+          <div class="margin-header">
+            <h3 class="margin-title">Simulaci&oacute;n de margen</h3>
+            <div class="margin-inputs">
+              <div class="sim-field">
+                <label class="field-label">Valor orden</label>
+                <div class="field-input-wrap compact" [class.input-warning]="simValor <= 0">
+                  <span class="input-prefix">$</span>
+                  <input type="number" class="field-input" [(ngModel)]="simValor" min="1" />
+                </div>
+                <span class="field-hint-warning" *ngIf="simValor <= 0">Ingresa un valor mayor a 0</span>
+              </div>
+              <div class="sim-field">
+                <label class="field-label">Peso (kg)</label>
+                <div class="field-input-wrap compact" [class.input-warning]="simPeso <= 0">
+                  <input type="number" class="field-input" [(ngModel)]="simPeso" step="0.5" min="0.1" />
+                  <span class="input-suffix">kg</span>
+                </div>
+                <span class="field-hint-warning" *ngIf="simPeso <= 0">Ingresa un peso mayor a 0</span>
+              </div>
+            </div>
+          </div>
+          <div class="table-scroll" *ngIf="simValid">
+            <table class="margin-table">
+              <thead><tr><th>Carrier</th><th>Total Seller</th><th>Total Costo</th><th>Utilidad</th><th>Margen %</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let row of getComparisonResults()">
+                  <td><div class="margin-carrier-name">
+                    <img [src]="row.carrier.logo" [alt]="row.carrier.name" class="margin-logo" (error)="onLogoError($event)" />
+                    {{ row.carrier.name }}
+                  </div></td>
+                  <td>{{ formatCurrency(row.result.totalSeller) }}</td>
+                  <td>{{ formatCurrency(row.result.totalCosto) }}</td>
+                  <td>{{ formatCurrency(row.result.utilidad) }}</td>
+                  <td><span class="margin-badge" [ngClass]="getMarginClass(row.result.margen)">{{ row.result.margen | number:'1.1-1' }}%</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Historial de Cambios -->
+    <div class="audit-section module-card" *ngIf="selectedCarrierIds.size > 0">
+      <button class="audit-toggle" (click)="toggleAuditHistory()">
+        <div class="audit-toggle-left">
+          <i class="pi pi-history"></i>
+          <span class="audit-toggle-title">Historial de cambios</span>
+          <span class="audit-toggle-count" *ngIf="filteredAuditLog.length > 0">{{ filteredAuditLog.length }}</span>
+        </div>
+        <i class="pi" [ngClass]="showAuditHistory ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+      </button>
+      <div class="audit-body" *ngIf="showAuditHistory">
+        <table class="audit-table" *ngIf="filteredAuditLog.length > 0">
+          <thead><tr><th>Fecha</th><th>Usuario</th><th>Trayecto</th><th>Campo</th><th>Anterior</th><th>Nuevo</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let entry of filteredAuditLog">
+              <td class="cell-date">{{ formatDate(entry.fecha) }}</td>
+              <td><div class="audit-user"><span class="audit-avatar">{{ entry.usuario.charAt(0) }}</span>{{ entry.usuario }}</div></td>
+              <td><span class="audit-trayecto-pill">{{ entry.trayecto }}</span></td>
+              <td>{{ entry.campo }}</td>
+              <td><span class="audit-val old">{{ formatAuditValue(entry.campo, entry.anterior) }}</span></td>
+              <td><span class="audit-val new">{{ formatAuditValue(entry.campo, entry.nuevo) }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="audit-empty" *ngIf="filteredAuditLog.length === 0"><p>No hay cambios registrados para esta transportadora.</p></div>
+      </div>
+    </div>
+
+  </ng-container>
+
+  <!-- ===== DIALOGS ===== -->
+
+  <!-- Save Confirm -->
+  <div class="dialog-overlay" *ngIf="showConfirmDialog" (click)="cancelConfirm()">
+    <div class="dialog-modal" (click)="$event.stopPropagation()" role="dialog">
+      <button class="dialog-close" (click)="cancelConfirm()"><i class="pi pi-times"></i></button>
+      <div class="dialog-mascot"><img src="assets/images/configuraciones/naranja-pregunta.png" alt="" /></div>
+      <div class="dialog-text">
+        <h4 class="dialog-title">&iquest;Confirmar cambios?</h4>
+        <p class="dialog-body">Los siguientes cambios se aplicar&aacute;n a las tarifas de este trayecto. Esta acci&oacute;n no se puede deshacer.</p>
+      </div>
+      <div class="dialog-changes" *ngIf="confirmChanges.length > 0">
+        <div class="dialog-change" *ngFor="let change of confirmChanges">
+          <span class="change-campo">{{ change.campo }}</span>
+          <span class="change-values">
+            <span class="change-old">{{ change.anterior }}</span>
+            <i class="pi pi-arrow-right" aria-hidden="true"></i>
+            <span class="change-new">{{ change.nuevo }}</span>
+          </span>
+        </div>
+      </div>
+      <div class="dialog-buttons">
+        <button class="dialog-btn secondary" (click)="cancelConfirm()">Cancelar</button>
+        <button class="dialog-btn primary" (click)="executeSave()">Aplicar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm -->
+  <div class="dialog-overlay" *ngIf="showDeleteDialog" (click)="cancelDelete()">
+    <div class="dialog-modal dialog-modal--danger" (click)="$event.stopPropagation()" role="dialog">
+      <button class="dialog-close" (click)="cancelDelete()"><i class="pi pi-times"></i></button>
+      <div class="dialog-mascot dialog-mascot--danger"><i class="pi pi-exclamation-triangle"></i></div>
+      <div class="dialog-text">
+        <h4 class="dialog-title">&iquest;Eliminar trayecto?</h4>
+        <p class="dialog-body">Se eliminar&aacute; <strong>"{{ deleteContext?.trayectoName }}"</strong> y todas sus variables financieras y rangos de peso. Esta acci&oacute;n no se puede deshacer.</p>
+      </div>
+      <div class="dialog-buttons">
+        <button class="dialog-btn secondary" (click)="cancelDelete()">Cancelar</button>
+        <button class="dialog-btn danger" (click)="executeDelete()">Eliminar trayecto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unsaved Changes -->
+  <div class="dialog-overlay" *ngIf="showUnsavedDialog" (click)="cancelUnsavedDialog()">
+    <div class="dialog-modal" (click)="$event.stopPropagation()" role="dialog">
+      <button class="dialog-close" (click)="cancelUnsavedDialog()"><i class="pi pi-times"></i></button>
+      <div class="dialog-mascot dialog-mascot--warning"><i class="pi pi-exclamation-circle"></i></div>
+      <div class="dialog-text">
+        <h4 class="dialog-title">Cambios sin guardar</h4>
+        <p class="dialog-body">Tienes cambios sin guardar en: <strong>{{ getUnsavedTrayectoNames().join(', ') }}</strong>. Si cambias de transportadora, los cambios se perder&aacute;n.</p>
+      </div>
+      <div class="dialog-buttons">
+        <button class="dialog-btn secondary" (click)="cancelUnsavedDialog()">Volver a editar</button>
+        <button class="dialog-btn danger" (click)="discardAndProceed()">Descartar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" *ngIf="showToast" role="alert" [ngClass]="toastType === 'success' ? 'toast--success' : 'toast--error'">
+    <i class="pi" [ngClass]="toastType === 'success' ? 'pi-check-circle' : 'pi-times-circle'" aria-hidden="true"></i>
+    {{ toastMessage }}
+  </div>
+
+</div>

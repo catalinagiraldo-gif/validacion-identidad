@@ -1,11 +1,11 @@
 {
   "title": "Parametrizar Tarifas",
   "module": "configuraciones",
-  "description": "Panel de configuración de tarifas por transportadora. Gestión de trayectos, variables financieras, rangos de peso, mercancía industrial y simulador de rentabilidad.",
+  "description": "MVP: Parametrizador de tarifas por transportadora. Layout 3 columnas (Carrier/Dropi/Margen), sobreflete con toggle %/$, IVA switch por carrier, simulador de ganancia integrado.",
   "owner": "Michel Pino",
-  "dateAdded": "2026-05-26",
+  "dateAdded": "2026-05-28",
   "route": "/configuraciones/parametrizar-tarifas",
-  "figmaSource": "https://www.figma.com/design/PDeeZVQMyF3i6SUFCWyuQa/Parametrizaci%C3%B3n-de-tarifas?node-id=3-23",
+  "figmaSource": "https://www.figma.com/design/PDeeZVQMyF3i6SUFCWyuQa",
   "jiraTicket": "PROD-237",
   "role": "admin"
 }

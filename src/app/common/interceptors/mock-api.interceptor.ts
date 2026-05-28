@@ -16,6 +16,7 @@ import dropicardData from '../../../../mocks/dropicard.json';
 import ordersProviderData from '../../../../mocks/orders-provider.json';
 import billingDropshippersData from '../../../../mocks/billing-dropshippers.json';
 import carriersData from '../../../../mocks/carriers.json';
+import carriersMvpData from '../../../../mocks/carriers-mvp.json';
 import auditLogData from '../../../../mocks/audit-log.json';
 
 // Mutable in-memory copies (reset on page refresh)
@@ -112,6 +113,11 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
   // GET /api/billing-dropshippers
   if (req.url.includes('/api/billing-dropshippers') && req.method === 'GET') {
     return of(new HttpResponse({ status: 200, body: billingDropshippersData }));
+  }
+
+  // GET /api/carriers-mvp (must come before /api/carriers)
+  if (req.url.includes('/api/carriers-mvp') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: carriersMvpData }));
   }
 
   // GET /api/carriers

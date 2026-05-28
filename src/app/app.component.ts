@@ -16,8 +16,8 @@ import { AuthService } from './services/auth.service';
     </ng-container>
 
     <ng-template #appShell>
-      <div class="app-shell">
-        <app-sidebar />
+      <div class="app-shell" [class.app-shell--collapsed]="sidebarCollapsed">
+        <app-sidebar [(collapsed)]="sidebarCollapsed" />
         <div class="app-shell__main">
           <app-header />
           <main class="app-shell__content">
@@ -31,6 +31,7 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
   isStandalonePage = false;
+  sidebarCollapsed = false;
 
   constructor(
     public auth: AuthService,

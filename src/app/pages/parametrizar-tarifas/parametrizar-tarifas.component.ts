@@ -3,29 +3,32 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
-interface Tier {
-  from: number;
-  to: number | null;
-  base: number | null;
-  add: number | null;
-  mode: string;
+// ===== Interfaces =====
+
+interface SobrefleteConfig {
+  value: number;
+  mode: '%' | '$';
+}
+
+interface DropiConfig {
+  incremento: number;
+  sobreflete: SobrefleteConfig;
+  seguro: number;
+}
+
+interface CarrierConfig {
+  sobreflete: SobrefleteConfig;
+  seguro: number;
+  cod: number;
+  devolucion: number;
 }
 
 interface Trayecto {
   id: number;
   name: string;
   type: string;
-  flete_base: number;
-  dropi_increment: number;
-  sob_tasa: number;
-  sob_min: number;
-  sob_tasa_co: number;
-  sob_min_co: number;
-  seg: number;
-  seg_co: number;
-  cod_co: number;
-  devolucion: number;
-  tiers: Tier[];
+  dropi: DropiConfig;
+  carrier: CarrierConfig;
 }
 
 interface Carrier {
@@ -33,16 +36,17 @@ interface Carrier {
   name: string;
   country: string;
   code: string;
-  iva: number;
+  iva_enabled: boolean;
+  iva_dropi: number;
+  iva_carrier: number;
   tipos: string[];
   logo: string;
   trayectos: Trayecto[];
-  od: any;
+  od?: { origins: string[]; destinations: string[]; prices: number[][] };
   volumen: any[];
 }
 
 interface SimResult {
-  flete: number;
   totalSeller: number;
   totalCosto: number;
   utilidad: number;
@@ -53,7 +57,7 @@ interface HeatField {
   key: string;
   label: string;
   group: 'dropi' | 'carrier';
-  format: 'currency' | 'pct';
+  format: 'currency' | 'pct' | 'sobreflete';
 }
 
 @Component({
@@ -70,54 +74,76 @@ export class ParametrizarTarifasComponent implements OnInit {
   countries: string[] = [];
   selectedCountry = '';
   selectedCarrierIds: Set<string> = new Set();
+  loading = true;
 
   // Single-carrier mode
-  expandedTrayectoId: number | null = null;
+  activeTrayectoIndex = 0;
   trayectoSnapshots: Record<string, string> = {};
+  carrierSnapshots: Record<string, string> = {};
 
-  // Audit history
-  showAuditHistory = false;
-  auditLog: any[] = [];
+  readonly countryFlags: Record<string, string> = {
+    Argentina: 'assets/images/flags/ar.svg',
+    Colombia: 'assets/images/flags/co.svg',
+    México: 'assets/images/flags/mx.svg',
+    Ecuador: 'assets/images/flags/ec.svg',
+    Chile: 'assets/images/flags/cl.svg',
+    Perú: 'assets/images/flags/pe.svg',
+  };
 
-  // Dialog modal state
+  // Save confirm dialog
   showConfirmDialog = false;
   confirmContext: { carrierId: string; trayectoId: number } | null = null;
   confirmChanges: { campo: string; anterior: string; nuevo: string }[] = [];
   saveSuccessId: string | null = null;
 
-  // Comparison mode
-  selectedTrayectoType = '';
-  simValor = 50000;
-  simPeso = 2;
+  // Unsaved changes dialog
+  showUnsavedDialog = false;
+  pendingCarrierToggle: string | null = null;
+  pendingCountryChange: string | null = null;
 
-  // Editable heat map values (keyed by carrierId)
-  editingHeatCell: { carrierId: string; field: string } | null = null;
-  editingHeatValue = 0;
+  // Toast
+  toastMessage = '';
+  toastType: 'success' | 'error' = 'success';
+  showToast = false;
+
+  // Comparison mode
+  selectedComparisonTrayectos: Record<string, Set<number>> = {};
+  simValor = 50000;
 
   readonly heatFields: HeatField[] = [
-    { key: 'flete_base', label: 'Flete base', group: 'dropi', format: 'currency' },
-    { key: 'dropi_increment', label: 'Incremento Dropi', group: 'dropi', format: 'currency' },
-    { key: 'sob_tasa', label: 'Sobreflete Dropi', group: 'dropi', format: 'pct' },
-    { key: 'sob_min', label: 'Mín. sobreflete Dropi', group: 'dropi', format: 'currency' },
-    { key: 'seg', label: 'Seguro Dropi', group: 'dropi', format: 'pct' },
-    { key: 'sob_tasa_co', label: 'Sobreflete carrier', group: 'carrier', format: 'pct' },
-    { key: 'sob_min_co', label: 'Mín. sobreflete carrier', group: 'carrier', format: 'currency' },
-    { key: 'seg_co', label: 'Seguro carrier', group: 'carrier', format: 'pct' },
-    { key: 'cod_co', label: 'COD', group: 'carrier', format: 'pct' },
-    { key: 'devolucion', label: 'Devolución', group: 'carrier', format: 'currency' },
+    { key: 'dropi.incremento', label: 'Incremento Dropi', group: 'dropi', format: 'currency' },
+    { key: 'dropi.sobreflete', label: 'Sobreflete Dropi', group: 'dropi', format: 'sobreflete' },
+    { key: 'dropi.seguro', label: 'Seguro Dropi', group: 'dropi', format: 'pct' },
+    { key: 'carrier.sobreflete', label: 'Sobreflete Carrier', group: 'carrier', format: 'sobreflete' },
+    { key: 'carrier.seguro', label: 'Seguro Carrier', group: 'carrier', format: 'pct' },
+    { key: 'carrier.cod', label: 'COD', group: 'carrier', format: 'pct' },
+    { key: 'carrier.devolucion', label: 'Devolución', group: 'carrier', format: 'currency' },
   ];
+
+  // Simulator accordion sections
+  simAccordionOpen: Record<string, boolean> = { seller: true, carrier: false };
+
+  // FAB Simulator
+  fabSimValor = 50000;
+  fabSimTrayectoId: number | null = null;
+  fabSimOrigen = '';
+  fabSimDestino = '';
+
+  // O-D inline editing
+  editingOdCell: { row: number; col: number } | null = null;
+  editingOdValue = 0;
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.http.get<Carrier[]>('/api/carriers').subscribe(data => {
+    this.http.get<Carrier[]>('/api/carriers-mvp').subscribe(data => {
       this.carriers = data;
       this.countries = [...new Set(data.map(c => c.country))];
       if (this.countries.length > 0) {
         this.selectedCountry = this.countries[0];
       }
+      this.loading = false;
     });
-    this.http.get<any[]>('/api/audit-log').subscribe(log => this.auditLog = log);
   }
 
   // ===== Filtering =====
@@ -145,33 +171,134 @@ export class ParametrizarTarifasComponent implements OnInit {
     return this.selectedCarriers.map(c => c.name).join(' vs ');
   }
 
+  clearCountryFilter(): void {
+    this.onCountryChange('');
+  }
+
+  onCountryChange(country: string): void {
+    if (this.hasAnyUnsavedChanges()) {
+      this.pendingCountryChange = country;
+      this.showUnsavedDialog = true;
+      return;
+    }
+    this.selectedCountry = country;
+    this.resetSelection();
+  }
+
+  private resetSelection(): void {
+    this.selectedCarrierIds.clear();
+    this.activeTrayectoIndex = 0;
+    this.trayectoSnapshots = {};
+    this.carrierSnapshots = {};
+    this.selectedComparisonTrayectos = {};
+  }
+
+  // ===== Unsaved Changes Guard =====
+
+  hasAnyUnsavedChanges(): boolean {
+    if (this.selectedCarrierIds.size !== 1) return false;
+    const id = [...this.selectedCarrierIds][0];
+    const carrier = this.carriers.find(c => c.id === id);
+    if (!carrier) return false;
+    // Check carrier-level changes (IVA)
+    if (this.hasCarrierLevelChanges(carrier)) return true;
+    return carrier.trayectos.some(t => this.hasTrayectoChanges(carrier, t.id));
+  }
+
+  hasCarrierLevelChanges(carrier: Carrier): boolean {
+    const key = 'carrier-' + carrier.id;
+    if (!this.carrierSnapshots[key]) return false;
+    const snap = JSON.parse(this.carrierSnapshots[key]);
+    return carrier.iva_enabled !== snap.iva_enabled ||
+           carrier.iva_dropi !== snap.iva_dropi ||
+           carrier.iva_carrier !== snap.iva_carrier;
+  }
+
+  getUnsavedTrayectoNames(): string[] {
+    if (this.selectedCarrierIds.size !== 1) return [];
+    const id = [...this.selectedCarrierIds][0];
+    const carrier = this.carriers.find(c => c.id === id);
+    if (!carrier) return [];
+    const names: string[] = [];
+    if (this.hasCarrierLevelChanges(carrier)) names.push('IVA');
+    carrier.trayectos
+      .filter(t => this.hasTrayectoChanges(carrier, t.id))
+      .forEach(t => names.push(t.name));
+    return names;
+  }
+
+  private restoreAllSnapshots(): void {
+    if (this.selectedCarrierIds.size !== 1) return;
+    const id = [...this.selectedCarrierIds][0];
+    const carrier = this.carriers.find(c => c.id === id);
+    if (!carrier) return;
+    // Restore carrier-level
+    const carrierKey = 'carrier-' + carrier.id;
+    if (this.carrierSnapshots[carrierKey]) {
+      const snap = JSON.parse(this.carrierSnapshots[carrierKey]);
+      carrier.iva_enabled = snap.iva_enabled;
+      carrier.iva_dropi = snap.iva_dropi;
+      carrier.iva_carrier = snap.iva_carrier;
+    }
+    for (const t of carrier.trayectos) {
+      this.discardTrayecto(carrier, t.id);
+    }
+  }
+
   // ===== Carousel =====
 
   toggleCarrier(carrierId: string): void {
+    if (this.hasAnyUnsavedChanges()) {
+      this.pendingCarrierToggle = carrierId;
+      this.pendingCountryChange = null;
+      this.showUnsavedDialog = true;
+      return;
+    }
+    this.executeToggleCarrier(carrierId);
+  }
+
+  executeToggleCarrier(carrierId: string): void {
     if (this.selectedCarrierIds.has(carrierId)) {
       this.selectedCarrierIds.delete(carrierId);
     } else {
       this.selectedCarrierIds.add(carrierId);
     }
-    // Reset single-carrier state
-    this.expandedTrayectoId = null;
+    this.activeTrayectoIndex = 0;
     this.trayectoSnapshots = {};
+    this.carrierSnapshots = {};
 
-    // Take snapshots for single carrier
     if (this.singleSelectedCarrier) {
       this.takeSnapshots(this.singleSelectedCarrier);
-      if (this.singleSelectedCarrier.trayectos.length > 0) {
-        this.expandedTrayectoId = this.singleSelectedCarrier.trayectos[0].id;
-      }
+      this.initSimPanel();
     }
 
-    // Set default trayecto type for comparison
     if (this.isComparisonMode) {
-      const allTypes = this.getAllTrayectoTypes();
-      if (allTypes.length > 0 && !allTypes.includes(this.selectedTrayectoType)) {
-        this.selectedTrayectoType = allTypes[0];
-      }
+      this.initComparisonTrayectos();
     }
+  }
+
+  discardAndProceed(): void {
+    this.restoreAllSnapshots();
+    this.showUnsavedDialog = false;
+
+    if (this.pendingCarrierToggle) {
+      const pending = this.pendingCarrierToggle;
+      this.pendingCarrierToggle = null;
+      this.pendingCountryChange = null;
+      this.executeToggleCarrier(pending);
+    } else if (this.pendingCountryChange !== null) {
+      const country = this.pendingCountryChange;
+      this.pendingCarrierToggle = null;
+      this.pendingCountryChange = null;
+      this.selectedCountry = country;
+      this.resetSelection();
+    }
+  }
+
+  cancelUnsavedDialog(): void {
+    this.showUnsavedDialog = false;
+    this.pendingCarrierToggle = null;
+    this.pendingCountryChange = null;
   }
 
   isCarrierSelected(carrierId: string): boolean {
@@ -187,13 +314,27 @@ export class ParametrizarTarifasComponent implements OnInit {
   // ===== Single Carrier Mode =====
 
   takeSnapshots(carrier: Carrier): void {
+    // Carrier-level snapshot
+    this.carrierSnapshots['carrier-' + carrier.id] = JSON.stringify({
+      iva_enabled: carrier.iva_enabled,
+      iva_dropi: carrier.iva_dropi,
+      iva_carrier: carrier.iva_carrier,
+    });
     for (const t of carrier.trayectos) {
       this.trayectoSnapshots[carrier.id + '-' + t.id] = JSON.stringify(t);
     }
   }
 
-  toggleTrayecto(id: number): void {
-    this.expandedTrayectoId = this.expandedTrayectoId === id ? null : id;
+  selectTrayecto(index: number): void {
+    this.activeTrayectoIndex = index;
+    if (this.activeTrayecto) {
+      this.fabSimTrayectoId = this.activeTrayecto.id;
+    }
+  }
+
+  get activeTrayecto(): Trayecto | null {
+    if (!this.singleSelectedCarrier) return null;
+    return this.singleSelectedCarrier.trayectos[this.activeTrayectoIndex] || null;
   }
 
   hasTrayectoChanges(carrier: Carrier, trayectoId: number): boolean {
@@ -214,8 +355,23 @@ export class ParametrizarTarifasComponent implements OnInit {
     }
   }
 
+  discardAll(): void {
+    const carrier = this.singleSelectedCarrier;
+    if (!carrier) return;
+    // Restore carrier-level
+    const carrierKey = 'carrier-' + carrier.id;
+    if (this.carrierSnapshots[carrierKey]) {
+      const snap = JSON.parse(this.carrierSnapshots[carrierKey]);
+      carrier.iva_enabled = snap.iva_enabled;
+      carrier.iva_dropi = snap.iva_dropi;
+      carrier.iva_carrier = snap.iva_carrier;
+    }
+    for (const t of carrier.trayectos) {
+      this.discardTrayecto(carrier, t.id);
+    }
+  }
+
   saveTrayecto(carrier: Carrier, trayectoId: number): void {
-    if (!this.hasTrayectoChanges(carrier, trayectoId)) return;
     this.confirmContext = { carrierId: carrier.id, trayectoId };
     this.confirmChanges = this.buildChangeSummary(carrier, trayectoId);
     this.showConfirmDialog = true;
@@ -225,15 +381,22 @@ export class ParametrizarTarifasComponent implements OnInit {
     if (!this.confirmContext) return;
     const carrier = this.carriers.find(c => c.id === this.confirmContext!.carrierId);
     if (carrier) {
-      const t = carrier.trayectos.find(tr => tr.id === this.confirmContext!.trayectoId);
-      if (t) {
+      // Update carrier-level snapshot
+      this.carrierSnapshots['carrier-' + carrier.id] = JSON.stringify({
+        iva_enabled: carrier.iva_enabled,
+        iva_dropi: carrier.iva_dropi,
+        iva_carrier: carrier.iva_carrier,
+      });
+      // Update all trayecto snapshots
+      for (const t of carrier.trayectos) {
         this.trayectoSnapshots[carrier.id + '-' + t.id] = JSON.stringify(t);
-        this.saveSuccessId = carrier.id + '-' + t.id;
-        setTimeout(() => (this.saveSuccessId = null), 3000);
       }
+      this.saveSuccessId = carrier.id;
+      setTimeout(() => (this.saveSuccessId = null), 3000);
     }
     this.showConfirmDialog = false;
     this.confirmContext = null;
+    this.fireToast('Cambios guardados exitosamente', 'success');
   }
 
   cancelConfirm(): void {
@@ -242,56 +405,252 @@ export class ParametrizarTarifasComponent implements OnInit {
   }
 
   buildChangeSummary(carrier: Carrier, trayectoId: number): { campo: string; anterior: string; nuevo: string }[] {
-    const key = carrier.id + '-' + trayectoId;
-    if (!this.trayectoSnapshots[key]) return [];
-    const original: Trayecto = JSON.parse(this.trayectoSnapshots[key]);
-    const current = carrier.trayectos.find(t => t.id === trayectoId);
-    if (!current) return [];
-
-    const fields: { k: keyof Trayecto; label: string; fmt: 'currency' | 'pct' }[] = [
-      { k: 'flete_base', label: 'Flete base', fmt: 'currency' },
-      { k: 'dropi_increment', label: 'Incremento Dropi', fmt: 'currency' },
-      { k: 'sob_tasa', label: 'Sobreflete Dropi', fmt: 'pct' },
-      { k: 'sob_min', label: 'Mín. sobreflete Dropi', fmt: 'currency' },
-      { k: 'seg', label: 'Seguro Dropi', fmt: 'pct' },
-      { k: 'sob_tasa_co', label: 'Sobreflete carrier', fmt: 'pct' },
-      { k: 'sob_min_co', label: 'Mín. sobreflete carrier', fmt: 'currency' },
-      { k: 'seg_co', label: 'Seguro carrier', fmt: 'pct' },
-      { k: 'cod_co', label: 'COD', fmt: 'pct' },
-      { k: 'devolucion', label: 'Devolución', fmt: 'currency' },
-    ];
-
     const changes: { campo: string; anterior: string; nuevo: string }[] = [];
-    for (const f of fields) {
-      const oldVal = original[f.k] as number;
-      const newVal = current[f.k] as number;
-      if (oldVal !== newVal) {
-        const fmt = f.fmt === 'currency' ? (v: number) => this.formatCurrency(v) : (v: number) => v + '%';
-        changes.push({ campo: f.label, anterior: fmt(oldVal), nuevo: fmt(newVal) });
+
+    // Carrier-level changes
+    const carrierKey = 'carrier-' + carrier.id;
+    if (this.carrierSnapshots[carrierKey]) {
+      const snap = JSON.parse(this.carrierSnapshots[carrierKey]);
+      if (carrier.iva_enabled !== snap.iva_enabled) {
+        changes.push({ campo: 'Cobro de IVA', anterior: snap.iva_enabled ? 'Activo' : 'Inactivo', nuevo: carrier.iva_enabled ? 'Activo' : 'Inactivo' });
+      }
+      if (carrier.iva_dropi !== snap.iva_dropi) {
+        changes.push({ campo: 'IVA Dropi', anterior: snap.iva_dropi + '%', nuevo: carrier.iva_dropi + '%' });
+      }
+      if (carrier.iva_carrier !== snap.iva_carrier) {
+        changes.push({ campo: 'IVA Carrier', anterior: snap.iva_carrier + '%', nuevo: carrier.iva_carrier + '%' });
       }
     }
-    if (JSON.stringify(current.tiers) !== JSON.stringify(original.tiers)) {
-      changes.push({ campo: 'Rangos de peso', anterior: original.tiers.length + ' rangos', nuevo: current.tiers.length + ' rangos' });
+
+    // Trayecto-level changes for ALL trayectos
+    for (const t of carrier.trayectos) {
+      const key = carrier.id + '-' + t.id;
+      if (!this.trayectoSnapshots[key]) continue;
+      const original: Trayecto = JSON.parse(this.trayectoSnapshots[key]);
+      const prefix = carrier.trayectos.length > 1 ? `[${t.name}] ` : '';
+
+      if (t.dropi.incremento !== original.dropi.incremento) {
+        changes.push({ campo: prefix + 'Incremento Dropi', anterior: this.formatCurrency(original.dropi.incremento), nuevo: this.formatCurrency(t.dropi.incremento) });
+      }
+      if (t.dropi.sobreflete.value !== original.dropi.sobreflete.value || t.dropi.sobreflete.mode !== original.dropi.sobreflete.mode) {
+        changes.push({ campo: prefix + 'Sobreflete Dropi', anterior: this.formatSobreflete(original.dropi.sobreflete), nuevo: this.formatSobreflete(t.dropi.sobreflete) });
+      }
+      if (t.dropi.seguro !== original.dropi.seguro) {
+        changes.push({ campo: prefix + 'Seguro Dropi', anterior: original.dropi.seguro + '%', nuevo: t.dropi.seguro + '%' });
+      }
+      if (t.carrier.sobreflete.value !== original.carrier.sobreflete.value || t.carrier.sobreflete.mode !== original.carrier.sobreflete.mode) {
+        changes.push({ campo: prefix + 'Sobreflete Carrier', anterior: this.formatSobreflete(original.carrier.sobreflete), nuevo: this.formatSobreflete(t.carrier.sobreflete) });
+      }
+      if (t.carrier.seguro !== original.carrier.seguro) {
+        changes.push({ campo: prefix + 'Seguro Carrier', anterior: original.carrier.seguro + '%', nuevo: t.carrier.seguro + '%' });
+      }
+      if (t.carrier.cod !== original.carrier.cod) {
+        changes.push({ campo: prefix + 'COD', anterior: original.carrier.cod + '%', nuevo: t.carrier.cod + '%' });
+      }
+      if (t.carrier.devolucion !== original.carrier.devolucion) {
+        changes.push({ campo: prefix + 'Devolución', anterior: this.formatCurrency(original.carrier.devolucion), nuevo: this.formatCurrency(t.carrier.devolucion) });
+      }
     }
+
     return changes;
   }
 
-  addTrayecto(carrier: Carrier): void {
-    const nextId = Math.max(0, ...carrier.trayectos.map(t => t.id)) + 1;
-    const newTrayecto: Trayecto = {
-      id: nextId, name: `Trayecto ${nextId}`, type: 'Local',
-      flete_base: 0, dropi_increment: 0,
-      sob_tasa: 0, sob_min: 0, sob_tasa_co: 0, sob_min_co: 0,
-      seg: 0, seg_co: 0, cod_co: 0, devolucion: 0,
-      tiers: [{ from: 0, to: 1, base: 0, add: null, mode: 'fijo' }],
+  // ===== Simulator Accordion =====
+
+  toggleSimAccordion(section: string): void {
+    this.simAccordionOpen[section] = !this.simAccordionOpen[section];
+  }
+
+  // ===== FAB Simulator =====
+
+  initSimPanel(): void {
+    if (this.activeTrayecto) {
+      this.fabSimTrayectoId = this.activeTrayecto.id;
+    }
+    const carrier = this.singleSelectedCarrier;
+    if (carrier?.od) {
+      this.fabSimOrigen = carrier.od.origins[0] || '';
+      this.fabSimDestino = carrier.od.destinations[0] || '';
+    } else {
+      this.fabSimOrigen = '';
+      this.fabSimDestino = '';
+    }
+  }
+
+  get fabSimTrayecto(): Trayecto | null {
+    if (!this.singleSelectedCarrier || this.fabSimTrayectoId === null) return null;
+    return this.singleSelectedCarrier.trayectos.find(t => t.id === this.fabSimTrayectoId) || null;
+  }
+
+  get fabSimResult(): SimResult {
+    const carrier = this.singleSelectedCarrier;
+    const trayecto = this.fabSimTrayecto;
+    if (!carrier || !trayecto || this.fabSimValor <= 0) {
+      return { totalSeller: 0, totalCosto: 0, utilidad: 0, margen: 0 };
+    }
+    return this.calcSimResult(carrier, trayecto, this.fabSimValor);
+  }
+
+  calcSimResult(carrier: Carrier, trayecto: Trayecto, valorOrden: number): SimResult {
+    // Dropi side
+    const dropiSobre = this.calcSobrefleteValue(trayecto.dropi.sobreflete, valorOrden);
+    const seg = valorOrden * trayecto.dropi.seguro / 100;
+    const sub = dropiSobre + seg + trayecto.dropi.incremento;
+    const iva = carrier.iva_enabled ? sub * carrier.iva_dropi / 100 : 0;
+    const totalSeller = sub + iva;
+
+    // Carrier side
+    const costSobre = this.calcSobrefleteValue(trayecto.carrier.sobreflete, valorOrden);
+    const costSeg = valorOrden * trayecto.carrier.seguro / 100;
+    const costSub = costSobre + costSeg + trayecto.carrier.devolucion;
+    const costIva = carrier.iva_enabled ? costSub * carrier.iva_carrier / 100 : 0;
+    const totalCosto = costSub + costIva;
+
+    const utilidad = totalSeller - totalCosto;
+    const margen = totalSeller > 0 ? (utilidad / totalSeller) * 100 : 0;
+    return { totalSeller, totalCosto, utilidad, margen };
+  }
+
+  calcSobrefleteValue(config: SobrefleteConfig, valorOrden: number): number {
+    if (config.mode === '%') return valorOrden * config.value / 100;
+    return config.value;
+  }
+
+  // Simulator breakdown values
+  get fabSimDropiSobre(): number {
+    const t = this.fabSimTrayecto;
+    if (!t) return 0;
+    return this.calcSobrefleteValue(t.dropi.sobreflete, this.fabSimValor);
+  }
+
+  get fabSimDropiSeg(): number {
+    const t = this.fabSimTrayecto;
+    if (!t) return 0;
+    return this.fabSimValor * t.dropi.seguro / 100;
+  }
+
+  get fabSimDropiIva(): number {
+    const carrier = this.singleSelectedCarrier;
+    const t = this.fabSimTrayecto;
+    if (!carrier || !t) return 0;
+    if (!carrier.iva_enabled) return 0;
+    const sub = this.fabSimDropiSobre + this.fabSimDropiSeg + t.dropi.incremento;
+    return sub * carrier.iva_dropi / 100;
+  }
+
+  get fabSimSellerSubtotal(): number {
+    const t = this.fabSimTrayecto;
+    if (!t) return 0;
+    return this.fabSimDropiSobre + this.fabSimDropiSeg + t.dropi.incremento;
+  }
+
+  get fabSimCostSobre(): number {
+    const t = this.fabSimTrayecto;
+    if (!t) return 0;
+    return this.calcSobrefleteValue(t.carrier.sobreflete, this.fabSimValor);
+  }
+
+  get fabSimCostSeg(): number {
+    const t = this.fabSimTrayecto;
+    if (!t) return 0;
+    return this.fabSimValor * t.carrier.seguro / 100;
+  }
+
+  get fabSimCod(): number {
+    const t = this.fabSimTrayecto;
+    if (!t) return 0;
+    return this.fabSimValor * t.carrier.cod / 100;
+  }
+
+  get fabSimCostIva(): number {
+    const carrier = this.singleSelectedCarrier;
+    const t = this.fabSimTrayecto;
+    if (!carrier || !t) return 0;
+    if (!carrier.iva_enabled) return 0;
+    const costSub = this.fabSimCostSobre + this.fabSimCostSeg + t.carrier.devolucion;
+    return costSub * carrier.iva_carrier / 100;
+  }
+
+  get fabSimCarrierSubtotal(): number {
+    const t = this.fabSimTrayecto;
+    if (!t) return 0;
+    return this.fabSimCostSobre + this.fabSimCostSeg + t.carrier.devolucion;
+  }
+
+  // ===== Delta / Margin calculations (3rd column) =====
+
+  calcDeltaSobreflete(trayecto: Trayecto): { value: string; delta: number } {
+    const d = trayecto.dropi.sobreflete;
+    const c = trayecto.carrier.sobreflete;
+    if (d.mode === c.mode) {
+      const delta = d.value - c.value;
+      const symbol = d.mode === '%' ? '%' : '';
+      const prefix = d.mode === '$' ? '$' : '';
+      if (delta === 0) return { value: '0' + (d.mode === '%' ? '%' : ''), delta: 0 };
+      return {
+        value: (delta > 0 ? '+' : '') + prefix + delta.toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + symbol,
+        delta
+      };
+    }
+    // Different modes: calculate at fabSimValor
+    const ref = this.fabSimValor || 50000;
+    const dropiVal = this.calcSobrefleteValue(d, ref);
+    const carrierVal = this.calcSobrefleteValue(c, ref);
+    const delta = dropiVal - carrierVal;
+    if (delta === 0) return { value: '$0', delta: 0 };
+    return {
+      value: (delta > 0 ? '+' : '') + this.formatCurrency(delta),
+      delta
     };
-    carrier.trayectos.push(newTrayecto);
-    this.trayectoSnapshots[carrier.id + '-' + nextId] = JSON.stringify(newTrayecto);
-    this.expandedTrayectoId = nextId;
+  }
+
+  calcDeltaSeguro(trayecto: Trayecto): { value: string; delta: number } {
+    const delta = trayecto.dropi.seguro - trayecto.carrier.seguro;
+    if (delta === 0) return { value: '0%', delta: 0 };
+    return {
+      value: (delta > 0 ? '+' : '') + delta.toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + '%',
+      delta
+    };
+  }
+
+  calcGananciaEstimada(trayecto: Trayecto): number {
+    const ref = this.fabSimValor || 50000;
+    const dropiSobre = this.calcSobrefleteValue(trayecto.dropi.sobreflete, ref);
+    const carrierSobre = this.calcSobrefleteValue(trayecto.carrier.sobreflete, ref);
+    const deltaSobre = dropiSobre - carrierSobre;
+    const deltaSeg = ref * (trayecto.dropi.seguro - trayecto.carrier.seguro) / 100;
+    const incremento = trayecto.dropi.incremento;
+    return deltaSobre + deltaSeg + incremento;
+  }
+
+  // ===== O-D Matrix =====
+
+  startOdEdit(row: number, col: number, value: number): void {
+    this.editingOdCell = { row, col };
+    this.editingOdValue = value;
+  }
+
+  saveOdEdit(od: any): void {
+    if (!this.editingOdCell || !od) return;
+    od.prices[this.editingOdCell.row][this.editingOdCell.col] = this.editingOdValue;
+    this.editingOdCell = null;
+  }
+
+  cancelOdEdit(): void {
+    this.editingOdCell = null;
+  }
+
+  isEditingOd(row: number, col: number): boolean {
+    return this.editingOdCell?.row === row && this.editingOdCell?.col === col;
+  }
+
+  isDiagonal(od: any, row: number, col: number): boolean {
+    if (!od) return false;
+    return od.origins[row] === od.destinations[col];
   }
 
   applyVolumen(carrier: Carrier, index: number): void {
-    carrier.volumen.forEach((v, i) => (v.active = i === index));
+    carrier.volumen.forEach((v: any, i: number) => (v.active = i === index));
   }
 
   getTypeBadgeClass(type: string): string {
@@ -302,151 +661,114 @@ export class ParametrizarTarifasComponent implements OnInit {
     return map[type] || 'badge-info';
   }
 
+  // ===== Toast =====
+
+  fireToast(message: string, type: 'success' | 'error'): void {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.showToast = true;
+    setTimeout(() => (this.showToast = false), 3000);
+  }
+
   // ===== Comparison Mode =====
 
-  getAllTrayectoTypes(): string[] {
-    const types = new Set<string>();
-    for (const c of this.selectedCarriers) {
-      for (const t of c.trayectos) {
-        types.add(t.type);
+  initComparisonTrayectos(): void {
+    for (const carrier of this.selectedCarriers) {
+      if (!this.selectedComparisonTrayectos[carrier.id]) {
+        this.selectedComparisonTrayectos[carrier.id] = new Set();
+        if (carrier.trayectos.length > 0) {
+          this.selectedComparisonTrayectos[carrier.id].add(carrier.trayectos[0].id);
+        }
       }
     }
-    return [...types];
   }
 
-  getTrayectoForCarrier(carrier: Carrier, type: string): Trayecto | null {
-    return carrier.trayectos.find(t => t.type === type) || null;
+  isComparisonTrayectoSelected(carrierId: string, trayectoId: number): boolean {
+    return this.selectedComparisonTrayectos[carrierId]?.has(trayectoId) || false;
   }
 
-  getHeatValue(carrier: Carrier, field: HeatField): number | null {
-    const t = this.getTrayectoForCarrier(carrier, this.selectedTrayectoType);
-    if (!t) return null;
-    return (t as any)[field.key] as number;
-  }
-
-  getHeatCellClass(field: HeatField, carrier: Carrier): string {
-    const val = this.getHeatValue(carrier, field);
-    if (val === null) return 'heat-na';
-
-    const values = this.selectedCarriers
-      .map(c => this.getHeatValue(c, field))
-      .filter((v): v is number => v !== null);
-
-    if (values.length < 2) return '';
-
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    if (min === max) return '';
-
-    // For costs/rates, lower is better. For increment, lower is better too.
-    if (val === min) return 'heat-best';
-    if (val === max) return 'heat-worst';
-    return '';
-  }
-
-  startHeatEdit(carrierId: string, field: string, currentValue: number): void {
-    this.editingHeatCell = { carrierId, field };
-    this.editingHeatValue = currentValue;
-  }
-
-  saveHeatEdit(): void {
-    if (!this.editingHeatCell) return;
-    const carrier = this.carriers.find(c => c.id === this.editingHeatCell!.carrierId);
-    if (!carrier) return;
-    const t = this.getTrayectoForCarrier(carrier, this.selectedTrayectoType);
-    if (t) {
-      (t as any)[this.editingHeatCell.field] = this.editingHeatValue;
+  toggleComparisonTrayecto(carrierId: string, trayectoId: number): void {
+    if (!this.selectedComparisonTrayectos[carrierId]) {
+      this.selectedComparisonTrayectos[carrierId] = new Set();
     }
-    this.editingHeatCell = null;
+    if (this.selectedComparisonTrayectos[carrierId].has(trayectoId)) {
+      this.selectedComparisonTrayectos[carrierId].delete(trayectoId);
+    } else {
+      this.selectedComparisonTrayectos[carrierId].add(trayectoId);
+    }
   }
 
-  cancelHeatEdit(): void {
-    this.editingHeatCell = null;
+  getSelectedTrayectosForCarrier(carrier: Carrier): Trayecto[] {
+    const selected = this.selectedComparisonTrayectos[carrier.id];
+    if (!selected || selected.size === 0) return [];
+    return carrier.trayectos.filter(t => selected.has(t.id));
   }
 
-  isEditingHeat(carrierId: string, field: string): boolean {
-    return this.editingHeatCell?.carrierId === carrierId && this.editingHeatCell?.field === field;
-  }
-
-  // ===== Calculation =====
-
-  calcFlete(tiers: Tier[], peso: number): number {
-    if (!tiers?.length) return 0;
-    let accumulated = 0;
-    for (const t of tiers) {
-      const hi = t.to ?? 9999;
-      if (t.mode === 'fijo' && peso >= t.from && peso <= hi) return t.base ?? 0;
-      if (t.mode === 'mínimo' && peso >= t.from && peso <= hi) return t.base ?? 0;
-      if ((t.mode === 'adicional' || t.mode === 'por kg') && t.add && peso > t.from) {
-        const k = Math.min(peso, hi) - t.from;
-        if (k > 0) accumulated += k * t.add;
+  getComparisonRows(): { carrier: Carrier; trayecto: Trayecto; result: SimResult }[] {
+    const rows: { carrier: Carrier; trayecto: Trayecto; result: SimResult }[] = [];
+    for (const carrier of this.selectedCarriers) {
+      const trayectos = this.getSelectedTrayectosForCarrier(carrier);
+      for (const t of trayectos) {
+        rows.push({
+          carrier,
+          trayecto: t,
+          result: this.calcSimResult(carrier, t, this.simValor)
+        });
       }
     }
-    return accumulated || (tiers[0]?.base ?? 0);
+    return rows;
   }
 
-  calcMargin(carrier: Carrier, trayecto: Trayecto): SimResult {
-    const flete = this.calcFlete(trayecto.tiers, this.simPeso);
-    const sobre = Math.max(this.simValor * (trayecto.sob_tasa / 100), trayecto.sob_min);
-    const seg = this.simValor * (trayecto.seg / 100);
-    const sub = flete + sobre + seg + trayecto.dropi_increment;
-    const iva = sub * (carrier.iva / 100);
-    const totalSeller = sub + iva;
+  get comparisonHasResults(): boolean {
+    return this.getComparisonRows().length > 0;
+  }
 
-    const costSobre = Math.max(this.simValor * (trayecto.sob_tasa_co / 100), trayecto.sob_min_co);
-    const costSeg = this.simValor * (trayecto.seg_co / 100);
-    const costSub = flete + costSobre + costSeg;
-    const costIva = costSub * (carrier.iva / 100);
-    const totalCosto = costSub + costIva;
+  getHeatValue(trayecto: Trayecto, field: HeatField): number | string | null {
+    if (!trayecto) return null;
+    switch (field.key) {
+      case 'dropi.incremento': return trayecto.dropi.incremento;
+      case 'dropi.sobreflete': return this.formatSobreflete(trayecto.dropi.sobreflete);
+      case 'dropi.seguro': return trayecto.dropi.seguro;
+      case 'carrier.sobreflete': return this.formatSobreflete(trayecto.carrier.sobreflete);
+      case 'carrier.seguro': return trayecto.carrier.seguro;
+      case 'carrier.cod': return trayecto.carrier.cod;
+      case 'carrier.devolucion': return trayecto.carrier.devolucion;
+      default: return null;
+    }
+  }
 
-    const utilidad = totalSeller - totalCosto;
-    const margen = totalSeller > 0 ? (utilidad / totalSeller) * 100 : 0;
+  getHeatNumericValue(trayecto: Trayecto, field: HeatField): number | null {
+    if (!trayecto) return null;
+    switch (field.key) {
+      case 'dropi.incremento': return trayecto.dropi.incremento;
+      case 'dropi.sobreflete': return this.calcSobrefleteValue(trayecto.dropi.sobreflete, this.simValor);
+      case 'dropi.seguro': return trayecto.dropi.seguro;
+      case 'carrier.sobreflete': return this.calcSobrefleteValue(trayecto.carrier.sobreflete, this.simValor);
+      case 'carrier.seguro': return trayecto.carrier.seguro;
+      case 'carrier.cod': return trayecto.carrier.cod;
+      case 'carrier.devolucion': return trayecto.carrier.devolucion;
+      default: return null;
+    }
+  }
 
-    return { flete, totalSeller, totalCosto, utilidad, margen };
+  formatHeatValue(trayecto: Trayecto, field: HeatField): string {
+    const val = this.getHeatValue(trayecto, field);
+    if (val === null) return '—';
+    if (field.format === 'sobreflete') return val as string;
+    if (field.format === 'currency') return this.formatCurrency(val as number);
+    return (val as number).toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + '%';
   }
 
   getMarginClass(margen: number): string {
-    if (margen >= 15) return 'margin-green';
-    if (margen >= 10) return 'margin-yellow';
-    return 'margin-red';
+    if (margen < 0) return 'val-negative';     // RED — actual loss
+    if (margen < 15) return 'val-warning';      // ORANGE — low margin
+    return 'val-positive';                       // GREEN — healthy
   }
 
-  getComparisonResults(): { carrier: Carrier; trayecto: Trayecto; result: SimResult }[] {
-    return this.selectedCarriers
-      .map(c => {
-        const t = this.getTrayectoForCarrier(c, this.selectedTrayectoType);
-        if (!t) return null;
-        return { carrier: c, trayecto: t, result: this.calcMargin(c, t) };
-      })
-      .filter((r): r is { carrier: Carrier; trayecto: Trayecto; result: SimResult } => r !== null);
-  }
-
-  // ===== Audit History =====
-
-  toggleAuditHistory(): void { this.showAuditHistory = !this.showAuditHistory; }
-
-  get filteredAuditLog(): any[] {
-    if (this.selectedCarrierIds.size === 1) {
-      const id = [...this.selectedCarrierIds][0];
-      return this.auditLog.filter(e => e.carrierId === id);
-    }
-    const ids = [...this.selectedCarrierIds];
-    return this.auditLog.filter(e => ids.includes(e.carrierId));
-  }
-
-  formatDate(iso: string): string {
-    const d = new Date(iso);
-    const day = d.getDate().toString().padStart(2, '0');
-    const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-    return `${day} ${months[d.getMonth()]} ${d.getFullYear()}, ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
-  }
-
-  formatAuditValue(campo: string, valor: number): string {
-    const lower = campo.toLowerCase();
-    if (lower.includes('tasa') || lower.includes('seguro') || lower.includes('cod') || lower.includes('%')) {
-      return valor + '%';
-    }
-    return this.formatCurrency(valor);
+  getDeltaClass(delta: number): string {
+    if (delta < 0) return 'val-negative';       // RED — losing money
+    if (delta === 0) return 'val-neutral';      // GRAY
+    return 'val-positive';                       // GREEN — gaining
   }
 
   // ===== Formatting =====
@@ -461,21 +783,11 @@ export class ParametrizarTarifasComponent implements OnInit {
     return value.toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + '%';
   }
 
-  formatFieldValue(value: number | null, format: 'currency' | 'pct'): string {
-    if (format === 'currency') return this.formatCurrency(value);
-    return this.formatPct(value);
-  }
-
-  tierRangeLabel(tier: Tier): string {
-    const to = tier.to !== null ? tier.to + ' kg' : '+ kg';
-    return tier.from + ' – ' + to;
-  }
-
-  tierModeLabel(mode: string): string {
-    const map: Record<string, string> = {
-      fijo: 'Fijo', adicional: 'Adicional', 'mínimo': 'Mínimo', 'por kg': 'Por kg',
-    };
-    return map[mode] || mode;
+  formatSobreflete(config: SobrefleteConfig): string {
+    if (config.mode === '%') {
+      return config.value.toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + '%';
+    }
+    return '$' + config.value.toLocaleString('es-CO');
   }
 
   onLogoError(event: Event): void {

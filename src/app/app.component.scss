@@ -22,4 +22,10 @@
     overflow-x: hidden;
     height: calc(100vh - #{$header-height});
   }
+
+  &--collapsed {
+    .app-shell__main {
+      margin-left: $sidebar-collapsed-width;
+    }
+  }
 }

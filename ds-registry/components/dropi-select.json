@@ -1,0 +1,78 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-select",
+  "selector": "app-dropi-select",
+  "atomicLevel": "atom",
+  "source": "Figma — Select (126:782), file rcP3y6rwzaxAedc8cbMQET",
+  "description": "Dropdown select field with label, helper text, optional search, and validation states. Available in Normal (40px) and Large (48px) sizes.",
+  "designRules": [
+    "Always include a Label above the select",
+    "Helper text goes below for hints or error messages",
+    "Error state shows error-500 border and red helper text with warning icon",
+    "Focus state shows info-500 (#50a5f1) border and rotated chevron",
+    "Disabled state uses gray-50 background with gray-200 border",
+    "Dropdown panel uses shadow-medium, border-radius 12px, max 8 visible options",
+    "Optional search input inside dropdown panel for filterable lists",
+    "Chevron icon (Dropdown-down) rotates 180° when open"
+  ],
+  "inputs": {
+    "label": { "type": "string", "required": true },
+    "placeholder": { "type": "string", "default": "Placeholder" },
+    "helper": { "type": "string", "required": false },
+    "size": { "type": "enum", "values": ["normal", "large"], "default": "normal", "description": "Normal=40px, Large=48px height" },
+    "state": { "type": "enum", "values": ["default", "focus", "fill", "error", "disabled"], "default": "default" },
+    "showSearch": { "type": "boolean", "default": false, "description": "Show search input inside dropdown" },
+    "preIcon": { "type": "string", "required": false, "description": "Icon inside select left side" },
+    "tooltip": { "type": "boolean", "default": false, "description": "Show tooltip icon next to label" },
+    "options": { "type": "SelectOption[]", "required": true }
+  },
+  "optionInterface": {
+    "value": "any",
+    "label": "string"
+  },
+  "outputs": {
+    "valueChange": { "type": "EventEmitter<any>" }
+  },
+  "styles": {
+    "select": {
+      "height": { "normal": "40px", "large": "48px" },
+      "borderRadius": "var(--border-3, 12px)",
+      "border": "1px solid var(--gray-200, #c3c9d9)",
+      "focusBorder": "1px solid var(--info-500, #50a5f1)",
+      "fillBorder": "1px solid var(--gray-400, #858ea6)",
+      "errorBorder": "1px solid var(--error-500, #f46a6b)",
+      "disabledBackground": "var(--gray-50, #f0f4f9)",
+      "padding": "8px 12px",
+      "font": "Inter, 14px, Regular",
+      "textColor": "var(--gray-600, #475066)",
+      "placeholderColor": "var(--gray-500, #69738c)"
+    },
+    "label": {
+      "font": { "normal": "Inter, 12px, Regular", "large": "Inter, 14px, Regular" },
+      "color": "var(--gray-600, #475066)"
+    },
+    "helper": {
+      "font": "Inter, 12px, Regular",
+      "color": "var(--gray-600, #475066)",
+      "errorColor": "var(--error-500, #f46a6b)"
+    },
+    "dropdown": {
+      "background": "var(--white, #ffffff)",
+      "borderRadius": "var(--border-3, 12px)",
+      "shadow": "0.5px 4px 4px rgba(0, 0, 0, 0.08)",
+      "padding": "16px 16px 12px 16px",
+      "optionPadding": "12px 16px",
+      "optionHoverRadius": "var(--border-2, 8px)",
+      "optionFont": "Inter, 14px, Regular",
+      "optionColor": "var(--gray-600, #475066)",
+      "scrollBarWidth": "4px",
+      "scrollBarColor": "var(--gray-300, #a3abbf)",
+      "scrollTrackColor": "var(--gray-50, #f0f4f9)"
+    },
+    "chevron": {
+      "size": "20px",
+      "rotation": { "closed": "0deg", "open": "180deg" }
+    }
+  },
+  "usageExample": "<app-dropi-select label=\"País\" placeholder=\"Seleccionar\" [options]=\"countries\" (valueChange)=\"onCountryChange($event)\"></app-dropi-select>"
+}

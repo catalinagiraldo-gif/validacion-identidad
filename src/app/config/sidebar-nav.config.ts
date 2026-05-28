@@ -277,11 +277,11 @@ const adminNav: NavItem[] = [
       { label: 'Bancos', route: '/configuraciones/bancos' },
       { label: 'Integration Types', route: '/configuraciones/integration-types' },
       { label: 'Categoría de Usuario', route: '/configuraciones/categoria-de-usuario' },
+      { label: 'Parametrizar Tarifas', route: '/configuraciones/parametrizar-tarifas' },
     ],
   },
   { label: 'Auditorias', icon: IC + 'book-admin.svg', route: '/auditorias' },
   { label: 'Historial de cartera', icon: IC + 'time-past.svg', route: '/historial-de-cartera' },
-  { label: 'Parametrizar Tarifas', icon: IC + 'settings.svg', route: '/parametrizar-tarifas' },
   { label: 'Bodegas', icon: IC + 'warehouse.svg', route: '/bodegas' },
   { label: 'Calendario', icon: IC + 'calendar.svg', route: '/calendario' },
   {

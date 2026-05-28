@@ -21,7 +21,7 @@
         "seg": 1.5,
         "seg_co": 1.20,
         "cod_co": 4.30,
-        "devolucion": 0,
+        "devolucion": 4500,
         "tiers": [
           { "from": 0, "to": 1, "base": 5777, "add": null, "mode": "fijo" },
           { "from": 1, "to": 2, "base": null, "add": 3188, "mode": "adicional" },
@@ -44,7 +44,7 @@
         "seg": 1.5,
         "seg_co": 1.20,
         "cod_co": 4.30,
-        "devolucion": 0,
+        "devolucion": 5200,
         "tiers": [
           { "from": 0, "to": 1, "base": 7965, "add": null, "mode": "fijo" },
           { "from": 1, "to": 5, "base": null, "add": 3500, "mode": "adicional" },
@@ -65,7 +65,7 @@
         "seg": 1.5,
         "seg_co": 1.20,
         "cod_co": 4.30,
-        "devolucion": 0,
+        "devolucion": 5800,
         "tiers": [
           { "from": 0, "to": 1, "base": 9212, "add": null, "mode": "fijo" },
           { "from": 1, "to": 5, "base": null, "add": 3200, "mode": "adicional" },
@@ -86,7 +86,7 @@
         "seg": 1.5,
         "seg_co": 1.20,
         "cod_co": 4.30,
-        "devolucion": 0,
+        "devolucion": 6200,
         "tiers": [
           { "from": 0, "to": 1, "base": 10412, "add": null, "mode": "fijo" },
           { "from": 1, "to": 5, "base": null, "add": 3800, "mode": "adicional" },
@@ -106,7 +106,7 @@
         "seg": 1.5,
         "seg_co": 1.20,
         "cod_co": 4.30,
-        "devolucion": 0,
+        "devolucion": 7000,
         "tiers": [
           { "from": 0, "to": 1, "base": 11854, "add": null, "mode": "fijo" },
           { "from": 1, "to": 5, "base": null, "add": 4200, "mode": "adicional" },
@@ -143,7 +143,7 @@
         "seg": 1.5,
         "seg_co": 1.0,
         "cod_co": 1.0,
-        "devolucion": 0,
+        "devolucion": 3000,
         "tiers": [
           { "from": 0, "to": 1, "base": 3207, "add": null, "mode": "fijo" },
           { "from": 1, "to": 5, "base": null, "add": 2068, "mode": "adicional" },
@@ -164,7 +164,7 @@
         "seg": 1.5,
         "seg_co": 1.0,
         "cod_co": 1.0,
-        "devolucion": 0,
+        "devolucion": 3500,
         "tiers": [
           { "from": 0, "to": 1, "base": 5275, "add": null, "mode": "fijo" },
           { "from": 1, "to": 5, "base": null, "add": 2400, "mode": "adicional" },
@@ -184,7 +184,7 @@
         "seg": 1.5,
         "seg_co": 1.0,
         "cod_co": 1.0,
-        "devolucion": 0,
+        "devolucion": 4000,
         "tiers": [
           { "from": 0, "to": 1, "base": 6886, "add": null, "mode": "fijo" },
           { "from": 1, "to": 5, "base": null, "add": 2800, "mode": "adicional" },
@@ -204,7 +204,7 @@
         "seg": 1.5,
         "seg_co": 1.0,
         "cod_co": 1.0,
-        "devolucion": 0,
+        "devolucion": 4500,
         "tiers": [
           { "from": 0, "to": 1, "base": 8171, "add": null, "mode": "fijo" },
           { "from": 1, "to": 5, "base": null, "add": 3100, "mode": "adicional" },
@@ -237,7 +237,7 @@
         "seg": 1.5,
         "seg_co": 1.0,
         "cod_co": 1.0,
-        "devolucion": 0,
+        "devolucion": 3800,
         "tiers": [
           { "from": 0, "to": 5, "base": 6800, "add": null, "mode": "fijo" },
           { "from": 5, "to": null, "base": null, "add": 3200, "mode": "por kg" }
@@ -256,7 +256,7 @@
         "seg": 1.5,
         "seg_co": 1.0,
         "cod_co": 1.0,
-        "devolucion": 0,
+        "devolucion": 5000,
         "tiers": [
           { "from": 0, "to": 5, "base": 9500, "add": null, "mode": "fijo" },
           { "from": 5, "to": null, "base": null, "add": 4100, "mode": "por kg" }

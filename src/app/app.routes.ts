@@ -112,6 +112,13 @@ export const routes: Routes = [
             m => m.ParametrizarTarifasComponent,
           ),
       },
+      {
+        path: 'parametrizar-tarifas-industrial',
+        loadComponent: () =>
+          import('./pages/parametrizar-tarifas-industrial/parametrizar-tarifas-industrial.component').then(
+            m => m.ParametrizarTarifasIndustrialComponent,
+          ),
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: '**', redirectTo: 'home' },
     ],

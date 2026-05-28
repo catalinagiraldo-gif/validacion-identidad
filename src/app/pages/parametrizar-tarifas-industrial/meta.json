@@ -1,0 +1,11 @@
+{
+  "title": "Parametrizar Tarifas (Mercancía Industrial)",
+  "module": "configuraciones",
+  "description": "Versión con rangos de peso, mercancía industrial, historial de auditoría y simulador FAB. Preservada como referencia; el MVP activo es 'Parametrizar Tarifas'.",
+  "owner": "Michel Pino",
+  "dateAdded": "2026-05-26",
+  "route": "/configuraciones/parametrizar-tarifas-industrial",
+  "figmaSource": "https://www.figma.com/design/PDeeZVQMyF3i6SUFCWyuQa/Parametrizaci%C3%B3n-de-tarifas?node-id=3-23",
+  "jiraTicket": "PROD-237",
+  "role": "admin"
+}

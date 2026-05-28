@@ -23,6 +23,11 @@
     "dropi-breadcrumb": "components/dropi-breadcrumb.json",
     "dropi-progress": "components/dropi-progress.json",
     "dropi-sidebar": "components/dropi-sidebar.json",
-    "dropi-header": "components/dropi-header.json"
+    "dropi-header": "components/dropi-header.json",
+    "dropi-switch": "components/dropi-switch.json",
+    "dropi-select": "components/dropi-select.json",
+    "dropi-radiobutton": "components/dropi-radiobutton.json",
+    "dropi-toast": "components/dropi-toast.json",
+    "dropi-accordion": "components/dropi-accordion.json"
   }
 }
