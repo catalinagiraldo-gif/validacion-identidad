@@ -87,10 +87,10 @@ interface Provider {
         <div class="catalogo-card">
           <!-- Title -->
           <div class="catalogo-header">
-            <h3 class="catalogo-titulo">Catalogo de productos</h3>
+            <h3 class="catalogo-titulo">Catálogo de productos</h3>
           </div>
 
-          <!-- Filter toggles -->
+          <!-- Filter toggles + Search -->
           <div class="filter-toggles-row">
             <div class="toggle-group">
               <div class="toggle-item">
@@ -118,27 +118,26 @@ interface Provider {
                 </label>
               </div>
             </div>
-          </div>
-
-          <!-- Search bar -->
-          <div class="search-row">
-            <div class="search-input-wrapper">
-              <i class="pi pi-search search-icon"></i>
-              <input
-                type="text"
-                placeholder="Buscador optimizado"
-                [(ngModel)]="searchQuery"
-              />
+            <div class="search-group">
+              <div class="search-input-wrapper">
+                <i class="pi pi-search search-icon"></i>
+                <input
+                  type="text"
+                  placeholder="Buscar"
+                  [(ngModel)]="searchQuery"
+                />
+              </div>
+              <button class="btn-buscar-imagen">
+                <i class="pi pi-image"></i>
+                <span>Buscar por imagen</span>
+              </button>
             </div>
-            <button class="btn-buscar-imagen">
-              <i class="pi pi-image"></i>
-              <span>Buscar por imagen</span>
-            </button>
           </div>
 
           <!-- Filter dropdowns -->
           <div class="filter-dropdowns-row">
             <div class="filter-dropdown">
+              <span class="filter-label">Tipo de proveedor</span>
               <select>
                 <option value="">Proveedor</option>
                 <option>Suppli</option>
@@ -147,20 +146,25 @@ interface Provider {
               </select>
             </div>
             <div class="filter-price-range">
-              <input type="text" placeholder="Precio min" class="price-input" />
-              <span class="price-separator">-</span>
-              <input type="text" placeholder="Precio max" class="price-input" />
+              <span class="filter-label">Rango de precio proveedor</span>
+              <div class="price-inputs">
+                <input type="text" placeholder="0" class="price-input" />
+                <span class="price-separator">-</span>
+                <input type="text" placeholder="0" class="price-input" />
+              </div>
             </div>
             <div class="filter-dropdown">
+              <span class="filter-label">Stock</span>
               <select>
-                <option value="">Stock</option>
+                <option value="">Cantidad</option>
                 <option>Con stock</option>
                 <option>Sin stock</option>
               </select>
             </div>
             <div class="filter-dropdown">
+              <span class="filter-label">Categorías</span>
               <select>
-                <option value="">Categorias</option>
+                <option value="">Categorías</option>
                 <option>Moda</option>
                 <option>Tecnologia</option>
                 <option>Hogar</option>
@@ -169,6 +173,7 @@ interface Provider {
               </select>
             </div>
             <div class="filter-dropdown">
+              <span class="filter-label">Ciudad</span>
               <select>
                 <option value="">Ciudad</option>
                 <option>Bogota</option>
@@ -176,9 +181,9 @@ interface Provider {
                 <option>Cali</option>
               </select>
             </div>
-            <button class="btn-exportar">
-              <i class="pi pi-download"></i>
-              <span>Exportar Seleccion</span>
+            <button class="btn-aplicar-filtros">
+              <i class="pi pi-filter"></i>
+              <span>Aplicar filtros</span>
             </button>
           </div>
         </div>
@@ -186,7 +191,7 @@ interface Provider {
         <!-- Results bar -->
         <div class="results-bar">
           <div class="results-count">
-            <span class="count-text">Mas de</span>
+            <span class="count-text">Más de</span>
             <span class="count-number">60.000</span>
             <span class="count-text">productos</span>
           </div>
@@ -199,6 +204,7 @@ interface Provider {
               </button>
             </div>
             <div class="view-control">
+              <span class="view-label">Vista:</span>
               <div class="view-segmented">
                 <button
                   class="view-btn left"
@@ -244,25 +250,10 @@ interface Provider {
             >
               {{ product.tag }}
             </span>
-            <!-- Flag badge -->
-            <img
-              *ngIf="product.flag === 'Exclusivo'"
-              src="assets/images/productos/badge-exclusivo.png"
-              alt="Exclusivo"
-              class="card-flag-badge"
-            />
-            <img
-              *ngIf="product.flag === 'Premium'"
-              src="assets/images/productos/badge-premium.png"
-              alt="Premium"
-              class="card-flag-badge"
-            />
-            <img
-              *ngIf="product.flag === 'Verificado'"
-              src="assets/images/productos/badge-verified.png"
-              alt="Verificado"
-              class="card-flag-badge"
-            />
+            <!-- Flag badge (gradient pill) -->
+            <span *ngIf="product.flag" class="card-flag-badge">
+              <span class="card-flag-pill">{{ product.flag }}</span>
+            </span>
             <!-- Favorite heart -->
             <button
               class="card-fav-btn"
@@ -278,27 +269,31 @@ interface Provider {
           <div class="card-info">
             <div class="card-meta-row">
               <span class="card-category">{{ product.category }}</span>
-              <span class="card-stock" [style.color]="product.stockColor">
-                {{ product.stock }} und.
+              <span class="card-stock">
+                <span class="stock-label">Stock: </span>
+                <span class="stock-value" [style.color]="product.stockColor">{{ product.stock }}</span>
               </span>
             </div>
             <p class="card-name">{{ product.name }}</p>
-            <span class="card-provider">Proveedor: Tienda Proveedor</span>
+            <span class="card-provider">
+              <span class="provider-label">Proveedor: </span>
+              <span class="provider-name">Tienda Proveedor</span>
+            </span>
             <div class="card-prices">
               <div class="card-price-item">
-                <span class="card-price-label">Proveedor</span>
+                <span class="card-price-label">Precio proveedor</span>
                 <span class="card-price-value">{{ formatPrice(product.provPrice) }}</span>
               </div>
               <div class="card-price-item">
-                <span class="card-price-label">Sugerido</span>
-                <span class="card-price-value card-price-value--sug">{{ formatPrice(product.sugPrice) }}</span>
+                <span class="card-price-label">Precio sugerido</span>
+                <span class="card-price-value">{{ formatPrice(product.sugPrice) }}</span>
               </div>
             </div>
           </div>
 
           <!-- CTA -->
           <a class="card-cta" href="javascript:void(0)">
-            <i class="pi pi-send"></i>
+            <i class="pi pi-shopping-cart"></i>
             <span>Enviar a cliente</span>
           </a>
         </div>

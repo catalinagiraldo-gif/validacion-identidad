@@ -39,7 +39,7 @@ import { NavItem, UserRole, SIDEBAR_NAV } from '../../config/sidebar-nav.config'
             *ngIf="!item.children"
             [routerLink]="item.route"
             routerLinkActive="sidebar__item--active"
-            [routerLinkActiveOptions]="{ exact: item.route === '/home' }"
+            [routerLinkActiveOptions]="{ exact: item.route === '/old/home' }"
             class="sidebar__item"
             [title]="collapsed ? item.label : ''"
           >
