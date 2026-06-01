@@ -1,0 +1,156 @@
+<div class="login">
+  <!-- Left Panel: Form Card -->
+  <div class="login__left">
+    <div class="login__card">
+      <!-- Title -->
+      <h1 class="login__title">Bienvenido a Dropi Testers</h1>
+      <p class="login__subtitle">Portal de prototipos interactivos</p>
+
+      <!-- Google Section -->
+      <div class="login__google-section">
+        <p class="login__google-hint">Si trabajas en Dropi, ingresa con tu cuenta de Google:</p>
+        <button
+          class="login__google-btn"
+          (click)="onGoogleLogin()"
+          [disabled]="loading"
+        >
+          <img
+            *ngIf="!loading"
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google"
+            width="20"
+            height="20"
+          />
+          <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+          <span>{{ loading ? 'Conectando...' : 'Continuar con Google' }}</span>
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="login__divider">
+        <span class="login__divider-line"></span>
+        <span class="login__divider-text">o</span>
+        <span class="login__divider-line"></span>
+      </div>
+
+      <!-- Email/Password Form -->
+      <form class="login__form" (ngSubmit)="onEmailLogin()">
+        <div class="login__field">
+          <label class="login__label" for="email">Correo electr&oacute;nico</label>
+          <div class="login__input-wrapper">
+            <input
+              id="email"
+              class="login__input"
+              type="email"
+              placeholder="Ingresa tu correo"
+              [(ngModel)]="email"
+              name="email"
+            />
+          </div>
+        </div>
+
+        <div class="login__field">
+          <label class="login__label" for="password">Contrase&ntilde;a</label>
+          <div class="login__input-wrapper">
+            <input
+              id="password"
+              class="login__input login__input--password"
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="Ingresa tu contrase&ntilde;a"
+              [(ngModel)]="password"
+              name="password"
+            />
+            <button
+              type="button"
+              class="login__eye-btn"
+              (click)="togglePassword()"
+            >
+              <i class="pi" [ngClass]="showPassword ? 'pi-eye' : 'pi-eye-slash'"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="login__options">
+          <label class="login__checkbox-label">
+            <input
+              type="checkbox"
+              class="login__checkbox"
+              [(ngModel)]="rememberMe"
+              name="rememberMe"
+            />
+            <span>Recordarme</span>
+          </label>
+          <a class="login__forgot">&iquest;Olvidaste tu contrase&ntilde;a?</a>
+        </div>
+
+        <button type="submit" class="login__submit">
+          Iniciar sesi&oacute;n
+        </button>
+      </form>
+
+      <!-- Error Message -->
+      <p *ngIf="error" class="login__error">{{ error }}</p>
+
+      <!-- Footer -->
+      <p class="login__register">
+        &iquest;No tienes cuenta? <a class="login__register-link">Reg&iacute;strate</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Right Panel: Orange Banner -->
+  <div class="login__right">
+    <div class="login__banner-content">
+      <!-- Dropi Logo -->
+      <img
+        src="assets/images/dropi-logo-new.svg"
+        alt="Dropi"
+        class="login__banner-logo"
+      />
+
+      <!-- Headline -->
+      <h2 class="login__banner-title">
+        Todo lo que necesitas para hacer crecer <em>tu negocio</em>
+      </h2>
+
+      <!-- Hero Person -->
+      <div class="login__hero-container">
+        <img
+          src="assets/images/login/hero-person.png"
+          alt="Emprendedor con laptop"
+          class="login__hero-img"
+        />
+
+        <!-- Floating Cards -->
+        <div class="login__floating-card login__floating-card--ganancia">
+          <img src="assets/images/login/icon-coin.png" alt="" class="login__floating-icon" />
+          <div class="login__floating-info">
+            <span class="login__floating-label">Ganancia</span>
+            <span class="login__floating-value">+3.000 USD</span>
+          </div>
+        </div>
+
+        <div class="login__floating-card login__floating-card--product">
+          <img src="assets/images/login/product-plancha.png" alt="Plancha de pelo" class="login__floating-product-img" />
+          <span class="login__floating-product-name">Plancha de pelo</span>
+          <span class="login__floating-product-price">$30</span>
+        </div>
+
+        <div class="login__floating-card login__floating-card--tienda">
+          <img src="assets/images/login/avatar-tienda.png" alt="" class="login__floating-avatar" />
+          <div class="login__floating-info">
+            <span class="login__floating-tienda-name">Tienda Online</span>
+            <span class="login__floating-tienda-badge">Verificado</span>
+          </div>
+        </div>
+
+        <div class="login__floating-card login__floating-card--cart">
+          <img src="assets/images/login/icon-cart.png" alt="" class="login__floating-cart-icon" />
+        </div>
+      </div>
+
+      <!-- Decorative dashed circle -->
+      <div class="login__deco-circle"></div>
+    </div>
+  </div>
+</div>
