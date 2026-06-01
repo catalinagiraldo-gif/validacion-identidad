@@ -1,0 +1,562 @@
+@import 'styles/variables-new';
+
+$rail-width: 56px;
+$submenu-width: 200px;
+$submenu-compact-width: 48px;
+
+.sidebar-new {
+  position: fixed;
+  top: 53px;
+  left: 0;
+  height: calc(100vh - 53px);
+  display: flex;
+  z-index: 100;
+
+  &__rail {
+    width: $rail-width;
+    background: $neutral-white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: $space-1 $space-1 $space-2;
+    justify-content: space-between;
+  }
+
+  &__rail-modules {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+  }
+
+  &__rail-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-1;
+    width: 100%;
+    padding-top: $space-1;
+  }
+
+  &__rail-item {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-3;
+    cursor: pointer;
+    transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover:not(.sidebar-new__rail-item--active) {
+      background: $gray-50;
+    }
+
+    &--active {
+      .sidebar-new__rail-icon-bg {
+        background: $primary-500;
+      }
+
+      .sidebar-new__rail-icon {
+        color: $neutral-white;
+      }
+    }
+  }
+
+  &__rail-icon-bg {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-2;
+    transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__rail-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__rail-icon {
+    font-size: 20px;
+    color: $gray-700;
+    transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &--footer {
+      font-size: 19px;
+      color: $primary-500;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+
+  &__rail-icon-svg {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    transition: filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__rail-item--active &__rail-icon-svg {
+    filter: brightness(0) invert(1);
+  }
+
+  &__notification-dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: $primary-500;
+    border-radius: 50%;
+    border: 2px solid $neutral-white;
+  }
+
+  &__rail-separator {
+    width: 34px;
+    height: 1px;
+    background: $gray-200;
+    margin: $space-4 0;
+    flex-shrink: 0;
+  }
+
+  &__rail-footer {
+    position: relative;
+    padding: $space-5 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+
+    &:hover .sidebar-new__rail-icon--footer {
+      transform: scale(1.15);
+    }
+
+    &:hover .sidebar-new__tooltip--footer {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+      pointer-events: auto;
+    }
+  }
+
+  // --- Tooltips ---
+  &__tooltip {
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-4px);
+    background: $neutral-white;
+    color: $gray-700;
+    border-radius: $radius-3;
+    padding: $space-2 $space-4;
+    white-space: nowrap;
+    z-index: 200;
+    box-shadow: $shadow-large;
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-medium;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease 0.15s, transform 0.2s ease 0.15s;
+
+    &::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 6px solid transparent;
+      border-right-color: $neutral-white;
+    }
+
+    &--simple {
+      padding: $space-2 $space-4;
+    }
+
+    &--hidden {
+      display: none !important;
+    }
+
+    &--footer {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: $font-sm;
+      background: $primary-100;
+      color: $primary-400;
+      font-weight: $font-medium;
+      bottom: auto;
+
+      &::before {
+        border-right-color: $primary-100;
+      }
+    }
+  }
+
+  // Show tooltip on rail item hover (pure CSS - no JS needed)
+  &__rail-item:hover .sidebar-new__tooltip:not(.sidebar-new__tooltip--hidden) {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+    pointer-events: auto;
+  }
+
+  &__tooltip-title {
+    font-weight: $font-bold;
+    margin-bottom: $space-1;
+    color: $gray-700;
+    font-size: $font-md;
+  }
+
+  &__tooltip-item {
+    color: $gray-500;
+    font-size: $font-md;
+    font-weight: $font-regular;
+    padding: 2px 0;
+    cursor: pointer;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: $primary-500;
+    }
+  }
+
+  // --- Submenu Panel ---
+  &__submenu {
+    width: $submenu-width;
+    background: $gray-50;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s ease;
+
+    &--collapsed {
+      width: $submenu-compact-width;
+    }
+  }
+
+  &__submenu-inner {
+    padding: $space-4 $space-2;
+    animation: submenuFadeIn 0.25s ease;
+  }
+
+  &__submenu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 $space-2;
+    margin-bottom: $space-5;
+    height: 20px;
+  }
+
+  &__submenu-title {
+    font-size: $font-md;
+    font-weight: $font-bold;
+    color: $gray-700;
+    line-height: 1.1;
+  }
+
+  &__collapse-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: $gray-400;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: $gray-700;
+    }
+  }
+
+  &__submenu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+  }
+
+  // --- Submenu items (level 1: Catálogo, Negociaciones, etc) ---
+  &__submenu-item {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    min-height: 35px;
+    padding: 0 $space-2;
+    border-radius: $radius-2;
+    color: $gray-700;
+    font-size: $font-md;
+    font-weight: $font-regular;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background: rgba($neutral-white, 0.6);
+    }
+
+    &--active {
+      background: $neutral-white;
+      color: $primary-500;
+      font-weight: $font-medium;
+    }
+
+    &--parent {
+      cursor: pointer;
+    }
+
+    &--expanded {
+      color: $primary-500;
+      font-weight: $font-medium;
+    }
+  }
+
+  &__submenu-item-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    color: inherit;
+    opacity: 0.8;
+  }
+
+  &__submenu-item-label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // --- Badges ---
+  &__badge {
+    font-size: 10px;
+    padding: 2px $space-1;
+    border-radius: $radius-2;
+    font-weight: $font-medium;
+    line-height: 1.5;
+    flex-shrink: 0;
+
+    &--nuevo {
+      background: $primary-500;
+      color: $neutral-white;
+    }
+
+    &--beta {
+      background: $info-100;
+      color: $info-600;
+    }
+  }
+
+  &__chevron {
+    font-size: 10px;
+    color: inherit;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+
+    &--open {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__submenu-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  // --- Nested children with tree lines ---
+  &__submenu-children {
+    display: flex;
+    flex-direction: column;
+    padding-left: $space-3;
+    overflow: hidden;
+    animation: childrenExpand 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__submenu-child {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    min-height: 40px;
+    padding: 2px $space-2;
+    color: $gray-500;
+    font-size: $font-md;
+    text-decoration: none;
+    border-radius: $radius-2;
+    transition: background 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      color: $gray-700;
+    }
+
+    &--active {
+      .sidebar-new__submenu-child-content {
+        background: $neutral-white;
+        color: $primary-500;
+        font-weight: $font-medium;
+      }
+    }
+  }
+
+  &__tree-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    width: 13px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  &__tree-vert {
+    width: 1px;
+    flex: 1;
+    background: $gray-200;
+  }
+
+  &__tree-horiz {
+    width: 6px;
+    height: 1px;
+    background: $gray-200;
+    align-self: flex-end;
+  }
+
+  &__tree-vert--hidden {
+    background: transparent;
+  }
+
+  &__submenu-child-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-height: 35px;
+    padding: $space-1 $space-2;
+    border-radius: $radius-2;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  &__submenu-child-label {
+    flex: 1;
+  }
+
+  &__submenu-empty {
+    display: flex;
+    flex-direction: column;
+  }
+
+  // --- Compact View (collapsed state) ---
+  &__submenu-compact {
+    padding: $space-4 0;
+    animation: submenuFadeIn 0.25s ease;
+  }
+
+  &__compact-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0 $space-4;
+  }
+
+  &__compact-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-1;
+    padding: 0 $space-1;
+  }
+
+  &__compact-item {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-2;
+    cursor: pointer;
+    color: $gray-500;
+    font-size: 20px;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+    position: relative;
+
+    &:hover {
+      background: rgba($neutral-white, 0.8);
+      color: $gray-700;
+    }
+
+    &--active {
+      background: $neutral-white;
+      color: $primary-500;
+    }
+
+    &--nested {
+      width: 36px;
+      height: 36px;
+      font-size: 12px;
+    }
+  }
+
+  &__compact-tooltip {
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-4px);
+    background: $neutral-white;
+    color: $gray-700;
+    border-radius: $radius-2;
+    padding: $space-1 $space-2;
+    white-space: nowrap;
+    z-index: 200;
+    box-shadow: $shadow-large;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-right-color: $neutral-white;
+    }
+  }
+
+  &__compact-item:hover .sidebar-new__compact-tooltip {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+// --- Animations ---
+@keyframes submenuFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes childrenExpand {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+    transform: translateY(0);
+  }
+}

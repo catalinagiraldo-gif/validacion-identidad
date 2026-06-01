@@ -8,7 +8,7 @@
     "iva_dropi": 21,
     "iva_carrier": 21,
     "tipos": ["express"],
-    "logo": "assets/images/carriers/99minutos.png",
+    "logo": "assets/images/carriers/urbano.png",
     "trayectos": [
       {"id": 1, "name": "Trayecto 1", "type": "Local", "dropi": {"incremento": 1500, "sobreflete": {"value": 1.5, "mode": "%"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1.2, "mode": "%"}, "seguro": 1.2, "cod": 4.3, "devolucion": 0}},
       {"id": 2, "name": "Trayecto 2", "type": "Regional", "dropi": {"incremento": 1500, "sobreflete": {"value": 1.5, "mode": "%"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1.2, "mode": "%"}, "seguro": 1.2, "cod": 4.3, "devolucion": 0}},
@@ -16,7 +16,7 @@
       {"id": 4, "name": "Trayecto 4", "type": "Especial", "dropi": {"incremento": 1500, "sobreflete": {"value": 1.5, "mode": "%"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1.2, "mode": "%"}, "seguro": 1.2, "cod": 4.3, "devolucion": 0}},
       {"id": 5, "name": "TDF", "type": "Remoto", "dropi": {"incremento": 1740, "sobreflete": {"value": 1.5, "mode": "%"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1.2, "mode": "%"}, "seguro": 1.2, "cod": 4.3, "devolucion": 0}}
     ],
-    "volumen": [{"range": "0 – 1.000", "pct": 0, "rate": 100, "active": true}, {"range": "1.001 – 5.000", "pct": 3, "rate": 97, "active": false}, {"range": "5.001+", "pct": 5.2, "rate": 94.8, "active": false}]
+    "volumen": [{"range": "0 - 1.000", "pct": 0, "rate": 100, "active": true}, {"range": "1.001 - 5.000", "pct": 3, "rate": 97, "active": false}, {"range": "5.001+", "pct": 5.2, "rate": 94.8, "active": false}]
   },
   {
     "id": "fixi",
@@ -37,21 +37,21 @@
     "volumen": []
   },
   {
-    "id": "envia",
-    "name": "Envía",
+    "id": "veloces",
+    "name": "Veloces",
     "country": "Colombia",
     "code": "CO",
     "iva_enabled": true,
     "iva_dropi": 19,
     "iva_carrier": 19,
     "tipos": ["express"],
-    "logo": "assets/images/carriers/coordinadora.png",
+    "logo": "assets/images/carriers/veloces.png",
     "trayectos": [
-      {"id": 1, "name": "Local", "type": "Local", "dropi": {"incremento": 1300, "sobreflete": {"value": 1500, "mode": "$"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1200, "mode": "$"}, "seguro": 1.0, "cod": 1.0, "devolucion": 5800}},
-      {"id": 2, "name": "Regional", "type": "Regional", "dropi": {"incremento": 1300, "sobreflete": {"value": 1500, "mode": "$"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1200, "mode": "$"}, "seguro": 1.0, "cod": 1.0, "devolucion": 5800}}
+      {"id": 1, "name": "Local", "type": "Local", "dropi": {"incremento": 1100, "sobreflete": {"value": 1.2, "mode": "%"}, "seguro": 1.0}, "carrier": {"sobreflete": {"value": 0.8, "mode": "%"}, "seguro": 0.7, "cod": 1.5, "devolucion": 4200}},
+      {"id": 2, "name": "Regional", "type": "Regional", "dropi": {"incremento": 1350, "sobreflete": {"value": 1.5, "mode": "%"}, "seguro": 1.2}, "carrier": {"sobreflete": {"value": 1.0, "mode": "%"}, "seguro": 0.9, "cod": 1.5, "devolucion": 5000}},
+      {"id": 3, "name": "Nacional", "type": "Nacional", "dropi": {"incremento": 1600, "sobreflete": {"value": 1.8, "mode": "%"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1.3, "mode": "%"}, "seguro": 1.1, "cod": 1.5, "devolucion": 5800}}
     ],
-    "od": {"origins": ["Bogotá", "Medellín", "Cali", "B/quilla"], "destinations": ["Bogotá", "Medellín", "Cali", "B/quilla", "B/manga", "Cartagena"], "prices": [[5500,8200,9100,11300,9800,11500],[8200,5500,8700,10900,9400,11100],[9100,8700,5500,12100,10600,12300],[11300,10900,12100,5500,11200,7800]]},
-    "volumen": [{"range": "0 – 1.000", "pct": 0, "rate": 100, "active": true}, {"range": "1.001 – 5.000", "pct": 3, "rate": 97, "active": false}]
+    "volumen": [{"range": "0 - 500", "pct": 0, "rate": 100, "active": true}, {"range": "501 - 2.000", "pct": 2, "rate": 98, "active": false}, {"range": "2.001 - 5.000", "pct": 4, "rate": 96, "active": false}, {"range": "5.001+", "pct": 6, "rate": 94, "active": false}]
   },
   {
     "id": "coordinadora",
@@ -62,11 +62,145 @@
     "iva_dropi": 19,
     "iva_carrier": 19,
     "tipos": ["express"],
-    "logo": "assets/images/carriers/blue.png",
+    "logo": "assets/images/carriers/coordinadora.png",
     "trayectos": [
       {"id": 1, "name": "Local", "type": "Local", "dropi": {"incremento": 1400, "sobreflete": {"value": 0.8, "mode": "%"}, "seguro": 1.2}, "carrier": {"sobreflete": {"value": 0.9, "mode": "%"}, "seguro": 0.9, "cod": 1.2, "devolucion": 3500}},
       {"id": 2, "name": "Regional", "type": "Regional", "dropi": {"incremento": 1400, "sobreflete": {"value": 0.8, "mode": "%"}, "seguro": 1.2}, "carrier": {"sobreflete": {"value": 0.9, "mode": "%"}, "seguro": 0.9, "cod": 1.2, "devolucion": 3500}},
       {"id": 3, "name": "Nacional", "type": "Nacional", "dropi": {"incremento": 1600, "sobreflete": {"value": 1.0, "mode": "%"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1.1, "mode": "%"}, "seguro": 1.0, "cod": 1.2, "devolucion": 4500}}
+    ],
+    "volumen": [{"range": "0 - 1.000", "pct": 0, "rate": 100, "active": true}, {"range": "1.001 - 3.000", "pct": 2.5, "rate": 97.5, "active": false}, {"range": "3.001+", "pct": 5, "rate": 95, "active": false}]
+  },
+  {
+    "id": "domina",
+    "name": "Domina",
+    "country": "Colombia",
+    "code": "CO",
+    "iva_enabled": true,
+    "iva_dropi": 19,
+    "iva_carrier": 19,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/domina.png",
+    "trayectos": [
+      {"id": 1, "name": "Local", "type": "Local", "dropi": {"incremento": 900, "sobreflete": {"value": 1000, "mode": "$"}, "seguro": 1.0}, "carrier": {"sobreflete": {"value": 800, "mode": "$"}, "seguro": 0.8, "cod": 1.0, "devolucion": 3800}},
+      {"id": 2, "name": "Regional", "type": "Regional", "dropi": {"incremento": 1200, "sobreflete": {"value": 1400, "mode": "$"}, "seguro": 1.2}, "carrier": {"sobreflete": {"value": 1100, "mode": "$"}, "seguro": 1.0, "cod": 1.0, "devolucion": 4500}}
+    ],
+    "volumen": []
+  },
+  {
+    "id": "envia",
+    "name": "Envia",
+    "country": "Colombia",
+    "code": "CO",
+    "iva_enabled": true,
+    "iva_dropi": 19,
+    "iva_carrier": 19,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/envia.png",
+    "trayectos": [
+      {"id": 1, "name": "Local", "type": "Local", "dropi": {"incremento": 1300, "sobreflete": {"value": 1500, "mode": "$"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1200, "mode": "$"}, "seguro": 1.0, "cod": 1.0, "devolucion": 5800}},
+      {"id": 2, "name": "Regional", "type": "Regional", "dropi": {"incremento": 1300, "sobreflete": {"value": 1500, "mode": "$"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1200, "mode": "$"}, "seguro": 1.0, "cod": 1.0, "devolucion": 5800}},
+      {"id": 3, "name": "Nacional", "type": "Nacional", "dropi": {"incremento": 1500, "sobreflete": {"value": 1800, "mode": "$"}, "seguro": 1.8}, "carrier": {"sobreflete": {"value": 1500, "mode": "$"}, "seguro": 1.2, "cod": 1.0, "devolucion": 6500}}
+    ],
+    "od": {"origins": ["Bogota", "Medellin", "Cali", "B/quilla"], "destinations": ["Bogota", "Medellin", "Cali", "B/quilla", "B/manga", "Cartagena"], "prices": [[5500,8200,9100,11300,9800,11500],[8200,5500,8700,10900,9400,11100],[9100,8700,5500,12100,10600,12300],[11300,10900,12100,5500,11200,7800]]},
+    "volumen": [{"range": "0 - 1.000", "pct": 0, "rate": 100, "active": true}, {"range": "1.001 - 5.000", "pct": 3, "rate": 97, "active": false}]
+  },
+  {
+    "id": "interrapidisimo",
+    "name": "Interrapidisimo",
+    "country": "Colombia",
+    "code": "CO",
+    "iva_enabled": true,
+    "iva_dropi": 19,
+    "iva_carrier": 19,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/interrapidisimo.png",
+    "trayectos": [
+      {"id": 1, "name": "Local", "type": "Local", "dropi": {"incremento": 1000, "sobreflete": {"value": 1.0, "mode": "%"}, "seguro": 1.0}, "carrier": {"sobreflete": {"value": 0.7, "mode": "%"}, "seguro": 0.6, "cod": 1.8, "devolucion": 3200}},
+      {"id": 2, "name": "Regional", "type": "Regional", "dropi": {"incremento": 1200, "sobreflete": {"value": 1.2, "mode": "%"}, "seguro": 1.2}, "carrier": {"sobreflete": {"value": 0.9, "mode": "%"}, "seguro": 0.8, "cod": 1.8, "devolucion": 4000}},
+      {"id": 3, "name": "Nacional", "type": "Nacional", "dropi": {"incremento": 1500, "sobreflete": {"value": 1.5, "mode": "%"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1.1, "mode": "%"}, "seguro": 1.0, "cod": 1.8, "devolucion": 5200}},
+      {"id": 4, "name": "Especial", "type": "Especial", "dropi": {"incremento": 1800, "sobreflete": {"value": 2.0, "mode": "%"}, "seguro": 1.8}, "carrier": {"sobreflete": {"value": 1.5, "mode": "%"}, "seguro": 1.3, "cod": 1.8, "devolucion": 6000}}
+    ],
+    "volumen": [{"range": "0 - 500", "pct": 0, "rate": 100, "active": true}, {"range": "501 - 2.000", "pct": 1.5, "rate": 98.5, "active": false}, {"range": "2.001 - 8.000", "pct": 3.5, "rate": 96.5, "active": false}, {"range": "8.001+", "pct": 5.5, "rate": 94.5, "active": false}]
+  },
+  {
+    "id": "99minutos",
+    "name": "99minutos",
+    "country": "Colombia",
+    "code": "CO",
+    "iva_enabled": true,
+    "iva_dropi": 19,
+    "iva_carrier": 19,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/99minutos.png",
+    "trayectos": [
+      {"id": 1, "name": "Local", "type": "Local", "dropi": {"incremento": 800, "sobreflete": {"value": 0.5, "mode": "%"}, "seguro": 0.8}, "carrier": {"sobreflete": {"value": 0.3, "mode": "%"}, "seguro": 0.5, "cod": 2.0, "devolucion": 2500}},
+      {"id": 2, "name": "Regional", "type": "Regional", "dropi": {"incremento": 1100, "sobreflete": {"value": 0.8, "mode": "%"}, "seguro": 1.0}, "carrier": {"sobreflete": {"value": 0.5, "mode": "%"}, "seguro": 0.7, "cod": 2.0, "devolucion": 3500}}
+    ],
+    "volumen": [{"range": "0 - 1.000", "pct": 0, "rate": 100, "active": true}, {"range": "1.001 - 3.000", "pct": 2, "rate": 98, "active": false}, {"range": "3.001+", "pct": 4, "rate": 96, "active": false}]
+  },
+  {
+    "id": "tcc",
+    "name": "TCC",
+    "country": "Colombia",
+    "code": "CO",
+    "iva_enabled": true,
+    "iva_dropi": 19,
+    "iva_carrier": 19,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/tcc.png",
+    "trayectos": [
+      {"id": 1, "name": "Local", "type": "Local", "dropi": {"incremento": 1200, "sobreflete": {"value": 1.3, "mode": "%"}, "seguro": 1.2}, "carrier": {"sobreflete": {"value": 1.0, "mode": "%"}, "seguro": 0.9, "cod": 1.5, "devolucion": 4000}},
+      {"id": 2, "name": "Regional", "type": "Regional", "dropi": {"incremento": 1500, "sobreflete": {"value": 1.5, "mode": "%"}, "seguro": 1.5}, "carrier": {"sobreflete": {"value": 1.2, "mode": "%"}, "seguro": 1.1, "cod": 1.5, "devolucion": 5000}},
+      {"id": 3, "name": "Nacional", "type": "Nacional", "dropi": {"incremento": 1800, "sobreflete": {"value": 1.8, "mode": "%"}, "seguro": 1.8}, "carrier": {"sobreflete": {"value": 1.4, "mode": "%"}, "seguro": 1.3, "cod": 1.5, "devolucion": 6200}}
+    ],
+    "volumen": [{"range": "0 - 2.000", "pct": 0, "rate": 100, "active": true}, {"range": "2.001 - 5.000", "pct": 3, "rate": 97, "active": false}, {"range": "5.001 - 10.000", "pct": 5, "rate": 95, "active": false}, {"range": "10.001+", "pct": 7, "rate": 93, "active": false}]
+  },
+  {
+    "id": "jamvdrive",
+    "name": "Jamv-drive",
+    "country": "Colombia",
+    "code": "CO",
+    "iva_enabled": true,
+    "iva_dropi": 19,
+    "iva_carrier": 19,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/jamvdrive.png",
+    "trayectos": [
+      {"id": 1, "name": "Local", "type": "Local", "dropi": {"incremento": 950, "sobreflete": {"value": 1.0, "mode": "%"}, "seguro": 0.9}, "carrier": {"sobreflete": {"value": 0.7, "mode": "%"}, "seguro": 0.6, "cod": 1.3, "devolucion": 3000}},
+      {"id": 2, "name": "Regional", "type": "Regional", "dropi": {"incremento": 1250, "sobreflete": {"value": 1.3, "mode": "%"}, "seguro": 1.2}, "carrier": {"sobreflete": {"value": 1.0, "mode": "%"}, "seguro": 0.9, "cod": 1.3, "devolucion": 4200}}
+    ],
+    "volumen": []
+  },
+  {
+    "id": "wiilog",
+    "name": "Wiilog",
+    "country": "Colombia",
+    "code": "CO",
+    "iva_enabled": true,
+    "iva_dropi": 19,
+    "iva_carrier": 19,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/wiilog.png",
+    "trayectos": [
+      {"id": 1, "name": "Local", "type": "Local", "dropi": {"incremento": 850, "sobreflete": {"value": 900, "mode": "$"}, "seguro": 0.8}, "carrier": {"sobreflete": {"value": 700, "mode": "$"}, "seguro": 0.5, "cod": 1.2, "devolucion": 2800}},
+      {"id": 2, "name": "Regional", "type": "Regional", "dropi": {"incremento": 1100, "sobreflete": {"value": 1200, "mode": "$"}, "seguro": 1.0}, "carrier": {"sobreflete": {"value": 950, "mode": "$"}, "seguro": 0.7, "cod": 1.2, "devolucion": 3600}}
+    ],
+    "volumen": [{"range": "0 - 500", "pct": 0, "rate": 100, "active": true}, {"range": "501 - 1.500", "pct": 2, "rate": 98, "active": false}, {"range": "1.501+", "pct": 4.5, "rate": 95.5, "active": false}]
+  },
+  {
+    "id": "derocha",
+    "name": "Derocha-express",
+    "country": "Colombia",
+    "code": "CO",
+    "iva_enabled": true,
+    "iva_dropi": 19,
+    "iva_carrier": 19,
+    "tipos": ["express"],
+    "logo": "assets/images/carriers/derocha.png",
+    "trayectos": [
+      {"id": 1, "name": "Local", "type": "Local", "dropi": {"incremento": 750, "sobreflete": {"value": 0.8, "mode": "%"}, "seguro": 0.7}, "carrier": {"sobreflete": {"value": 0.5, "mode": "%"}, "seguro": 0.4, "cod": 1.0, "devolucion": 2200}},
+      {"id": 2, "name": "Regional", "type": "Regional", "dropi": {"incremento": 1000, "sobreflete": {"value": 1.0, "mode": "%"}, "seguro": 0.9}, "carrier": {"sobreflete": {"value": 0.7, "mode": "%"}, "seguro": 0.6, "cod": 1.0, "devolucion": 3000}},
+      {"id": 3, "name": "Nacional", "type": "Nacional", "dropi": {"incremento": 1300, "sobreflete": {"value": 1.5, "mode": "%"}, "seguro": 1.2}, "carrier": {"sobreflete": {"value": 1.0, "mode": "%"}, "seguro": 0.9, "cod": 1.0, "devolucion": 4200}}
     ],
     "volumen": []
   }

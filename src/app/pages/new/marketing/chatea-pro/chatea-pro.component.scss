@@ -1,0 +1,419 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Chatea Pro — Marketing Module
+// Chat automation with WhatsApp preview
+// ============================================
+
+$text-header: #495057;
+$text-paragraph: #7B8190;
+$wa-green: #075E54;
+$wa-light-green: #25D366;
+$wa-bg: #ECE5DD;
+$wa-bubble-bot: #FFFFFF;
+$wa-bubble-user: #DCF8C6;
+$wa-header-bg: #128C7E;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-4 $space-8;
+  position: relative;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-4;
+
+  .breadcrumb-item {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $text-paragraph;
+    line-height: 24px;
+
+    &.active {
+      color: $primary-500;
+      font-weight: $font-semibold;
+    }
+
+    .pi-home { font-size: 14px; }
+  }
+
+  .breadcrumb-chevron {
+    font-size: 10px;
+    color: $gray-300;
+  }
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  margin: 0 0 $space-5 0;
+}
+
+// ========== Layout ==========
+.chatea-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: $space-5;
+  min-height: 0;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ========== Flows Panel ==========
+.flows-panel {
+  background: $neutral-white;
+  border-radius: $radius-3;
+  box-shadow: $shadow-small;
+  padding: $space-5;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-4;
+}
+
+.panel-title {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-semibold;
+  color: $gray-800;
+  margin: 0;
+}
+
+.btn-add-flow {
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-2;
+  border: 1px dashed $gray-300;
+  background: transparent;
+  color: $gray-500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $primary-400;
+    color: $primary-500;
+    background: rgba($primary-500, 0.04);
+  }
+}
+
+.flows-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.flow-card {
+  padding: $space-4;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  animation: fadeInRow 0.3s ease forwards;
+  opacity: 0;
+
+  &:hover {
+    border-color: $gray-300;
+    background: $gray-50;
+  }
+
+  &--active {
+    border-color: $primary-400;
+    background: rgba($primary-500, 0.04);
+    box-shadow: 0 0 0 1px $primary-400;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $space-2;
+  }
+
+  &__name {
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-semibold;
+    color: $gray-800;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-2;
+  }
+
+  &__trigger {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $text-paragraph;
+
+    i { font-size: 12px; }
+  }
+
+  &__responses {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-500;
+  }
+}
+
+.flow-status {
+  font-size: $font-xs;
+  font-weight: $font-semibold;
+  padding: 2px 8px;
+  border-radius: $radius-4;
+
+  &--active {
+    background: rgba($success-500, 0.1);
+    color: $success-600;
+  }
+
+  &--inactive {
+    background: rgba($gray-400, 0.12);
+    color: $gray-600;
+  }
+}
+
+// ========== WhatsApp Preview ==========
+.preview-panel {
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: $bp-lg) {
+    order: -1;
+  }
+}
+
+.wa-phone-frame {
+  width: 100%;
+  max-width: 380px;
+  background: $wa-bg;
+  border-radius: $radius-3;
+  overflow: hidden;
+  box-shadow: $shadow-large;
+  display: flex;
+  flex-direction: column;
+  min-height: 520px;
+}
+
+.wa-header {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  background: $wa-header-bg;
+  color: $neutral-white;
+
+  &__back i {
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  &__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i { font-size: 16px; }
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__name {
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-semibold;
+  }
+
+  &__status {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    opacity: 0.8;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $space-4;
+
+    i {
+      font-size: 16px;
+      cursor: pointer;
+      opacity: 0.9;
+    }
+  }
+}
+
+.wa-chat-area {
+  flex: 1;
+  padding: $space-3 $space-4;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  overflow-y: auto;
+}
+
+.wa-date-divider {
+  text-align: center;
+  margin: $space-2 0;
+
+  span {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(255,255,255,0.7);
+    border-radius: $radius-2;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-600;
+  }
+}
+
+.wa-message {
+  max-width: 80%;
+  padding: $space-2 $space-3;
+  border-radius: $radius-2;
+  position: relative;
+
+  &--bot {
+    align-self: flex-start;
+    background: $wa-bubble-bot;
+    border-top-left-radius: 0;
+  }
+
+  &--user {
+    align-self: flex-end;
+    background: $wa-bubble-user;
+    border-top-right-radius: 0;
+  }
+
+  &__text {
+    font-family: $font-primary;
+    font-size: $font-md;
+    color: $gray-900;
+    margin: 0 0 2px 0;
+    line-height: $line-height-large;
+  }
+
+  &__time {
+    font-family: $font-primary;
+    font-size: 10px;
+    color: $gray-500;
+    display: block;
+    text-align: right;
+  }
+}
+
+.wa-input-bar {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-3;
+  background: $gray-50;
+
+  input {
+    flex: 1;
+    height: 36px;
+    border: none;
+    border-radius: 18px;
+    padding: 0 $space-4;
+    font-family: $font-primary;
+    font-size: $font-md;
+    background: $neutral-white;
+    color: $gray-700;
+    outline: none;
+
+    &::placeholder { color: $gray-400; }
+  }
+}
+
+.wa-input-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: $gray-500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  i { font-size: 18px; }
+}
+
+.wa-send-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: $wa-header-bg;
+  color: $neutral-white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  i { font-size: 16px; }
+}
+
+@keyframes fadeInRow {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// ========== Responsive ==========
+@media (max-width: $bp-md) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-3 $space-4;
+  }
+
+  .page-title {
+    font-size: $font-xl;
+  }
+
+  .wa-phone-frame {
+    min-height: 400px;
+  }
+}

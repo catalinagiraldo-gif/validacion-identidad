@@ -1,0 +1,443 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Academy Page — New Architecture
+// Learning hub with hero, course grid, sidebar
+// ============================================
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-5 $space-6;
+  background-color: $gray-50;
+}
+
+// --- Breadcrumb ---
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-4;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+}
+
+.breadcrumb-link {
+  color: $primary-500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $primary-600;
+  }
+}
+
+.breadcrumb-sep {
+  color: $gray-300;
+}
+
+.breadcrumb-current {
+  color: $gray-600;
+  font-weight: $font-medium;
+}
+
+// --- Page title ---
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-800;
+  margin: 0 0 $space-5 0;
+  line-height: $line-height-simple;
+}
+
+// --- Hero Banner ---
+.hero-banner {
+  position: relative;
+  background: linear-gradient(135deg, $primary-500 0%, $primary-700 100%);
+  border-radius: $radius-3;
+  padding: $space-7 $space-6;
+  margin-bottom: $space-6;
+  overflow: hidden;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
+}
+
+.hero-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $neutral-white;
+  margin: 0 0 $space-2 0;
+  line-height: $line-height-simple;
+}
+
+.hero-subtitle {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-regular;
+  color: rgba($neutral-white, 0.85);
+  margin: 0 0 $space-5 0;
+  line-height: $line-height-large;
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-3 $space-5;
+  background-color: $neutral-white;
+  color: $primary-500;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  border: none;
+  border-radius: $radius-2;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  height: 40px;
+
+  &:hover {
+    background-color: $gray-50;
+    transform: translateY(-1px);
+  }
+}
+
+// Decorative circles
+.hero-decoration {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  pointer-events: none;
+}
+
+.hero-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba($neutral-white, 0.08);
+
+  &--1 {
+    width: 200px;
+    height: 200px;
+    top: -40px;
+    right: 60px;
+  }
+
+  &--2 {
+    width: 140px;
+    height: 140px;
+    bottom: -30px;
+    right: -20px;
+  }
+}
+
+// --- Academy Layout ---
+.academy-layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: $space-6;
+}
+
+// --- Section title ---
+.section-title {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-semibold;
+  color: $gray-700;
+  margin: 0 0 $space-4 0;
+}
+
+// --- Course Grid ---
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $space-5;
+}
+
+.course-card {
+  background: $neutral-white;
+  border-radius: $radius-3;
+  overflow: hidden;
+  box-shadow: $shadow-small;
+  transition: box-shadow 0.25s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: $shadow-medium;
+    transform: translateY(-2px);
+  }
+}
+
+.course-thumbnail {
+  position: relative;
+  height: 200px;
+  display: flex;
+  align-items: flex-end;
+  padding: $space-3;
+}
+
+.course-level-badge {
+  display: inline-block;
+  padding: $space-1 $space-3;
+  background: rgba($neutral-white, 0.92);
+  border-radius: $radius-1;
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-semibold;
+  color: $gray-700;
+  backdrop-filter: blur(4px);
+}
+
+.course-body {
+  padding: $space-4;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.course-title {
+  font-family: $font-primary;
+  font-size: $font-base;
+  font-weight: $font-medium;
+  color: $gray-800;
+  margin: 0;
+  line-height: $line-height-large;
+}
+
+.course-meta {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+}
+
+// --- Progress bar ---
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background-color: $gray-100;
+  border-radius: $radius-1;
+  overflow: hidden;
+  margin-top: $space-1;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: $primary-500;
+  border-radius: $radius-1;
+  transition: width 0.6s ease;
+}
+
+.course-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.progress-text {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+  font-weight: $font-medium;
+}
+
+.course-action {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  color: $primary-500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $primary-600;
+  }
+}
+
+// --- Categories Sidebar ---
+.categories-sidebar {
+  background: $neutral-white;
+  border-radius: $radius-3;
+  padding: $space-5;
+  box-shadow: $shadow-small;
+  align-self: start;
+}
+
+.sidebar-title {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  color: $gray-700;
+  margin: 0 0 $space-3 0;
+
+  &--spaced {
+    margin-top: $space-5;
+  }
+}
+
+.category-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: $space-1 $space-3;
+  background: $gray-50;
+  border: 1px solid $gray-200;
+  border-radius: $radius-4;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $primary-300;
+    color: $primary-500;
+    background: $primary-50;
+  }
+
+  &--active {
+    background: $primary-500;
+    border-color: $primary-500;
+    color: $neutral-white;
+
+    &:hover {
+      background: $primary-600;
+      border-color: $primary-600;
+      color: $neutral-white;
+    }
+  }
+}
+
+// --- Progress Summary ---
+.progress-summary {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.progress-stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-2 0;
+  border-bottom: 1px solid $gray-100;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.stat-value {
+  font-family: $font-primary;
+  font-size: $font-xl;
+  font-weight: $font-bold;
+  color: $primary-500;
+}
+
+.stat-label {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-500;
+}
+
+// ============================================
+// Responsive Breakpoints
+// ============================================
+
+@media (max-width: $bp-lg) {
+  .academy-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .categories-sidebar {
+    order: -1;
+  }
+
+  .course-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: $bp-md) {
+  .course-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero-banner {
+    padding: $space-5 $space-4;
+    min-height: 150px;
+  }
+
+  .hero-title {
+    font-size: $font-xl;
+  }
+
+  .hero-decoration {
+    display: none;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .course-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-banner {
+    padding: $space-4;
+    min-height: 140px;
+  }
+
+  .hero-title {
+    font-size: $font-lg;
+  }
+
+  .hero-subtitle {
+    font-size: $font-sm;
+  }
+
+  .hero-btn {
+    width: 100%;
+  }
+
+  .category-tags {
+    gap: $space-1;
+  }
+
+  .progress-summary {
+    flex-direction: row;
+    gap: $space-4;
+  }
+
+  .progress-stat {
+    flex-direction: column;
+    align-items: center;
+    border-bottom: none;
+    flex: 1;
+  }
+}

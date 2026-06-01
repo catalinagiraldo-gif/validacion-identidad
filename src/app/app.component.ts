@@ -43,7 +43,11 @@ export class AppComponent {
         map((e: any) => (e as NavigationEnd).url),
       )
       .subscribe(url => {
-        this.isStandalonePage = url.startsWith('/login') || url.startsWith('/profile-select');
+        this.isStandalonePage =
+          url.startsWith('/login') ||
+          url === '/arch-select' ||
+          url.endsWith('/profile-select') ||
+          url.startsWith('/new');
       });
   }
 }

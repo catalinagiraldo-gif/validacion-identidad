@@ -12,6 +12,7 @@ export interface ProfileOption {
 }
 
 const SESSION_KEY = 'dropi_hub_profile';
+const ARCH_KEY = 'dropi.selectedArch';
 
 export const PROFILE_OPTIONS: ProfileOption[] = [
   {
@@ -56,13 +57,15 @@ export class ProfileService {
   selectProfile(profile: HubProfile): void {
     sessionStorage.setItem(SESSION_KEY, profile);
     this._currentProfile$.next(profile);
-    this.router.navigate(['/']);
+    const arch = localStorage.getItem(ARCH_KEY) || 'old';
+    this.router.navigate(['/' + arch + '/home']);
   }
 
   clearProfile(): void {
     sessionStorage.removeItem(SESSION_KEY);
     this._currentProfile$.next(null);
-    this.router.navigate(['/profile-select']);
+    const arch = localStorage.getItem(ARCH_KEY) || 'old';
+    this.router.navigate(['/' + arch + '/profile-select']);
   }
 
   getProfileLabel(): string {

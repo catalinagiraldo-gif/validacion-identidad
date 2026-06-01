@@ -1,0 +1,284 @@
+// ============================================
+// Dropi Design System — Nueva Arquitectura
+// Source: DS Registry tokens (new 10-shade palettes)
+// ============================================
+
+// --- Colors: Primary (Orange) ---
+$primary-50: #FEF8F1;
+$primary-100: #FDE8D0;
+$primary-200: #FBCF9E;
+$primary-300: #F8B76D;
+$primary-400: #F6A855;
+$primary-500: #FF6102;
+$primary-600: #D98432;
+$primary-700: #A66427;
+$primary-800: #73451B;
+$primary-900: #33200D;
+
+// --- Colors: Secondary (Blue) ---
+$secondary-50: #F0FAFC;
+$secondary-100: #C7EBF5;
+$secondary-200: #8ED7EB;
+$secondary-300: #55C3E1;
+$secondary-400: #2DAED0;
+$secondary-500: #008DBF;
+$secondary-600: #00779F;
+$secondary-700: #005B7A;
+$secondary-800: #003C52;
+$secondary-900: #001C26;
+
+// --- Colors: Gray ---
+$gray-50: #F7F8FA;
+$gray-100: #EEF0F4;
+$gray-200: #C3C9D9;
+$gray-300: #A3ABBF;
+$gray-400: #858EA6;
+$gray-500: #69738C;
+$gray-600: #475066;
+$gray-700: #333B4D;
+$gray-800: #232938;
+$gray-900: #0E111A;
+
+// --- Colors: Success (Green) ---
+$success-50: #E7F8F3;
+$success-100: #C3EDDF;
+$success-200: #8DDBBC;
+$success-300: #57C99A;
+$success-400: #30C28E;
+$success-500: #0ABB87;
+$success-600: #089D71;
+$success-700: #077E5B;
+$success-800: #05664A;
+$success-900: #044F39;
+
+// --- Colors: Warning (Yellow) ---
+$warning-50: #FEF8ED;
+$warning-100: #FCECC8;
+$warning-200: #F9DA95;
+$warning-300: #F5C768;
+$warning-400: #F3BE57;
+$warning-500: #F1B44C;
+$warning-600: #D09A3E;
+$warning-700: #A67B32;
+$warning-800: #7D5D26;
+$warning-900: #654C20;
+
+// --- Colors: Error (Red) ---
+$error-50: #FEF0F0;
+$error-100: #FCD4D4;
+$error-200: #F9A9A9;
+$error-300: #F78384;
+$error-400: #F57677;
+$error-500: #F46A6B;
+$error-600: #D45A5B;
+$error-700: #AA4849;
+$error-800: #803637;
+$error-900: #662D2D;
+
+// --- Colors: Info (Blue) ---
+$info-50: #EEF6FE;
+$info-100: #CBE2F9;
+$info-200: #9AC7F4;
+$info-300: #6EADEF;
+$info-400: #5FA9F0;
+$info-500: #50A5F1;
+$info-600: #4389CA;
+$info-700: #356D9E;
+$info-800: #2B5980;
+$info-900: #224565;
+
+// --- Colors: Neutral ---
+$neutral-white: #FFFFFF;
+$neutral-black: #000000;
+$neutral-dark-base: #0E111A;
+
+// --- Typography ---
+$font-primary: 'Inter', sans-serif;
+
+$font-xxs: 9px;
+$font-xs: 10px;
+$font-sm: 12px;
+$font-md: 14px;
+$font-base: 16px;
+$font-lg: 18px;
+$font-xl: 20px;
+$font-2xl: 24px;
+$font-3xl: 30px;
+$font-4xl: 36px;
+
+$font-light: 300;
+$font-regular: 400;
+$font-medium: 500;
+$font-semibold: 600;
+$font-bold: 700;
+
+$line-height-simple: 110%;
+$line-height-large: 150%;
+
+// --- Spacing (--space-N) ---
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 10px;
+$space-4: 16px;
+$space-5: 24px;
+$space-6: 32px;
+$space-7: 40px;
+$space-8: 48px;
+$space-9: 56px;
+$space-10: 64px;
+
+// --- Border Radius ---
+$radius-1: 4px;
+$radius-2: 8px;
+$radius-3: 12px;
+$radius-4: 24px;
+$radius-5: 32px;
+
+// --- Shadows ---
+$shadow-small: 0 8px 12px 0 rgba(0, 0, 0, 0.04);
+$shadow-medium: 0.5px 4px 8px rgba(0, 0, 0, 0.08);
+$shadow-large: 0 4px 16px rgba(0, 0, 0, 0.16);
+$shadow-icon: 0 0 4px rgba(0, 0, 0, 0.16);
+
+// --- Breakpoints (shared with legacy) ---
+$bp-xl: 1400px;
+$bp-lg: 1200px;
+$bp-md: 900px;
+$bp-sm: 600px;
+
+// --- CSS Custom Properties (for runtime use) ---
+:root {
+  // Primary
+  --primary-50: #{$primary-50};
+  --primary-100: #{$primary-100};
+  --primary-200: #{$primary-200};
+  --primary-300: #{$primary-300};
+  --primary-400: #{$primary-400};
+  --primary-500: #{$primary-500};
+  --primary-600: #{$primary-600};
+  --primary-700: #{$primary-700};
+  --primary-800: #{$primary-800};
+  --primary-900: #{$primary-900};
+
+  // Secondary
+  --secondary-50: #{$secondary-50};
+  --secondary-100: #{$secondary-100};
+  --secondary-200: #{$secondary-200};
+  --secondary-300: #{$secondary-300};
+  --secondary-400: #{$secondary-400};
+  --secondary-500: #{$secondary-500};
+  --secondary-600: #{$secondary-600};
+  --secondary-700: #{$secondary-700};
+  --secondary-800: #{$secondary-800};
+  --secondary-900: #{$secondary-900};
+
+  // Gray
+  --gray-50: #{$gray-50};
+  --gray-100: #{$gray-100};
+  --gray-200: #{$gray-200};
+  --gray-300: #{$gray-300};
+  --gray-400: #{$gray-400};
+  --gray-500: #{$gray-500};
+  --gray-600: #{$gray-600};
+  --gray-700: #{$gray-700};
+  --gray-800: #{$gray-800};
+  --gray-900: #{$gray-900};
+
+  // Success
+  --success-50: #{$success-50};
+  --success-100: #{$success-100};
+  --success-200: #{$success-200};
+  --success-300: #{$success-300};
+  --success-400: #{$success-400};
+  --success-500: #{$success-500};
+  --success-600: #{$success-600};
+  --success-700: #{$success-700};
+  --success-800: #{$success-800};
+  --success-900: #{$success-900};
+
+  // Warning
+  --warning-50: #{$warning-50};
+  --warning-100: #{$warning-100};
+  --warning-200: #{$warning-200};
+  --warning-300: #{$warning-300};
+  --warning-400: #{$warning-400};
+  --warning-500: #{$warning-500};
+  --warning-600: #{$warning-600};
+  --warning-700: #{$warning-700};
+  --warning-800: #{$warning-800};
+  --warning-900: #{$warning-900};
+
+  // Error
+  --error-50: #{$error-50};
+  --error-100: #{$error-100};
+  --error-200: #{$error-200};
+  --error-300: #{$error-300};
+  --error-400: #{$error-400};
+  --error-500: #{$error-500};
+  --error-600: #{$error-600};
+  --error-700: #{$error-700};
+  --error-800: #{$error-800};
+  --error-900: #{$error-900};
+
+  // Info
+  --info-50: #{$info-50};
+  --info-100: #{$info-100};
+  --info-200: #{$info-200};
+  --info-300: #{$info-300};
+  --info-400: #{$info-400};
+  --info-500: #{$info-500};
+  --info-600: #{$info-600};
+  --info-700: #{$info-700};
+  --info-800: #{$info-800};
+  --info-900: #{$info-900};
+
+  // Neutral
+  --neutral-white: #{$neutral-white};
+  --neutral-black: #{$neutral-black};
+  --neutral-dark-base: #{$neutral-dark-base};
+
+  // Typography
+  --font-primary: #{$font-primary};
+  --font-xxs: #{$font-xxs};
+  --font-xs: #{$font-xs};
+  --font-sm: #{$font-sm};
+  --font-md: #{$font-md};
+  --font-base: #{$font-base};
+  --font-lg: #{$font-lg};
+  --font-xl: #{$font-xl};
+  --font-2xl: #{$font-2xl};
+  --font-3xl: #{$font-3xl};
+  --font-4xl: #{$font-4xl};
+  --font-light: #{$font-light};
+  --font-regular: #{$font-regular};
+  --font-medium: #{$font-medium};
+  --font-semibold: #{$font-semibold};
+  --font-bold: #{$font-bold};
+  --line-height-simple: #{$line-height-simple};
+  --line-height-large: #{$line-height-large};
+
+  // Spacing
+  --space-1: #{$space-1};
+  --space-2: #{$space-2};
+  --space-3: #{$space-3};
+  --space-4: #{$space-4};
+  --space-5: #{$space-5};
+  --space-6: #{$space-6};
+  --space-7: #{$space-7};
+  --space-8: #{$space-8};
+  --space-9: #{$space-9};
+  --space-10: #{$space-10};
+
+  // Border Radius
+  --radius-1: #{$radius-1};
+  --radius-2: #{$radius-2};
+  --radius-3: #{$radius-3};
+  --radius-4: #{$radius-4};
+  --radius-5: #{$radius-5};
+
+  // Shadows
+  --shadow-small: #{$shadow-small};
+  --shadow-medium: #{$shadow-medium};
+  --shadow-large: #{$shadow-large};
+  --shadow-icon: #{$shadow-icon};
+}

@@ -1,0 +1,117 @@
+{
+  "fontFamily": {
+    "primary": "'Inter', sans-serif"
+  },
+  "fontSize": {
+    "9": "9px",
+    "10": "10px",
+    "11": "11px",
+    "12": "12px",
+    "13": "13px",
+    "14": "14px",
+    "16": "16px",
+    "18": "18px",
+    "20": "20px",
+    "24": "24px",
+    "28": "28px",
+    "32": "32px",
+    "36": "36px"
+  },
+  "fontWeight": {
+    "light": 300,
+    "regular": 400,
+    "medium": 500,
+    "semibold": 600,
+    "bold": 700
+  },
+  "lineHeight": {
+    "simple": "110%",
+    "large": "150%"
+  },
+  "styles": {
+    "H1": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "36px",
+      "fontWeight": 700,
+      "lineHeight": "110%"
+    },
+    "H2": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "32px",
+      "fontWeight": 700,
+      "lineHeight": "110%"
+    },
+    "H3": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "28px",
+      "fontWeight": 600,
+      "lineHeight": "110%"
+    },
+    "H4": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "24px",
+      "fontWeight": 600,
+      "lineHeight": "110%"
+    },
+    "H5": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "20px",
+      "fontWeight": 600,
+      "lineHeight": "110%"
+    },
+    "Body-XS": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "11px",
+      "fontWeight": 400,
+      "lineHeight": "150%"
+    },
+    "Body-S": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "12px",
+      "fontWeight": 400,
+      "lineHeight": "150%"
+    },
+    "Body-M": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "14px",
+      "fontWeight": 400,
+      "lineHeight": "150%"
+    },
+    "Body-L": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "16px",
+      "fontWeight": 400,
+      "lineHeight": "150%"
+    },
+    "Label-S": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "11px",
+      "fontWeight": 500,
+      "lineHeight": "110%"
+    },
+    "Label-M": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "12px",
+      "fontWeight": 500,
+      "lineHeight": "110%"
+    },
+    "Label-L": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "14px",
+      "fontWeight": 500,
+      "lineHeight": "110%"
+    },
+    "Caption-S": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "9px",
+      "fontWeight": 400,
+      "lineHeight": "110%"
+    },
+    "Caption-M": {
+      "fontFamily": "'Inter', sans-serif",
+      "fontSize": "10px",
+      "fontWeight": 400,
+      "lineHeight": "110%"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-badge",
+  "selector": "app-dropi-badge",
+  "atomicLevel": "atom",
+  "source": "Figma — Badge-counters (401:3807)",
+  "description": "Numeric badge counter, typically used on notification bell icons. Small circular indicator with a number.",
+  "designRules": [
+    "Use on notification bells or tab counters",
+    "Keep value short (1-2 digits, or 9+)",
+    "Error severity (red) is the default for notifications"
+  ],
+  "inputs": {
+    "value": { "type": "number | string", "required": true },
+    "severity": {
+      "type": "enum",
+      "values": ["primary", "error", "info"],
+      "default": "error"
+    },
+    "size": { "type": "enum", "values": ["sm", "md"], "default": "sm" }
+  },
+  "styles": {
+    "size": "16px (sm)",
+    "borderRadius": "var(--border-4, 17px)",
+    "background": "var(--error-500, #f46a6b)",
+    "textColor": "var(--white, #ffffff)",
+    "font": "Inter, Semi Bold, 6.35px"
+  },
+  "usageExample": "<app-dropi-badge [value]=\"3\" severity=\"error\"></app-dropi-badge>"
+}

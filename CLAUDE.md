@@ -117,12 +117,14 @@ Before writing a single line of code, complete this checklist IN ORDER:
 7. ☐ Add lazy-loaded route in `src/app/app.routes.ts` as a child of the module
 8. ☐ If **modal**: implement as overlay (`position: fixed`, backdrop blur, animation) on top of the parent view. NEVER navigate to a separate route for modals. Scroll must be INSIDE the modal container, with header/footer fixed.
 9. ☐ If **page**: implement as a routed component with proper breadcrumb
+10. ☐ **Responsive from line 1** — every layout must include `@media` breakpoints using `$bp-lg` / `$bp-md` / `$bp-sm` from `_variables.scss`. See Responsive Rules below.
 
 ### Step 3: Verify
 
-10. ☐ Verify compilation without errors
-11. ☐ Update `prototype` field in `navigation-map.json` with the component route
-12. ☐ Verify images load correctly via dev server
+11. ☐ Verify compilation without errors
+12. ☐ Update `prototype` field in `navigation-map.json` with the component route
+13. ☐ Verify images load correctly via dev server
+14. ☐ **Verify at 1024px viewport width** — resize browser to 1024px and confirm no overlap, clipping, or horizontal scroll bugs
 
 ### Anti-Hallucination Rules
 
@@ -188,10 +190,29 @@ Every new page component MUST follow this pattern:
 
 - The app shell constrains content to `height: calc(100vh - 70px)` with `overflow-y: auto`
 - Each module scrolls internally — never cause page-level scroll
-- Tables go inside `.table-scroll { overflow-x: auto; }`
+- Tables go inside `.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }`
 - Fixed-width inputs add `max-width: 100%`
 - Filter rows add `flex-wrap: wrap`
 - Images add `max-width: 100%`
+
+### Responsive Breakpoints (MANDATORY)
+
+Breakpoint tokens in `_variables.scss`: `$bp-xl: 1400px`, `$bp-lg: 1200px`, `$bp-md: 900px`, `$bp-sm: 600px`.
+
+Every prototype MUST include `@media` queries. No exceptions. Fixed-width layouts without breakpoints are frontend bugs.
+
+| Pattern | Behavior |
+|---|---|
+| Two-pane layout (content + sidebar) | Sidebar stacks below at `$bp-lg`. Use `grid-template-columns: 1fr Xpx` → `1fr` |
+| Multi-column grids (3 cols) | 3→2 at `$bp-lg`, 2→1 at `$bp-md` |
+| Multi-column grids (2 cols) | 2→1 at `$bp-md` |
+| Tables | Always inside `.table-scroll`. Never overflow container |
+| Carousels / tab bars | `overflow-x: auto` + `-webkit-overflow-scrolling: touch` |
+| Input rows with toggles | `flex-wrap: wrap` |
+| Page headers | `flex-wrap: wrap` |
+| Fixed widths (e.g. `width: 360px`) | Always pair with `max-width: 100%` or a breakpoint override |
+| Action buttons (Descartar/Guardar) | `flex-wrap: wrap`, full-width at `$bp-sm` |
+| Page padding | Reduce from `$size-8` to `$size-4` at `$bp-sm` |
 
 ### Prototype Inventory
 

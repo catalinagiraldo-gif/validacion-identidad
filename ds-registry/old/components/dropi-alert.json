@@ -1,0 +1,21 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-alert",
+  "selector": "app-dropi-alert",
+  "atomicLevel": "atom",
+  "description": "Inline alert/notification banner for messages, warnings, and errors.",
+  "inputs": {
+    "message": { "type": "string", "required": true },
+    "severity": {
+      "type": "enum",
+      "values": ["success", "warning", "error", "info"],
+      "default": "info"
+    },
+    "closable": { "type": "boolean", "default": false },
+    "icon": { "type": "string", "required": false }
+  },
+  "outputs": {
+    "closed": { "type": "EventEmitter<void>" }
+  },
+  "usageExample": "<app-dropi-alert message=\"Orden confirmada exitosamente\" severity=\"success\" [closable]=\"true\"></app-dropi-alert>"
+}

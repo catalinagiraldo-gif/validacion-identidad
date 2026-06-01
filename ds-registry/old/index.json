@@ -1,0 +1,33 @@
+{
+  "$schema": "dropi-ds-registry",
+  "version": "0.2.0",
+  "description": "Dropi Design System Registry — enriched from Figma -WEB- components library (ONiVQJJ2qrJ6tmJnpNrrKE)",
+  "figmaSource": "https://www.figma.com/design/ONiVQJJ2qrJ6tmJnpNrrKE/-WEB--components",
+  "tokens": {
+    "colors": "tokens/colors.json",
+    "spacing": "tokens/spacing.json",
+    "typography": "tokens/typography.json",
+    "radius": "tokens/radius.json",
+    "shadows": "tokens/shadows.json"
+  },
+  "components": {
+    "dropi-button": "components/dropi-button.json",
+    "dropi-input": "components/dropi-input.json",
+    "dropi-badge": "components/dropi-badge.json",
+    "dropi-tag": "components/dropi-tag.json",
+    "dropi-card": "components/dropi-card.json",
+    "dropi-alert": "components/dropi-alert.json",
+    "dropi-modal": "components/dropi-modal.json",
+    "dropi-tabs": "components/dropi-tabs.json",
+    "dropi-steps": "components/dropi-steps.json",
+    "dropi-breadcrumb": "components/dropi-breadcrumb.json",
+    "dropi-progress": "components/dropi-progress.json",
+    "dropi-sidebar": "components/dropi-sidebar.json",
+    "dropi-header": "components/dropi-header.json",
+    "dropi-switch": "components/dropi-switch.json",
+    "dropi-select": "components/dropi-select.json",
+    "dropi-radiobutton": "components/dropi-radiobutton.json",
+    "dropi-toast": "components/dropi-toast.json",
+    "dropi-accordion": "components/dropi-accordion.json"
+  }
+}

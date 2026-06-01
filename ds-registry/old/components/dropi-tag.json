@@ -1,0 +1,30 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-tag",
+  "selector": "app-dropi-tag",
+  "atomicLevel": "atom",
+  "description": "Status tag/chip used for order status, product categories, etc. Color-coded by severity.",
+  "designRules": [
+    "Use consistent severity mapping for order statuses across all views",
+    "Pending = warning (orange), Confirmed = info (blue), Shipped = purple, Delivered = success (green), Returned = error (red), Cancelled = gray"
+  ],
+  "inputs": {
+    "label": { "type": "string", "required": true },
+    "severity": {
+      "type": "enum",
+      "values": ["success", "warning", "error", "info", "secondary", "purple"],
+      "default": "info"
+    },
+    "rounded": { "type": "boolean", "default": true },
+    "icon": { "type": "string", "required": false }
+  },
+  "statusMapping": {
+    "pending": "warning",
+    "confirmed": "info",
+    "shipped": "purple",
+    "delivered": "success",
+    "returned": "error",
+    "cancelled": "secondary"
+  },
+  "usageExample": "<app-dropi-tag label=\"Enviado\" severity=\"info\"></app-dropi-tag>"
+}

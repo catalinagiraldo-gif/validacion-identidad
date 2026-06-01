@@ -1,0 +1,574 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Dropicard Page — New Architecture
+// Credit card preview + transaction history
+// ============================================
+
+$text-header: #495057;
+$text-paragraph: #7b8190;
+$bg-page: #f5f6f8;
+$gray-border: #d3d7de;
+$card-dark: #1a1f2e;
+$card-dark-lighter: #252b3d;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.dropicard-page {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-4 $space-8;
+  position: relative;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-4;
+
+  .breadcrumb-item {
+    font-family: $font-primary;
+    font-size: $font-base;
+    font-weight: $font-bold;
+    color: $text-paragraph;
+    line-height: 24px;
+
+    &.muted {
+      color: #a0a8b8;
+    }
+
+    .pi-home {
+      font-size: 14px;
+    }
+  }
+
+  .breadcrumb-separator {
+    font-size: 10px;
+    color: $text-paragraph;
+    display: flex;
+    align-items: center;
+    transform: rotate(-90deg);
+
+    i {
+      font-size: 10px;
+    }
+  }
+}
+
+// ========== Title ==========
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $text-header;
+  margin: 0 0 $space-5 0;
+  line-height: 1.25;
+}
+
+// ========== Card Section (Grid) ==========
+.card-section {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: $space-6;
+  margin-bottom: $space-6;
+  align-items: start;
+}
+
+// ========== Credit Card Preview ==========
+.card-preview-wrapper {
+  perspective: 1000px;
+}
+
+.credit-card {
+  position: relative;
+  width: 380px;
+  max-width: 100%;
+  height: 240px;
+  background: linear-gradient(135deg, $card-dark 0%, $card-dark-lighter 50%, $card-dark 100%);
+  border-radius: $radius-3;
+  padding: $space-5;
+  color: $neutral-white;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s ease;
+
+  &:hover {
+    transform: translateY(-4px) rotateX(2deg);
+  }
+
+  .card-shine {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      ellipse at 30% 30%,
+      rgba($primary-500, 0.12) 0%,
+      transparent 60%
+    );
+    pointer-events: none;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $space-4;
+
+    .card-label {
+      font-family: $font-primary;
+      font-size: $font-lg;
+      font-weight: $font-bold;
+      letter-spacing: 1px;
+      color: $primary-400;
+    }
+
+    .card-type {
+      font-family: $font-primary;
+      font-size: $font-md;
+      font-weight: $font-bold;
+      letter-spacing: 2px;
+      opacity: 0.7;
+    }
+  }
+
+  .card-chip {
+    width: 48px;
+    height: 36px;
+    background: linear-gradient(135deg, #d4a843 0%, #c49a38 50%, #e0b84e 100%);
+    border-radius: 6px;
+    margin-bottom: $space-4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    .chip-lines {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 2px;
+      width: 24px;
+      height: 18px;
+
+      span {
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 1px;
+      }
+    }
+  }
+
+  .card-number {
+    display: flex;
+    gap: $space-5;
+    font-family: 'Courier New', monospace;
+    font-size: $font-xl;
+    font-weight: $font-medium;
+    letter-spacing: 2px;
+    margin-bottom: $space-5;
+  }
+
+  .card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    .card-holder,
+    .card-expiry {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      .label {
+        font-size: $font-xxs;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.5;
+      }
+
+      .value {
+        font-size: $font-sm;
+        font-weight: $font-semibold;
+        letter-spacing: 1px;
+      }
+    }
+  }
+
+  .card-logo-accent {
+    position: absolute;
+    bottom: -30px;
+    right: -20px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba($primary-500, 0.08);
+    pointer-events: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba($primary-500, 0.06);
+    }
+  }
+}
+
+// ========== Card Details ==========
+.card-details {
+  background: $neutral-white;
+  border-radius: $radius-2;
+  padding: $space-5;
+  box-shadow: $shadow-small;
+  border: 1px solid $gray-100;
+}
+
+.section-title {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-bold;
+  color: $text-header;
+  margin: 0 0 $space-4 0;
+}
+
+.detail-rows {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $space-3 0;
+  border-bottom: 1px solid $gray-100;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.detail-label {
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $text-paragraph;
+  font-weight: $font-medium;
+}
+
+.detail-value {
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $text-header;
+  font-weight: $font-semibold;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+
+  &.masked {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+  }
+}
+
+.btn-toggle-mask {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $gray-400;
+  padding: $space-1;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $primary-500;
+  }
+
+  i {
+    font-size: $font-md;
+  }
+}
+
+// ========== Status Badge ==========
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: $space-1 $space-3;
+  border-radius: $radius-4;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  line-height: 1;
+
+  &.active,
+  &.approved {
+    background: $success-50;
+    color: $success-700;
+  }
+
+  &.pending {
+    background: $warning-50;
+    color: $warning-700;
+  }
+
+  &.rejected {
+    background: $error-50;
+    color: $error-700;
+  }
+}
+
+// ========== No Card State ==========
+.no-card-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $space-10 $space-6;
+  text-align: center;
+
+  .no-card-illustration {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: $gray-50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: $space-5;
+
+    i {
+      font-size: 48px;
+      color: $gray-300;
+    }
+  }
+
+  h2 {
+    font-family: $font-primary;
+    font-size: $font-xl;
+    font-weight: $font-bold;
+    color: $text-header;
+    margin: 0 0 $space-2 0;
+  }
+
+  p {
+    font-family: $font-primary;
+    font-size: $font-md;
+    color: $text-paragraph;
+    margin: 0 0 $space-6 0;
+    max-width: 400px;
+  }
+}
+
+.btn-primary {
+  background: $primary-500;
+  color: $neutral-white;
+  border: none;
+  border-radius: $radius-2;
+  padding: $space-3 $space-5;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    background: $primary-600;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// ========== Transactions Section ==========
+.transactions-section {
+  margin-top: $space-6;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: $neutral-white;
+  border-radius: $radius-2;
+  overflow: hidden;
+  box-shadow: $shadow-small;
+
+  thead {
+    tr {
+      background: $gray-50;
+      border-bottom: 2px solid $gray-100;
+    }
+
+    th {
+      font-family: $font-primary;
+      font-size: $font-sm;
+      font-weight: $font-semibold;
+      color: $text-paragraph;
+      text-align: left;
+      padding: $space-3 $space-4;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+  }
+
+  tbody {
+    tr.table-row {
+      border-bottom: 1px solid $gray-100;
+      animation: fadeInRow 0.3s ease forwards;
+      opacity: 0;
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: $gray-50;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      font-family: $font-primary;
+      font-size: $font-md;
+      color: $text-header;
+      padding: $space-3 $space-4;
+      white-space: nowrap;
+    }
+  }
+
+  .col-amount {
+    text-align: right;
+    font-weight: $font-semibold;
+    font-family: 'Courier New', monospace;
+  }
+
+  .col-status {
+    text-align: center;
+  }
+}
+
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== Toast ==========
+.toast {
+  position: fixed;
+  bottom: $space-6;
+  right: $space-6;
+  padding: $space-3 $space-5;
+  border-radius: $radius-2;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  color: $neutral-white;
+  box-shadow: $shadow-large;
+  z-index: 1000;
+  animation: toastSlideIn 0.3s ease;
+
+  &.success {
+    background: $success-600;
+  }
+
+  &.info {
+    background: $info-600;
+  }
+
+  i {
+    font-size: $font-base;
+  }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== Responsive ==========
+@media (max-width: $bp-lg) {
+  .card-section {
+    grid-template-columns: 1fr;
+  }
+
+  .credit-card {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .dropicard-page {
+    padding: $space-4;
+  }
+
+  .card-section {
+    gap: $space-4;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $space-1;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .dropicard-page {
+    padding: $space-4 $space-4;
+  }
+
+  .credit-card {
+    height: 200px;
+    padding: $space-4;
+
+    .card-number {
+      font-size: $font-base;
+      gap: $space-3;
+    }
+  }
+
+  .transactions-table {
+    thead th,
+    tbody td {
+      padding: $space-2 $space-3;
+      font-size: $font-sm;
+    }
+  }
+}

@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="profile-select">
+    <div class="profile-select" [class.profile-select--new-arch]="isNewArch">
       <div class="profile-select__container">
         <div class="profile-select__header">
           <img *ngIf="user?.photoURL" [src]="user?.photoURL" class="profile-select__avatar" referrerpolicy="no-referrer" />
@@ -32,10 +32,16 @@ import { Router } from '@angular/router';
           </button>
         </div>
 
-        <button class="profile-select__logout" (click)="onLogout()">
-          <i class="pi pi-sign-out"></i>
-          Cerrar sesión
-        </button>
+        <div class="profile-select__footer">
+          <button class="profile-select__back" (click)="onBackToArch()">
+            <i class="pi pi-arrow-left"></i>
+            Cambiar de arquitectura
+          </button>
+          <button class="profile-select__logout" (click)="onLogout()">
+            Cerrar sesi&oacute;n
+            <i class="pi pi-sign-out"></i>
+          </button>
+        </div>
       </div>
     </div>
   `,
@@ -44,6 +50,7 @@ import { Router } from '@angular/router';
 export class ProfileSelectComponent {
   profileOptions = PROFILE_OPTIONS;
   user = this.auth.currentUser;
+  isNewArch = localStorage.getItem('dropi.selectedArch') === 'new';
 
   constructor(
     private auth: AuthService,
@@ -53,6 +60,12 @@ export class ProfileSelectComponent {
 
   onSelect(id: HubProfile) {
     this.profile.selectProfile(id);
+  }
+
+  onBackToArch() {
+    sessionStorage.removeItem('dropi_hub_profile');
+    localStorage.removeItem('dropi.selectedArch');
+    this.router.navigate(['/arch-select']);
   }
 
   async onLogout() {

@@ -9,5 +9,6 @@ export const profileGuard: CanActivateFn & CanActivateChildFn = () => {
   if (profile.hasProfile) {
     return true;
   }
-  return router.createUrlTree(['/profile-select']);
+  const arch = localStorage.getItem('dropi.selectedArch') || 'old';
+  return router.createUrlTree(['/' + arch + '/profile-select']);
 };

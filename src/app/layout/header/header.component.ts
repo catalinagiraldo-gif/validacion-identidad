@@ -17,6 +17,11 @@ import { ProfileService } from '../../services/profile.service';
       </div>
 
       <div class="header__right">
+        <button class="header__arch-switch" (click)="onChangeArch()">
+          <i class="pi pi-replay"></i>
+          Cambiar arquitectura
+        </button>
+
         <button class="header__profile-switch" (click)="onChangeProfile()">
           <i class="pi pi-users"></i>
           Cambiar perfil
@@ -59,6 +64,12 @@ export class HeaderComponent {
     private profile: ProfileService,
     private router: Router,
   ) {}
+
+  onChangeArch() {
+    sessionStorage.removeItem('dropi_hub_profile');
+    localStorage.removeItem('dropi.selectedArch');
+    this.router.navigate(['/arch-select']);
+  }
 
   onChangeProfile() {
     this.profile.clearProfile();

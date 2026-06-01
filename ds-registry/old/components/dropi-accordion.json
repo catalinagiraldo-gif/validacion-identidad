@@ -1,0 +1,70 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-accordion",
+  "selector": "app-dropi-accordion",
+  "atomicLevel": "atom",
+  "source": "Figma — Accordion (1282:3116), file rcP3y6rwzaxAedc8cbMQET",
+  "description": "Collapsible content section with title, optional badge counter, optional body text, and expandable container area.",
+  "designRules": [
+    "Collapsed: shows title + chevron-down, separated by top border gray-100",
+    "Expanded: shows title + chevron-up (180° rotated), then content container below",
+    "Title uses Inter Bold 16px (Label-L), color gray-600",
+    "Chevron icon is 24px, rotates on toggle",
+    "Header has white background, padding 16px horizontal, 24px vertical",
+    "Content container has white background, padding 16px, separated by gray-50 border-bottom",
+    "Optional badge counter (gray-100 bg, gray-500 text, 20px height, pill shape)",
+    "Optional body text below title (Inter Regular 14px, gray-600)"
+  ],
+  "inputs": {
+    "title": { "type": "string", "required": true },
+    "opened": { "type": "boolean", "default": false },
+    "badge": { "type": "number | string", "required": false, "description": "Counter badge next to title" },
+    "text": { "type": "string", "required": false, "description": "Body text below title" }
+  },
+  "outputs": {
+    "openedChange": { "type": "EventEmitter<boolean>" }
+  },
+  "slots": {
+    "default": "Expanded content area"
+  },
+  "styles": {
+    "container": {
+      "borderTop": "1px solid var(--gray-100, #e9eef5)",
+      "width": "100%"
+    },
+    "header": {
+      "background": "var(--white, #ffffff)",
+      "padding": "24px 16px",
+      "borderBottom": "1px solid var(--gray-50, #f0f4f9)",
+      "cursor": "pointer"
+    },
+    "title": {
+      "font": "Inter, 16px, Bold (Label-L)",
+      "color": "var(--gray-600, #475066)",
+      "lineHeight": 1.1
+    },
+    "chevron": {
+      "size": "24px",
+      "rotation": { "closed": "0deg", "open": "180deg" }
+    },
+    "badge": {
+      "height": "20px",
+      "minWidth": "20px",
+      "padding": "0 4px",
+      "borderRadius": "14px",
+      "background": "var(--gray-100, #e9eef5)",
+      "font": "Inter, 10px, Bold",
+      "color": "var(--gray-500, #69738c)"
+    },
+    "bodyText": {
+      "font": "Inter, 14px, Regular",
+      "color": "var(--gray-600, #475066)"
+    },
+    "content": {
+      "background": "var(--white, #ffffff)",
+      "padding": "var(--size-4, 16px)",
+      "borderBottom": "1px solid var(--gray-50, #f0f4f9)"
+    }
+  },
+  "usageExample": "<app-dropi-accordion title=\"Tarifa Seller\" [opened]=\"true\" badge=\"4\"><div>Contenido expandido</div></app-dropi-accordion>"
+}

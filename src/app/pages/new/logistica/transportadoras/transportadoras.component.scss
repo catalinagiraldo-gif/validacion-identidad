@@ -1,0 +1,369 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Transportadoras Preferences — New Architecture
+// Drag & drop ranked carrier list (Figma node 9275:64083)
+// ============================================
+
+// Figma-exact tokens
+$text-header: #495057;
+$text-paragraph: #7b8190;
+$bg-page: #f5f6f8;
+$gray-border: #d3d7de;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.transportadoras-page {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-4 $space-8;
+  position: relative;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-4;
+
+  .breadcrumb-item {
+    font-family: $font-primary;
+    font-size: $font-base;
+    font-weight: $font-bold;
+    color: $text-paragraph;
+    line-height: 24px;
+
+    &.muted {
+      color: #a0a8b8;
+    }
+
+    .pi-home {
+      font-size: 14px;
+    }
+  }
+
+  .breadcrumb-separator {
+    font-size: 10px;
+    color: $text-paragraph;
+    display: flex;
+    align-items: center;
+    transform: rotate(-90deg);
+
+    i {
+      font-size: 10px;
+    }
+  }
+}
+
+// ========== Page Header ==========
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-5;
+  flex-wrap: wrap;
+  gap: $space-3;
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $text-header;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.btn-help {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  border: 1px solid $secondary-500;
+  border-radius: $radius-2;
+  background: transparent;
+  color: $secondary-500;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+
+  i {
+    font-size: 16px;
+  }
+
+  &:hover {
+    background: $secondary-50;
+  }
+}
+
+// ========== Section Info ==========
+.section-info {
+  margin-bottom: $space-5;
+}
+
+.section-subtitle {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-semibold;
+  color: $text-header;
+  margin: 0 0 $space-1 0;
+}
+
+.section-description {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-regular;
+  color: $text-paragraph;
+  margin: 0;
+  line-height: $line-height-large;
+}
+
+// ========== Carrier List ==========
+.carrier-list {
+  background: $neutral-white;
+  border-radius: $radius-2;
+  box-shadow: $shadow-small;
+  overflow: hidden;
+}
+
+.carrier-row {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  padding: 0 $space-4;
+  height: 64px;
+  background: $neutral-white;
+  border-bottom: 1px solid $gray-100;
+  cursor: grab;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  animation: fadeInUp 0.3s ease both;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: $gray-50;
+  }
+
+  // CDK drag styles
+  &.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  &.cdk-drag-preview {
+    box-shadow: $shadow-large;
+    border-radius: $radius-2;
+    background: $neutral-white;
+    cursor: grabbing;
+  }
+}
+
+// Placeholder shown while dragging
+.carrier-placeholder {
+  height: 64px;
+  background: $gray-50;
+  border: 2px dashed $gray-200;
+  border-radius: $radius-1;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// Drop list animation
+.cdk-drop-list-dragging .carrier-row:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// ========== Drag Handle ==========
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  color: $gray-300;
+  cursor: grab;
+  flex-shrink: 0;
+
+  i {
+    font-size: 14px;
+  }
+}
+
+// ========== Rank Number ==========
+.rank-number {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  color: $gray-500;
+  min-width: 24px;
+  flex-shrink: 0;
+}
+
+// ========== Carrier Logo ==========
+.carrier-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+// ========== Carrier Name ==========
+.carrier-name {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  color: $text-header;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ========== Insurance Checkbox ==========
+.insurance-check {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-left: auto;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    accent-color: $primary-500;
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .check-label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $text-header;
+    white-space: nowrap;
+  }
+
+  .info-icon {
+    font-size: 14px;
+    color: $gray-400;
+    cursor: help;
+  }
+}
+
+// ========== Toast ==========
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  padding: $space-3 $space-5;
+  border-radius: $radius-2;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $neutral-white;
+  z-index: 1000;
+  animation: slideIn 0.3s ease;
+  box-shadow: $shadow-large;
+
+  &.success {
+    background: $success-600;
+  }
+
+  &.info {
+    background: $info-600;
+  }
+
+  i {
+    font-size: 18px;
+  }
+}
+
+// ========== Animations ==========
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// ========== Responsive ==========
+@media (max-width: $bp-lg) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .carrier-row {
+    gap: $space-3;
+    padding: 0 $space-3;
+  }
+
+  .insurance-check {
+    .check-label {
+      font-size: $font-xs;
+    }
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .transportadoras-page {
+    padding: $space-4;
+  }
+
+  .carrier-row {
+    gap: $space-2;
+    padding: 0 $space-2;
+    height: 56px;
+  }
+
+  .insurance-check {
+    flex-wrap: wrap;
+
+    .check-label {
+      font-size: $font-xxs;
+    }
+  }
+
+  .btn-help {
+    width: 100%;
+    justify-content: center;
+  }
+}

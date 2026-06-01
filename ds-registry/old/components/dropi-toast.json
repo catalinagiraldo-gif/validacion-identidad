@@ -1,0 +1,74 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-toast",
+  "selector": "app-dropi-toast",
+  "atomicLevel": "atom",
+  "source": "Figma — Toast (371:13358), file rcP3y6rwzaxAedc8cbMQET",
+  "description": "Floating notification toast for success, error, warning, and info messages. Fixed position, auto-dismissable. Supports Dropi and MB (Marca Blanca) company variants.",
+  "designRules": [
+    "Use for transient feedback after user actions (save, delete, error)",
+    "Auto-dismiss after 3-5 seconds",
+    "Left border (8px) indicates severity color",
+    "Always include a description message",
+    "Title is optional but recommended",
+    "Optional link for follow-up actions",
+    "Close button (X) always visible, positioned top-right",
+    "Position: fixed, top-right of viewport with offset",
+    "Dropi variant uses custom mascot icons per severity",
+    "MB variant uses generic circle icons per severity"
+  ],
+  "inputs": {
+    "title": { "type": "string", "required": false },
+    "message": { "type": "string", "required": true },
+    "severity": { "type": "enum", "values": ["success", "error", "warning", "info"], "default": "success" },
+    "company": { "type": "enum", "values": ["dropi", "mb"], "default": "dropi" },
+    "link": { "type": "string", "required": false, "description": "Optional action link text" },
+    "closable": { "type": "boolean", "default": true },
+    "duration": { "type": "number", "default": 3000, "description": "Auto-dismiss in ms. 0 = no auto-dismiss" }
+  },
+  "outputs": {
+    "closed": { "type": "EventEmitter<void>" },
+    "linkClicked": { "type": "EventEmitter<void>" }
+  },
+  "styles": {
+    "container": {
+      "width": "400px",
+      "background": "var(--white, #ffffff)",
+      "borderRadius": "var(--border-3, 12px)",
+      "shadow": "0.5px 4px 4px rgba(0, 0, 0, 0.08)",
+      "padding": "20px",
+      "borderLeft": "8px solid"
+    },
+    "severityBorders": {
+      "success": "var(--success-500, #0abb87)",
+      "error": "var(--error-500, #f46a6b)",
+      "warning": "var(--warning-500, #f1b44c)",
+      "info": "var(--info-500, #50a5f1)"
+    },
+    "icon": {
+      "dropiSize": "48.875px × 46px",
+      "mbSize": "49px × 49px"
+    },
+    "title": {
+      "font": "Inter, 18px, Bold (H5)",
+      "color": "var(--gray-700, #32394d)",
+      "lineHeight": 1.1
+    },
+    "message": {
+      "font": "Inter, 14px, Regular",
+      "color": "var(--gray-600, #475066)",
+      "lineHeight": 1.5
+    },
+    "link": {
+      "font": "Inter, 14px, Regular",
+      "color": "var(--info-500, #50a5f1)",
+      "textDecoration": "underline"
+    },
+    "closeButton": {
+      "size": "32px",
+      "iconSize": "14px",
+      "position": "absolute, top-right with -9px offset"
+    }
+  },
+  "usageExample": "<app-dropi-toast title=\"Guardado\" message=\"Los cambios se aplicaron exitosamente\" severity=\"success\" [closable]=\"true\"></app-dropi-toast>"
+}

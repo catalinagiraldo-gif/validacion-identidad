@@ -1,0 +1,47 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-switch",
+  "selector": "app-dropi-switch",
+  "atomicLevel": "atom",
+  "source": "Figma — Switch (91:14004), file rcP3y6rwzaxAedc8cbMQET",
+  "description": "Toggle switch for binary on/off states. Used for enabling/disabling features like IVA, notifications, or feature flags.",
+  "designRules": [
+    "Use for binary on/off toggles, NOT for selecting between multiple options (use radio or segmented button for that)",
+    "Active state uses primary-500 (#f49a3d) background",
+    "Default (off) state uses gray-200 (#c3c9d9) background",
+    "Disabled state uses gray-100 (#e9eef5) background",
+    "Always pair with a label to the right of the switch",
+    "Indicator (thumb) is always white, 17px circle with 10px border-radius"
+  ],
+  "inputs": {
+    "checked": { "type": "boolean", "required": true, "description": "Whether the switch is on or off" },
+    "disabled": { "type": "boolean", "default": false },
+    "label": { "type": "string", "required": false, "description": "Text label shown next to the switch" }
+  },
+  "outputs": {
+    "checkedChange": { "type": "EventEmitter<boolean>" }
+  },
+  "states": ["Default", "Active", "Disabled"],
+  "styles": {
+    "track": {
+      "width": "40px",
+      "height": "21px",
+      "borderRadius": "12px",
+      "defaultBackground": "var(--gray-200, #c3c9d9)",
+      "activeBackground": "var(--primary-500, #f49a3d)",
+      "disabledBackground": "var(--gray-100, #e9eef5)"
+    },
+    "thumb": {
+      "size": "17px",
+      "borderRadius": "10px",
+      "background": "var(--white, #ffffff)",
+      "offsetLeft": { "default": "3px", "active": "20px" },
+      "offsetTop": "2px"
+    },
+    "label": {
+      "font": "Inter, 14px, Regular",
+      "color": "var(--gray-600, #475066)"
+    }
+  },
+  "usageExample": "<app-dropi-switch [checked]=\"carrier.iva_enabled\" (checkedChange)=\"carrier.iva_enabled = $event\" label=\"Cobro de IVA\"></app-dropi-switch>"
+}

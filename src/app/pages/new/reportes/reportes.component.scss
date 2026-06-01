@@ -1,0 +1,353 @@
+@import 'styles/variables-new';
+
+$text-header: #495057;
+$text-paragraph: #7b8190;
+$gray-border: #d3d7de;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-4 $space-8;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-4;
+
+  .breadcrumb-item {
+    font-family: $font-primary;
+    font-size: $font-base;
+    font-weight: $font-bold;
+    color: $text-paragraph;
+    line-height: 24px;
+
+    .pi-home { font-size: 14px; }
+  }
+
+  .breadcrumb-separator {
+    font-size: 10px;
+    color: $text-paragraph;
+    display: flex;
+    align-items: center;
+    transform: rotate(-90deg);
+
+    i { font-size: 10px; }
+  }
+}
+
+// ========== Title ==========
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $text-header;
+  margin: 0 0 $space-5 0;
+  line-height: 1.25;
+}
+
+// ========== Stat Cards ==========
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $space-4;
+  margin-bottom: $space-6;
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-card {
+  background: $neutral-white;
+  border-radius: $radius-2;
+  padding: $space-5;
+  display: flex;
+  align-items: flex-start;
+  gap: $space-4;
+  box-shadow: $shadow-small;
+  animation: fadeSlideUp 0.4s ease both;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: $shadow-medium;
+    transform: translateY(-2px);
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: $radius-2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__value {
+    font-family: $font-primary;
+    font-size: $font-xl;
+    font-weight: $font-bold;
+    color: $text-header;
+  }
+
+  &__label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $text-paragraph;
+    font-weight: $font-medium;
+  }
+
+  &__desc {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-400;
+  }
+}
+
+// ========== Table Section ==========
+.table-section {
+  background: $neutral-white;
+  border-radius: $radius-2;
+  padding: $space-5;
+  box-shadow: $shadow-small;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-4;
+  flex-wrap: wrap;
+  gap: $space-3;
+}
+
+.section-title {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-bold;
+  color: $text-header;
+  margin: 0;
+}
+
+.btn-generate {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  background: $primary-500;
+  color: $neutral-white;
+  border: none;
+  border-radius: $radius-2;
+  padding: $space-2 $space-4;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: $primary-600;
+  }
+
+  i { font-size: 12px; }
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $text-paragraph;
+    text-align: left;
+    padding: $space-3 $space-4;
+    border-bottom: 1px solid $gray-100;
+    white-space: nowrap;
+  }
+
+  td {
+    font-family: $font-primary;
+    font-size: $font-md;
+    color: $text-header;
+    padding: $space-3 $space-4;
+    border-bottom: 1px solid $gray-50;
+    white-space: nowrap;
+  }
+
+  .table-row {
+    animation: fadeSlideUp 0.35s ease both;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: $gray-50;
+    }
+  }
+}
+
+.id-cell {
+  color: $text-paragraph;
+  font-size: $font-sm;
+}
+
+.name-cell {
+  font-weight: $font-medium;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 2px $space-2;
+  border-radius: $radius-1;
+  font-size: $font-xs;
+  font-weight: $font-medium;
+  background: $info-50;
+  color: $info-700;
+
+  &[data-cat="Ventas"] {
+    background: $primary-50;
+    color: $primary-700;
+  }
+
+  &[data-cat="Logistica"] {
+    background: $secondary-50;
+    color: $secondary-700;
+  }
+
+  &[data-cat="Finanzas"] {
+    background: $success-50;
+    color: $success-700;
+  }
+
+  &[data-cat="Inventario"] {
+    background: $warning-50;
+    color: $warning-700;
+  }
+
+  &[data-cat="Clientes"] {
+    background: $info-50;
+    color: $info-700;
+  }
+}
+
+.date-cell {
+  color: $text-paragraph;
+  font-size: $font-sm;
+}
+
+.format-badge {
+  display: inline-block;
+  padding: 2px $space-2;
+  border-radius: $radius-1;
+  background: $gray-100;
+  color: $gray-700;
+  font-size: $font-xs;
+  font-weight: $font-medium;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px $space-3;
+  border-radius: $radius-4;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+
+  &.disponible {
+    background: $success-50;
+    color: $success-700;
+  }
+
+  &.programado {
+    background: $info-50;
+    color: $info-700;
+  }
+
+  &.generando {
+    background: $warning-50;
+    color: $warning-700;
+  }
+}
+
+.action-btns {
+  display: flex;
+  gap: $space-2;
+}
+
+.icon-btn {
+  background: none;
+  border: 1px solid $gray-200;
+  border-radius: $radius-1;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: $gray-500;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: $gray-50;
+    border-color: $gray-300;
+    color: $primary-500;
+  }
+
+  &:disabled {
+    color: $gray-300;
+    cursor: not-allowed;
+    border-color: $gray-100;
+  }
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .btn-generate {
+    width: 100%;
+    justify-content: center;
+  }
+}

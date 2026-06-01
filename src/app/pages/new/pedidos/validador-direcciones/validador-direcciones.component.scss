@@ -1,0 +1,199 @@
+@import 'styles/variables-new';
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-4 $space-8;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: $space-4;
+
+  &-chevron {
+    font-size: 10px;
+    color: $gray-300;
+  }
+
+  &-item {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-regular;
+    color: $gray-500;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: $gray-700;
+    }
+
+    &.active {
+      color: $gray-700;
+      font-weight: $font-medium;
+      cursor: default;
+    }
+
+    i.pi-home {
+      font-size: 14px;
+      color: $gray-400;
+    }
+  }
+}
+
+// ========== Page Title ==========
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-800;
+  margin: 0 0 $space-5 0;
+  line-height: $line-height-simple;
+}
+
+// ========== Section Header ==========
+.section-header {
+  background-color: $gray-50;
+  border-radius: $radius-2;
+  padding: $space-3 $space-4;
+  margin-bottom: $space-5;
+
+  &__label {
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-bold;
+    color: $gray-700;
+    line-height: $line-height-large;
+  }
+}
+
+// ========== Toggle Row ==========
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  margin-bottom: $space-2;
+
+  &__label {
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-medium;
+    color: $gray-700;
+    line-height: $line-height-large;
+  }
+}
+
+// ========== Toggle Switch ==========
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 21px;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &__input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+
+  &__slider {
+    position: absolute;
+    inset: 0;
+    background-color: $gray-200;
+    border-radius: 21px;
+    transition: background-color 0.2s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      height: 17px;
+      width: 17px;
+      left: 2px;
+      bottom: 2px;
+      background-color: $neutral-white;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  &.active .toggle-switch__slider {
+    background-color: $info-500;
+
+    &::before {
+      transform: translateX(19px);
+    }
+  }
+}
+
+// ========== Description ==========
+.toggle-description {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-regular;
+  color: $gray-500;
+  line-height: $line-height-large;
+  margin: 0 0 $space-6 0;
+  max-width: 520px;
+}
+
+// ========== Action Row ==========
+.action-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-guardar {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  color: $neutral-white;
+  background-color: $primary-500;
+  border: none;
+  border-radius: $radius-2;
+  padding: $space-2 $space-5;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  line-height: $line-height-large;
+
+  &:hover {
+    background-color: $primary-600;
+  }
+
+  &:active {
+    background-color: $primary-700;
+  }
+}
+
+// ========== Responsive ==========
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .page-title {
+    font-size: $font-xl;
+  }
+
+  .action-row {
+    justify-content: stretch;
+  }
+
+  .btn-guardar {
+    width: 100%;
+  }
+}

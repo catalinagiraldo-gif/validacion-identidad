@@ -1,0 +1,393 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Home Page — New Architecture (Figma-matched)
+// Frame 259: 1224x830, padding: 32px left, 24px top
+// ============================================
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-5 $space-6; // 24px top, 32px left (Figma: y:24, x:32)
+  background-color: $gray-50;
+}
+
+// --- Greeting ---
+// Figma: x:32 y:24, height:26, bold
+.greeting {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-700;
+  margin: 0 0 $space-5 0; // 24px gap before main content (y:74 - y:24 - 26 = 24)
+  line-height: 1.1;
+}
+
+// --- Main Layout ---
+// Frame 260: 1160x624, x:32 y:74
+.home-layout {
+  display: grid;
+  grid-template-columns: 1fr 363px; // Left flexible, right sidebar 363px
+  gap: $space-6; // 32px gap between columns
+}
+
+.home-main {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5; // 24px between alert, quick actions, two-columns
+  min-width: 0;
+}
+
+// --- Alert Banner ---
+// Figma: 765x68, bg gray-50, rounded 12px
+.alert-banner {
+  display: flex;
+  align-items: center;
+  gap: $space-4; // 16px gap between icon and text (icon ends at x:56, text starts at x:72)
+  background-color: $neutral-white;
+  border-radius: $radius-3; // 12px
+  padding: $space-3 $space-4; // 12px padding
+  height: 68px;
+  box-sizing: border-box;
+  box-shadow: $shadow-small;
+}
+
+.alert-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  background-color: $primary-100;
+  border-radius: $radius-3; // 12px rounded circle-ish
+}
+
+.alert-text {
+  font-family: $font-primary;
+  font-size: $font-sm; // 12px
+  font-weight: $font-medium;
+  color: $gray-700;
+  margin: 0;
+  line-height: 1.5;
+}
+
+// --- Quick Actions ---
+// Frame: 765x102, 4 buttons, each 182.25x102
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $space-4; // 16px between buttons
+}
+
+.quick-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2; // 8px between icon and text
+  cursor: pointer;
+  padding: $space-4 $space-3;
+  border-radius: $radius-3; // 12px
+  background-color: $neutral-white;
+  box-shadow: $shadow-small;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 102px;
+  box-sizing: border-box;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-medium;
+  }
+}
+
+.quick-action-icon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.quick-action-label {
+  font-family: $font-primary;
+  font-size: $font-sm; // 12px
+  font-weight: $font-regular; // 400
+  color: $gray-600; // #475066
+  text-align: center;
+  line-height: 1.3;
+}
+
+// --- Two Columns ---
+// Frame: 765x406, y:218 from main start
+.two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-6; // 32px gap between providers and update
+}
+
+// --- Providers Section ---
+// 366.5x406
+.providers-section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3; // 10px between title and card
+}
+
+.section-title {
+  font-family: $font-primary;
+  font-size: $font-lg; // 18px
+  font-weight: $font-semibold;
+  color: $gray-700;
+  margin: 0;
+  line-height: 1;
+}
+
+// White card container for providers
+.providers-card {
+  background-color: $neutral-white;
+  border-radius: $radius-3; // 12px
+  padding: $space-4; // 16px
+  display: flex;
+  flex-direction: column;
+  box-shadow: $shadow-small;
+}
+
+.provider-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-4 0; // 16px vertical padding per row
+  border-bottom: 1px solid $gray-100;
+
+  &--last {
+    border-bottom: none;
+  }
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.provider-info {
+  display: flex;
+  align-items: center;
+  gap: $space-3; // 10px between avatar and name
+}
+
+.provider-avatar-wrapper {
+  position: relative;
+  width: 52px;
+  height: 51px;
+  min-width: 52px;
+}
+
+.provider-avatar {
+  width: 52px;
+  height: 51px;
+  border-radius: 100px; // Figma: border-radius 100px
+  object-fit: cover;
+}
+
+.provider-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.provider-name {
+  font-family: $font-primary;
+  font-size: $font-sm; // 12px
+  font-weight: $font-medium;
+  color: $gray-700;
+}
+
+.btn-contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-2; // 8px
+  min-width: 76px;
+  height: 29px;
+  background: transparent;
+  border: 1px solid $primary-500;
+  border-radius: $radius-2; // 8px
+  color: $primary-500;
+  font-family: $font-primary;
+  font-size: $font-sm; // 12px
+  font-weight: $font-bold; // 700
+  cursor: pointer;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background-color: $primary-500;
+    color: $neutral-white;
+  }
+}
+
+// --- Update Section ---
+// 366.5x406
+.update-section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3; // 10px between title and card
+}
+
+.update-card {
+  background-color: $neutral-white;
+  border-radius: $radius-3; // 12px
+  overflow: hidden;
+  box-shadow: $shadow-small;
+  padding: $space-4; // 16px
+  display: flex;
+  flex-direction: column;
+  gap: $space-4; // 16px between banner and content
+}
+
+.update-banner {
+  width: 100%;
+  max-width: 328px;
+  height: 139px;
+  object-fit: cover;
+  border-radius: $radius-2; // 8px
+}
+
+.update-content {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2; // 8px
+}
+
+.update-title {
+  font-family: $font-primary;
+  font-size: $font-base; // 16px
+  font-weight: $font-bold;
+  color: $gray-800;
+  margin: 0;
+}
+
+.update-description {
+  font-family: $font-primary;
+  font-size: $font-sm; // 12px
+  font-weight: $font-regular;
+  color: $gray-500;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.btn-manual {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  padding: $space-2 $space-4; // 8px 16px
+  background-color: $primary-500;
+  border: none;
+  border-radius: $radius-2; // 8px
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-sm; // 12px
+  font-weight: $font-bold;
+  cursor: pointer;
+  margin-top: $space-2;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 97, 2, 0.3);
+  }
+}
+
+// --- Sidebar Banner ---
+// Figma: 363x624, rounded 12px, overflow hidden
+.sidebar-banner {
+  min-width: 0;
+  border-radius: $radius-3; // 12px
+  overflow: hidden;
+  height: 624px;
+}
+
+.sidebar-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+// ============================================
+// Responsive Breakpoints
+// ============================================
+
+@media (max-width: $bp-lg) {
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-banner {
+    height: 300px;
+    order: -1; // Banner above content on smaller screens
+  }
+}
+
+@media (max-width: $bp-md) {
+  .two-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $space-3;
+  }
+
+  .quick-action {
+    height: auto;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .greeting {
+    font-size: $font-xl;
+  }
+
+  .quick-actions {
+    grid-template-columns: 1fr 1fr;
+    gap: $space-3;
+  }
+
+  .provider-row {
+    flex-wrap: wrap;
+    gap: $space-2;
+  }
+
+  .btn-contact {
+    width: 100%;
+  }
+
+  .sidebar-banner {
+    height: 200px;
+  }
+
+  .update-banner {
+    height: auto;
+    max-width: 100%;
+  }
+}

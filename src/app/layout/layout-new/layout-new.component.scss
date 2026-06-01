@@ -1,0 +1,47 @@
+@import 'styles/variables-new';
+
+$sidebar-icon-rail-width: 56px;
+$sidebar-submenu-width: 200px;
+$sidebar-compact-width: 48px;
+$sidebar-full-width: $sidebar-icon-rail-width + $sidebar-submenu-width;
+$header-new-height: 53px;
+
+.layout-new {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  font-family: $font-primary;
+
+  &__header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 150;
+    height: $header-new-height;
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    margin-top: $header-new-height;
+    height: calc(100vh - #{$header-new-height});
+    overflow: hidden;
+  }
+
+  &__content {
+    flex: 1;
+    margin-left: $sidebar-full-width;
+    background: $neutral-white;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__body--collapsed {
+    .layout-new__content {
+      margin-left: $sidebar-icon-rail-width + $sidebar-compact-width; // 56 + 48 = 104px
+    }
+  }
+}

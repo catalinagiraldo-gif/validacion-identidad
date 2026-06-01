@@ -1,0 +1,71 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-radiobutton",
+  "selector": "app-dropi-radiobutton",
+  "atomicLevel": "atom",
+  "source": "Figma — Radiobutton (115:224), file rcP3y6rwzaxAedc8cbMQET",
+  "description": "Radio button for single selection from a group. Available in Title & Description, Title & Value, and Expandable types.",
+  "designRules": [
+    "Use within a group for mutually exclusive selection",
+    "Active state uses primary-500 orange border and primary-50 background (#fef8f1)",
+    "Default state uses gray-200 border",
+    "Error state uses error-500 border with helper text and warning icon",
+    "Disabled state uses gray-50 background with gray-100 border",
+    "Radio indicator: 20px circle, 2px border. Active has 12px inner orange fill",
+    "Expandable type shows/hides content area when selected"
+  ],
+  "inputs": {
+    "title": { "type": "string", "required": true },
+    "label": { "type": "string", "required": false, "description": "Description text below title" },
+    "type": { "type": "enum", "values": ["title-description", "title-value", "expandable"], "default": "title-description" },
+    "state": { "type": "enum", "values": ["default", "active", "disabled", "error"], "default": "default" },
+    "value": { "type": "string", "required": false, "description": "Value display for title-value type (e.g., '$13.000')" },
+    "showImg": { "type": "boolean", "default": true, "description": "Show illustration (48px) or icon (24px)" },
+    "tag": { "type": "string", "required": false, "description": "Optional tag badge (success green, top-right)" }
+  },
+  "outputs": {
+    "selected": { "type": "EventEmitter<void>" }
+  },
+  "styles": {
+    "container": {
+      "borderRadius": "var(--border-3, 12px)",
+      "border": "1px solid var(--gray-200, #c3c9d9)",
+      "padding": "var(--size-4, 16px)",
+      "activeBorder": "1px solid var(--primary-500, #f49a3d)",
+      "activeBackground": "var(--primary-50, #fef8f1)",
+      "errorBorder": "1px solid var(--error-500, #f46a6b)",
+      "disabledBackground": "var(--gray-50, #f0f4f9)",
+      "disabledBorder": "1px solid var(--gray-100, #e9eef5)"
+    },
+    "radio": {
+      "size": "20px",
+      "borderRadius": "44px",
+      "defaultBorder": "2px solid var(--gray-200, #c3c9d9)",
+      "activeBorder": "2px solid var(--primary-500, #f49a3d)",
+      "innerDot": { "size": "12px", "color": "var(--primary-500, #f49a3d)" }
+    },
+    "title": {
+      "font": "Inter, 14px, Regular",
+      "color": "var(--gray-700, #32394d)",
+      "disabledColor": "var(--gray-400, #858ea6)"
+    },
+    "description": {
+      "font": "Inter, 12px, Regular",
+      "color": "var(--gray-600, #475066)"
+    },
+    "value": {
+      "font": "Inter, 14px, Medium",
+      "color": "var(--gray-700, #32394d)"
+    },
+    "tag": {
+      "background": "var(--success-500, #0abb87)",
+      "color": "var(--white, #ffffff)",
+      "font": "Inter, 12px, Medium",
+      "borderRadius": "var(--border-5, 32px)",
+      "padding": "4px 8px"
+    },
+    "icon": { "size": "24px", "borderRadius": "32px" },
+    "illustration": { "size": "48px", "borderRadius": "32px" }
+  },
+  "usageExample": "<app-dropi-radiobutton title=\"Pago contraentrega\" label=\"El cliente paga al recibir\" type=\"title-description\" state=\"active\"></app-dropi-radiobutton>"
+}

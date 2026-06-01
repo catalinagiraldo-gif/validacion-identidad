@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 import { PROTOTYPE_REGISTRY } from '../../config/prototypes.registry';
 import { PrototypeMeta } from '../../models/prototype-meta.model';
 import { ProfileService } from '../../services/profile.service';
@@ -47,7 +48,7 @@ import { ProfileService } from '../../services/profile.service';
       <div class="hub__grid" *ngIf="filteredPrototypes.length > 0">
         <a
           *ngFor="let proto of filteredPrototypes; let i = index"
-          [routerLink]="proto.route"
+          [routerLink]="'/' + currentArch + proto.route"
           class="hub__card"
           [title]="proto.description"
           [style.animation-delay]="(i * 60) + 'ms'"
@@ -88,13 +89,15 @@ export class PrototypeGalleryComponent implements OnInit, OnDestroy {
   filteredPrototypes: PrototypeMeta[] = [];
   searchQuery = '';
   currentProfile: string | null = null;
+  currentArch: 'old' | 'new' = 'old';
   private loadedThumbnails = new Set<string>();
   private subscription!: Subscription;
 
-  constructor(private profileService: ProfileService) {}
+  constructor(private profileService: ProfileService, private router: Router) {}
 
   ngOnInit(): void {
-    this.allPrototypes = PROTOTYPE_REGISTRY;
+    this.currentArch = (localStorage.getItem('dropi.selectedArch') as 'old' | 'new') || 'old';
+    this.allPrototypes = PROTOTYPE_REGISTRY.filter(p => p.architecture === this.currentArch);
     this.subscription = this.profileService.currentProfile$.subscribe(
       (profile) => {
         this.currentProfile = profile;

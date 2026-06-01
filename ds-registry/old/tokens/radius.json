@@ -1,0 +1,16 @@
+{
+  "$schema": "dropi-ds-token",
+  "category": "radius",
+  "source": "Figma — -WEB- components",
+  "tokens": {
+    "none": "0",
+    "xs": "3px",
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "xl": "16px",
+    "pill": "17px",
+    "full": "50px",
+    "circle": "9999px"
+  }
+}

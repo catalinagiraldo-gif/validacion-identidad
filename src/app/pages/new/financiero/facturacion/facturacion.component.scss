@@ -1,0 +1,486 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Facturacion Page — New Architecture
+// Tabs: Datos de facturacion | Facturas | Notas credito
+// ============================================
+
+$text-header: #495057;
+$text-paragraph: #7b8190;
+$bg-page: #f5f6f8;
+$gray-border: #d3d7de;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.facturacion-page {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-4 $space-8;
+  position: relative;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-4;
+
+  .breadcrumb-item {
+    font-family: $font-primary;
+    font-size: $font-base;
+    font-weight: $font-bold;
+    color: $text-paragraph;
+    line-height: 24px;
+
+    &.muted {
+      color: #a0a8b8;
+    }
+
+    .pi-home {
+      font-size: 14px;
+    }
+  }
+
+  .breadcrumb-separator {
+    font-size: 10px;
+    color: $text-paragraph;
+    display: flex;
+    align-items: center;
+    transform: rotate(-90deg);
+
+    i {
+      font-size: 10px;
+    }
+  }
+}
+
+// ========== Title ==========
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $text-header;
+  margin: 0 0 $space-5 0;
+  line-height: 1.25;
+}
+
+// ========== Tabs Bar ==========
+.tabs-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid $gray-100;
+  margin-bottom: $space-5;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: $space-3 $space-5;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  color: $text-paragraph;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  margin-bottom: -2px;
+
+  &:hover {
+    color: $primary-500;
+  }
+
+  &.active {
+    color: $primary-500;
+    font-weight: $font-semibold;
+    border-bottom-color: $primary-500;
+  }
+}
+
+// ========== Tab Content ==========
+.tab-content {
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== Form Card ==========
+.form-card {
+  background: $neutral-white;
+  border-radius: $radius-2;
+  padding: $space-6;
+  box-shadow: $shadow-small;
+  border: 1px solid $gray-100;
+}
+
+.section-title {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-bold;
+  color: $text-header;
+  margin: 0 0 $space-2 0;
+}
+
+.section-description {
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $text-paragraph;
+  margin: 0 0 $space-5 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-4;
+  margin-bottom: $space-6;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+
+  label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $text-header;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  input {
+    font-family: $font-primary;
+    font-size: $font-md;
+    color: $text-header;
+    padding: $space-3 $space-4;
+    border: 1px solid $gray-200;
+    border-radius: $radius-2;
+    background: $neutral-white;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    max-width: 100%;
+
+    &::placeholder {
+      color: $gray-300;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary-400;
+      box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $space-3;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: $primary-500;
+  color: $neutral-white;
+  border: none;
+  border-radius: $radius-2;
+  padding: $space-3 $space-5;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    background: $primary-600;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-secondary {
+  background: $neutral-white;
+  color: $text-paragraph;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  padding: $space-3 $space-5;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    background: $gray-50;
+    border-color: $gray-300;
+  }
+}
+
+// ========== Data Table ==========
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: $neutral-white;
+  border-radius: $radius-2;
+  overflow: hidden;
+  box-shadow: $shadow-small;
+
+  thead {
+    tr {
+      background: $gray-50;
+      border-bottom: 2px solid $gray-100;
+    }
+
+    th {
+      font-family: $font-primary;
+      font-size: $font-sm;
+      font-weight: $font-semibold;
+      color: $text-paragraph;
+      text-align: left;
+      padding: $space-3 $space-4;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+  }
+
+  tbody {
+    tr.table-row {
+      border-bottom: 1px solid $gray-100;
+      animation: fadeInRow 0.3s ease forwards;
+      opacity: 0;
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: $gray-50;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      font-family: $font-primary;
+      font-size: $font-md;
+      color: $text-header;
+      padding: $space-3 $space-4;
+      white-space: nowrap;
+    }
+  }
+
+  .factura-number {
+    font-weight: $font-semibold;
+    color: $secondary-600;
+  }
+
+  .col-amount {
+    text-align: right;
+    font-weight: $font-semibold;
+    font-family: 'Courier New', monospace;
+  }
+
+  .col-status {
+    text-align: center;
+  }
+
+  .col-actions {
+    text-align: center;
+    width: 80px;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: $space-8 $space-4 !important;
+  color: $text-paragraph;
+
+  i {
+    font-size: 36px;
+    color: $gray-300;
+    display: block;
+    margin-bottom: $space-3;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-md;
+  }
+}
+
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== Status Badge ==========
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: $space-1 $space-3;
+  border-radius: $radius-4;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  line-height: 1;
+
+  &.paid {
+    background: $success-50;
+    color: $success-700;
+  }
+
+  &.pending {
+    background: $warning-50;
+    color: $warning-700;
+  }
+}
+
+// ========== Icon Button ==========
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $error-500;
+  padding: $space-2;
+  border-radius: $radius-1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  i {
+    font-size: $font-lg;
+  }
+
+  &:hover {
+    background: $error-50;
+    color: $error-700;
+  }
+}
+
+// ========== Toast ==========
+.toast {
+  position: fixed;
+  bottom: $space-6;
+  right: $space-6;
+  padding: $space-3 $space-5;
+  border-radius: $radius-2;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  color: $neutral-white;
+  box-shadow: $shadow-large;
+  z-index: 1000;
+  animation: toastSlideIn 0.3s ease;
+
+  &.success {
+    background: $success-600;
+  }
+
+  &.info {
+    background: $info-600;
+  }
+
+  i {
+    font-size: $font-base;
+  }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== Responsive ==========
+@media (max-width: $bp-lg) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .facturacion-page {
+    padding: $space-4;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-card {
+    padding: $space-4;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .facturacion-page {
+    padding: $space-4 $space-4;
+  }
+
+  .tabs-bar {
+    gap: 0;
+  }
+
+  .tab-btn {
+    padding: $space-2 $space-3;
+    font-size: $font-sm;
+  }
+
+  .form-actions {
+    flex-direction: column;
+
+    .btn-primary,
+    .btn-secondary {
+      width: 100%;
+    }
+  }
+
+  .data-table {
+    thead th,
+    tbody td {
+      padding: $space-2 $space-3;
+      font-size: $font-sm;
+    }
+  }
+}

@@ -126,6 +126,25 @@
     flex-shrink: 0;
   }
 
+  &__arch-switch {
+    background: none;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    padding: $size-2 $size-3;
+    color: $gray-500;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+
+    &:hover {
+      border-color: $primary-500;
+      color: $primary-500;
+    }
+  }
+
   &__profile-switch {
     background: none;
     border: 1px solid $gray-200;

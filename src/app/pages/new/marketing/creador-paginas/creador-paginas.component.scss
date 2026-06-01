@@ -1,0 +1,338 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Creador de Paginas — Marketing Module
+// Landing page builder with template grid
+// ============================================
+
+$text-header: #495057;
+$text-paragraph: #7B8190;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-4 $space-8;
+  position: relative;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-4;
+
+  .breadcrumb-item {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $text-paragraph;
+    line-height: 24px;
+
+    &.active {
+      color: $primary-500;
+      font-weight: $font-semibold;
+    }
+
+    .pi-home { font-size: 14px; }
+  }
+
+  .breadcrumb-chevron {
+    font-size: 10px;
+    color: $gray-300;
+  }
+}
+
+// ========== Page Header ==========
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-5;
+  flex-wrap: wrap;
+  gap: $space-3;
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  margin: 0;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  height: 40px;
+  padding: 0 $space-4;
+  background: $primary-500;
+  color: $neutral-white;
+  border: none;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+
+  &:hover { background: $primary-600; }
+
+  i { font-size: 14px; }
+}
+
+// ========== Category Bar ==========
+.category-bar {
+  display: flex;
+  gap: $space-2;
+  margin-bottom: $space-4;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: $space-1;
+}
+
+.category-chip {
+  display: inline-block;
+  padding: 8px 18px;
+  border: 1px solid $gray-200;
+  border-radius: $radius-4;
+  background: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  color: $gray-600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $primary-300;
+    color: $primary-500;
+  }
+
+  &--active {
+    background: $primary-500;
+    border-color: $primary-500;
+    color: $neutral-white;
+
+    &:hover {
+      background: $primary-600;
+      border-color: $primary-600;
+      color: $neutral-white;
+    }
+  }
+}
+
+// ========== Search ==========
+.search-row {
+  margin-bottom: $space-5;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 400px;
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    color: $gray-400;
+    font-size: 14px;
+  }
+
+  input {
+    width: 100%;
+    height: 40px;
+    border: 1px solid $gray-200;
+    border-radius: $radius-2;
+    padding: 0 12px 0 36px;
+    font-family: $font-primary;
+    font-size: $font-md;
+    color: $gray-800;
+    background: $neutral-white;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &::placeholder { color: $gray-400; }
+    &:focus { border-color: $primary-400; }
+  }
+}
+
+// ========== Templates Grid ==========
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $space-5;
+
+  @media (max-width: $bp-xl) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.template-card {
+  background: $neutral-white;
+  border-radius: $radius-3;
+  box-shadow: $shadow-small;
+  overflow: hidden;
+  animation: fadeInCard 0.4s ease forwards;
+  opacity: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-medium;
+
+    .template-card__overlay {
+      opacity: 1;
+    }
+  }
+
+  &__preview {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  &__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+      font-size: 40px;
+      color: rgba(255,255,255,0.4);
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: $space-3;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  &__info {
+    padding: $space-4;
+  }
+
+  &__name {
+    display: block;
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-semibold;
+    color: $gray-800;
+    margin-bottom: $space-2;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__category {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $text-paragraph;
+  }
+
+  &__uses {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-500;
+  }
+}
+
+.btn-use {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 8px 16px;
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: $radius-2;
+  background: transparent;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  i { font-size: 14px; }
+
+  &:hover {
+    background: rgba(255,255,255,0.15);
+  }
+
+  &--primary {
+    background: $primary-500;
+    border-color: $primary-500;
+
+    &:hover {
+      background: $primary-600;
+    }
+  }
+}
+
+@keyframes fadeInCard {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// ========== Responsive ==========
+@media (max-width: $bp-md) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-3 $space-4;
+  }
+
+  .page-title {
+    font-size: $font-xl;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .template-card__preview {
+    height: 160px;
+  }
+}

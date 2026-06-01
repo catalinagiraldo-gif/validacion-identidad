@@ -1,0 +1,256 @@
+@import 'styles/variables-new';
+
+$header-height: 53px;
+
+.header-new {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: $header-height;
+  padding: $space-2 $space-3;
+  background: $neutral-white;
+  position: relative;
+
+  &__left {
+    display: flex;
+    align-items: center;
+  }
+
+  &__logo {
+    height: 37px;
+    width: auto;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: $space-4;
+    position: relative;
+  }
+
+  // --- BETA toggle ---
+  &__beta-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    height: 37px;
+    border-radius: $radius-1;
+    transition: opacity 0.15s ease;
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+
+  &__beta-label {
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-bold;
+    color: $info-500;
+    line-height: 1.1;
+  }
+
+  &__switch {
+    display: flex;
+    align-items: center;
+    width: 40px;
+    height: 21px;
+    background: $gray-200;
+    border-radius: 12px;
+    padding: 0;
+    position: relative;
+    transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &--active {
+      background: $info-500;
+
+      .header-new__switch-indicator {
+        left: 20px;
+      }
+    }
+  }
+
+  &__switch-indicator {
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    width: 17px;
+    height: 17px;
+    background: $neutral-white;
+    border-radius: 50%;
+    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+
+  // --- Wallet ---
+  &__wallet {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+  }
+
+  &__wallet-icon {
+    font-size: 18px;
+    color: $gray-700;
+  }
+
+  &__wallet-amount {
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-regular;
+    color: $gray-700;
+    text-align: center;
+    transition: filter 0.3s ease;
+    min-width: 100px;
+
+    &--hidden {
+      filter: blur(6px);
+      user-select: none;
+    }
+  }
+
+  &__wallet-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: $gray-700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: $gray-500;
+    }
+  }
+
+  // --- User / Avatar ---
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+    transition: opacity 0.15s ease;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  &__avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  &__avatar-fallback {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: $primary-500;
+    color: $neutral-white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: $font-primary;
+    font-weight: $font-bold;
+    font-size: $font-md;
+  }
+
+  &__dropdown-arrow {
+    position: absolute;
+    bottom: 0.5px;
+    right: 0;
+    width: 14px;
+    height: 14px;
+    background: $neutral-white;
+    border-radius: 50%;
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $gray-700;
+  }
+
+  // --- User dropdown menu ---
+  &__user-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: $neutral-white;
+    border-radius: $radius-3;
+    box-shadow: $shadow-large;
+    padding: $space-2 0;
+    min-width: 220px;
+    z-index: 300;
+    animation: menuSlideIn 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__menu-item {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    width: 100%;
+    padding: $space-2 $space-4;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: $font-primary;
+    font-size: $font-md;
+    color: $gray-700;
+    transition: background 0.12s ease;
+
+    &:hover {
+      background: $gray-50;
+    }
+
+    &--danger {
+      color: $error-500;
+
+      &:hover {
+        background: rgba($error-500, 0.06);
+      }
+    }
+  }
+
+  &__menu-separator {
+    height: 1px;
+    background: $gray-100;
+    margin: $space-1 0;
+  }
+}
+
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .header-new {
+    padding: $space-3;
+
+    &__logo { height: 28px; }
+    &__wallet-amount { display: none; }
+    &__beta-label { display: none; }
+  }
+}

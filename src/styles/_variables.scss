@@ -80,6 +80,12 @@ $sidebar-width: 250px;
 $sidebar-collapsed-width: 94px;
 $header-height: 70px;
 
+// --- Breakpoints (content area, after sidebar) ---
+$bp-xl: 1400px;
+$bp-lg: 1200px;
+$bp-md: 900px;
+$bp-sm: 600px;
+
 // --- CSS Custom Properties (for runtime use) ---
 :root {
   --primary-300: #{$primary-300};

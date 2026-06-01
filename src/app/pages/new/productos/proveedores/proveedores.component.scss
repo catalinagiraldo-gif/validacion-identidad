@@ -1,0 +1,587 @@
+@import 'styles/variables-new';
+
+// ========== Host & Page Wrapper ==========
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.proveedores-page {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-4 $space-8;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-4;
+
+  &-icon {
+    color: #7b8190;
+    font-size: $font-sm;
+  }
+
+  &-separator {
+    font-size: 10px;
+    color: #7b8190;
+    display: flex;
+    align-items: center;
+
+    i {
+      font-size: 10px;
+    }
+  }
+
+  &-item {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: #7b8190;
+    line-height: 20px;
+
+    &.active {
+      font-weight: $font-bold;
+      color: $gray-700;
+    }
+  }
+}
+
+// ========== Page Title ==========
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-800;
+  line-height: 32px;
+  margin: 0 0 $space-5 0;
+}
+
+// ========== Filter Section ==========
+.filtros-section {
+  margin-bottom: $space-4;
+}
+
+.filtros-card {
+  background: $neutral-white;
+  border-radius: $radius-2;
+  padding: $space-3 $space-4;
+  box-shadow: 0px 2px 4px rgba(15, 34, 58, 0.12);
+}
+
+.filtros-row {
+  display: flex;
+  align-items: flex-end;
+  gap: $space-4;
+  flex-wrap: wrap;
+}
+
+.filtros-dropdowns {
+  display: flex;
+  align-items: flex-end;
+  gap: $space-3;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+// Figma widths: 179px, 201px, 208px
+.select-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  min-width: 140px;
+
+  &.select-tipo {
+    width: 179px;
+    max-width: 179px;
+  }
+
+  &.select-ciudad {
+    width: 201px;
+    max-width: 201px;
+  }
+
+  &.select-categoria {
+    width: 208px;
+    max-width: 208px;
+  }
+}
+
+.select-label {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-bold;
+  color: #7b8190;
+  line-height: 16px;
+  text-transform: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.select-wrapper {
+  position: relative;
+  width: 100%;
+
+  select {
+    width: 100%;
+    height: 40px;
+    padding: 10px $space-8 10px $space-3;
+    background: $neutral-white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-2;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $gray-400;
+    line-height: 20px;
+    appearance: none;
+    cursor: pointer;
+    outline: none;
+    text-overflow: ellipsis;
+    transition: border-color 0.15s ease;
+
+    &:focus {
+      border-color: $primary-500;
+    }
+
+    &:not(:invalid) {
+      color: $gray-600;
+    }
+  }
+
+  .select-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: #7b8190;
+    pointer-events: none;
+  }
+}
+
+// Figma: orange arrow button 42x40px
+.btn-submit-filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 40px;
+  background: $primary-500;
+  border: none;
+  border-radius: $radius-2;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.1s ease;
+
+  i {
+    font-size: 16px;
+    color: $neutral-white;
+  }
+
+  &:hover {
+    background: $primary-600;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Figma: search 282x45px
+.search-input {
+  width: 282px;
+  max-width: 100%;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 8px $space-3;
+  background: #f5f6f8;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
+
+  &:focus-within {
+    border-color: $primary-500;
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $gray-700;
+    min-width: 0;
+
+    &::placeholder {
+      color: #7b8190;
+    }
+  }
+
+  .search-icon {
+    color: #7b8190;
+    font-size: $font-sm;
+    flex-shrink: 0;
+  }
+}
+
+// ========== Favorites Toggle ==========
+// Figma: Heart (orange 19px) + "Favoritos" + switch
+.favoritos-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: $space-5;
+}
+
+.favoritos-toggle {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+
+  .fav-icon {
+    width: 19px;
+    height: 19px;
+  }
+}
+
+.toggle-label {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  color: $gray-700;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+// Custom switch toggle
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: $neutral-white;
+    border: 1px solid $gray-200;
+    border-radius: 100px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      left: 3px;
+      top: 2px;
+      background: $gray-200;
+      border-radius: 50%;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+  }
+
+  input:checked + .slider {
+    background: $primary-500;
+    border-color: $primary-500;
+
+    &::before {
+      background: $neutral-white;
+      transform: translateX(19px);
+    }
+  }
+}
+
+// ========== Provider Grid ==========
+// Figma: 4 columns
+.proveedores-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $space-5;
+  width: 100%;
+}
+
+// Figma: 222x172px cards, white bg, border gray-100, rounded-12px
+.proveedor-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding: $space-4 $space-5;
+  background: $neutral-white;
+  border-radius: $radius-3; // 12px per Figma
+  box-shadow: $shadow-small;
+  border: 1px solid $gray-100;
+  overflow: hidden;
+  animation: cardIn 0.35s ease both;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  min-height: 172px;
+
+  &:hover {
+    box-shadow: $shadow-medium;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== Card Avatar ==========
+.card-avatar-area {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Figma: Logo 70px centered top
+.card-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: $gray-50;
+
+  .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// Figma: badge 24px, positioned top-right of logo
+.badge-icon {
+  position: absolute;
+  right: -4px;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+}
+
+// ========== Card Info ==========
+.card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  gap: 2px;
+}
+
+// Figma: Name bold 16px centered
+.card-name {
+  font-family: $font-primary;
+  font-size: $font-base; // 16px
+  font-weight: $font-bold;
+  color: $gray-800;
+  line-height: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  margin: 0;
+}
+
+// Figma: count 14px gray
+.card-count {
+  font-family: $font-primary;
+  font-size: $font-md; // 14px
+  font-weight: $font-regular;
+  color: $gray-400;
+  line-height: 20px;
+  margin: 0;
+}
+
+// Figma: categories 12px gray truncated
+.card-categories {
+  font-family: $font-primary;
+  font-size: $font-sm; // 12px
+  font-weight: $font-regular;
+  color: $gray-300;
+  line-height: 20px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  margin: 0;
+}
+
+// ========== Favorite Button ==========
+// Figma: Heart favorite button 42x40px top-right of card
+.card-favorite {
+  position: absolute;
+  top: $space-2;
+  right: $space-2;
+  width: 42px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $neutral-white;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  transition: border-color 0.15s ease, background 0.15s ease;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    border-color: $primary-500;
+    background: rgba($primary-500, 0.04);
+  }
+}
+
+// ========== Empty State ==========
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $space-10 $space-4;
+  gap: $space-3;
+
+  i {
+    font-size: 32px;
+    color: $gray-300;
+  }
+
+  p {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $gray-400;
+    text-align: center;
+    margin: 0;
+  }
+}
+
+// ========== Responsive Breakpoints ==========
+@media (max-width: $bp-lg) {
+  .proveedores-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .search-input {
+    width: 240px;
+  }
+
+  .select-group {
+    &.select-tipo,
+    &.select-ciudad,
+    &.select-categoria {
+      max-width: none;
+      width: auto;
+      flex: 1;
+    }
+  }
+}
+
+@media (max-width: $bp-md) {
+  .proveedores-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filtros-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtros-dropdowns {
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .select-group {
+    &.select-tipo,
+    &.select-ciudad,
+    &.select-categoria {
+      max-width: none;
+      width: auto;
+      flex: 1;
+    }
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .proveedores-page {
+    padding: $space-4;
+  }
+
+  .proveedores-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filtros-dropdowns {
+    flex-direction: column;
+    gap: $space-2;
+  }
+
+  .select-group {
+    &.select-tipo,
+    &.select-ciudad,
+    &.select-categoria {
+      min-width: 100%;
+      max-width: none;
+      width: 100%;
+    }
+  }
+
+  .btn-submit-filter {
+    width: 100%;
+  }
+
+  .page-title {
+    font-size: $font-xl;
+  }
+}

@@ -104,18 +104,64 @@
     line-height: 1.4;
   }
 
-  &__logout {
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 720px;
+    margin-top: $size-6;
+  }
+
+  &__back {
     background: none;
     border: none;
     color: $gray-400;
+    font-family: $font-primary;
     font-size: $font-sm;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: $size-2;
 
-    &:hover {
-      color: $error;
+    &:hover { color: $primary-500; }
+  }
+
+  &__logout {
+    background: none;
+    border: none;
+    color: $gray-400;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: $size-2;
+
+    &:hover { color: $error; }
+  }
+
+  // --- Nueva Arquitectura override ---
+  $new-primary: #FF6102;
+
+  &--new-arch {
+    .profile-select__avatar-fallback {
+      background: $new-primary;
+    }
+
+    .profile-select__card {
+      &:hover {
+        border-color: $new-primary;
+        box-shadow: 0 4px 16px rgba($new-primary, 0.15);
+      }
+    }
+
+    .profile-select__card-icon {
+      color: $new-primary;
+    }
+
+    .profile-select__back {
+      &:hover { color: $new-primary; }
     }
   }
 }

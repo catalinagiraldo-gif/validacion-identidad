@@ -1,0 +1,126 @@
+{
+  "architecture": "new",
+  "version": "1.0",
+  "lastUpdated": "2026-05-31",
+  "figmaFile": "Ub7Up7f5K0WGuDC6g2jdCu",
+  "figmaPage": "7797:112080",
+  "layout": {
+    "header": "layout/header-new",
+    "sidebar": "layout/sidebar-new",
+    "fab": "layout/fab-menu",
+    "shell": "layout/layout-new"
+  },
+  "modules": {
+    "home": {
+      "label": "Home",
+      "icon": "assets/icons/sidebar-new/home.svg",
+      "route": "/new/home",
+      "views": {
+        "home": {
+          "label": "Inicio",
+          "route": "/new/home",
+          "figmaNode": "7808:147361",
+          "type": "page",
+          "component": "pages/new/home",
+          "status": "pending",
+          "description": "Dashboard de bienvenida con saludo, quick actions, proveedores destacados, noticias, banner Colombia"
+        }
+      }
+    },
+    "dashboard": {
+      "label": "Dashboard",
+      "icon": "assets/icons/sidebar-new/dashboard.svg",
+      "views": {
+        "dashboard": { "label": "Dashboard", "route": "/new/dashboard", "figmaNode": "7797:119864", "type": "page", "component": "pages/new/dashboard/dashboard", "status": "pending" },
+        "productos": { "label": "Productos", "route": "/new/dashboard/productos", "figmaNode": "9275:70064", "type": "page", "component": "pages/new/dashboard/productos", "status": "pending" },
+        "clientes": { "label": "Clientes", "route": "/new/dashboard/clientes", "figmaNode": "9275:72571", "type": "page", "component": "pages/new/dashboard/clientes", "status": "pending" },
+        "calendario": { "label": "Calendario", "route": "/new/dashboard/calendario", "figmaNode": "9275:74738", "type": "page", "component": "pages/new/dashboard/calendario", "status": "pending" },
+        "descargas": { "label": "Descargas", "route": "/new/dashboard/descargas", "figmaNode": "9275:76374", "type": "page", "component": "pages/new/dashboard/descargas", "status": "pending" }
+      }
+    },
+    "productos": {
+      "label": "Productos",
+      "icon": "assets/icons/sidebar-new/productos.svg",
+      "views": {
+        "catalogo-productos": { "label": "Productos", "route": "/new/productos/catalogo", "figmaNode": "7812:139505", "type": "page", "component": "pages/new/productos/catalogo", "status": "pending", "description": "Catálogo con banner IA, proveedores, grid/list de productos, filtros avanzados" },
+        "catalogo-proveedores": { "label": "Proveedores", "route": "/new/productos/proveedores", "figmaNode": "9269:102177", "type": "page", "component": "pages/new/productos/proveedores", "status": "pending", "description": "Grid de cards de proveedores con logos, filtros, favoritos" },
+        "negociaciones": { "label": "Negociaciones", "route": "/new/productos/negociaciones", "figmaNode": "9269:104183", "type": "page", "component": "pages/new/productos/negociaciones", "status": "pending", "description": "Lista de negociaciones con tabs, cards por proveedor, acciones aprobar/rechazar" },
+        "cazaproductos": { "label": "Cazaproductos", "route": "/new/productos/caza-productos", "figmaNode": "9269:105513", "type": "page", "component": "pages/new/productos/cazaproductos", "status": "pending", "description": "Grid de publicaciones con fotos de productos, precios deseados, CTA crear publicación" }
+      }
+    },
+    "pedidos": {
+      "label": "Pedidos",
+      "icon": "assets/icons/sidebar-new/pedidos.svg",
+      "views": {
+        "ordenes": { "label": "Ordenes", "route": "/new/mis-pedidos/mis-pedidos", "figmaNode": "9269:107940", "type": "page", "component": "pages/new/pedidos/ordenes", "status": "pending", "description": "Tabla de órdenes con #, producto, fecha, detalles, iconos de acción" },
+        "novedades": { "label": "Novedades", "route": "/new/mis-pedidos/novedades", "figmaNode": "9269:111133", "type": "page", "component": "pages/new/pedidos/novedades", "status": "pending", "description": "Tabla de novedades con datos tienda, datos cliente, paginación" },
+        "garantias": { "label": "Garantías", "route": "/new/mis-garantias/garantias", "figmaNode": "9271:64271", "type": "page", "component": "pages/new/pedidos/garantias", "status": "pending", "description": "Tabla con Id, Order Original, Producto, Tipo, Fecha, Estado con badges" },
+        "ordenes-despacho": { "label": "Órdenes de despacho", "route": "/new/mis-garantias/ordenes-de-despacho", "figmaNode": "9273:61028", "type": "page", "component": "pages/new/pedidos/ordenes-despacho", "status": "pending" },
+        "garantias-recolecciones": { "label": "Garantías recolecciones", "route": "/new/mis-garantias/garantias-recolecciones", "figmaNode": "9273:61881", "type": "page", "component": "pages/new/pedidos/garantias-recolecciones", "status": "pending" },
+        "validador-direcciones": { "label": "Validador de direcciones", "route": "/new/mis-pedidos/validador-direcciones", "figmaNode": "9275:62580", "type": "page", "component": "pages/new/pedidos/validador-direcciones", "status": "pending" }
+      }
+    },
+    "logistica": {
+      "label": "Logística",
+      "icon": "assets/icons/sidebar-new/logistica.svg",
+      "views": {
+        "transportadoras": { "label": "Transportadoras", "route": "/new/transportadora/preferencias", "figmaNode": "9275:64083", "type": "page", "component": "pages/new/logistica/transportadoras", "status": "pending" }
+      }
+    },
+    "reportes": {
+      "label": "Reportes",
+      "icon": "assets/icons/sidebar-new/reportes.svg",
+      "route": "/new/reportes",
+      "views": {
+        "reportes": { "label": "Reportes", "route": "/new/reportes", "figmaNode": "9275:70064", "type": "page", "component": "pages/new/reportes/reportes", "status": "pending" }
+      }
+    },
+    "financiero": {
+      "label": "Financiero",
+      "icon": "assets/icons/sidebar-new/financiero.svg",
+      "views": {
+        "wallet": { "label": "Wallet", "route": "/new/historial-de-cartera", "figmaNode": "9280:47783", "type": "page", "component": "pages/new/financiero/wallet", "status": "pending" },
+        "facturacion": { "label": "Facturación", "route": "/new/facturacion", "figmaNode": "9280:47784", "type": "page", "component": "pages/new/financiero/facturacion", "status": "pending" },
+        "dropicard": { "label": "Dropicard", "route": "/new/dropi-card/cards", "figmaNode": "9280:51102", "type": "page", "component": "pages/new/financiero/dropicard", "status": "pending" }
+      }
+    },
+    "marketing": {
+      "label": "Marketing",
+      "icon": "assets/icons/sidebar-new/marketing.svg",
+      "views": {
+        "campanas-masivas": { "label": "Campañas masivas", "route": "/new/marketing/campanas", "figmaNode": "10429:65261", "type": "page", "component": "pages/new/marketing/campanas", "status": "pending" },
+        "configuraciones": { "label": "Configuraciones", "route": "/new/marketing/configuraciones", "figmaNode": "9341:43247", "type": "page", "component": "pages/new/marketing/configuraciones", "status": "pending" },
+        "chatea-pro": { "label": "Chatea Pro", "route": "/new/marketing/chatea-pro", "figmaNode": "9341:44321", "type": "page", "component": "pages/new/marketing/chatea-pro", "status": "pending" },
+        "roax": { "label": "Roax", "route": "/new/marketing/roax", "figmaNode": "9341:45122", "type": "page", "component": "pages/new/marketing/roax", "status": "pending" },
+        "creador-paginas": { "label": "Creador de páginas", "route": "/new/marketing/creador-paginas", "figmaNode": "11899:142516", "type": "page", "component": "pages/new/marketing/creador-paginas", "status": "pending" }
+      }
+    },
+    "cas": {
+      "label": "CAS",
+      "icon": "assets/icons/sidebar-new/cas.svg",
+      "views": {
+        "bandeja": { "label": "CAS", "route": "/new/cas/bandeja", "figmaNode": "9341:46110", "type": "page", "component": "pages/new/cas/bandeja", "status": "pending" }
+      }
+    },
+    "academy": {
+      "label": "Academy",
+      "icon": "assets/icons/sidebar-new/academy.svg",
+      "views": {
+        "academy": { "label": "Academy", "route": "/new/academy", "figmaNode": "9341:47097", "type": "page", "component": "pages/new/academy/academy", "status": "pending" }
+      }
+    },
+    "configurar": {
+      "label": "Configurar",
+      "icon": "assets/icons/sidebar-new/configurar.svg",
+      "views": {
+        "informacion-cuenta": { "label": "Información de cuenta", "route": "/new/configuraciones/cuenta", "figmaNode": "9341:47751", "type": "page", "component": "pages/new/configurar/cuenta", "status": "pending" },
+        "seguridad": { "label": "Seguridad", "route": "/new/configuraciones/seguridad", "figmaNode": "9341:47880", "type": "page", "component": "pages/new/configurar/seguridad", "status": "pending" },
+        "integraciones": { "label": "Integraciones", "route": "/new/configuraciones/integraciones", "figmaNode": "9351:130494", "type": "page", "component": "pages/new/configurar/integraciones", "status": "pending" },
+        "referidos": { "label": "Referidos", "route": "/new/configuraciones/referidos", "figmaNode": "10430:68445", "type": "page", "component": "pages/new/configurar/referidos", "status": "pending" },
+        "config-tienda": { "label": "Configuración tienda", "route": "/new/configuraciones/tienda", "figmaNode": "9351:262821", "type": "page", "component": "pages/new/configurar/tienda", "status": "pending" },
+        "usuarios": { "label": "Usuarios", "route": "/new/configuraciones/usuarios", "figmaNode": "9351:263539", "type": "page", "component": "pages/new/configurar/usuarios", "status": "pending" },
+        "dropitesters": { "label": "Dropitesters", "route": "/new/configuraciones/dropitesters", "figmaNode": "11506:169906", "type": "page", "component": "pages/new/configurar/dropitesters", "status": "pending" }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "shadow-small": {
+    "value": "0px 1px 2px rgba(0, 0, 0, 0.05)",
+    "description": "Subtle elevation for cards and inputs"
+  },
+  "shadow-medium": {
+    "value": "0px 4px 8px rgba(0, 0, 0, 0.08)",
+    "description": "Medium elevation for dropdowns and popovers"
+  },
+  "shadow-large": {
+    "value": "0px 8px 24px rgba(0, 0, 0, 0.12)",
+    "description": "High elevation for modals and overlays"
+  },
+  "shadow-icon": {
+    "value": "0px 2px 4px rgba(0, 0, 0, 0.10)",
+    "description": "Icon button shadow on hover"
+  },
+  "blur-1": {
+    "value": "blur(8px)",
+    "description": "Backdrop blur for overlays and glass effects"
+  }
+}

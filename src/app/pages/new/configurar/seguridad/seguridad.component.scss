@@ -1,0 +1,505 @@
+@import 'styles/variables-new';
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-5 $space-6;
+  background-color: $gray-50;
+}
+
+// --- Breadcrumb ---
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-5;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+
+  .breadcrumb-chevron {
+    font-size: 10px;
+    color: $gray-300;
+  }
+
+  .breadcrumb-item {
+    color: $gray-400;
+
+    &.active {
+      color: $gray-700;
+      font-weight: $font-semibold;
+    }
+  }
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-700;
+  margin: 0 0 $space-5 0;
+}
+
+// --- Layout ---
+.seguridad-layout {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+  max-width: 720px;
+}
+
+// --- Section Card ---
+.section-card {
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+  padding: $space-6;
+  box-shadow: $shadow-small;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-4;
+  margin-bottom: $space-5;
+}
+
+.section-header-text {
+  flex: 1;
+}
+
+.section-icon {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: $radius-3;
+  background-color: $primary-100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $primary-500;
+  font-size: $font-lg;
+
+  &--teal {
+    background-color: $secondary-100;
+    color: $secondary-500;
+  }
+
+  &--purple {
+    background-color: $info-100;
+    color: $info-500;
+  }
+}
+
+.section-title {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-semibold;
+  color: $gray-700;
+  margin: 0 0 $space-1 0;
+}
+
+.section-subtitle {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+  margin: 0;
+}
+
+// --- Form ---
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.form-label {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  color: $gray-600;
+}
+
+.form-input {
+  height: 40px;
+  padding: 0 $space-4;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $gray-700;
+  background-color: $neutral-white;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+
+  &::placeholder {
+    color: $gray-300;
+  }
+
+  &:focus {
+    border-color: $primary-400;
+    box-shadow: 0 0 0 2px rgba($primary-500, 0.1);
+  }
+}
+
+.input-password-wrapper {
+  position: relative;
+
+  .form-input {
+    padding-right: 44px;
+  }
+}
+
+.toggle-password {
+  position: absolute;
+  right: $space-3;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: $gray-400;
+  cursor: pointer;
+  padding: $space-1;
+
+  &:hover {
+    color: $gray-600;
+  }
+}
+
+// --- Password Strength ---
+.password-strength {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.strength-bars {
+  display: flex;
+  gap: $space-1;
+}
+
+.strength-bar {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background-color: $gray-200;
+  transition: background-color 0.3s ease;
+
+  &.active.weak {
+    background-color: $error-500;
+  }
+
+  &.active.medium {
+    background-color: $warning-500;
+  }
+
+  &.active.strong {
+    background-color: $success-500;
+  }
+}
+
+.strength-label {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  color: $gray-500;
+  font-weight: $font-medium;
+}
+
+// --- Match Indicator ---
+.match-indicator {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  font-family: $font-primary;
+  font-size: $font-xs;
+
+  &.match {
+    color: $success-500;
+  }
+
+  &.no-match {
+    color: $error-500;
+  }
+}
+
+// --- Actions ---
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: $space-5;
+  padding-top: $space-5;
+  border-top: 1px solid $gray-100;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-3 $space-6;
+  min-width: 120px;
+  height: 40px;
+  background-color: $primary-500;
+  border: none;
+  border-radius: $radius-2;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba($primary-500, 0.3);
+  }
+}
+
+// --- Toggle Switch ---
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  min-width: 44px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $gray-200;
+    border-radius: 24px;
+    transition: background-color 0.3s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: $neutral-white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  input:checked + .slider {
+    background-color: $primary-500;
+
+    &::before {
+      transform: translateX(20px);
+    }
+  }
+}
+
+// --- 2FA Methods ---
+.tfa-content {
+  margin-top: $space-4;
+}
+
+.tfa-methods {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.tfa-method {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-4;
+  border: 1px solid $gray-100;
+  border-radius: $radius-2;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    border-color: $gray-200;
+    background-color: $gray-50;
+  }
+
+  &.active {
+    border-color: $primary-300;
+    background-color: $primary-50;
+  }
+
+  > i {
+    font-size: $font-xl;
+    color: $gray-500;
+    width: 24px;
+    text-align: center;
+  }
+
+  &.active > i {
+    color: $primary-500;
+  }
+}
+
+.tfa-method-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tfa-method-name {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  color: $gray-700;
+}
+
+.tfa-method-desc {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+}
+
+.tfa-method-status {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-semibold;
+  padding: $space-1 $space-3;
+  border-radius: $radius-4;
+  color: $gray-400;
+  background-color: $gray-100;
+
+  &.enabled {
+    color: $success-600;
+    background-color: $success-50;
+  }
+}
+
+// --- Sessions ---
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.session-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-4 0;
+  border-bottom: 1px solid $gray-100;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+.session-device {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.session-device-icon {
+  font-size: $font-xl;
+  color: $gray-400;
+}
+
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.session-name {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  color: $gray-700;
+}
+
+.session-meta {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+}
+
+.session-badge {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-semibold;
+  padding: $space-1 $space-3;
+  border-radius: $radius-4;
+  color: $gray-500;
+  background-color: $gray-100;
+
+  &.current {
+    color: $success-600;
+    background-color: $success-50;
+  }
+}
+
+// --- Responsive ---
+@media (max-width: $bp-md) {
+  .section-card {
+    padding: $space-4;
+  }
+
+  .section-header {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .page-title {
+    font-size: $font-xl;
+  }
+
+  .strength-bars {
+    .strength-bar {
+      width: 28px;
+    }
+  }
+
+  .session-row {
+    flex-wrap: wrap;
+    gap: $space-2;
+  }
+
+  .tfa-method {
+    flex-wrap: wrap;
+  }
+
+  .form-actions {
+    .btn-primary {
+      width: 100%;
+    }
+  }
+}

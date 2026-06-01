@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     if (this.auth.isAuthenticated) {
-      this.router.navigate(['/profile-select']);
+      this.router.navigate(['/arch-select']);
     }
   }
 
@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit {
 
     try {
       await this.auth.loginWithGoogle();
-      this.router.navigate(['/profile-select']);
+      this.router.navigate(['/arch-select']);
     } catch (err: any) {
       this.error = err?.message || 'Error al iniciar sesión';
     } finally {

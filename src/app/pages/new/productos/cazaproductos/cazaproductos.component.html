@@ -1,0 +1,134 @@
+<div class="caza-productos-page">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <span class="breadcrumb-icon"><i class="pi pi-home"></i></span>
+    <i class="pi pi-chevron-right breadcrumb-chevron"></i>
+    <span class="breadcrumb-item">Productos</span>
+    <i class="pi pi-chevron-right breadcrumb-chevron"></i>
+    <span class="breadcrumb-item active">Caza productos</span>
+  </div>
+
+  <!-- Header: Title + CTA -->
+  <div class="page-header">
+    <h1 class="page-title">Caza productos</h1>
+    <button class="btn-crear-publicacion">Crear publicacion</button>
+  </div>
+
+  <!-- Filtros -->
+  <section class="filtros-section">
+    <div class="filtros-card">
+      <div class="filtros-row">
+        <div class="filtros-inputs">
+          <!-- Categoria -->
+          <div class="select-group">
+            <label class="select-label">Categoria</label>
+            <div class="select-wrapper">
+              <select [(ngModel)]="selectedCategory">
+                <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+              </select>
+              <i class="pi pi-chevron-down select-icon"></i>
+            </div>
+          </div>
+
+          <!-- Estado -->
+          <div class="select-group">
+            <label class="select-label">Estado</label>
+            <div class="select-wrapper">
+              <select [(ngModel)]="selectedStatus">
+                <option *ngFor="let st of statuses" [value]="st">{{ st }}</option>
+              </select>
+              <i class="pi pi-chevron-down select-icon"></i>
+            </div>
+          </div>
+
+          <!-- Arrow button -->
+          <button class="btn-arrow">
+            <i class="pi pi-arrow-right"></i>
+          </button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-input">
+          <i class="pi pi-search search-icon"></i>
+          <input type="text" placeholder="Buscar publicaciones" [(ngModel)]="searchQuery" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Toggle row -->
+    <div class="toggle-row">
+      <div class="toggle-group">
+        <span class="toggle-label">Publicaciones con propuestas</span>
+        <label class="switch">
+          <input type="checkbox" [(ngModel)]="conPropuestas" />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Count + Sort bar -->
+    <div class="barra-tabla">
+      <div class="barra-count">
+        <span class="count-number">{{ filteredProducts.length }}</span>
+        <span class="count-text">publicaciones encontradas</span>
+      </div>
+      <div class="barra-sort">
+        <span class="sort-label">Ordenar por:</span>
+        <button class="sort-dropdown">
+          <span>{{ sortBy }}</span>
+          <i class="pi pi-chevron-down"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Grid -->
+  <section class="product-grid">
+    <div
+      class="product-card"
+      *ngFor="let product of filteredProducts; let i = index"
+      [style.animation-delay]="(i * 40) + 'ms'"
+    >
+      <!-- Image container -->
+      <div class="card-image-wrapper">
+        <!-- Status badge overlay -->
+        <div class="card-status-badge" *ngIf="product.status === 'por_finalizar'">
+          {{ getStatusLabel(product.status) }}
+        </div>
+
+        <!-- Product image -->
+        <img
+          class="card-image"
+          [src]="product.image"
+          [alt]="product.name"
+          loading="lazy"
+        />
+
+        <!-- Proposal count badge -->
+        <div class="card-proposal-badge" *ngIf="product.proposals > 0">
+          <i class="pi pi-comments"></i>
+          <span>{{ product.proposals }}</span>
+        </div>
+      </div>
+
+      <!-- Card body -->
+      <div class="card-body">
+        <span class="card-category">{{ product.category }}</span>
+
+        <div class="card-date">
+          <i class="pi pi-calendar"></i>
+          <span>{{ product.dateRange }}</span>
+        </div>
+
+        <h3 class="card-name">{{ product.name }}</h3>
+
+        <div class="card-price">
+          <span class="price-label">Precio deseado</span>
+          <span class="price-value">{{ formatPrice(product.price) }}</span>
+        </div>
+
+        <a class="card-link" href="javascript:void(0)">Ver detalles</a>
+      </div>
+    </div>
+  </section>
+</div>

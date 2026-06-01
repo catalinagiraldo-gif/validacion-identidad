@@ -1,0 +1,187 @@
+@import 'styles/variables';
+
+.arch-select {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $gray-50;
+
+  &__container {
+    text-align: center;
+    max-width: 800px;
+    width: 100%;
+    padding: $size-8;
+  }
+
+  &__header {
+    margin-bottom: $size-8;
+  }
+
+  &__logo {
+    width: 120px;
+    height: auto;
+    margin-bottom: $size-6;
+  }
+
+  &__greeting {
+    font-family: $font-primary;
+    font-size: 24px;
+    font-weight: $font-semibold;
+    color: $gray-700;
+    margin: 0 0 $size-2;
+  }
+
+  &__subtitle {
+    font-size: $font-base;
+    color: $gray-400;
+    margin: 0;
+  }
+
+  &__cards {
+    display: flex;
+    gap: $size-6;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: $size-8;
+  }
+
+  &__card {
+    flex: 1;
+    min-width: 240px;
+    max-width: 300px;
+    background: $white;
+    border: 2px solid $gray-100;
+    border-radius: $radius-lg;
+    padding: $size-8 $size-6;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &:hover {
+      border-color: $primary-500;
+      box-shadow: 0 4px 16px rgba($primary-500, 0.15);
+      transform: translateY(-2px);
+
+      .arch-select__card-btn {
+        background: $primary-500;
+        color: $white;
+      }
+    }
+  }
+
+  &__card-icon {
+    font-size: 40px;
+    color: $primary-500;
+    margin-bottom: $size-4;
+    display: block;
+  }
+
+  &__card-title {
+    font-family: $font-primary;
+    font-size: $font-lg;
+    font-weight: $font-semibold;
+    color: $gray-700;
+    margin: 0 0 $size-2;
+  }
+
+  &__card-desc {
+    font-size: $font-sm;
+    color: $gray-400;
+    margin: 0 0 $size-6;
+    line-height: 1.4;
+  }
+
+  &__card--new {
+    .arch-select__card-icon { color: #FF6102; }
+    .arch-select__card-btn {
+      border-color: #FF6102;
+      color: #FF6102;
+    }
+    &:hover {
+      border-color: #FF6102;
+      box-shadow: 0 4px 16px rgba(#FF6102, 0.15);
+      .arch-select__card-btn {
+        background: #FF6102;
+        color: $white;
+      }
+    }
+  }
+
+  &__card-btn {
+    display: inline-block;
+    padding: $size-2 $size-6;
+    border: 2px solid $primary-500;
+    border-radius: $radius-pill;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $primary-500;
+    background: transparent;
+    transition: all 0.2s ease;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 720px;
+    margin-top: $size-6;
+  }
+
+  &__back {
+    background: none;
+    border: none;
+    color: $gray-400;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: $size-2;
+
+    &:hover { color: $error; }
+  }
+}
+
+// --- Responsive ---
+
+@media (max-width: $bp-md) {
+  .arch-select {
+    &__cards {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    &__card {
+      max-width: 400px;
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .arch-select {
+    &__container {
+      padding: $size-4;
+    }
+
+    &__logo {
+      width: 90px;
+    }
+
+    &__greeting {
+      font-size: $font-xl;
+    }
+
+    &__card {
+      min-width: unset;
+      padding: $size-6 $size-4;
+    }
+  }
+}

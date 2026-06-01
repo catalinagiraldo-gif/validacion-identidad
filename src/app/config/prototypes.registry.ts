@@ -13,6 +13,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-01",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Datos Personales y Facturación",
@@ -24,6 +25,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-25",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Historial de Cartera",
@@ -35,6 +37,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-01",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Mis Pedidos",
@@ -46,6 +49,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-01",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Mis Pedidos Proveedor",
@@ -57,6 +61,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-01",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Orden Manual",
@@ -68,6 +73,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-01",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Catalogo de Productos",
@@ -79,6 +85,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-01",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Caza Productos",
@@ -90,6 +97,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-01",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Proveedores",
@@ -101,6 +109,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-01",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Academy",
@@ -112,6 +121,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-01",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Dropi Card",
@@ -123,6 +133,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-01",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Parametrizar Tarifas",
@@ -134,5 +145,6 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     owner: "producto@dropi.co",
     dateAdded: "2026-05-26",
     thumbnail: "thumbnail.png",
+    architecture: "old",
   }
 ];

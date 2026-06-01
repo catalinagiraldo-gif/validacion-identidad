@@ -1,0 +1,597 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Dashboard Page — New Architecture
+// Figma node 7797:119864
+// Two-column: profile card (left) + stats/charts (right)
+// ============================================
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-5 $space-6;
+  background-color: $gray-50;
+}
+
+// --- Breadcrumb ---
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-5;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+}
+
+.breadcrumb-separator {
+  font-size: $font-xs;
+  color: $gray-300;
+}
+
+.breadcrumb-active {
+  color: $gray-700;
+  font-weight: $font-medium;
+}
+
+// --- Main Layout ---
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: $space-6;
+  align-items: start;
+}
+
+// ============================================
+// LEFT: Profile Card (orange gradient)
+// ============================================
+.profile-card {
+  position: relative;
+  background: linear-gradient(180deg, #FF6102 0%, #D85500 50%, #A64200 100%);
+  border-radius: $radius-3;
+  padding: $space-5;
+  color: $neutral-white;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 520px;
+}
+
+.profile-card__watermark {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 120px;
+  height: 40px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.profile-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: $space-5;
+}
+
+.period-selector {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: $radius-2;
+  padding: $space-2 $space-4;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  color: $neutral-white;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .pi {
+    font-size: 12px;
+  }
+
+  .pi-chevron-down {
+    font-size: 10px;
+    margin-left: $space-1;
+  }
+}
+
+.btn-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: $radius-2;
+  color: $neutral-white;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .pi {
+    font-size: 16px;
+  }
+}
+
+.profile-card__avatar {
+  margin-bottom: $space-4;
+}
+
+.avatar-circle {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.avatar-initials {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $neutral-white;
+  letter-spacing: 1px;
+}
+
+.profile-card__name {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-bold;
+  text-align: center;
+  margin: 0 0 $space-2 0;
+  line-height: 1.3;
+}
+
+.profile-card__date {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-regular;
+  opacity: 0.8;
+  margin: 0 0 $space-4 0;
+  text-align: center;
+}
+
+.profile-card__sales {
+  display: flex;
+  align-items: baseline;
+  gap: $space-2;
+  margin-bottom: $space-5;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.sales-amount {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+}
+
+.sales-separator {
+  font-size: $font-lg;
+  opacity: 0.6;
+}
+
+.sales-orders {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  opacity: 0.85;
+}
+
+.profile-card__gauge {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gauge-svg {
+  width: 120px;
+  height: 120px;
+}
+
+.gauge-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -4px;
+}
+
+.gauge-value {
+  font-family: $font-primary;
+  font-size: $font-xl;
+  font-weight: $font-bold;
+}
+
+.gauge-text {
+  font-family: $font-primary;
+  font-size: $font-xxs;
+  font-weight: $font-regular;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+// ============================================
+// RIGHT: Dashboard Content
+// ============================================
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+  min-width: 0;
+}
+
+// --- Section Headers ---
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-4;
+}
+
+.section-title {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-semibold;
+  color: $gray-700;
+  margin: 0;
+}
+
+.link-more {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  color: $primary-500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $primary-600;
+  }
+}
+
+// --- Stat Cards Grid (3x2) ---
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $space-4;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+  padding: $space-4 $space-3;
+  box-shadow: $shadow-small;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 110px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-medium;
+  }
+}
+
+.stat-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--stat-color, #{$primary-500}) 12%, transparent);
+
+  .pi {
+    font-size: 18px;
+    color: var(--stat-color, #{$primary-500});
+  }
+}
+
+.stat-card__count {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-800;
+  line-height: 1;
+}
+
+.stat-card__label {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-regular;
+  color: $gray-500;
+  text-align: center;
+}
+
+// --- Chart Section ---
+.chart-section {
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+  padding: $space-5;
+  box-shadow: $shadow-small;
+}
+
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-500;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-item--today .legend-dot {
+  background-color: $primary-500;
+}
+
+.legend-item--yesterday .legend-dot {
+  background-color: $gray-200;
+}
+
+.chart-stats {
+  display: flex;
+  gap: $space-6;
+  margin-bottom: $space-4;
+}
+
+.chart-stat {
+  display: flex;
+  align-items: baseline;
+  gap: $space-2;
+}
+
+.chart-stat__value {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-800;
+}
+
+.chart-stat__label {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+}
+
+.chart-container {
+  position: relative;
+}
+
+.line-chart {
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+}
+
+.chart-label {
+  font-family: $font-primary;
+  font-size: 10px;
+  fill: $gray-400;
+}
+
+// --- Chart Tooltip ---
+.chart-tooltip {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: $neutral-white;
+  border: 1px solid $gray-100;
+  border-radius: $radius-2;
+  padding: $space-3;
+  box-shadow: $shadow-medium;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  font-family: $font-primary;
+  font-size: $font-xs;
+  color: $gray-600;
+  pointer-events: none;
+}
+
+.tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+
+  strong {
+    font-weight: $font-semibold;
+    color: $gray-800;
+  }
+}
+
+.tooltip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tooltip-row--today .tooltip-dot {
+  background-color: $primary-500;
+}
+
+.tooltip-row--yesterday .tooltip-dot {
+  background-color: $gray-300;
+}
+
+// --- Reports Section ---
+.reports-section {
+  .section-title {
+    margin-bottom: $space-4;
+  }
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $space-4;
+}
+
+.report-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  height: 48px;
+  background: transparent;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  color: $gray-600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+
+  .pi {
+    font-size: 16px;
+    color: $gray-400;
+    transition: color 0.2s ease;
+  }
+
+  &:hover {
+    border-color: $primary-500;
+    color: $primary-500;
+    background: $primary-50;
+
+    .pi {
+      color: $primary-500;
+    }
+  }
+}
+
+// ============================================
+// Responsive Breakpoints
+// ============================================
+
+@media (max-width: $bp-lg) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-card {
+    min-height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $space-4;
+    padding: $space-4;
+  }
+
+  .profile-card__header {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .profile-card__gauge {
+    margin-top: 0;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: $bp-md) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reports-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chart-tooltip {
+    position: static;
+    margin-top: $space-3;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .dashboard-layout {
+    gap: $space-4;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: $space-3;
+  }
+
+  .reports-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: $space-3;
+  }
+
+  .chart-stats {
+    gap: $space-4;
+  }
+
+  .profile-card__sales {
+    flex-direction: column;
+    align-items: center;
+    gap: $space-1;
+  }
+
+  .sales-separator {
+    display: none;
+  }
+
+  .section-header {
+    flex-wrap: wrap;
+    gap: $space-2;
+  }
+
+  .report-btn {
+    height: 44px;
+  }
+}

@@ -1,0 +1,594 @@
+@import 'styles/variables-new';
+
+// ========== Host ==========
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.caza-productos-page {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-4 $space-8;
+
+  @media (max-width: $bp-sm) {
+    padding: $space-4;
+  }
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 0;
+
+  &-icon {
+    color: $gray-500;
+    font-size: 12px;
+  }
+
+  &-chevron {
+    font-size: 10px;
+    color: $gray-300;
+  }
+
+  &-item {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-regular;
+    color: $gray-500;
+    line-height: 1.5;
+
+    &.active {
+      color: $gray-700;
+    }
+  }
+}
+
+// ========== Page Header ==========
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: $space-2;
+  margin-bottom: 0;
+  flex-wrap: wrap;
+  gap: $space-3;
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-800;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.btn-crear-publicacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-1;
+  min-width: 200px;
+  height: 40px;
+  padding: 0 $space-4;
+  background: $primary-500;
+  border: none;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-bold;
+  color: $neutral-white;
+  line-height: 1.1;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    background: $primary-600;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (max-width: $bp-sm) {
+    width: 100%;
+  }
+}
+
+// ========== Filtros ==========
+.filtros-section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  margin-top: $space-5;
+}
+
+.filtros-card {
+  background: $neutral-white;
+  border-radius: $radius-2;
+  padding: $space-4;
+  box-shadow: $shadow-small;
+}
+
+.filtros-row {
+  display: flex;
+  align-items: flex-end;
+  gap: $space-4;
+  width: 100%;
+  flex-wrap: wrap;
+
+  @media (max-width: $bp-md) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.filtros-inputs {
+  display: flex;
+  flex: 1;
+  gap: $space-3;
+  align-items: flex-end;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.select-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  flex: 1;
+  max-width: 280px;
+  min-width: 140px;
+
+  @media (max-width: $bp-sm) {
+    max-width: 100%;
+  }
+}
+
+.select-label {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-regular;
+  color: $gray-600;
+  line-height: 1.5;
+}
+
+.select-wrapper {
+  position: relative;
+  width: 100%;
+
+  select {
+    width: 100%;
+    height: 40px;
+    padding: $space-2 $space-3;
+    padding-right: 36px;
+    background: $neutral-white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-2;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $gray-500;
+    line-height: 1.5;
+    appearance: none;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s ease;
+
+    &:focus {
+      border-color: $primary-500;
+    }
+  }
+
+  .select-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: $gray-500;
+    pointer-events: none;
+  }
+}
+
+.btn-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  min-width: 40px;
+  padding: $space-3;
+  background: $primary-300;
+  border: none;
+  border-radius: $radius-2;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+
+  i {
+    font-size: 18px;
+    color: $neutral-white;
+  }
+
+  &:hover {
+    background: $primary-500;
+  }
+}
+
+.search-input {
+  width: 260px;
+  max-width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: $space-3;
+  background: $gray-50;
+  border: 1px solid $gray-100;
+  border-radius: $radius-2;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
+
+  &:focus-within {
+    border-color: $primary-500;
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $gray-700;
+    min-width: 0;
+
+    &::placeholder {
+      color: $gray-400;
+    }
+  }
+
+  .search-icon {
+    color: $gray-400;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: $bp-md) {
+    width: 100%;
+  }
+}
+
+// ========== Toggle Row ==========
+.toggle-row {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-group {
+  display: flex;
+  gap: $space-2;
+  align-items: center;
+}
+
+.toggle-label {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-regular;
+  color: $gray-600;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+// Custom switch toggle
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 21px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #d3d7de;
+    border-radius: 12px;
+    transition: background 0.2s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      width: 17px;
+      height: 17px;
+      left: 3px;
+      top: 2px;
+      background: $neutral-white;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  input:checked + .slider {
+    background: $primary-500;
+
+    &::before {
+      transform: translateX(18px);
+    }
+  }
+}
+
+// ========== Count + Sort bar ==========
+.barra-tabla {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.barra-count {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  line-height: 1.5;
+
+  .count-number {
+    color: $gray-600;
+    font-weight: $font-medium;
+  }
+
+  .count-text {
+    color: $gray-600;
+    font-weight: $font-regular;
+  }
+}
+
+.barra-sort {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.sort-label {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-regular;
+  color: $gray-600;
+  line-height: 1.5;
+}
+
+.sort-dropdown {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  height: 39px;
+  padding: $space-3;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: $radius-2;
+
+  span {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-500;
+    line-height: 1.1;
+  }
+
+  i {
+    font-size: 12px;
+    color: $gray-500;
+  }
+}
+
+// ========== Product Grid ==========
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $space-4;
+  margin-top: $space-4;
+  padding-bottom: $space-8;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ========== Product Card ==========
+.product-card {
+  position: relative;
+  background: $neutral-white;
+  border-radius: $radius-3;
+  box-shadow: $shadow-small;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  animation: cardReveal 0.35s ease both;
+
+  &:hover {
+    box-shadow: $shadow-medium;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Image wrapper
+.card-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: $radius-3 $radius-3 0 0;
+  background: $gray-50;
+
+  @media (max-width: $bp-sm) {
+    height: 180px;
+  }
+}
+
+// Product image
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+// Status badge overlay
+.card-status-badge {
+  position: absolute;
+  top: $space-3;
+  left: $space-3;
+  z-index: 2;
+  padding: $space-1 $space-2;
+  background: $primary-500;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-semibold;
+  border-radius: $radius-1;
+  line-height: 1.3;
+}
+
+// Proposal count badge
+.card-proposal-badge {
+  position: absolute;
+  bottom: $space-2;
+  right: $space-2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: $space-1 $space-2;
+  background: $primary-500;
+  color: $neutral-white;
+  border-radius: $radius-4;
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-semibold;
+  line-height: 1;
+
+  i {
+    font-size: 12px;
+  }
+}
+
+// Card body
+.card-body {
+  padding: $space-3 $space-4 $space-4;
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+}
+
+.card-category {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-regular;
+  color: $gray-400;
+  line-height: 1.5;
+  text-transform: capitalize;
+}
+
+.card-date {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-regular;
+  color: $gray-500;
+  line-height: 1.5;
+
+  i {
+    font-size: 12px;
+    color: $gray-400;
+  }
+}
+
+.card-name {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-bold;
+  color: $gray-800;
+  line-height: 1.4;
+  margin: $space-1 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 40px;
+}
+
+.card-price {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: $space-1;
+
+  .price-label {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-regular;
+    color: $gray-400;
+    line-height: 1.5;
+  }
+
+  .price-value {
+    font-family: $font-primary;
+    font-size: $font-base;
+    font-weight: $font-bold;
+    color: $gray-800;
+    line-height: 1.3;
+  }
+}
+
+.card-link {
+  display: inline-block;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-bold;
+  color: $primary-500;
+  text-decoration: none;
+  margin-top: $space-2;
+  transition: color 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: $primary-600;
+  }
+}

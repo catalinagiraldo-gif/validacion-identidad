@@ -1,0 +1,13 @@
+{
+  "$schema": "dropi-ds-component",
+  "name": "dropi-progress",
+  "selector": "app-dropi-progress",
+  "atomicLevel": "atom",
+  "source": "Figma — Progress (90:13962)",
+  "description": "Linear progress bar. 0-10 steps of fill, used for loading states or completion indicators.",
+  "inputs": {
+    "value": { "type": "number", "required": true, "description": "0-10 progress level" },
+    "max": { "type": "number", "default": 10 }
+  },
+  "usageExample": "<app-dropi-progress [value]=\"7\"></app-dropi-progress>"
+}

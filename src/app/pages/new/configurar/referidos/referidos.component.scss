@@ -1,0 +1,367 @@
+@import 'styles/variables-new';
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-5 $space-6;
+  background-color: $gray-50;
+}
+
+// --- Breadcrumb ---
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-5;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+
+  .breadcrumb-chevron {
+    font-size: 10px;
+    color: $gray-300;
+  }
+
+  .breadcrumb-item {
+    color: $gray-400;
+
+    &.active {
+      color: $gray-700;
+      font-weight: $font-semibold;
+    }
+  }
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-700;
+  margin: 0 0 $space-5 0;
+}
+
+// --- Referral Link Card ---
+.referral-link-card {
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+  padding: $space-5;
+  box-shadow: $shadow-small;
+  margin-bottom: $space-5;
+}
+
+.referral-link-content {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  margin-bottom: $space-4;
+}
+
+.referral-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: $radius-3;
+  background-color: $primary-100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $primary-500;
+  font-size: $font-xl;
+}
+
+.referral-link-title {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-semibold;
+  color: $gray-700;
+  margin: 0 0 $space-1 0;
+}
+
+.referral-link-desc {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+  margin: 0;
+}
+
+.referral-link-input-row {
+  display: flex;
+  gap: $space-3;
+}
+
+.referral-link-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: 0 $space-4;
+  height: 44px;
+  background-color: $gray-50;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+
+  i {
+    color: $gray-400;
+    font-size: $font-md;
+  }
+}
+
+.referral-url {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 0 $space-5;
+  height: 44px;
+  background-color: $primary-500;
+  border: none;
+  border-radius: $radius-2;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba($primary-500, 0.3);
+  }
+}
+
+// --- Stats ---
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $space-5;
+  margin-bottom: $space-5;
+}
+
+.stat-card {
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+  padding: $space-5;
+  box-shadow: $shadow-small;
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+}
+
+.stat-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: $radius-3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: $font-xl;
+  }
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-value {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-700;
+}
+
+.stat-label {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+}
+
+// --- Table ---
+.table-card {
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+  box-shadow: $shadow-small;
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-5;
+  border-bottom: 1px solid $gray-100;
+}
+
+.table-title {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-semibold;
+  color: $gray-700;
+  margin: 0;
+}
+
+.table-count {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: $font-primary;
+
+  th {
+    text-align: left;
+    padding: $space-3 $space-5;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $gray-500;
+    background-color: $gray-50;
+    white-space: nowrap;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  td {
+    padding: $space-4 $space-5;
+    font-size: $font-sm;
+    color: $gray-600;
+    border-bottom: 1px solid $gray-100;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: $gray-50;
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.user-avatar-small {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $primary-100, $primary-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-bold;
+  color: $primary-600;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: $space-1 $space-3;
+  border-radius: $radius-4;
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-semibold;
+
+  &.activo {
+    background-color: $success-50;
+    color: $success-600;
+  }
+
+  &.pendiente {
+    background-color: $warning-50;
+    color: $warning-600;
+  }
+
+  &.inactivo {
+    background-color: $gray-100;
+    color: $gray-500;
+  }
+}
+
+.commission-cell {
+  font-weight: $font-semibold;
+  color: $gray-700 !important;
+}
+
+// --- Responsive ---
+@media (max-width: $bp-lg) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: $space-4;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .referral-link-input-row {
+    flex-direction: column;
+  }
+
+  .btn-copy {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .page-title {
+    font-size: $font-xl;
+  }
+
+  .referral-link-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stat-card {
+    padding: $space-4;
+  }
+
+  .stat-value {
+    font-size: $font-xl;
+  }
+}

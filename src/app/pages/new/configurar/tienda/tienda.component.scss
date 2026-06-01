@@ -1,0 +1,473 @@
+@import 'styles/variables-new';
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-5 $space-6;
+  background-color: $gray-50;
+}
+
+// --- Breadcrumb ---
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-5;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+
+  .breadcrumb-chevron {
+    font-size: 10px;
+    color: $gray-300;
+  }
+
+  .breadcrumb-item {
+    color: $gray-400;
+
+    &.active {
+      color: $gray-700;
+      font-weight: $font-semibold;
+    }
+  }
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-700;
+  margin: 0 0 $space-5 0;
+}
+
+// --- Layout ---
+.tienda-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: $space-6;
+  align-items: flex-start;
+}
+
+// --- Logo Section ---
+.logo-section {
+  position: sticky;
+  top: $space-5;
+}
+
+.logo-card {
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+  padding: $space-5;
+  box-shadow: $shadow-small;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.logo-card-title {
+  font-family: $font-primary;
+  font-size: $font-base;
+  font-weight: $font-semibold;
+  color: $gray-700;
+  margin: 0;
+}
+
+.logo-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: $radius-3;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px dashed $gray-200;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: $primary-400;
+
+    .logo-overlay {
+      opacity: 1;
+    }
+  }
+}
+
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  background-color: $gray-50;
+
+  i {
+    font-size: 48px;
+    color: $gray-300;
+  }
+
+  span {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-400;
+  }
+}
+
+.logo-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+
+  i {
+    font-size: $font-3xl;
+    color: $neutral-white;
+  }
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.logo-hint {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  color: $gray-400;
+  margin: 0;
+  text-align: center;
+}
+
+.store-preview {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  padding-top: $space-4;
+  border-top: 1px solid $gray-100;
+}
+
+.preview-label {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-medium;
+  color: $gray-500;
+}
+
+.preview-url {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-3;
+  background-color: $gray-50;
+  border-radius: $radius-1;
+
+  i {
+    color: $gray-400;
+    font-size: $font-sm;
+  }
+
+  span {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $secondary-500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+// --- Form Section ---
+.form-card {
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+  padding: $space-6;
+  box-shadow: $shadow-small;
+}
+
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-5;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.form-label {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  color: $gray-600;
+}
+
+.form-input {
+  height: 40px;
+  padding: 0 $space-4;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $gray-700;
+  background-color: $neutral-white;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+
+  &::placeholder {
+    color: $gray-300;
+  }
+
+  &:focus {
+    border-color: $primary-400;
+    box-shadow: 0 0 0 2px rgba($primary-500, 0.1);
+  }
+}
+
+.form-textarea {
+  padding: $space-3 $space-4;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $gray-700;
+  background-color: $neutral-white;
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+
+  &::placeholder {
+    color: $gray-300;
+  }
+
+  &:focus {
+    border-color: $primary-400;
+    box-shadow: 0 0 0 2px rgba($primary-500, 0.1);
+  }
+}
+
+.char-counter {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  color: $gray-400;
+  align-self: flex-end;
+}
+
+.form-select {
+  height: 40px;
+  padding: 0 $space-4;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $gray-700;
+  background-color: $neutral-white;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  width: 100%;
+  box-sizing: border-box;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23858EA6' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+
+  &:focus {
+    border-color: $primary-400;
+    box-shadow: 0 0 0 2px rgba($primary-500, 0.1);
+  }
+}
+
+.url-input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+
+  &:focus-within {
+    border-color: $primary-400;
+    box-shadow: 0 0 0 2px rgba($primary-500, 0.1);
+  }
+}
+
+.url-prefix {
+  padding: 0 $space-3;
+  background-color: $gray-50;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid $gray-200;
+  white-space: nowrap;
+}
+
+.url-input {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+
+  &:focus {
+    box-shadow: none !important;
+  }
+}
+
+// --- Actions ---
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $space-4;
+  margin-top: $space-6;
+  padding-top: $space-5;
+  border-top: 1px solid $gray-100;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-3 $space-6;
+  min-width: 120px;
+  height: 40px;
+  background-color: $primary-500;
+  border: none;
+  border-radius: $radius-2;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba($primary-500, 0.3);
+  }
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-3 $space-6;
+  min-width: 120px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  color: $gray-500;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    border-color: $gray-400;
+    color: $gray-700;
+  }
+}
+
+// --- Responsive ---
+@media (max-width: $bp-lg) {
+  .tienda-layout {
+    grid-template-columns: 240px 1fr;
+    gap: $space-5;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .tienda-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .logo-section {
+    position: static;
+  }
+
+  .logo-card {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .logo-preview {
+    width: 120px;
+    min-width: 120px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: $space-4;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .page-title {
+    font-size: $font-xl;
+  }
+
+  .form-card {
+    padding: $space-4;
+  }
+
+  .form-actions {
+    flex-wrap: wrap;
+
+    .btn-primary,
+    .btn-secondary {
+      width: 100%;
+    }
+  }
+
+  .url-input-wrapper {
+    flex-direction: column;
+
+    .url-prefix {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid $gray-200;
+      height: 32px;
+      justify-content: flex-start;
+    }
+  }
+}

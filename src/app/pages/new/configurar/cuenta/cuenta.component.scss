@@ -1,0 +1,339 @@
+@import 'styles/variables-new';
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-5 $space-6;
+  background-color: $gray-50;
+}
+
+// --- Breadcrumb ---
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-5;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+
+  .breadcrumb-chevron {
+    font-size: 10px;
+    color: $gray-300;
+  }
+
+  .breadcrumb-item {
+    color: $gray-400;
+
+    &.active {
+      color: $gray-700;
+      font-weight: $font-semibold;
+    }
+  }
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-700;
+  margin: 0 0 $space-5 0;
+}
+
+// --- Layout ---
+.cuenta-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: $space-6;
+  align-items: flex-start;
+}
+
+// --- Avatar Section ---
+.avatar-section {
+  position: sticky;
+  top: $space-5;
+}
+
+.avatar-card {
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+  padding: $space-6 $space-4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-4;
+  box-shadow: $shadow-small;
+}
+
+.avatar-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $primary-100, $primary-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 3px solid $primary-300;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-initials {
+  font-family: $font-primary;
+  font-size: $font-3xl;
+  font-weight: $font-bold;
+  color: $primary-600;
+}
+
+.btn-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  background: transparent;
+  border: 1px solid $primary-500;
+  border-radius: $radius-2;
+  color: $primary-500;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background-color: $primary-500;
+    color: $neutral-white;
+  }
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.avatar-hint {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  color: $gray-400;
+  margin: 0;
+}
+
+// --- Form Section ---
+.form-card {
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+  padding: $space-6;
+  box-shadow: $shadow-small;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-5 $space-6;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.form-label {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  color: $gray-600;
+}
+
+.form-input {
+  height: 40px;
+  padding: 0 $space-4;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $gray-700;
+  background-color: $neutral-white;
+  outline: none;
+  transition: border-color 0.2s ease;
+
+  &::placeholder {
+    color: $gray-300;
+  }
+
+  &:focus {
+    border-color: $primary-400;
+    box-shadow: 0 0 0 2px rgba($primary-500, 0.1);
+  }
+}
+
+.form-select {
+  height: 40px;
+  padding: 0 $space-4;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $gray-700;
+  background-color: $neutral-white;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23858EA6' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+
+  &:focus {
+    border-color: $primary-400;
+    box-shadow: 0 0 0 2px rgba($primary-500, 0.1);
+  }
+}
+
+.phone-input-row {
+  display: flex;
+  gap: $space-2;
+
+  .phone-code {
+    width: 80px;
+    min-width: 80px;
+  }
+
+  .form-input {
+    flex: 1;
+  }
+}
+
+// --- Actions ---
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $space-4;
+  margin-top: $space-6;
+  padding-top: $space-5;
+  border-top: 1px solid $gray-100;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-3 $space-6;
+  min-width: 120px;
+  height: 40px;
+  background-color: $primary-500;
+  border: none;
+  border-radius: $radius-2;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba($primary-500, 0.3);
+  }
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-3 $space-6;
+  min-width: 120px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  color: $gray-500;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    border-color: $gray-400;
+    color: $gray-700;
+  }
+}
+
+// --- Responsive ---
+@media (max-width: $bp-lg) {
+  .cuenta-layout {
+    grid-template-columns: 200px 1fr;
+    gap: $space-5;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .cuenta-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .avatar-section {
+    position: static;
+  }
+
+  .avatar-card {
+    flex-direction: row;
+    padding: $space-4;
+    gap: $space-5;
+  }
+
+  .avatar-circle {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: $space-4;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .page-title {
+    font-size: $font-xl;
+  }
+
+  .form-card {
+    padding: $space-4;
+  }
+
+  .form-actions {
+    flex-wrap: wrap;
+
+    .btn-primary,
+    .btn-secondary {
+      width: 100%;
+    }
+  }
+
+  .phone-input-row {
+    flex-wrap: wrap;
+
+    .phone-code {
+      width: 100%;
+    }
+  }
+}
