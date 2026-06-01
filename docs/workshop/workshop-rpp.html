@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPP Hub — Workshop de Prototipos Interactivos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0E111A;
+  --surface:#151926;
+  --surface-alt:#1C2033;
+  --orange:#FF6102;
+  --orange-dim:#CC4E02;
+  --text:#E8ECF4;
+  --text-dim:#8A94A8;
+  --code-bg:#1A1E2E;
+  --radius:12px;
+}
+html,body{
+  height:100%;
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow:hidden;
+  cursor:default;
+  -webkit-font-smoothing:antialiased;
+}
+/* Progress bar */
+#progress{
+  position:fixed;
+  top:0;left:0;
+  height:3px;
+  background:var(--orange);
+  transition:width .4s cubic-bezier(.4,0,.2,1);
+  z-index:1000;
+}
+/* Counter */
+#counter{
+  position:fixed;
+  bottom:24px;right:32px;
+  font-size:14px;
+  font-weight:500;
+  color:var(--text-dim);
+  z-index:1000;
+  letter-spacing:.5px;
+}
+/* Slides container */
+#deck{
+  width:100%;height:100%;
+  position:relative;
+}
+.slide{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:60px 80px;
+  opacity:0;
+  transform:translateX(60px);
+  transition:opacity .5s cubic-bezier(.4,0,.2,1),transform .5s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+  text-align:center;
+}
+.slide.active{
+  opacity:1;
+  transform:translateX(0);
+  pointer-events:auto;
+}
+.slide.prev{
+  opacity:0;
+  transform:translateX(-60px);
+}
+/* Typography */
+h1{
+  font-size:clamp(2rem,5vw,3.5rem);
+  font-weight:800;
+  line-height:1.1;
+  margin-bottom:24px;
+  letter-spacing:-.02em;
+}
+h2{
+  font-size:clamp(1.6rem,3.5vw,2.5rem);
+  font-weight:700;
+  margin-bottom:32px;
+  letter-spacing:-.01em;
+}
+h3{
+  font-size:1.1rem;
+  font-weight:500;
+  color:var(--text-dim);
+  margin-bottom:8px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+p{
+  font-size:clamp(1rem,1.5vw,1.25rem);
+  line-height:1.7;
+  color:var(--text-dim);
+  max-width:700px;
+}
+.highlight{color:var(--orange)}
+.subtitle{
+  font-size:1.15rem;
+  font-weight:400;
+  color:var(--text-dim);
+  margin-top:8px;
+}
+.date{
+  font-size:.95rem;
+  color:var(--text-dim);
+  margin-top:16px;
+  opacity:.7;
+}
+/* Lists */
+.features{
+  list-style:none;
+  text-align:left;
+  max-width:640px;
+  width:100%;
+}
+.features li{
+  font-size:clamp(.95rem,1.3vw,1.15rem);
+  line-height:1.6;
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+}
+.features li::before{
+  content:'';
+  width:8px;height:8px;
+  min-width:8px;
+  border-radius:50%;
+  background:var(--orange);
+  margin-top:8px;
+}
+/* Code blocks */
+.code-block{
+  background:var(--code-bg);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  padding:24px 32px;
+  text-align:left;
+  max-width:800px;
+  width:100%;
+  margin-top:24px;
+  overflow-x:auto;
+}
+.code-block code{
+  font-family:'JetBrains Mono',monospace;
+  font-size:clamp(.8rem,1.1vw,.95rem);
+  line-height:1.8;
+  color:#C8D0E0;
+}
+.code-block .comment{color:#5C6A7F}
+.code-block .cmd{color:var(--orange)}
+.code-block .flag{color:#7EC8E3}
+/* File tree */
+.file-tree{
+  background:var(--code-bg);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  padding:24px 32px;
+  text-align:left;
+  max-width:560px;
+  width:100%;
+  margin-top:24px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.9rem;
+  line-height:2;
+  color:#C8D0E0;
+}
+.file-tree .folder{color:var(--orange)}
+.file-tree .dim{color:var(--text-dim)}
+/* Metrics grid */
+.metrics-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+  max-width:700px;
+  width:100%;
+  margin-top:32px;
+}
+.metric-card{
+  background:var(--surface);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--radius);
+  padding:28px 20px;
+  text-align:center;
+}
+.metric-card .value{
+  font-size:2rem;
+  font-weight:800;
+  color:var(--orange);
+  margin-bottom:6px;
+}
+.metric-card .label{
+  font-size:.85rem;
+  color:var(--text-dim);
+  font-weight:500;
+}
+/* CTA */
+.cta{
+  display:inline-block;
+  background:var(--orange);
+  color:#fff;
+  font-weight:600;
+  font-size:1.05rem;
+  padding:14px 36px;
+  border-radius:60px;
+  margin-top:28px;
+  text-decoration:none;
+  transition:background .2s,transform .2s;
+}
+.cta:hover{background:var(--orange-dim);transform:scale(1.03)}
+/* Stack grid */
+.stack-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:16px;
+  max-width:700px;
+  width:100%;
+  margin-top:28px;
+}
+.stack-item{
+  background:var(--surface);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--radius);
+  padding:20px 16px;
+  text-align:center;
+  font-weight:500;
+  font-size:.95rem;
+}
+.stack-item small{
+  display:block;
+  color:var(--text-dim);
+  font-size:.8rem;
+  font-weight:400;
+  margin-top:4px;
+}
+/* Nav hint */
+#nav-hint{
+  position:fixed;
+  bottom:24px;left:32px;
+  font-size:.8rem;
+  color:var(--text-dim);
+  opacity:.5;
+  z-index:1000;
+}
+/* Responsive */
+@media(max-width:768px){
+  .slide{padding:40px 24px}
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .stack-grid{grid-template-columns:1fr 1fr}
+  #nav-hint{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="counter"></div>
+<div id="nav-hint">Flechas o click para navegar</div>
+
+<div id="deck">
+
+  <!-- Slide 1: Title -->
+  <div class="slide active">
+    <h3>Workshop</h3>
+    <h1>RPP Hub<br><span class="highlight">Prototipos Interactivos</span></h1>
+    <p class="subtitle">Dropi Product & Engineering</p>
+    <p class="date">Junio 2026</p>
+  </div>
+
+  <!-- Slide 2: What is RPP Hub -->
+  <div class="slide">
+    <h2>Que es <span class="highlight">RPP Hub</span>?</h2>
+    <ul class="features">
+      <li>Portal privado en <strong>dropitesters.co</strong></li>
+      <li>Prototipos interactivos en <strong>Angular</strong></li>
+      <li>Dual architecture: antigua + nueva</li>
+      <li><strong>36 pantallas</strong> en nueva arquitectura</li>
+      <li>Login con Google <strong>@dropi.co</strong></li>
+    </ul>
+  </div>
+
+  <!-- Slide 3: Stack -->
+  <div class="slide">
+    <h2>Stack Tecnologico</h2>
+    <div class="stack-grid">
+      <div class="stack-item">Angular 17.3<small>Framework</small></div>
+      <div class="stack-item">SCSS + DS Tokens<small>Estilos</small></div>
+      <div class="stack-item">PrimeNG<small>Componentes UI</small></div>
+      <div class="stack-item">Firebase Auth<small>Autenticacion</small></div>
+      <div class="stack-item">Vercel<small>Deploy</small></div>
+      <div class="stack-item">Claude Code<small>AI Assistant</small></div>
+    </div>
+  </div>
+
+  <!-- Slide 4: Prerequisites -->
+  <div class="slide">
+    <h2>Prerrequisitos</h2>
+    <ul class="features">
+      <li><strong>Git</strong> instalado y configurado</li>
+      <li><strong>GitHub Desktop</strong> (opcional, recomendado)</li>
+      <li><strong>Node 22.7+</strong> via nvm</li>
+      <li><strong>Yarn</strong> como package manager</li>
+      <li><strong>VS Code</strong> o <strong>Cursor</strong></li>
+      <li><strong>Claude Code Desktop</strong></li>
+      <li>Cuenta <strong>GitHub</strong> con acceso al repo</li>
+    </ul>
+  </div>
+
+  <!-- Slide 5: Paso 1 - Clonar -->
+  <div class="slide">
+    <h3>Paso 1</h3>
+    <h2>Clonar el repositorio</h2>
+    <div class="code-block"><code><span class="cmd">git clone</span> https://github.com/producto-rpplab/dropi-prototypes.git<br><span class="cmd">cd</span> dropi-prototypes</code></div>
+  </div>
+
+  <!-- Slide 6: Paso 2 - Instalar -->
+  <div class="slide">
+    <h3>Paso 2</h3>
+    <h2>Instalar dependencias</h2>
+    <div class="code-block"><code><span class="comment"># Activar Node version correcta</span><br><span class="cmd">export</span> NVM_DIR=<span class="flag">"$HOME/.nvm"</span><br><span class="cmd">.</span> <span class="flag">"$NVM_DIR/nvm.sh"</span><br><span class="cmd">nvm use</span><br><br><span class="comment"># Instalar paquetes</span><br><span class="cmd">yarn install</span></code></div>
+  </div>
+
+  <!-- Slide 7: Paso 3 - Compilar -->
+  <div class="slide">
+    <h3>Paso 3</h3>
+    <h2>Compilar y ejecutar</h2>
+    <div class="code-block"><code><span class="cmd">npx ng serve</span> <span class="flag">--open</span><br><br><span class="comment"># Abre automaticamente en:</span><br><span class="comment"># http://localhost:4200</span></code></div>
+  </div>
+
+  <!-- Slide 8: Paso 4 - Claude Code -->
+  <div class="slide">
+    <h3>Paso 4</h3>
+    <h2>Activar <span class="highlight">Claude Code</span></h2>
+    <div class="code-block"><code><span class="comment"># Dentro del proyecto:</span><br><span class="cmd">claude</span><br><br><span class="comment"># Claude lee CLAUDE.md automaticamente</span><br><span class="comment"># Conoce la arquitectura, tokens y convenciones</span></code></div>
+  </div>
+
+  <!-- Slide 9: Paso 5 - Documentacion -->
+  <div class="slide">
+    <h3>Paso 5</h3>
+    <h2>Documentacion clave</h2>
+    <div class="file-tree">
+      <span class="folder">CLAUDE.md</span> <span class="dim">-- reglas del proyecto</span><br>
+      <span class="folder">navigation-map-new.json</span> <span class="dim">-- rutas</span><br>
+      <span class="folder">ds-registry/</span> <span class="dim">-- Design System</span><br>
+      <span class="folder">src/app/pages/new/</span> <span class="dim">-- 36 pantallas</span><br>
+      <span class="folder">wireframe-prompt-template.md</span> <span class="dim">-- template</span>
+    </div>
+  </div>
+
+  <!-- Slide 10: Paso 6 - Crear prototipo -->
+  <div class="slide">
+    <h3>Paso 6</h3>
+    <h2>Crear un prototipo</h2>
+    <div class="code-block"><code><span class="comment"># Prompt template para Claude:</span><br><br>Vista: <span class="flag">[nombre de la pantalla]</span><br>Figma: <span class="flag">[URL del frame en Figma]</span><br>Tipo: <span class="flag">[wireframe | alta fidelidad]</span><br>Mock data: <span class="flag">[descripcion de datos dummy]</span></code></div>
+  </div>
+
+  <!-- Slide 11: Metricas -->
+  <div class="slide">
+    <h2>Metricas del equipo</h2>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="value">&lt;2h</div>
+        <div class="label">Velocidad por prototipo<br><small style="color:#5C6A7F">(antes 2-3 dias)</small></div>
+      </div>
+      <div class="metric-card">
+        <div class="value">5+</div>
+        <div class="label">Prototipos por sprint</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">80%+</div>
+        <div class="label">Cobertura de pantallas</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">85%+</div>
+        <div class="label">Fidelidad vs Figma</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 12: CTA -->
+  <div class="slide">
+    <h2>Manos a la obra!</h2>
+    <ul class="features" style="margin-bottom:24px">
+      <li>Visita <strong>dropitesters.co</strong></li>
+      <li>Ingresa con tu cuenta <strong>@dropi.co</strong></li>
+      <li>Explora los <strong>36 prototipos</strong> existentes</li>
+      <li>Crea tu primer prototipo con Claude</li>
+    </ul>
+    <a href="mailto:producto@dropi.co" class="cta">producto@dropi.co</a>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const slides = document.querySelectorAll('.slide');
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  const total = slides.length;
+  let current = 0;
+
+  function update(){
+    slides.forEach((s,i)=>{
+      s.classList.remove('active','prev');
+      if(i===current) s.classList.add('active');
+      else if(i<current) s.classList.add('prev');
+    });
+    progress.style.width = ((current+1)/total*100)+'%';
+    counter.textContent = (current+1)+' / '+total;
+  }
+
+  function next(){if(current<total-1){current++;update()}}
+  function prev(){if(current>0){current--;update()}}
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') next();
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp') prev();
+  });
+
+  document.addEventListener('click',e=>{
+    const x = e.clientX/window.innerWidth;
+    if(x>0.5) next(); else prev();
+  });
+
+  // Touch support
+  let touchStartX=0;
+  document.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX});
+  document.addEventListener('touchend',e=>{
+    const diff=e.changedTouches[0].clientX-touchStartX;
+    if(Math.abs(diff)>50){if(diff<0) next(); else prev();}
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
