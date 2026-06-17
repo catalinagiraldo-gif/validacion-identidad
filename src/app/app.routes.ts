@@ -117,6 +117,27 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'configuraciones/validacion-identidad',
+        loadComponent: () =>
+          import('./pages/old/validacion-identidad/validacion-identidad.component').then(
+            m => m.ValidacionIdentidadComponent,
+          ),
+      },
+      {
+        path: 'configuraciones/verificacion-identidad',
+        loadComponent: () =>
+          import('./pages/old/verificacion-identidad/verificacion-identidad.component').then(
+            m => m.VerificacionIdentidadComponent,
+          ),
+      },
+      {
+        path: 'configuraciones/validacion-identidad-hub',
+        loadComponent: () =>
+          import('./pages/old/validacion-identidad-hub/validacion-identidad-hub.component').then(
+            m => m.ValidacionIdentidadHubComponent,
+          ),
+      },
+      {
         path: 'parametrizar-tarifas',
         loadComponent: () =>
           import('./pages/old/parametrizar-tarifas/parametrizar-tarifas.component').then(
@@ -402,6 +423,27 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/old/datos-personales/datos-personales.component').then(
             m => m.DatosPersonalesComponent,
+          ),
+      },
+      {
+        path: 'configuraciones/validacion-identidad',
+        loadComponent: () =>
+          import('./pages/old/validacion-identidad/validacion-identidad.component').then(
+            m => m.ValidacionIdentidadComponent,
+          ),
+      },
+      {
+        path: 'configuraciones/verificacion-identidad',
+        loadComponent: () =>
+          import('./pages/old/verificacion-identidad/verificacion-identidad.component').then(
+            m => m.VerificacionIdentidadComponent,
+          ),
+      },
+      {
+        path: 'configuraciones/validacion-identidad-hub',
+        loadComponent: () =>
+          import('./pages/old/validacion-identidad-hub/validacion-identidad-hub.component').then(
+            m => m.ValidacionIdentidadHubComponent,
           ),
       },
       {

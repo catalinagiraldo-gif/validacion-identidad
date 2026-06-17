@@ -24,6 +24,9 @@ import galiStrategyData from '../../../../mocks/gali-strategy.json';
 import galiCreationData from '../../../../mocks/gali-creation.json';
 import galiLaunchData from '../../../../mocks/gali-launch.json';
 import galiDashboardData from '../../../../mocks/gali-dashboard.json';
+import validacionIdentidadData from '../../../../mocks/validacion-identidad.json';
+import verificacionIdentidadData from '../../../../mocks/verificacion-identidad.json';
+import validacionIdentidadHubData from '../../../../mocks/validacion-identidad-hub.json';
 
 // Mutable in-memory copies (reset on page refresh)
 let orders = [...ordersData];
@@ -159,6 +162,21 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
   // GET /api/gali-dashboard
   if (req.url.includes('/api/gali-dashboard') && req.method === 'GET') {
     return of(new HttpResponse({ status: 200, body: galiDashboardData })).pipe(delay(300));
+  }
+
+  // GET /api/validacion-identidad-hub (must come before /api/validacion-identidad)
+  if (req.url.includes('/api/validacion-identidad-hub') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: validacionIdentidadHubData }));
+  }
+
+  // GET /api/validacion-identidad
+  if (req.url.includes('/api/validacion-identidad') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: validacionIdentidadData }));
+  }
+
+  // GET /api/verificacion-identidad
+  if (req.url.includes('/api/verificacion-identidad') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: verificacionIdentidadData }));
   }
 
   return next(req);

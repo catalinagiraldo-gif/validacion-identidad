@@ -1,0 +1,12 @@
+{
+  "title": "Validación de identidad — Onboarding unificado",
+  "module": "configuraciones",
+  "slug": "validacion-identidad",
+  "route": "/configuraciones/validacion-identidad",
+  "description": "Onboarding unificado Sumsub/Truora. Shell único CO + resto: stepper 4 pasos, modal SDK mock, 8 perfiles demo, estados globales y formulario readonly post-verificación.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-06-17",
+  "thumbnail": "thumbnail.png",
+  "architecture": "old"
+}

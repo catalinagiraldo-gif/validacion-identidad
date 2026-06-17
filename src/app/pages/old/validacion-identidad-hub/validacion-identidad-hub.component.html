@@ -1,0 +1,391 @@
+<div class="hub-page">
+
+  <!-- Demo Controls -->
+  <div class="hub-demo-bar">
+    <span class="hub-demo-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Demo — Perfil activo:
+    </span>
+    <select [(ngModel)]="selectedPerfilId" (ngModelChange)="setPerfil($event)" class="hub-demo-select">
+      <option *ngFor="let p of perfiles" [value]="p.id">{{ p.label }}</option>
+    </select>
+  </div>
+
+  <div class="hub-main" *ngIf="perfil">
+
+    <!-- Banner legacy (non-blocking, always at top if legacy) -->
+    <div class="hub-banner-legacy" *ngIf="perfil.esLegacy">
+      <svg class="hub-banner-legacy__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/></svg>
+      <span><strong>Usuario activo</strong> — Puedes seguir usando Dropi mientras completas tu verificación. Este proceso no afecta tus operaciones actuales.</span>
+    </div>
+
+    <!-- Alert banner (for in_review, rejected, approved, email_baneado) -->
+    <div class="hub-alert" [ngClass]="'hub-alert--' + vista.bannerSeverity"
+         *ngIf="vista.bannerMensaje && !perfil.esLegacy">
+      <svg class="hub-alert__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path *ngIf="vista.bannerSeverity === 'success'" d="M20 6L9 17l-5-5"/>
+        <path *ngIf="vista.bannerSeverity === 'error'" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+        <path *ngIf="vista.bannerSeverity === 'info' || vista.bannerSeverity === 'warning'" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+        <line *ngIf="vista.bannerSeverity === 'info' || vista.bannerSeverity === 'warning'" x1="12" y1="8" x2="12" y2="12"/>
+        <line *ngIf="vista.bannerSeverity === 'info' || vista.bannerSeverity === 'warning'" x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span>{{ vista.bannerMensaje }}</span>
+    </div>
+
+    <!-- Status Header -->
+    <div class="hub-status-header">
+      <div class="hub-status-top">
+        <span class="hub-tag" [ngClass]="'hub-tag--' + vista.tagSeverity">{{ vista.tagLabel }}</span>
+        <div class="hub-user-chip">
+          <span class="hub-user-flag">{{ getPaisEmoji(perfil.paisOperacion) }}</span>
+          <span class="hub-user-email">{{ perfil.email }}</span>
+        </div>
+      </div>
+      <h1 class="hub-title">{{ vista.titulo }}</h1>
+      <p class="hub-subtitle" *ngIf="vista.subtitulo">{{ vista.subtitulo }}</p>
+    </div>
+
+    <!-- Cross-country intercept -->
+    <div class="hub-cross-country" *ngIf="vista.mostrarCrossCountry">
+      <div class="hub-cross-country__header">
+        <span class="hub-cross-country__globe">🌎</span>
+        <div>
+          <strong>Tienes una verificación activa en otro país</strong>
+          <p>Detectamos que ya validaste tu identidad en <strong>{{ perfil.paisValidacion }}</strong>. ¿Quieres usar esa verificación para operar en {{ perfil.paisOperacion }}?</p>
+        </div>
+      </div>
+      <div class="hub-cross-country__actions">
+        <button class="btn-primary btn-sm" (click)="onCrossCountryChoice('si')">
+          Sí, usar mi verificación de {{ perfil.paisValidacion }}
+        </button>
+        <button class="btn-ghost btn-sm" (click)="onCrossCountryChoice('no')">
+          No, verificar de nuevo
+        </button>
+      </div>
+    </div>
+
+    <!-- Stepper -->
+    <div class="hub-stepper" *ngIf="vista.mostrarStepper">
+      <div class="hub-step-track">
+        <ng-container *ngFor="let paso of pasos; let i = index">
+          <div class="hub-step" [ngClass]="'hub-step--' + getStepState(i + 1)">
+            <div class="hub-step__bubble">
+              <svg *ngIf="getStepState(i + 1) === 'completed'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              <svg *ngIf="getStepState(i + 1) === 'error'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              <span *ngIf="getStepState(i + 1) === 'pending' || getStepState(i + 1) === 'focus'">{{ i + 1 }}</span>
+            </div>
+            <span class="hub-step__label">{{ paso }}</span>
+          </div>
+          <div class="hub-step__line" *ngIf="i < pasos.length - 1"
+               [ngClass]="{ 'hub-step__line--done': getStepState(i + 1) === 'completed' }"></div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Action Zone -->
+    <div class="hub-action-zone">
+
+      <!-- DRAFT: tipo de persona selector -->
+      <div class="hub-tipo-selector" *ngIf="vista.mostrarTipoSelector">
+        <p class="hub-tipo-selector__prompt">¿Cómo operas en Dropi?</p>
+        <div class="hub-tipo-cards">
+          <button class="hub-tipo-card"
+                  [class.hub-tipo-card--selected]="tipoPersonaSeleccionado === 'natural'"
+                  (click)="onSeleccionarTipoPersona('natural')">
+            <div class="hub-tipo-card__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <strong>Persona natural</strong>
+            <span>Cuenta a tu nombre</span>
+            <div class="hub-tipo-card__check" *ngIf="tipoPersonaSeleccionado === 'natural'">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+          </button>
+          <button class="hub-tipo-card"
+                  [class.hub-tipo-card--selected]="tipoPersonaSeleccionado === 'juridica'"
+                  (click)="onSeleccionarTipoPersona('juridica')">
+            <div class="hub-tipo-card__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            </div>
+            <strong>Persona jurídica</strong>
+            <span>Empresa o NIT</span>
+            <div class="hub-tipo-card__check" *ngIf="tipoPersonaSeleccionado === 'juridica'">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+          </button>
+        </div>
+        <p class="hub-tipo-selector__hint" *ngIf="!tipoPersonaSeleccionado">
+          Selecciona un tipo de cuenta para continuar
+        </p>
+      </div>
+
+      <!-- FORM: datos personales (pending step 2 + rejected_field + legacy) -->
+      <div class="hub-form" *ngIf="vista.mostrarForm">
+        <p class="hub-form__title">
+          {{ perfil.estadoVerificacion === 'legacy' ? 'Tus datos actuales' : 'Información personal' }}
+        </p>
+        <div class="hub-form__grid">
+          <div class="hub-field">
+            <label>Primer nombre</label>
+            <input type="text" [(ngModel)]="formFields['primerNombre']"
+                   placeholder="Ej: María"
+                   [disabled]="vista.formularioReadonly"
+                   [class.hub-field__input--readonly]="vista.formularioReadonly" />
+          </div>
+          <div class="hub-field">
+            <label>Primer apellido</label>
+            <input type="text" [(ngModel)]="formFields['primerApellido']"
+                   placeholder="Ej: García"
+                   [disabled]="vista.formularioReadonly"
+                   [class.hub-field__input--readonly]="vista.formularioReadonly" />
+          </div>
+          <div class="hub-field" [class.hub-field--error]="perfil.estadoVerificacion === 'rejected_field'">
+            <label>Número de documento</label>
+            <input type="text" [(ngModel)]="formFields['documento']"
+                   placeholder="CC, DNI, RUT..."
+                   [disabled]="vista.formularioReadonly"
+                   [class.hub-field__input--readonly]="vista.formularioReadonly" />
+            <span class="hub-field__error-msg" *ngIf="perfil.estadoVerificacion !== 'rejected_field'"></span>
+          </div>
+          <div class="hub-field">
+            <label>Fecha de nacimiento</label>
+            <input type="text" [(ngModel)]="formFields['fechaNacimiento']"
+                   placeholder="DD/MM/AAAA"
+                   [disabled]="vista.formularioReadonly"
+                   [class.hub-field__input--readonly]="vista.formularioReadonly" />
+          </div>
+          <div class="hub-field hub-field--full">
+            <label>Número de celular</label>
+            <input type="text" [(ngModel)]="formFields['telefonoCelular']"
+                   placeholder="+57..."
+                   [disabled]="vista.formularioReadonly"
+                   [class.hub-field__input--readonly]="vista.formularioReadonly" />
+          </div>
+        </div>
+
+        <!-- rejected_field: selfie error indicator -->
+        <div class="hub-selfie-error" *ngIf="perfil.estadoVerificacion === 'rejected_field'">
+          <div class="hub-selfie-error__field">
+            <label>Selfie / Foto del rostro
+              <span class="hub-selfie-error__badge">Error</span>
+            </label>
+            <div class="hub-selfie-error__upload">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Subir nueva foto</span>
+            </div>
+            <span class="hub-selfie-error__msg">{{ perfil.rejectMensaje }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECKLIST: antes de lanzar el SDK -->
+      <div class="hub-checklist" *ngIf="vista.mostrarChecklist">
+        <p class="hub-checklist__title">Antes de comenzar, ten a mano:</p>
+        <ul class="hub-checklist__list">
+          <li class="hub-checklist__item">
+            <span class="hub-checklist__dot"></span>
+            Tu documento de identidad original (no fotocopias ni pantallas)
+          </li>
+          <li class="hub-checklist__item">
+            <span class="hub-checklist__dot"></span>
+            Buena iluminación y acceso a la cámara
+          </li>
+          <li class="hub-checklist__item">
+            <span class="hub-checklist__dot"></span>
+            Conexión estable a internet por al menos 10 minutos
+          </li>
+          <li class="hub-checklist__item">
+            <span class="hub-checklist__dot"></span>
+            Rostro descubierto, sin gafas de sol ni sombrero
+          </li>
+          <li class="hub-checklist__item" *ngIf="perfil.tipoPersona === 'juridica'">
+            <span class="hub-checklist__dot"></span>
+            Representante legal disponible para completar el proceso
+          </li>
+        </ul>
+        <div class="hub-checklist__lock-notice">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Los datos verificados <strong>no podrán editarse por 6 meses.</strong> Tus datos de facturación quedarán fijos.
+        </div>
+        <p class="hub-checklist__provider">
+          Proveedor de verificación: <strong>{{ getProveedorLabel(perfil.proveedorKYC) }}</strong>
+        </p>
+      </div>
+
+      <!-- IN REVIEW: waiting state -->
+      <div class="hub-waiting" *ngIf="perfil.estadoVerificacion === 'in_review'">
+        <div class="hub-waiting__visual">
+          <div class="hub-waiting__rings">
+            <div class="hub-waiting__ring hub-waiting__ring--1"></div>
+            <div class="hub-waiting__ring hub-waiting__ring--2"></div>
+            <div class="hub-waiting__ring hub-waiting__ring--3"></div>
+          </div>
+          <div class="hub-waiting__center-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          </div>
+        </div>
+        <div class="hub-waiting__details">
+          <div class="hub-waiting__row">
+            <span class="hub-waiting__label">Proveedor</span>
+            <strong>{{ getProveedorLabel(perfil.proveedorKYC) }}</strong>
+          </div>
+          <div class="hub-waiting__row">
+            <span class="hub-waiting__label">País</span>
+            <strong>{{ getPaisEmoji(perfil.paisOperacion) }} {{ perfil.paisOperacion }}</strong>
+          </div>
+          <div class="hub-waiting__row">
+            <span class="hub-waiting__label">Notificación a</span>
+            <strong>{{ perfil.email }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPROVED: success view -->
+      <div class="hub-approved" *ngIf="perfil.estadoVerificacion === 'approved'">
+        <div class="hub-approved__hero">
+          <div class="hub-approved__checkmark-wrap">
+            <svg class="hub-approved__checkmark" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <div class="hub-approved__hero-text">
+            <strong>Verificación completada</strong>
+            <span>{{ getPaisEmoji(perfil.paisOperacion) }} {{ perfil.paisOperacion }} · {{ getProveedorLabel(perfil.proveedorKYC) }}</span>
+          </div>
+        </div>
+        <div class="hub-approved__data" *ngIf="!isEmptyObject(perfil.camposPrecargados)">
+          <p class="hub-approved__data-title">Datos verificados</p>
+          <div class="hub-approved__fields">
+            <div class="hub-approved__field" *ngFor="let pair of getFieldPairs(perfil.camposPrecargados)">
+              <span class="hub-approved__field-label">{{ pair.label }}</span>
+              <span class="hub-approved__field-value">{{ pair.value }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="hub-approved__lock-notice" *ngIf="perfil.fechaBloqueoEdicion">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Edición bloqueada hasta {{ perfil.fechaBloqueoEdicion }}
+        </div>
+      </div>
+
+      <!-- REJECTED: error + retry -->
+      <div class="hub-rejected" *ngIf="perfil.estadoVerificacion === 'rejected'">
+        <div class="hub-rejected__card">
+          <div class="hub-rejected__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="hub-rejected__info">
+            <strong>Motivo del rechazo</strong>
+            <p>{{ perfil.rejectMensaje }}</p>
+          </div>
+        </div>
+        <div class="hub-rejected__meta">
+          <span *ngIf="perfil.intentosRestantes > 0">
+            Te quedan <strong>{{ perfil.intentosRestantes }} {{ perfil.intentosRestantes === 1 ? 'intento' : 'intentos' }}</strong>
+          </span>
+          <span *ngIf="perfil.minutosParaReintento && perfil.minutosParaReintento > 0" class="hub-rejected__timer">
+            · Disponible en {{ perfil.minutosParaReintento }} min
+          </span>
+          <span *ngIf="perfil.codigoRechazo" class="hub-rejected__code">
+            Código: <code>{{ perfil.codigoRechazo }}</code>
+          </span>
+        </div>
+        <div class="hub-rejected__no-more" *ngIf="perfil.intentosRestantes === 0">
+          <p>Agotaste todos los intentos. Contacta soporte para revisar tu caso.</p>
+        </div>
+      </div>
+
+      <!-- EMAIL_BANEADO: blocked -->
+      <div class="hub-blocked" *ngIf="perfil.estadoVerificacion === 'email_baneado'">
+        <div class="hub-blocked__icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
+        </div>
+        <p class="hub-blocked__text">
+          Este email fue marcado con restricciones de seguridad activas.
+        </p>
+        <p class="hub-blocked__code" *ngIf="perfil.codigoRechazo">
+          Código de referencia: <code>{{ perfil.codigoRechazo }}</code>
+        </p>
+        <a href="#" class="hub-blocked__link" (click)="$event.preventDefault()">
+          Ir a soporte →
+        </a>
+      </div>
+
+    </div>
+
+    <!-- CTA Actions -->
+    <div class="hub-actions" *ngIf="vista.ctaPrimarioLabel || vista.ctaSecundarioLabel">
+      <button class="btn-secondary"
+              *ngIf="vista.ctaSecundarioLabel"
+              (click)="onCtaSecundario()">
+        {{ vista.ctaSecundarioLabel }}
+      </button>
+      <button class="btn-primary"
+              *ngIf="vista.ctaPrimarioLabel"
+              [class.btn-primary--disabled]="perfil.estadoVerificacion === 'draft' && !tipoPersonaSeleccionado"
+              [disabled]="perfil.estadoVerificacion === 'draft' && !tipoPersonaSeleccionado"
+              (click)="onCtaPrimario()">
+        {{ vista.ctaPrimarioLabel }}
+      </button>
+    </div>
+
+  </div>
+
+  <!-- SDK Modal -->
+  <div class="hub-sdk-overlay" *ngIf="showSdkModal" (click)="closeSdkModal()">
+    <div class="hub-sdk-modal" (click)="$event.stopPropagation()">
+
+      <button class="hub-sdk-modal__close" (click)="closeSdkModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="hub-sdk-modal__provider-badge" *ngIf="perfil">
+        {{ getProveedorLabel(perfil.proveedorKYC) }}
+      </div>
+
+      <div class="hub-sdk-modal__content" *ngIf="!sdkVerificando">
+        <h2>Verificación de identidad</h2>
+        <p class="hub-sdk-modal__desc">Necesitarás tu documento de identidad y acceso a la cámara de tu dispositivo.</p>
+        <div class="hub-sdk-modal__checklist">
+          <div class="hub-sdk-check">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+            Documento original a mano
+          </div>
+          <div class="hub-sdk-check">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+            Buena iluminación disponible
+          </div>
+          <div class="hub-sdk-check">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+            Cámara con permisos activos
+          </div>
+          <div class="hub-sdk-check">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+            Rostro descubierto
+          </div>
+        </div>
+        <button class="btn-primary btn-primary--full" (click)="onSdkStart()">
+          Comenzar ahora
+        </button>
+        <p class="hub-sdk-modal__time-note">Este proceso toma aproximadamente 10 minutos</p>
+      </div>
+
+      <div class="hub-sdk-modal__verifying" *ngIf="sdkVerificando">
+        <div class="hub-sdk-modal__progress-wrap">
+          <svg class="hub-sdk-modal__progress-ring" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="27" fill="none" stroke="#eef0f4" stroke-width="5"/>
+            <circle cx="32" cy="32" r="27" fill="none" stroke="#f49a3d" stroke-width="5"
+              stroke-linecap="round"
+              [attr.stroke-dasharray]="169.6"
+              [attr.stroke-dashoffset]="169.6 - (169.6 * sdkProgreso / 100)"
+              transform="rotate(-90 32 32)"
+              style="transition: stroke-dashoffset 0.4s ease"/>
+          </svg>
+          <span class="hub-sdk-modal__progress-num">{{ sdkProgreso }}%</span>
+        </div>
+        <p class="hub-sdk-modal__verifying-msg">Procesando tu verificación...</p>
+        <p class="hub-sdk-modal__verifying-sub">No cierres esta ventana</p>
+      </div>
+
+    </div>
+  </div>
+
+</div>

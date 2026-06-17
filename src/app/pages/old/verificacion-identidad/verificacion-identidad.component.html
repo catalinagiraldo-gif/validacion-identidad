@@ -1,0 +1,525 @@
+<!-- Toast -->
+<div class="toast" [class.visible]="showToast" [ngClass]="'toast-' + toastType">
+  <span>{{ toastMessage }}</span>
+</div>
+
+<!-- Hub landing: 3 journeys FigJam -->
+<div class="hub-landing page-wrapper" *ngIf="showHubLanding">
+  <div class="breadcrumb">
+    <span class="breadcrumb-text">Configuraciones</span>
+    <span class="breadcrumb-separator">›</span>
+    <span class="breadcrumb-text breadcrumb-current">Verificación de identidad</span>
+  </div>
+
+  <div class="page-header">
+    <div class="page-header__left">
+      <h1 class="page-title">Verificación de identidad</h1>
+      <p class="page-subtitle">
+        Prototipo FigJam v2 — elige un flujo para explorar el formulario unificado y sus estados.
+      </p>
+    </div>
+  </div>
+
+  <div class="journey-grid">
+    <article class="journey-card" *ngFor="let card of journeyCards">
+      <span class="journey-card__figjam">FigJam {{ card.figjamNode }}</span>
+      <h2 class="journey-card__title">{{ card.title }}</h2>
+      <p class="journey-card__provider">Proveedor: {{ card.provider }}</p>
+      <ul class="journey-card__steps">
+        <li *ngFor="let step of card.steps">{{ step }}</li>
+      </ul>
+      <button
+        class="btn-primary journey-card__cta"
+        type="button"
+        (click)="explorarFlujo(card.journey)">
+        Explorar flujo
+      </button>
+    </article>
+  </div>
+</div>
+
+<!-- Demo bar (colapsable, solo dentro de un flujo) -->
+<div class="demo-bar" *ngIf="showFlowContent" [class.demo-bar--expanded]="demoBarExpanded">
+  <button class="demo-bar__toggle" (click)="toggleDemoBar()">
+    {{ demoBarExpanded ? '▾' : '▸' }} Controles demo (testers)
+  </button>
+  <div class="demo-bar__controls" *ngIf="demoBarExpanded">
+    <span class="demo-bar__label">FigJam v2:</span>
+    <select class="demo-select" (change)="onJourneyFilter($any($event.target).value)">
+      <option value="">— Journey —</option>
+      <option *ngFor="let j of journeys" [value]="j.id" [selected]="perfil.journey === j.id">{{ j.label }}</option>
+    </select>
+    <select class="demo-select" [ngModel]="selectedPerfilId" (ngModelChange)="onPerfilChange($event)">
+      <option *ngFor="let p of filteredPerfiles" [value]="p.id">{{ p.label }}</option>
+    </select>
+    <select class="demo-select" [ngModel]="perfil.paisOperacion" (ngModelChange)="onPaisChange($event)">
+      <option *ngFor="let p of paises" [value]="p.code">{{ p.flag }} {{ p.name }}</option>
+    </select>
+    <span class="demo-bar__phase">Fase: {{ phase }}</span>
+    <button class="demo-btn" [class.demo-btn--active]="simulateTimeout" (click)="toggleSimulateTimeout()">
+      Timeout 10 min
+    </button>
+    <button class="demo-btn" (click)="volverAlHub()">← Volver a flujos</button>
+  </div>
+</div>
+
+<!-- Email baneado -->
+<div class="blocked-screen" *ngIf="showFlowContent && isEmailBaneado">
+  <div class="blocked-screen__card">
+    <h1 class="blocked-screen__title">No puedes acceder a Dropi</h1>
+    <p class="blocked-screen__text">
+      Visualiza mensaje indicando que no puede acceder a Dropi. El correo
+      <strong>{{ perfil.email }}</strong> está baneado en otro país Dropi.
+    </p>
+    <button class="btn-primary" (click)="contactarSoporte()">Contactar a soporte</button>
+  </div>
+</div>
+
+<div class="page-wrapper" *ngIf="showFlowContent && !isEmailBaneado">
+  <!-- Legacy banner -->
+  <div class="legacy-banner" *ngIf="showLegacyBanner">
+    <p class="legacy-banner__text">Completa tu verificación para seguir operando con retiros y transferencias.</p>
+    <button class="legacy-banner__cta" (click)="iniciarValidacion()">Completar verificación</button>
+  </div>
+
+  <div class="breadcrumb">
+    <span class="breadcrumb-text">Configuraciones</span>
+    <span class="breadcrumb-separator">›</span>
+    <span class="breadcrumb-text breadcrumb-current">Datos personales</span>
+  </div>
+
+  <div class="page-header">
+    <div class="page-header__left">
+      <h1 class="page-title">Datos personales y de facturación</h1>
+      <p class="page-subtitle">Formulario unificado de contacto, empresa y tributaria.</p>
+    </div>
+    <span class="tag" [ngClass]="'tag--' + headerBadgeStyle">{{ headerBadgeText }}</span>
+  </div>
+
+  <!-- Financial blocks alert -->
+  <div class="alert alert--warning" *ngIf="phase === 'entry_disabled' || phase === 'readonly_blocked'">
+    <div class="alert__icon">⚠</div>
+    <p class="alert__text">
+      Visualiza acciones financieras bloqueadas como: Transferencia entre wallets, Procesar en Retiros,
+      Dropicard (países que lo tienen habilitado).
+    </p>
+  </div>
+
+  <!-- 6 months block alert (edición) -->
+  <div class="alert alert--warning" *ngIf="phase === 'readonly_blocked'">
+    <div class="alert__icon">🔒</div>
+    <p class="alert__text">
+      No podrás modificar los datos validados hasta dentro de 6 meses. ¿Dudas?
+      <a class="alert__link" href="javascript:void(0)" (click)="contactarSoporte()">Escríbenos a soporte.</a>
+    </p>
+  </div>
+
+  <!-- Revalid / diff -->
+  <div class="alert alert--info" *ngIf="phase === 'diff_result' || phase === 'revalid_pending'">
+    <div class="alert__icon">ℹ</div>
+    <p class="alert__text">{{ diffMessage }}</p>
+  </div>
+
+  <!-- Session interrupted -->
+  <div class="alert alert--warning" *ngIf="sessionInterrupted && phase === 'wizard_post_msg'">
+    <div class="alert__icon">⚠</div>
+    <p class="alert__text">No terminaste tu validación. Puedes retomarla ahora, ¡es rápido y fácil!</p>
+  </div>
+
+  <!-- Rejected -->
+  <div class="alert alert--error" *ngIf="perfil.estadoVerificacion === 'rejected' && (phase === 'wizard_post_msg' || phase === 'entry_disabled')">
+    <div class="alert__icon">✕</div>
+    <p class="alert__text">
+      Visualiza un mensaje indicando que no se pudo validar y que tiene {{ perfil.intentosRestantes }} reintentos adicionales.
+      <span *ngIf="!canRetry"> El botón de reintentar está deshabilitado.</span>
+    </p>
+    <p class="alert__hint" *ngIf="retryHint">{{ retryHint }}</p>
+  </div>
+
+  <!-- Form saved Colombia -->
+  <div class="alert alert--success" *ngIf="phase === 'form_saved'">
+    <div class="alert__icon">✓</div>
+    <p class="alert__text">Visualiza guardada la información</p>
+  </div>
+
+  <!-- Wizard stepper -->
+  <div class="stepper" *ngIf="showWizardPanel">
+    <div class="stepper__track">
+      <ng-container *ngFor="let step of cachedSteps; let i = index">
+        <div class="stepper__item"
+          [class.stepper__item--focus]="step.state === 'focus'"
+          [class.stepper__item--completed]="step.state === 'completed'">
+          <span class="stepper__circle">
+            <span *ngIf="step.state !== 'completed'">{{ i + 1 }}</span>
+            <span *ngIf="step.state === 'completed'">✓</span>
+          </span>
+          <span class="stepper__label">{{ step.label }}</span>
+        </div>
+        <div class="stepper__connector" *ngIf="i < cachedSteps.length - 1"
+          [class.stepper__connector--done]="step.state === 'completed'"></div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Wizard: Global paso 1 tipo persona -->
+  <div class="wizard-panel" *ngIf="phase === 'wizard_tipo'">
+    <h2 class="section-title">Paso 1: ¿Cómo te identificas?</h2>
+    <p class="section-desc">El usuario debe elegir si es persona Jurídica o Natural.</p>
+
+    <div class="cross-country-block" *ngIf="perfil.validadoOtroPais">
+      <p class="section-desc">¿El usuario ya se ha validado correctamente en otro país Dropi?</p>
+      <div class="tipo-persona-grid">
+        <button class="tipo-card" [class.tipo-card--selected]="crossCountryChoice === 'si'"
+          (click)="selectCrossCountry('si')">Sí — reutilizar datos</button>
+        <button class="tipo-card" [class.tipo-card--selected]="crossCountryChoice === 'no'"
+          (click)="selectCrossCountry('no')">No — validar de nuevo</button>
+      </div>
+    </div>
+
+    <div class="tipo-persona-grid" *ngIf="!perfil.validadoOtroPais || crossCountryChoice === 'no'">
+      <button class="tipo-card" [class.tipo-card--selected]="tipoPersonaSeleccionado === 'natural'"
+        (click)="selectTipoPersona('natural')">
+        <strong>Persona Natural</strong>
+        <span>Validación individual (KYC)</span>
+      </button>
+      <button class="tipo-card" [class.tipo-card--selected]="tipoPersonaSeleccionado === 'juridica'"
+        (click)="selectTipoPersona('juridica')">
+        <strong>Persona Jurídica</strong>
+        <span>Validación de empresa (KYB)</span>
+      </button>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-secondary" (click)="phase = 'entry_disabled'">Cancelar</button>
+      <button class="btn-primary" (click)="continuarWizard()">Siguiente</button>
+    </div>
+  </div>
+
+  <!-- Wizard: Checklist (global paso 2 / colombia paso 1) -->
+  <div class="wizard-panel" *ngIf="phase === 'wizard_checklist'">
+    <h2 class="section-title">Paso {{ perfil.journey === 'global_nuevo' ? 2 : 1 }}: Preparación</h2>
+    <p class="section-desc">Check list para el usuario ({{ isJuridica ? 'jurídico' : 'natural' }})</p>
+    <ul class="checklist">
+      <li *ngFor="let item of activeChecklist">{{ item }}</li>
+    </ul>
+    <label class="tyc-check">
+      <input type="checkbox" [(ngModel)]="aceptaTyC" />
+      Acepto los Términos y Condiciones de verificación de identidad
+    </label>
+    <div class="form-actions">
+      <button class="btn-secondary" (click)="retrocederWizard()">Atrás</button>
+      <button class="btn-primary" (click)="continuarWizard()">Siguiente</button>
+    </div>
+  </div>
+
+  <!-- Wizard: Post-validation instructions -->
+  <div class="wizard-panel" *ngIf="phase === 'wizard_post_msg'">
+    <h2 class="section-title">Paso {{ perfil.journey === 'global_nuevo' ? 3 : 2 }}: Instrucciones posteriores</h2>
+    <p class="section-desc">
+      Mensaje final indicando que debe hacer el usuario posterior a la validación.
+      El usuario es dirigido a la pantalla con el WebSDK ({{ providerLabel }}).
+    </p>
+    <ul class="checklist checklist--compact">
+      <li>Tienes <strong>10 minutos</strong> para completar el proceso</li>
+      <li>Los datos validados no podrán modificarse por 6 meses</li>
+      <li>Facturación con los datos validados</li>
+    </ul>
+    <div class="form-actions">
+      <button class="btn-secondary" (click)="retrocederWizard()">Atrás</button>
+      <button class="btn-primary"
+        [class.btn-primary--disabled]="!canRetry && perfil.estadoVerificacion === 'rejected'"
+        (click)="comenzarValidacionSdk()">
+        {{ verificationCtaText }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Unified form -->
+  <div class="unified-form" [class.unified-form--disabled]="formReadonly && !formEditable">
+    <h3 class="section-subtitle">Información de contacto</h3>
+    <div class="form-row" *ngIf="!isJuridica">
+      <div class="form-field">
+        <label class="field-label">Primer nombre *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['primerNombre']"
+          [disabled]="formReadonly && !formEditable"
+          [class.field-input--error]="formErrors['primerNombre']" />
+        <span class="field-error" *ngIf="formErrors['primerNombre']">{{ formErrors['primerNombre'] }}</span>
+      </div>
+      <div class="form-field">
+        <label class="field-label">Segundo nombre</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['segundoNombre']"
+          [disabled]="formReadonly && !formEditable" />
+      </div>
+    </div>
+    <div class="form-row" *ngIf="!isJuridica">
+      <div class="form-field">
+        <label class="field-label">Primer apellido *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['primerApellido']"
+          [disabled]="formReadonly && !formEditable"
+          [class.field-input--error]="formErrors['primerApellido']" />
+      </div>
+      <div class="form-field">
+        <label class="field-label">Segundo apellido</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['segundoApellido']"
+          [disabled]="formReadonly && !formEditable" />
+      </div>
+    </div>
+    <div class="form-row" *ngIf="!isJuridica">
+      <div class="form-field">
+        <label class="field-label">Fecha de nacimiento *</label>
+        <input type="text" class="field-input" placeholder="DD/MM/AAAA" [(ngModel)]="formData['fechaNacimiento']"
+          [disabled]="formReadonly && !formEditable" />
+      </div>
+      <div class="form-field">
+        <label class="field-label">Nacionalidad *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['nacionalidad']"
+          [disabled]="formReadonly && !formEditable" />
+      </div>
+    </div>
+    <div class="form-row" *ngIf="cachedGeoFields.length && !isJuridica">
+      <div class="form-field" *ngFor="let geo of cachedGeoFields; trackBy: trackByFieldKey">
+        <label class="field-label">{{ geo.label }} *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData[geo.key]"
+          [disabled]="formReadonly && !formEditable"
+          [class.field-input--error]="formErrors[geo.key]" />
+        <span class="field-error" *ngIf="formErrors[geo.key]">{{ formErrors[geo.key] }}</span>
+      </div>
+    </div>
+    <div class="form-row" *ngIf="!isJuridica">
+      <div class="form-field">
+        <label class="field-label">Tipo de documento *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['tipoDocIdentidad']"
+          [disabled]="formReadonly && !formEditable" />
+      </div>
+      <div class="form-field">
+        <label class="field-label">Documento *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['documento']"
+          [disabled]="formReadonly && !formEditable"
+          [class.field-input--error]="formErrors['documento']" />
+        <span class="field-badge" *ngIf="perfil.documentoObtenidoAPI && formReadonly">Obtenido de verificación</span>
+      </div>
+    </div>
+
+    <div class="form-row" *ngIf="isJuridica">
+      <div class="form-field">
+        <label class="field-label">Razón social *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['razonSocial']"
+          [disabled]="formReadonly && !formEditable" />
+      </div>
+      <div class="form-field">
+        <label class="field-label">NIT / RFC / CUIT *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['nit']"
+          [disabled]="formReadonly && !formEditable" placeholder="NIT, RFC o CUIT" />
+      </div>
+    </div>
+
+    <div class="form-row form-row--single">
+      <div class="form-field form-field--full">
+        <label class="field-label">Dirección *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['direccionPersonal']"
+          [disabled]="formReadonly && !formEditable"
+          [class.field-input--error]="formErrors['direccionPersonal']" />
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+    <h3 class="section-subtitle">Información de empresa</h3>
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Email para facturación *</label>
+        <input type="email" class="field-input" [(ngModel)]="formData['emailFacturacion']"
+          [disabled]="formReadonly && !formEditable" />
+      </div>
+      <div class="form-field">
+        <label class="field-label">Nombre o razón social *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['nombreRazonSocial']"
+          [disabled]="formReadonly && !formEditable" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Tipo de persona *</label>
+        <input type="text" class="field-input" [value]="isJuridica ? 'Persona jurídica' : 'Persona natural'"
+          disabled />
+      </div>
+      <div class="form-field">
+        <label class="field-label">Tipo de documento (empresa) *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['tipoDocEmpresa']"
+          [disabled]="formReadonly && !formEditable" />
+      </div>
+    </div>
+    <div class="form-row form-row--single">
+      <div class="form-field form-field--full">
+        <label class="field-label">Número de documento *</label>
+        <input type="text" class="field-input" [(ngModel)]="formData['numeroDocEmpresa']"
+          [disabled]="formReadonly && !formEditable" />
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+    <h3 class="section-subtitle">Documento</h3>
+    <p class="section-desc">Subir documento que confirme la existencia legal de la persona o empresa*</p>
+    <div class="form-row form-row--single">
+      <div class="form-field form-field--full">
+        <input type="text" class="field-input" placeholder="documento.pdf"
+          [(ngModel)]="formData['documentoAdjunto']"
+          [disabled]="formReadonly && !formEditable" />
+        <span class="field-badge" *ngIf="perfil.documentoObtenidoAPI && formReadonly">Precargado de validación</span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Correo de contacto *</label>
+        <input type="email" class="field-input" [(ngModel)]="formData['emailContacto']"
+          [disabled]="formReadonly && !formEditable" />
+        <span class="field-badge" *ngIf="formReadonly">Precargado del registro</span>
+      </div>
+      <div class="form-field">
+        <label class="field-label">Teléfono (+ indicativo) *</label>
+        <input type="tel" class="field-input" [(ngModel)]="formData['telefonoCelular']"
+          [disabled]="formReadonly && !formEditable" />
+      </div>
+    </div>
+
+    <ng-container *ngIf="showTributariaColombiaOnly">
+      <div class="section-divider"></div>
+      <h3 class="section-subtitle">Información tributaria — {{ paisNombre }}</h3>
+      <div class="form-row" *ngFor="let field of cachedTributariaFields; trackBy: trackByFieldKey">
+        <div class="form-field form-field--full">
+          <label class="field-label">{{ field.label }} *</label>
+          <input type="text" class="field-input" [(ngModel)]="formData[field.key]"
+            [disabled]="formReadonly && !formEditable"
+            [class.field-input--error]="formErrors[field.key]" />
+        </div>
+      </div>
+    </ng-container>
+
+    <label class="tyc-check" *ngIf="formEditable && perfil.journey === 'colombia_nuevo'">
+      <input type="checkbox" [(ngModel)]="aceptaTyC" />
+      Acepto los Términos y Condiciones
+    </label>
+
+    <div class="bloqueo-notice bloqueo-notice--footer"
+      *ngIf="perfil.fechaBloqueoEdicion && (phase === 'readonly_blocked' || phase === 'approved_readonly' || phase === 'saved_readonly')">
+      <span>Edición bloqueada hasta {{ perfil.fechaBloqueoEdicion }}. ¿Dudas?
+        <a href="javascript:void(0)" (click)="contactarSoporte()">Escríbenos a soporte.</a>
+      </span>
+    </div>
+  </div>
+
+  <!-- CTAs -->
+  <div class="form-actions form-actions--page" *ngIf="showEntryCta">
+    <button class="btn-primary" (click)="iniciarValidacion()">
+      {{ perfil.journey === 'colombia_nuevo' ? 'Validar identidad' : 'Iniciar validación' }}
+    </button>
+    <p class="section-desc retry-hint" *ngIf="retryHint && perfil.estadoVerificacion === 'rejected'">{{ retryHint }}</p>
+  </div>
+
+  <div class="form-actions form-actions--page" *ngIf="showSolicitarActualizacion">
+    <button class="btn-primary" (click)="solicitarActualizacion()">Solicitar actualización de datos</button>
+    <p class="section-desc intercom-note">
+      Flujo anterior: el usuario se dirige al botón de Intercom y solicita actualizar su información.
+    </p>
+  </div>
+
+  <div class="form-actions form-actions--page" *ngIf="showGuardarForm">
+    <button class="btn-secondary" (click)="phase = perfil.journey === 'edicion_datos' ? 'readonly_blocked' : 'entry_disabled'">
+      Cancelar
+    </button>
+    <button class="btn-primary" (click)="guardarFormulario()">Guardar</button>
+  </div>
+
+  <div class="form-actions form-actions--page" *ngIf="showComenzarValidacion">
+    <button class="btn-primary"
+      [class.btn-primary--disabled]="!canRetry && perfil.estadoVerificacion === 'rejected'"
+      (click)="comenzarValidacionSdk()">
+      Comenzar validación
+    </button>
+  </div>
+
+  <div class="success-features" *ngIf="phase === 'approved_readonly' && perfil.estadoVerificacion === 'approved'">
+    <p>Se le habilita las funcionalidades al usuario: Transferencia entre wallets y Procesar en Retiros</p>
+  </div>
+</div>
+
+<!-- MFA Modal -->
+<div class="mfa-overlay" *ngIf="showMfaModal" (click)="cerrarMfaModal()">
+  <div class="mfa-modal" (click)="$event.stopPropagation()">
+    <div class="mfa-modal__header">
+      <h3 class="mfa-modal__title">{{ mfaModalTitle }}</h3>
+      <button class="mfa-modal__close" (click)="cerrarMfaModal()">✕</button>
+    </div>
+    <p class="mfa-modal__desc" *ngIf="mfaPurpose === 'mfa_setup'">
+      Inicia proceso de configuración MFA. Luego inicia proceso de verificación.
+    </p>
+    <p class="mfa-modal__desc" *ngIf="mfaPurpose !== 'mfa_setup'">
+      Ingresa el código de 6 dígitos de tu aplicación de autenticación.
+    </p>
+    <input type="text" class="mfa-modal__input" maxlength="6" placeholder="123456" [(ngModel)]="mfaCode" />
+    <div class="mfa-modal__actions">
+      <button class="btn-secondary" (click)="cerrarMfaModal()">Cancelar</button>
+      <button class="btn-primary" (click)="verificarMfa()">Verificar</button>
+    </div>
+  </div>
+</div>
+
+<!-- SDK Modal -->
+<div class="sdk-overlay" *ngIf="showSdkModal" (click)="simularCancelar()">
+  <div class="sdk-modal" (click)="$event.stopPropagation()" [ngClass]="'sdk-modal--' + modalProvider">
+    <div class="sdk-modal__shell">
+      <span class="sdk-modal__dropi">Dropi</span>
+      <span>›</span>
+      <span class="sdk-modal__brand">{{ modalProvider === 'truora' ? 'Truora' : 'Sumsub' }}</span>
+    </div>
+    <div class="sdk-modal__header">
+      <span>WebSDK — Verificación de identidad</span>
+      <button class="sdk-modal__close" (click)="simularCancelar()">✕</button>
+    </div>
+    <div class="sdk-modal__progress">
+      <span>{{ getModalStepLabel() }}</span>
+      <span>Paso {{ sdkProgress }} · 10 min</span>
+    </div>
+    <div class="sdk-modal__body">
+      <div class="sdk-step" *ngIf="modalStep === 'document'">
+        <p>Selecciona el tipo de documento:</p>
+        <button class="btn-primary sdk-btn" (click)="avanzarModal()">Continuar</button>
+      </div>
+      <div class="sdk-step" *ngIf="modalStep === 'capture'">
+        <p>Captura tu documento con buena iluminación</p>
+        <button class="btn-primary sdk-btn" (click)="avanzarModal()">Capturar</button>
+      </div>
+      <div class="sdk-step" *ngIf="modalStep === 'selfie'">
+        <p>Centra tu rostro. Sin sombrero ni gafas de sol.</p>
+        <button class="btn-primary sdk-btn" (click)="avanzarModal()">Tomar selfie</button>
+      </div>
+      <div class="sdk-step" *ngIf="modalStep === 'kyb-empresa'">
+        <p>Datos de la empresa — KYB Sumsub</p>
+        <button class="btn-primary sdk-btn" (click)="avanzarModal()">Continuar</button>
+      </div>
+      <div class="sdk-step" *ngIf="modalStep === 'kyb-docs'">
+        <p>Sube certificado de existencia legal</p>
+        <button class="btn-primary sdk-btn" (click)="avanzarModal()">Continuar</button>
+      </div>
+      <div class="sdk-step" *ngIf="modalStep === 'kyb-rep'">
+        <p>Verificación del representante legal (KYC)</p>
+        <button class="btn-primary sdk-btn" (click)="avanzarModal()">Verificar representante</button>
+      </div>
+      <div class="sdk-step sdk-step--verifying" *ngIf="modalStep === 'verifying'">
+        <div class="sdk-spinner"></div>
+        <p>Verificando datos…</p>
+      </div>
+    </div>
+    <div class="sdk-modal__demo">
+      <button class="sdk-modal__demo-toggle" (click)="sdkDemoExpanded = !sdkDemoExpanded">
+        {{ sdkDemoExpanded ? '▾' : '▸' }} Controles demo
+      </button>
+      <div class="sdk-modal__demo-actions" *ngIf="sdkDemoExpanded">
+        <button class="demo-btn" (click)="simularExito()">Simular éxito</button>
+        <button class="demo-btn" (click)="simularRechazoBorroso()">Simular rechazo</button>
+        <button class="demo-btn" (click)="simularRevisionManual()">Revisión manual</button>
+        <button class="demo-btn" (click)="simularCancelar()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

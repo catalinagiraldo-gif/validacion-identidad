@@ -1,0 +1,13 @@
+{
+  "title": "Validación de identidad — Estado único",
+  "module": "configuraciones",
+  "slug": "validacion-identidad-hub",
+  "route": "/configuraciones/validacion-identidad-hub",
+  "description": "Vista adaptativa UX-first: una sola pantalla que cambia según el estado del usuario (draft, en progreso, en revisión, aprobado, rechazado, legacy, baneado). Sin journeys explícitos — el sistema detecta y adapta.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-06-17",
+  "thumbnail": "thumbnail.png",
+  "architecture": "old",
+  "folder": "verificacion-identidad"
+}

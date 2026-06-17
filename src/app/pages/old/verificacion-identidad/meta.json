@@ -1,0 +1,19 @@
+{
+  "title": "Verificación de identidad — Flujos FigJam",
+  "module": "configuraciones",
+  "slug": "verificacion-identidad",
+  "route": "/configuraciones/verificacion-identidad",
+  "description": "Flujos FigJam: usuario nuevo global (Sumsub), Colombia (form + MFA + Truora), edición post-6m con revalidación condicional. Matriz de campos por país.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-06-17",
+  "thumbnail": "thumbnail.png",
+  "architecture": "old",
+  "folder": "verificacion-identidad",
+  "figjamNodes": [
+    "85:1189",
+    "96:6712",
+    "99:9408",
+    "115:12752"
+  ]
+}

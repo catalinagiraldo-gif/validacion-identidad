@@ -1,11 +1,11 @@
 {
   "title": "Parametrizar Tarifas",
-  "module": "configuraciones",
-  "description": "MVP: Parametrizador de tarifas por transportadora. Layout 3 columnas (Carrier/Dropi/Margen), sobreflete con toggle %/$, IVA switch por carrier, simulador de ganancia integrado.",
-  "owner": "Michel Pino",
-  "dateAdded": "2026-05-28",
-  "route": "/configuraciones/parametrizar-tarifas",
-  "figmaSource": "https://www.figma.com/design/PDeeZVQMyF3i6SUFCWyuQa",
-  "jiraTicket": "PROD-237",
-  "role": "admin"
+  "module": "logística",
+  "slug": "parametrizar-tarifas",
+  "route": "/parametrizar-tarifas",
+  "description": "Panel de parametrización de tarifas por transportadora con carrusel de carriers, edición de variables financieras por trayecto, heat map comparativo entre carriers del mismo país, descuentos por volumen e historial de cambios.",
+  "profiles": ["admin"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-05-26",
+  "thumbnail": "thumbnail.png"
 }

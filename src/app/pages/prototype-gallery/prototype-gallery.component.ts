@@ -22,6 +22,11 @@ const FOLDER_META: Record<string, { label: string; icon: string; description: st
     icon: '✦',
     description: 'Plataforma AI de Dropi — V2, V3 y V5',
   },
+  'verificacion-identidad': {
+    label: 'Validación de identidad',
+    icon: '🪪',
+    description: 'Onboarding unificado Sumsub/Truora + flujos FigJam por país',
+  },
 };
 
 @Component({
