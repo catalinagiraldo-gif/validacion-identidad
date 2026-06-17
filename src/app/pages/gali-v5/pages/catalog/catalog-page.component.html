@@ -1,0 +1,413 @@
+<div class="catalog-page">
+
+  <!-- ADA Spy: Panel de oportunidades detectadas (única alerta por sección) -->
+  <div class="catalog-ada-strip" [class.catalog-ada-strip--collapsed]="adaStripCollapsed()">
+    <div class="catalog-ada-strip__header">
+      <div class="catalog-ada-strip__title-group">
+        <span class="catalog-ada-strip__dot"></span>
+        <strong class="catalog-ada-strip__title">ADA recomienda para ti</strong>
+        <span class="catalog-ada-strip__meta">Actualizado hace 2h · 3 oportunidades detectadas</span>
+      </div>
+      <button type="button" class="catalog-ada-strip__toggle" (click)="adaStripCollapsed.set(!adaStripCollapsed())" data-proto-skip>
+        {{ adaStripCollapsed() ? 'Ver oportunidades' : 'Ocultar' }}
+      </button>
+    </div>
+
+    @if (!adaStripCollapsed()) {
+      <div class="catalog-ada-strip__cards">
+        <div class="ada-opp-card ada-opp-card--hot" (click)="selectAdaProduct('collar-gps')" role="button" tabindex="0">
+          <div class="ada-opp-card__score">87</div>
+          <div class="ada-opp-card__content">
+            <strong>Collar GPS Mascotas</strong>
+            <span class="ada-opp-card__stock">Stock: 847 un · PetStore CO</span>
+            <div class="ada-opp-card__metrics">
+              <span class="ada-opp-card__metric">Tendencia ↑ Cali, Bogotá, Med</span>
+              <span class="ada-opp-card__margin">Margen real ~$18.500/u</span>
+            </div>
+            <span class="ada-opp-card__window">Ventana: 14 días</span>
+          </div>
+          <button type="button" class="ada-opp-card__cta ada-opp-card__cta--ghost" (click)="verAnalisis('collar-gps'); $event.stopPropagation()">Ver análisis</button>
+          <button type="button" class="ada-opp-card__cta" (click)="goToLanzar('collar-gps'); $event.stopPropagation()">Lanzar →</button>
+        </div>
+
+        <div class="ada-opp-card" (click)="selectAdaProduct('difusor')" role="button" tabindex="0">
+          <div class="ada-opp-card__score ada-opp-card__score--mid">74</div>
+          <div class="ada-opp-card__content">
+            <strong>Difusor Aromaterapia Premium</strong>
+            <span class="ada-opp-card__stock">Stock: 312 un · HomeStore</span>
+            <div class="ada-opp-card__metrics">
+              <span class="ada-opp-card__metric">Tendencia ↑ Bogotá, Bucaramanga</span>
+              <span class="ada-opp-card__margin">Margen real ~$24.000/u</span>
+            </div>
+            <span class="ada-opp-card__window">Ventana: 21 días</span>
+          </div>
+          <button type="button" class="ada-opp-card__cta ada-opp-card__cta--ghost" (click)="verAnalisis('difusor'); $event.stopPropagation()">Ver análisis</button>
+          <button type="button" class="ada-opp-card__cta" (click)="goToLanzar('difusor'); $event.stopPropagation()">Lanzar →</button>
+        </div>
+
+        <div class="ada-opp-card" (click)="verAnalisis('reloj')" role="button" tabindex="0">
+          <div class="ada-opp-card__score ada-opp-card__score--low">61</div>
+          <div class="ada-opp-card__content">
+            <strong>Reloj Smartwatch Pro X7</strong>
+            <span class="ada-opp-card__stock">Stock: 156 un · TechDropper</span>
+            <div class="ada-opp-card__metrics">
+              <span class="ada-opp-card__metric">Tendencia ↑ Medellín, Cali</span>
+              <span class="ada-opp-card__margin">Margen real ~$31.000/u</span>
+            </div>
+            <span class="ada-opp-card__window">Ventana: 28 días</span>
+          </div>
+          <button type="button" class="ada-opp-card__cta ada-opp-card__cta--ghost" (click)="verAnalisis('reloj'); $event.stopPropagation()">Ver análisis</button>
+          <button type="button" class="ada-opp-card__cta" (click)="goToLanzar('rodillo-jade'); $event.stopPropagation()">Lanzar →</button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ── BUSCADOR SEMÁNTICO ADA SPY ── -->
+  <div class="catalog-semantic-search">
+    <div class="catalog-semantic-search__header">
+      <span class="catalog-semantic-search__dot"></span>
+      <strong>Buscar con ADA Spy</strong>
+      <span class="catalog-semantic-search__hint">Describe lo que quieres vender — ADA analiza precio, competencia y tendencias</span>
+    </div>
+    <div class="catalog-semantic-search__bar">
+      <input
+        type="text"
+        class="catalog-semantic-search__input"
+        placeholder="Ej: colágeno para vender en Bogotá a $50.000, collar para mascotas con GPS..."
+        [ngModel]="semanticQuery()"
+        (ngModelChange)="semanticQuery.set($event)"
+        (keydown.enter)="runSemanticSearch()"
+      />
+      <button type="button" class="catalog-semantic-search__btn"
+        [class.catalog-semantic-search__btn--loading]="semanticSearching()"
+        (click)="runSemanticSearch()" data-proto-skip>
+        @if (semanticSearching()) {
+          <span class="catalog-semantic-search__spinner"></span>
+          Analizando...
+        } @else {
+          ✦ Buscar
+        }
+      </button>
+    </div>
+    <div class="catalog-semantic-search__chips">
+      <button type="button" class="catalog-search-chip" (click)="semanticQuery.set('colágeno para Bogotá a $50k'); runSemanticSearch()" data-proto-skip>colágeno Bogotá $50k</button>
+      <button type="button" class="catalog-search-chip" (click)="semanticQuery.set('collar GPS para mascotas'); runSemanticSearch()" data-proto-skip>collar GPS mascotas</button>
+      <button type="button" class="catalog-search-chip" (click)="semanticQuery.set('difusor aromaterapia premium'); runSemanticSearch()" data-proto-skip>difusor aromaterapia</button>
+      <button type="button" class="catalog-search-chip" (click)="semanticQuery.set('belleza facial tendencia'); runSemanticSearch()" data-proto-skip>belleza facial</button>
+    </div>
+
+    @if (semanticResults(); as results) {
+      <div class="catalog-semantic-results">
+        <div class="catalog-semantic-results__header">
+          <span>ADA encontró {{ results.length }} productos para <em>"{{ semanticQuery() }}"</em></span>
+          <button type="button" class="catalog-semantic-results__clear" (click)="semanticResults.set(null)" data-proto-skip>✕ limpiar</button>
+        </div>
+        <div class="catalog-semantic-results__list">
+          @for (r of results; track r.name) {
+            <div class="catalog-sem-card">
+              <div class="catalog-sem-card__score" [class.catalog-sem-card__score--hot]="r.score >= 80">{{ r.score }}</div>
+              <div class="catalog-sem-card__content">
+                <strong class="catalog-sem-card__name">{{ r.name }}</strong>
+                <div class="catalog-sem-card__metrics">
+                  <span>{{ r.ciudad }}</span>
+                  <span>{{ r.precio }}</span>
+                  <span class="catalog-sem-card__margen">{{ r.margen }} margen</span>
+                </div>
+                <p class="catalog-sem-card__razon">{{ r.razon }}</p>
+              </div>
+              <div class="catalog-sem-card__actions">
+                <button type="button" class="catalog-sem-card__btn" (click)="goToLanzar(r.name)" data-proto-skip>Lanzar →</button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- 1. Breadcrumbs -->
+  <nav class="catalog-page__breadcrumbs" aria-label="Breadcrumb">
+    <a routerLink="/gali-v5" class="catalog-page__crumb">
+      <i class="pi pi-home" aria-hidden="true"></i>
+      <span>{{ breadcrumbs[0] }}</span>
+    </a>
+    <i class="pi pi-chevron-right catalog-page__crumb-sep" aria-hidden="true"></i>
+    <span class="catalog-page__crumb">{{ breadcrumbs[1] }}</span>
+    <i class="pi pi-chevron-right catalog-page__crumb-sep" aria-hidden="true"></i>
+    <span class="catalog-page__crumb">{{ breadcrumbs[2] }}</span>
+    <i class="pi pi-chevron-right catalog-page__crumb-sep" aria-hidden="true"></i>
+    <span class="catalog-page__crumb catalog-page__crumb--active">{{ breadcrumbs[3] }}</span>
+  </nav>
+
+  <!-- 2. AI Banner -->
+  <div class="catalog-page__ai-banner" *ngIf="showAiBanner()">
+    <img
+      src="assets/images/dropi-baseline/catalog/ai-banner.png"
+      alt="Búsqueda IA · Encuentra productos ganadores"
+      class="catalog-page__ai-banner-img"
+    />
+    <button
+      type="button"
+      class="catalog-page__ai-banner-close"
+      data-proto-skip
+      (click)="dismissBanner()"
+      aria-label="Cerrar banner">
+      <i class="pi pi-times"></i>
+    </button>
+  </div>
+
+  <!-- 3. Proveedores -->
+  <section class="catalog-page__providers">
+    <div class="catalog-page__providers-head">
+      <h2 class="catalog-page__providers-title">Proveedores</h2>
+      <a routerLink="/gali-v5/productos/proveedores" class="catalog-page__providers-link">Ver todos</a>
+    </div>
+    <div class="catalog-page__providers-scroll">
+      <article *ngFor="let provider of providers" class="provider-card">
+        <div class="provider-card__avatar">
+          <img [src]="provider.avatar" [alt]="provider.name" />
+          <img
+            *ngIf="provider.premium"
+            src="assets/images/dropi-baseline/catalog/insignia-premium.png"
+            alt=""
+            class="provider-card__badge"
+            aria-hidden="true"
+          />
+        </div>
+        <div class="provider-card__info">
+          <span class="provider-card__name">{{ provider.name }}</span>
+          <span class="provider-card__count">{{ provider.productCount }} productos</span>
+          <span class="provider-card__categories">{{ provider.categories }}</span>
+        </div>
+      </article>
+      <button type="button" class="catalog-page__providers-next" aria-label="Ver más proveedores">
+        <i class="pi pi-chevron-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- 4–8. Catálogo filters & toolbar -->
+  <section class="catalog-page__catalog">
+    <h3 class="catalog-page__catalog-title">{{ pageTitle }}</h3>
+
+    <!-- 5. Filter toggles -->
+    <div class="catalog-page__toggles">
+      <div class="catalog-page__toggle">
+        <i class="pi pi-heart catalog-page__toggle-icon"></i>
+        <span class="catalog-page__toggle-label">Favoritos</span>
+        <label class="catalog-switch">
+          <input type="checkbox" [(ngModel)]="filterToggles.favoritos" />
+          <span class="catalog-switch__slider"></span>
+        </label>
+      </div>
+      <div class="catalog-page__toggle">
+        <i class="pi pi-lock catalog-page__toggle-icon"></i>
+        <span class="catalog-page__toggle-label">Privados</span>
+        <label class="catalog-switch">
+          <input type="checkbox" [(ngModel)]="filterToggles.privados" />
+          <span class="catalog-switch__slider"></span>
+        </label>
+      </div>
+      <div class="catalog-page__toggle">
+        <i class="pi pi-shopping-cart catalog-page__toggle-icon"></i>
+        <span class="catalog-page__toggle-label">Con ordenes</span>
+        <label class="catalog-switch">
+          <input type="checkbox" [(ngModel)]="filterToggles.conOrdenes" />
+          <span class="catalog-switch__slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 6. Search row -->
+    <div class="catalog-page__search-row">
+      <div class="catalog-page__search">
+        <i class="pi pi-search catalog-page__search-icon"></i>
+        <input type="search" placeholder="Buscar" [(ngModel)]="searchQuery" />
+      </div>
+      <button type="button" class="catalog-page__search-image-btn">
+        <i class="pi pi-image"></i>
+        <span>Buscar por imagen</span>
+      </button>
+    </div>
+
+    <!-- 7. Filter dropdowns -->
+    <div class="catalog-page__filters">
+      <div class="catalog-page__filter-group">
+        <label class="catalog-page__filter-label">Proveedor</label>
+        <div class="catalog-page__select">
+          <select [(ngModel)]="filterValues.proveedor">
+            <option value="">Seleccionar</option>
+            <option *ngFor="let p of providers" [value]="p.name">{{ p.name }}</option>
+          </select>
+          <i class="pi pi-chevron-down"></i>
+        </div>
+      </div>
+
+      <div class="catalog-page__filter-group catalog-page__filter-group--price">
+        <label class="catalog-page__filter-label">Rango precio</label>
+        <div class="catalog-page__price-range">
+          <input type="text" placeholder="Mín" [(ngModel)]="filterValues.precioMin" />
+          <span class="catalog-page__price-sep">—</span>
+          <input type="text" placeholder="Máx" [(ngModel)]="filterValues.precioMax" />
+        </div>
+      </div>
+
+      <div class="catalog-page__filter-group">
+        <label class="catalog-page__filter-label">Stock</label>
+        <div class="catalog-page__select">
+          <select [(ngModel)]="filterValues.stock">
+            <option value="">Seleccionar</option>
+            <option value="disponible">Disponible</option>
+            <option value="bajo">Bajo stock</option>
+            <option value="agotado">Agotado</option>
+          </select>
+          <i class="pi pi-chevron-down"></i>
+        </div>
+      </div>
+
+      <div class="catalog-page__filter-group">
+        <label class="catalog-page__filter-label">Categorías</label>
+        <div class="catalog-page__select">
+          <select [(ngModel)]="filterValues.categoria">
+            <option value="">Seleccionar</option>
+            <option value="moda">Moda</option>
+            <option value="tecnologia">Tecnología</option>
+            <option value="hogar">Hogar</option>
+            <option value="belleza">Belleza</option>
+          </select>
+          <i class="pi pi-chevron-down"></i>
+        </div>
+      </div>
+
+      <div class="catalog-page__filter-group">
+        <label class="catalog-page__filter-label">Ciudad</label>
+        <div class="catalog-page__select">
+          <select [(ngModel)]="filterValues.ciudad">
+            <option value="">Seleccionar</option>
+            <option value="bogota">Bogotá</option>
+            <option value="medellin">Medellín</option>
+            <option value="cali">Cali</option>
+          </select>
+          <i class="pi pi-chevron-down"></i>
+        </div>
+      </div>
+
+      <button type="button" class="catalog-page__apply-btn" data-proto-skip (click)="applyFilters()">
+        Aplicar filtros
+      </button>
+    </div>
+
+    <!-- 8. Results bar -->
+    <div class="catalog-page__bar">
+      <div class="catalog-page__count">
+        <span class="catalog-page__count-text">Más de</span>
+        <span class="catalog-page__count-number">60.000</span>
+        <span class="catalog-page__count-text">productos</span>
+      </div>
+      <div class="catalog-page__bar-controls">
+        <div class="catalog-page__sort">
+          <span class="catalog-page__sort-label">Ordenar por:</span>
+          <button type="button" class="catalog-page__sort-btn">
+            <span>{{ sortBy }}</span>
+            <i class="pi pi-chevron-down"></i>
+          </button>
+        </div>
+        <div class="catalog-page__view">
+          <div class="catalog-page__view-toggle">
+            <button
+              type="button"
+              class="catalog-page__view-btn catalog-page__view-btn--left"
+              data-proto-skip
+              [class.catalog-page__view-btn--active]="viewMode === 'grid'"
+              (click)="viewMode = 'grid'"
+              aria-label="Vista cuadrícula">
+              <i class="pi pi-th-large"></i>
+            </button>
+            <button
+              type="button"
+              class="catalog-page__view-btn catalog-page__view-btn--right"
+              data-proto-skip
+              [class.catalog-page__view-btn--active]="viewMode === 'list'"
+              (click)="viewMode = 'list'"
+              aria-label="Vista lista">
+              <i class="pi pi-list"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Product grid -->
+  <section
+    class="catalog-page__products"
+    [class.catalog-page__products--list]="viewMode === 'list'">
+    <article
+      *ngFor="let product of filteredProducts; let i = index"
+      class="product-card"
+      [style.animation-delay.ms]="i * 40">
+      <div class="product-card__image-wrap">
+        <div class="product-card__image">
+          <img [src]="product.image" [alt]="product.name" />
+        </div>
+        <div class="product-card__badges" *ngIf="product.badges.length">
+          <span
+            *ngFor="let badge of product.badges"
+            class="product-card__badge"
+            [class.product-card__badge--combo]="badge === 'Combo'">
+            {{ badge }}
+          </span>
+        </div>
+        <div class="product-card__ada-score" *ngIf="product.adaScore">
+          <span class="ada-score-chip" [class.ada-score-chip--high]="product.adaScore >= 80" [class.ada-score-chip--mid]="product.adaScore >= 60 && product.adaScore < 80">
+            ADA {{ product.adaScore }}
+          </span>
+        </div>
+        <span *ngIf="product.isPrivate" class="product-card__lock" aria-label="Producto privado">
+          <i class="pi pi-lock"></i>
+        </span>
+        <button type="button" class="product-card__favorite" [class.product-card__favorite--active]="product.isFavorite">
+          <i class="pi" [ngClass]="product.isFavorite ? 'pi-heart-fill' : 'pi-heart'"></i>
+        </button>
+      </div>
+
+      <div class="product-card__body">
+        <div class="product-card__meta">
+          <span class="product-card__category">{{ product.category }}</span>
+          <span class="product-card__stock">
+            Stock:
+            <strong [class.product-card__stock--ok]="product.stock > 0" [class.product-card__stock--zero]="product.stock === 0">
+              {{ product.stock }}
+            </strong>
+          </span>
+        </div>
+        <p class="product-card__name">{{ product.name }}</p>
+        <p class="product-card__supplier">
+          Proveedor: <a class="product-card__supplier-link" routerLink="/gali-v5/productos/proveedores">{{ product.supplierName }}</a>
+        </p>
+        <div class="product-card__prices">
+          <div class="product-card__price-col">
+            <span class="product-card__price-label">Precio proveedor</span>
+            <span class="product-card__price-value">{{ formatPrice(product.price) }}</span>
+          </div>
+          <div class="product-card__price-col">
+            <span class="product-card__price-label">Precio sugerido</span>
+            <span class="product-card__price-value">{{ formatPrice(product.suggestedPrice) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="product-card__cta">
+        <i class="pi pi-shopping-cart"></i>
+        <span>Enviar a cliente</span>
+      </button>
+    </article>
+  </section>
+</div>
+
+@if (adaDetailProductId()) {
+  <gali-ada-spy-detail
+    [productId]="adaDetailProductId()!"
+    (closed)="adaDetailProductId.set(null)" />
+}

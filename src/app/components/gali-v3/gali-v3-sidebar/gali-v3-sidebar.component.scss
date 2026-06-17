@@ -1,0 +1,124 @@
+@import 'styles/gali-v3-tokens';
+
+:host {
+  display: block;
+  width: $gv3-sidebar-w;
+  height: 100%;
+  background: $gv3-bg-surface;
+  border-right: 1px solid $gv3-border-subtle;
+  font-family: $gv3-font-body;
+}
+
+.sb {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $gv3-space-3 0 $gv3-space-3;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.sb__group {
+  width: 100%;
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+  }
+}
+
+.sb__divider {
+  width: 24px;
+  height: 1px;
+  background: $gv3-border-subtle;
+  margin: $gv3-space-2 0;
+}
+
+.sb__spacer { flex: 1; }
+
+.sb__item {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: $gv3-radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $gv3-text-tertiary;
+  text-decoration: none;
+  transition: all $gv3-dur-base $gv3-ease-out;
+
+  &:hover {
+    color: $gv3-text-primary;
+    background: $gv3-bg-cream;
+  }
+  &:focus-visible {
+    outline: 2px solid $gv3-orange;
+    outline-offset: 2px;
+  }
+
+  &::before {
+    // Activo: barra naranja vertical a la izquierda
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 24px;
+    background: $gv3-orange;
+    border-radius: 0 2px 2px 0;
+    transition: transform $gv3-dur-base $gv3-ease-organic;
+  }
+}
+
+.sb__item--active {
+  color: $gv3-orange;
+  background: $gv3-orange-tint;
+  &::before { transform: translateY(-50%) scaleY(1); }
+}
+
+.sb__item-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg { width: 20px; height: 20px; }
+}
+
+// Items Gali: con ✦ marker
+.sb__group--gali ul { gap: 2px; }
+.sb__item--gali {
+  color: $gv3-terracota;
+  &:hover { color: $gv3-terracota; background: $gv3-terracota-tint; }
+}
+.sb__item--gali.sb__item--active {
+  color: $gv3-text-onAccent;
+  background: $gv3-terracota;
+  &::before { background: $gv3-terracota; }
+}
+.sb__item-mark {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font-family: $gv3-font-display;
+  font-size: 9px;
+  color: $gv3-terracota;
+  background: $gv3-bg-surface;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $gv3-terracota-soft;
+}
+.sb__item--gali.sb__item--active .sb__item-mark { color: $gv3-text-onAccent; background: $gv3-terracota; border-color: $gv3-text-onAccent; }

@@ -1,0 +1,92 @@
+{
+  "zonas": [
+    {
+      "id": "descubrimiento",
+      "label": "Descubrimiento",
+      "color": "terracota",
+      "icon": "⚡",
+      "descripcion": "Encuentra qué vender. Catálogo, proveedores, productos en alza."
+    },
+    {
+      "id": "estrategia",
+      "label": "Estrategia",
+      "color": "amber",
+      "icon": "🎯",
+      "descripcion": "Define cómo vender. Ángulos, audiencias, landings, copies."
+    },
+    {
+      "id": "operacion",
+      "label": "Operación",
+      "color": "sage",
+      "icon": "🛒",
+      "descripcion": "Ejecuta tu día. Pedidos, campañas, logística."
+    },
+    {
+      "id": "financiero",
+      "label": "Financiero",
+      "color": "rust",
+      "icon": "💰",
+      "descripcion": "Controla tu plata. Wallet, historial, retiros, dropicard."
+    },
+    {
+      "id": "acompanamiento",
+      "label": "Acompañamiento",
+      "color": "orange",
+      "icon": "🎓",
+      "descripcion": "Resuelve dudas y aprende. CAS, Academy, Comunidad."
+    },
+    {
+      "id": "gali-core",
+      "label": "Gali Core",
+      "color": "orange",
+      "icon": "✦",
+      "descripcion": "Tu asistente AI-first. Proyectos, builder, mercado, vistas."
+    }
+  ],
+  "nodos": [
+    { "id": "n-inicio", "zona": "gali-core", "label": "Inicio Gali", "subtitle": "Welcome memory-aware", "icon": "🏠", "route": "/gali-v3", "estado": "ready", "kpi": "" },
+    { "id": "n-mapa", "zona": "gali-core", "label": "Mapa del negocio", "subtitle": "estás aquí", "icon": "🗺", "route": "/gali-v3/mapa", "estado": "active", "kpi": "" },
+    { "id": "n-proyecto", "zona": "gali-core", "label": "Proyectos", "subtitle": "memoria persistente", "icon": "📁", "route": "/gali-v3/proyecto/collar-gps-2026", "estado": "ready", "kpi": "1 activo · ROAS 2.8x" },
+    { "id": "n-builder", "zona": "gali-core", "label": "Builder", "subtitle": "automatizaciones Make-style", "icon": "⚡", "route": "/gali-v3/builder", "estado": "ready", "kpi": "4 flows activos" },
+    { "id": "n-mercado", "zona": "gali-core", "label": "Mercado", "subtitle": "agentes + plantillas", "icon": "🛒", "route": "/gali-v3/mercado", "estado": "ready", "kpi": "2 agentes instalados" },
+    { "id": "n-vista", "zona": "gali-core", "label": "Vistas", "subtitle": "componibles desde prompt", "icon": "📊", "route": "/gali-v3/vista/operacion-hoy", "estado": "ready", "kpi": "3 templates" },
+    { "id": "n-constructor", "zona": "gali-core", "label": "Constructor de bloques", "subtitle": "chat + preview en vivo", "icon": "✦", "route": "/gali-v3/bloque-builder", "estado": "ready", "kpi": "V8 · 5 ejemplos · datos sim/real" },
+    { "id": "n-retos", "zona": "gali-core", "label": "Retos", "subtitle": "gamificación · racha 🔥12", "icon": "🎯", "route": "/gali-v3/retos", "estado": "ready", "kpi": "1840pts · #23 cohorte" },
+
+    { "id": "n-catalogo", "zona": "descubrimiento", "label": "Catálogo", "subtitle": "despertado ✦", "icon": "📦", "route": "/gali-v3/dropi/catalogo", "estado": "ready", "kpi": "6 productos · análisis Gali" },
+    { "id": "n-proveedores", "zona": "descubrimiento", "label": "PetStore Colombia", "subtitle": "Collar GPS · Stock 847 · 96% cumpl.", "icon": "🏬", "route": "/gali-v3/dropi/proveedores", "estado": "ready", "kpi": "Precio $28.500 · ✅ Normal" },
+    { "id": "n-proveedor-2", "zona": "descubrimiento", "label": "TechGear MX", "subtitle": "Electrónicos · Stock 234", "icon": "🏬", "route": "/gali-v3/dropi/proveedores", "estado": "ready", "kpi": "Cumpl. 91% · ⚠ atención" },
+    { "id": "n-proveedor-3", "zona": "descubrimiento", "label": "Bienestar Home", "subtitle": "Aromaterapia · Stock 1200", "icon": "🏬", "route": "/gali-v3/dropi/proveedores", "estado": "ready", "kpi": "Precio estable · ✅" },
+    { "id": "n-caza", "zona": "descubrimiento", "label": "Caza productos", "subtitle": "trending ordenado por fit", "icon": "🔥", "route": "/gali-v3/dropi/caza-productos", "estado": "ready", "kpi": "10 hallazgos hoy" },
+
+    { "id": "n-landing", "zona": "estrategia", "label": "Landing artifact", "subtitle": "editable in-place · v2", "icon": "📄", "route": "/gali-v3/artifact/landing/land-1", "estado": "ready", "kpi": "3 paletas · versions" },
+    { "id": "n-vigilante", "zona": "estrategia", "label": "Agente: Vigilante", "subtitle": "anti-baneo Meta/TikTok", "icon": "🛡", "route": "/gali-v3/mercado/agente/ag-1", "estado": "ready", "kpi": "instalado" },
+    { "id": "n-copies", "zona": "estrategia", "label": "Agente: Copies", "subtitle": "27 variaciones LATAM", "icon": "✍️", "route": "/gali-v3/mercado/agente/ag-3", "estado": "available", "kpi": "no instalado" },
+
+    { "id": "n-pedidos", "zona": "operacion", "label": "Pedidos", "subtitle": "triage 3 zonas", "icon": "🛒", "route": "/gali-v3/dropi/pedidos", "estado": "ready", "kpi": "12 hoy · 1 crítica" },
+    { "id": "n-campanas", "zona": "operacion", "label": "Campañas", "subtitle": "health-indicator Gali", "icon": "📣", "route": "/gali-v3/dropi/campanas", "estado": "ready", "kpi": "3 activas · ROAS 2.8x" },
+    { "id": "n-novedades", "zona": "operacion", "label": "Agente: Novedades", "subtitle": "triage automático 24/7", "icon": "📦", "route": "/gali-v3/mercado/agente/ag-2", "estado": "available", "kpi": "no instalado" },
+
+    { "id": "n-wallet", "zona": "financiero", "label": "Wallet", "subtitle": "saldo + proyección", "icon": "💰", "route": "/historial-de-cartera", "estado": "ready", "kpi": "$1.2M · ↑$1.8M en 7d" },
+    { "id": "n-cartera", "zona": "financiero", "label": "Historial cartera", "subtitle": "despertado · análisis Gali", "icon": "📈", "route": "/gali-v3/dropi/cartera", "estado": "ready", "kpi": "mejor retiro: día 29" },
+    { "id": "n-dropicard", "zona": "financiero", "label": "Dropi Card", "subtitle": "legacy · chip ✦", "icon": "💳", "route": "/gali-v3/legacy/dropi-card", "estado": "legacy", "kpi": "" },
+
+    { "id": "n-cas", "zona": "acompanamiento", "label": "CAS Bandeja", "subtitle": "legacy · chip ✦", "icon": "💬", "route": "/gali-v3/legacy/cas", "estado": "legacy", "kpi": "" },
+    { "id": "n-academy", "zona": "acompanamiento", "label": "Academy", "subtitle": "legacy · chip ✦", "icon": "🎓", "route": "/gali-v3/legacy/academy", "estado": "legacy", "kpi": "" },
+    { "id": "n-comunidad", "zona": "acompanamiento", "label": "Comunidad", "subtitle": "próximamente", "icon": "👥", "route": "/gali-v3", "estado": "soon", "kpi": "agente Líder · próx" }
+  ],
+  "edges": [
+    { "from": "n-inicio", "to": "n-mapa", "label": "ver todo" },
+    { "from": "n-mapa", "to": "n-proyecto", "label": "tu trabajo" },
+    { "from": "n-catalogo", "to": "n-proyecto", "label": "elegir →" },
+    { "from": "n-caza", "to": "n-proyecto", "label": "lanzar →" },
+    { "from": "n-proyecto", "to": "n-landing", "label": "construir" },
+    { "from": "n-landing", "to": "n-campanas", "label": "publicar" },
+    { "from": "n-campanas", "to": "n-pedidos", "label": "→ ventas" },
+    { "from": "n-pedidos", "to": "n-wallet", "label": "→ plata" },
+    { "from": "n-wallet", "to": "n-cartera", "label": "auditar" },
+    { "from": "n-mercado", "to": "n-builder", "label": "automatizar" },
+    { "from": "n-builder", "to": "n-campanas", "label": "control" },
+    { "from": "n-mercado", "to": "n-vigilante", "label": "instalar" }
+  ]
+}

@@ -1,0 +1,119 @@
+@import 'styles/gali-v2-tokens';
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: $gv2-space-2;
+  line-height: 1;
+  color: $gv2-orange;
+}
+
+.gv2-mark__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.gv2-mark__halo {
+  opacity: 0.6;
+  transform-origin: center;
+}
+
+.gv2-mark__star {
+  transform-origin: center;
+  transform-box: fill-box;
+  will-change: transform, opacity;
+}
+
+.gv2-mark__core {
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.gv2-mark__label {
+  font-family: $gv2-font-display;
+  font-weight: 500;
+  font-variation-settings: 'opsz' 24, 'SOFT' 50;
+  letter-spacing: -0.01em;
+  color: $gv2-text-primary;
+}
+
+// --- Sizes ---
+:host(.gv2-mark--xs) { width: 12px; height: 12px; .gv2-mark__label { font-size: $gv2-text-xs; } }
+:host(.gv2-mark--sm) { width: 16px; height: 16px; .gv2-mark__label { font-size: $gv2-text-sm; } }
+:host(.gv2-mark--md) { width: 22px; height: 22px; .gv2-mark__label { font-size: $gv2-text-base; } }
+:host(.gv2-mark--lg) { width: 34px; height: 34px; .gv2-mark__label { font-size: $gv2-text-lg; } }
+:host(.gv2-mark--xl) { width: 56px; height: 56px; .gv2-mark__label { font-size: $gv2-text-xl; } }
+
+// --- States ---
+
+// Reposo — respira lento
+:host(.gv2-mark--reposo) {
+  color: $gv2-orange;
+  .gv2-mark__star { animation: gv2-mark-breath $gv2-dur-breath ease-in-out infinite; }
+  .gv2-mark__halo { animation: gv2-mark-halo-breath $gv2-dur-breath ease-in-out infinite; }
+}
+
+// Propuesta — pulso cálido
+:host(.gv2-mark--propuesta) {
+  color: $gv2-terracota;
+  filter: drop-shadow(0 0 6px rgba(200, 110, 75, 0.5));
+  .gv2-mark__star { animation: gv2-mark-pulse 2200ms $gv2-ease-out infinite; }
+  .gv2-mark__halo { opacity: 0.9; }
+}
+
+// Alerta — titilar ámbar
+:host(.gv2-mark--alerta) {
+  color: $gv2-amber;
+  filter: drop-shadow(0 0 8px rgba(232, 181, 71, 0.6));
+  .gv2-mark__star { animation: gv2-mark-flicker 900ms steps(2, end) infinite; }
+}
+
+// Actuando — girar suave
+:host(.gv2-mark--actuando) {
+  color: $gv2-orange;
+  .gv2-mark__star { animation: gv2-mark-spin 3600ms linear infinite; }
+  .gv2-mark__halo { animation: gv2-mark-halo-breath 1800ms ease-in-out infinite; }
+}
+
+// Memoria — sage estable
+:host(.gv2-mark--memoria) {
+  color: $gv2-sage;
+  .gv2-mark__halo { opacity: 0.4; }
+}
+
+@keyframes gv2-mark-breath {
+  0%, 100% { transform: scale(1); opacity: 0.92; }
+  50%      { transform: scale(1.06); opacity: 1; }
+}
+
+@keyframes gv2-mark-halo-breath {
+  0%, 100% { transform: scale(0.85); opacity: 0.35; }
+  50%      { transform: scale(1.15); opacity: 0.75; }
+}
+
+@keyframes gv2-mark-pulse {
+  0%   { transform: scale(1); }
+  20%  { transform: scale(1.18); }
+  60%  { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+
+@keyframes gv2-mark-flicker {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+
+@keyframes gv2-mark-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+// Respeta reducción de movimiento
+@media (prefers-reduced-motion: reduce) {
+  :host .gv2-mark__star,
+  :host .gv2-mark__halo {
+    animation: none !important;
+  }
+}

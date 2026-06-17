@@ -1,0 +1,412 @@
+@import 'styles/gali-v3-tokens';
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.roadmap {
+  height: 100%;
+  overflow-y: auto;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: $gv3-space-5 $gv3-space-6;
+  display: flex;
+  flex-direction: column;
+  gap: $gv3-space-6;
+  @include gv3-scrollbar-subtle;
+}
+
+.roadmap__sparkle {
+  color: $gv3-orange;
+  filter: drop-shadow($gv3-sparkle-glow);
+}
+
+// HERO
+.roadmap__hero {
+  padding: $gv3-space-6;
+  background:
+    radial-gradient(at 0% 0%, $gv3-orange-tint 0px, transparent 60%),
+    radial-gradient(at 100% 100%, $gv3-sage-tint 0px, transparent 60%),
+    $gv3-bg-surface;
+  border: 1px solid $gv3-orange-tint;
+  border-radius: $gv3-radius-xl;
+}
+
+.roadmap__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: $gv3-bg-surface;
+  border: 1px solid $gv3-orange-tint;
+  border-radius: $gv3-radius-pill;
+  font-family: $gv3-font-mono;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $gv3-orange-hover;
+  margin-bottom: $gv3-space-3;
+}
+
+.roadmap__hero h1 {
+  @include gv3-display-tight;
+  font-size: clamp(32px, 4vw, 52px);
+  color: $gv3-text-primary;
+  margin: 0 0 $gv3-space-3;
+
+  em {
+    @include gv3-display-editorial;
+    font-style: italic;
+    color: $gv3-orange-hover;
+  }
+}
+
+.roadmap__lead {
+  font-family: $gv3-font-body;
+  font-size: $gv3-text-base;
+  line-height: 1.6;
+  color: $gv3-text-secondary;
+  margin: 0 0 $gv3-space-4;
+  max-width: 64ch;
+}
+
+.roadmap__current {
+  display: inline-flex;
+  align-items: center;
+  gap: $gv3-space-2;
+  padding: 10px $gv3-space-3;
+  background: $gv3-bg-warm;
+  border: 1px solid $gv3-border-warm;
+  border-radius: $gv3-radius-md;
+
+  .roadmap__current-tag {
+    @include gv3-mono-tag;
+    color: $gv3-orange-hover;
+  }
+
+  strong {
+    font-family: $gv3-font-display;
+    font-size: $gv3-text-base;
+    font-weight: 500;
+    color: $gv3-text-primary;
+  }
+
+  .roadmap__current-hito {
+    font-family: $gv3-font-body;
+    font-size: $gv3-text-xs;
+    color: $gv3-text-tertiary;
+    padding-left: $gv3-space-2;
+    border-left: 1px solid $gv3-border-default;
+  }
+}
+
+// TIMELINE
+.roadmap__timeline {
+  display: flex;
+  flex-direction: column;
+  gap: $gv3-space-4;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: linear-gradient(180deg,
+      $gv3-orange-tint,
+      $gv3-terracota-tint,
+      $gv3-amber-tint,
+      $gv3-sage-tint,
+      transparent);
+  }
+}
+
+.roadmap__fase {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: $gv3-space-3;
+  align-items: flex-start;
+  opacity: 0;
+  animation: gv3-artifact-enter $gv3-dur-base $gv3-ease-out forwards;
+}
+
+.roadmap__fase-dot {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: $gv3-bg-surface;
+  border: 2px solid $gv3-orange-tint;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  z-index: 2;
+  position: relative;
+  box-shadow: $gv3-shadow-glow-warm;
+}
+
+.roadmap__fase-card {
+  background: $gv3-bg-surface;
+  border: 1px solid $gv3-border-whisper;
+  border-radius: $gv3-radius-lg;
+  padding: $gv3-space-4 $gv3-space-5;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+
+  &:hover {
+    border-color: $gv3-orange-tint;
+    box-shadow: $gv3-shadow-sm;
+  }
+}
+
+.roadmap__fase[data-estado='en_planeacion'] .roadmap__fase-dot { border-color: $gv3-orange; }
+.roadmap__fase[data-estado='diseño'] .roadmap__fase-dot { border-color: $gv3-terracota; }
+.roadmap__fase[data-estado='exploración'] .roadmap__fase-dot { border-color: $gv3-amber; }
+.roadmap__fase[data-estado='concepto'] .roadmap__fase-dot { border-color: $gv3-sage; }
+.roadmap__fase[data-estado='visión'] .roadmap__fase-dot { border-color: $gv3-border-default; background: $gv3-bg-warm; }
+
+.roadmap__fase-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $gv3-space-3;
+  margin-bottom: $gv3-space-3;
+  flex-wrap: wrap;
+
+  > div:first-child {
+    flex: 1;
+    min-width: 0;
+  }
+
+  h2 {
+    font-family: $gv3-font-display;
+    font-weight: 500;
+    font-size: $gv3-text-lg;
+    color: $gv3-text-primary;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+}
+
+.roadmap__fase-id {
+  @include gv3-mono-tag;
+  display: inline-block;
+  padding: 2px 8px;
+  background: $gv3-bg-warm;
+  border: 1px solid $gv3-border-whisper;
+  border-radius: $gv3-radius-sm;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: $gv3-orange-hover;
+}
+
+.roadmap__fase-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  font-family: $gv3-font-mono;
+  font-size: 11px;
+
+  .roadmap__fase-estado {
+    text-transform: lowercase;
+    padding: 2px 8px;
+    background: $gv3-orange-tint;
+    color: $gv3-orange-hover;
+    border-radius: $gv3-radius-pill;
+    letter-spacing: 0.04em;
+  }
+
+  .roadmap__fase-fecha {
+    color: $gv3-text-tertiary;
+  }
+}
+
+.roadmap__fase-items {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 $gv3-space-3;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  li {
+    display: flex;
+    gap: 8px;
+    font-family: $gv3-font-body;
+    font-size: $gv3-text-sm;
+    color: $gv3-text-secondary;
+    line-height: 1.5;
+  }
+}
+
+.roadmap__bullet {
+  color: $gv3-orange;
+  font-family: $gv3-font-mono;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.roadmap__fase-deps,
+.roadmap__fase-riesgos {
+  margin-top: $gv3-space-3;
+  padding-top: $gv3-space-3;
+  border-top: 1px dashed $gv3-border-whisper;
+
+  strong {
+    @include gv3-mono-tag;
+    color: $gv3-text-tertiary;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    li {
+      font-family: $gv3-font-body;
+      font-size: $gv3-text-xs;
+      color: $gv3-text-secondary;
+      line-height: 1.45;
+    }
+  }
+}
+
+.roadmap__fase-riesgos ul li {
+  color: $gv3-rust;
+}
+
+// PRINCIPIOS
+.roadmap__principios {
+  background:
+    radial-gradient(at 100% 0%, $gv3-sage-tint 0px, transparent 50%),
+    $gv3-bg-surface;
+  border: 1px solid $gv3-sage-soft;
+  border-radius: $gv3-radius-lg;
+  padding: $gv3-space-5 $gv3-space-5;
+
+  header {
+    margin-bottom: $gv3-space-4;
+
+    h2 {
+      font-family: $gv3-font-display;
+      font-weight: 500;
+      font-size: $gv3-text-xl;
+      color: $gv3-text-primary;
+      margin: 0 0 4px;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      font-family: $gv3-font-body;
+      font-size: $gv3-text-sm;
+      color: $gv3-text-secondary;
+      margin: 0;
+    }
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: $gv3-space-3;
+  }
+
+  li {
+    display: flex;
+    gap: $gv3-space-3;
+    padding: $gv3-space-3 $gv3-space-4;
+    background: $gv3-bg-surface;
+    border: 1px solid $gv3-border-whisper;
+    border-radius: $gv3-radius-md;
+  }
+
+  strong {
+    font-family: $gv3-font-body;
+    font-weight: 500;
+    font-size: $gv3-text-sm;
+    color: $gv3-text-primary;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-family: $gv3-font-body;
+    font-size: $gv3-text-xs;
+    color: $gv3-text-secondary;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.roadmap__principio-id {
+  width: 32px;
+  height: 32px;
+  background: $gv3-sage-tint;
+  color: $gv3-sage;
+  border-radius: $gv3-radius-md;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $gv3-font-mono;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+// CTA FOOT
+.roadmap__cta {
+  display: flex;
+  gap: $gv3-space-3;
+  padding-top: $gv3-space-3;
+  border-top: 1px solid $gv3-border-whisper;
+}
+
+.roadmap__cta-primary,
+.roadmap__cta-secondary {
+  font-family: $gv3-font-body;
+  font-weight: 500;
+  font-size: $gv3-text-sm;
+  padding: 10px 18px;
+  border-radius: $gv3-radius-md;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+}
+
+.roadmap__cta-primary {
+  background: $gv3-orange;
+  color: $gv3-text-onAccent;
+  box-shadow: $gv3-shadow-glow-warm;
+
+  &:hover {
+    background: $gv3-orange-hover;
+    transform: translateX(-2px);
+  }
+}
+
+.roadmap__cta-secondary {
+  background: $gv3-bg-surface;
+  color: $gv3-text-primary;
+  border: 1px solid $gv3-border-subtle;
+  margin-left: auto;
+
+  &:hover {
+    border-color: $gv3-orange-tint;
+    color: $gv3-orange-hover;
+  }
+}

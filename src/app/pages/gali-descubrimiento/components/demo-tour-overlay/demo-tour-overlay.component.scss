@@ -1,0 +1,160 @@
+@import 'styles/gali-tokens';
+
+.tour {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  animation: tour-fade-in 320ms $gali-ease-out;
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 15, 18, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  &__step {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(420px, 92vw);
+    padding: 28px;
+    background: $gali-bg-elevated;
+    border: 1px solid $gali-border-default;
+    border-radius: $gali-radius-modal;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(78, 205, 196, 0.15);
+    animation: tour-step-in 360ms $gali-ease-spring;
+  }
+
+  &__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  &__counter {
+    font-family: $gali-font-mono;
+    font-size: 11px;
+    color: $gali-cyan;
+    letter-spacing: 0.12em;
+    padding: 4px 10px;
+    background: rgba(78, 205, 196, 0.08);
+    border-radius: 999px;
+    border: 1px solid rgba(78, 205, 196, 0.2);
+  }
+
+  &__skip {
+    background: transparent;
+    border: none;
+    color: $gali-text-muted;
+    font-family: $gali-font-mono;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 4px 8px;
+
+    &:hover {
+      color: $gali-text-primary;
+    }
+
+    &:focus-visible {
+      @include gali-focus;
+    }
+  }
+
+  &__title {
+    font-family: $gali-font-display;
+    font-size: 24px;
+    font-weight: 600;
+    color: $gali-text-primary;
+    margin: 0 0 12px;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  &__body {
+    font-family: $gali-font-body;
+    font-size: 14px;
+    line-height: 1.6;
+    color: $gali-text-secondary;
+    margin: 0 0 24px;
+    text-wrap: pretty;
+  }
+
+  &__actions {
+    margin-bottom: 20px;
+  }
+
+  &__btn {
+    background: $gali-orange;
+    color: $gali-bg-base;
+    border: none;
+    padding: 10px 20px;
+    border-radius: $gali-radius-input;
+    font-family: $gali-font-body;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: $gali-shadow-cta;
+    transition: all 160ms ease;
+
+    &:hover {
+      background: $gali-orange-hover;
+      transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+      @include gali-focus;
+    }
+  }
+
+  &__progress {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: $gali-border-default;
+    transition: all 240ms ease;
+
+    &--active {
+      background: $gali-cyan;
+      width: 24px;
+      border-radius: 999px;
+    }
+  }
+}
+
+@keyframes tour-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tour-step-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@include gali-reduced-motion {
+  .tour,
+  .tour__step {
+    animation: none;
+  }
+}

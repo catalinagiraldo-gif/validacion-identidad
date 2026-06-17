@@ -1,0 +1,184 @@
+@import 'styles/gali-v3-tokens';
+
+:host {
+  display: block;
+  width: 100%;
+  height: $gv3-header-h;
+  font-family: $gv3-font-body;
+}
+
+.h {
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: $gv3-space-5;
+  padding: 0 $gv3-space-5;
+  background: $gv3-bg-surface;
+  border-bottom: 1px solid $gv3-border-subtle;
+}
+
+// --- Logo ---
+.h__logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: $gv3-orange;
+  font-family: $gv3-font-display;
+  font-variation-settings: 'opsz' 36, 'SOFT' 80;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+
+  &:hover { color: $gv3-orange-hover; }
+}
+.h__logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: $gv3-orange;
+  color: $gv3-text-onAccent;
+  border-radius: $gv3-radius-md;
+  font-family: $gv3-font-display;
+  font-size: 18px;
+  font-weight: 700;
+}
+.h__logo-word { font-size: $gv3-text-lg; }
+
+// --- Search / Gali input ---
+.h__search {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: $gv3-space-3;
+  padding: 6px 12px;
+  background: $gv3-bg-cream;
+  border: 1px solid $gv3-border-subtle;
+  border-radius: $gv3-radius-pill;
+  max-width: 560px;
+  width: 100%;
+  justify-self: center;
+  transition: all $gv3-dur-base $gv3-ease-out;
+
+  &:hover { border-color: $gv3-border-default; background: $gv3-bg-surface; }
+  &--focus {
+    border-color: $gv3-orange;
+    background: $gv3-bg-surface;
+    box-shadow: $gv3-shadow-glow-warm;
+  }
+}
+.h__search-mark {
+  font-family: $gv3-font-display;
+  font-size: 16px;
+  color: $gv3-orange;
+  font-weight: 700;
+}
+.h__search-input {
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-family: $gv3-font-body;
+  font-size: $gv3-text-sm;
+  color: $gv3-text-primary;
+  min-width: 0;
+  &::placeholder { color: $gv3-text-tertiary; }
+}
+.h__search-kbd {
+  font-family: $gv3-font-mono;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  background: $gv3-bg-surface;
+  border: 1px solid $gv3-border-subtle;
+  border-radius: $gv3-radius-sm;
+  color: $gv3-text-tertiary;
+}
+@media (max-width: 720px) {
+  .h__search-kbd { display: none; }
+}
+
+// --- Right cluster ---
+.h__right {
+  display: flex;
+  align-items: center;
+  gap: $gv3-space-3;
+}
+
+.h__beta {
+  font-family: $gv3-font-mono;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  padding: 3px 7px;
+  border-radius: $gv3-radius-sm;
+  background: $gv3-sage-soft;
+  color: $gv3-sage;
+}
+
+.h__balance {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid $gv3-border-subtle;
+  border-radius: $gv3-radius-pill;
+  color: $gv3-text-primary;
+  font-family: $gv3-font-mono;
+  font-size: $gv3-text-sm;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all $gv3-dur-fast ease;
+  &:hover { border-color: $gv3-border-default; background: $gv3-bg-warm; }
+}
+.h__balance-icon { width: 16px; height: 16px; color: $gv3-text-tertiary; svg { width: 100%; height: 100%; } }
+
+.h__bell {
+  position: relative;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: 1px solid $gv3-border-subtle;
+  border-radius: 50%;
+  color: $gv3-text-secondary;
+  cursor: pointer;
+  transition: all $gv3-dur-fast ease;
+  svg { width: 18px; height: 18px; }
+  &:hover { border-color: $gv3-border-default; background: $gv3-bg-warm; color: $gv3-text-primary; }
+}
+.h__bell--active { border-color: $gv3-orange; color: $gv3-orange; }
+.h__bell-dot {
+  position: absolute;
+  top: -2px; right: -2px;
+  min-width: 16px; height: 16px;
+  border-radius: 8px;
+  padding: 0 4px;
+  background: $gv3-rust;
+  color: $gv3-text-onAccent;
+  font-family: $gv3-font-mono;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid $gv3-bg-surface;
+}
+
+.h__avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: $gv3-orange;
+  color: $gv3-text-onAccent;
+  border: 0;
+  cursor: pointer;
+  font-family: $gv3-font-display;
+  font-weight: 600;
+  font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all $gv3-dur-fast ease;
+  &:hover { background: $gv3-orange-hover; transform: translateY(-1px); }
+}
+
+@media (max-width: 540px) {
+  .h__beta, .h__balance { display: none; }
+}

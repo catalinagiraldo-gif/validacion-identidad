@@ -1,0 +1,1764 @@
+@import 'styles/gali-v5-tokens';
+
+// Panel tokens — Light mode
+$panel-bg:       #ffffff;
+$panel-surface:  #f8f8fb;
+$panel-border:   rgba(0, 0, 0, 0.07);
+$panel-text:     #1a1a22;
+$panel-muted:    rgba(0, 0, 0, 0.4);
+$panel-caption:  rgba(0, 0, 0, 0.35);
+$panel-accent:   $primary-500;  // #ff6102
+$panel-success:  #10b981;
+$panel-warning:  #f59e0b;
+$panel-danger:   #ef4444;
+$panel-info:     #3b82f6;
+
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba($panel-accent, 0.5); }
+  50%       { box-shadow: 0 0 0 5px rgba($panel-accent, 0); }
+}
+
+@keyframes agentPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+:host {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  z-index: 300;
+  pointer-events: auto;
+}
+
+.gali-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: $panel-bg;
+  border-left: 1px solid $panel-border;
+  box-shadow: -4px 0 32px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+
+  // ── Header ──────────────────────────────────────────
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $size-3 $size-4;
+    border-bottom: 1px solid $panel-border;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba($primary-500, 0.12) 0%, rgba($primary-500, 0.03) 100%);
+  }
+
+  &__identity {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+  }
+
+  &__glyph {
+    font-size: 16px;
+    color: $panel-accent;
+    animation: agentPulse 3s infinite;
+
+    &--spin {
+      animation: galiOsRotate 4s linear infinite;
+    }
+  }
+
+  &__live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: $panel-muted;
+    transition: background 0.3s;
+
+    &--active {
+      background: $panel-success;
+      box-shadow: 0 0 6px $panel-success;
+      animation: pulseDot 2s infinite;
+    }
+  }
+
+  &__name {
+    font-family: $font-secondary;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $panel-text;
+    letter-spacing: -0.01em;
+  }
+
+  &__agents-pill {
+    font-size: $font-xs;
+    color: $panel-accent;
+    background: rgba($primary-500, 0.15);
+    border: 1px solid rgba($primary-500, 0.25);
+    border-radius: $radius-full;
+    padding: 2px $size-2;
+    line-height: 1;
+  }
+
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+  }
+
+  &__autopilot {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px $size-2;
+    border: 1px solid $panel-border;
+    border-radius: $radius-full;
+    background: transparent;
+    color: $panel-muted;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: $panel-muted;
+      transition: background 0.2s ease;
+    }
+
+    &--on {
+      border-color: $panel-accent;
+      color: $panel-accent;
+      background: rgba($primary-500, 0.1);
+
+      .gali-panel__autopilot-dot {
+        background: $panel-accent;
+        animation: pulseDot 2s infinite;
+      }
+    }
+
+    &:hover {
+      border-color: rgba($primary-500, 0.6);
+      color: $panel-accent;
+    }
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: $radius-md;
+    background: transparent;
+    color: $panel-muted;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    .pi { font-size: 12px; }
+
+    &:hover {
+      background: $panel-surface;
+      color: $panel-text;
+    }
+  }
+
+  // ── Tabs ──────────────────────────────────────────
+  &__tabs {
+    display: flex;
+    border-bottom: 1px solid $panel-border;
+    flex-shrink: 0;
+    background: $panel-bg;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  &__tab {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 11px;
+    border: none;
+    background: transparent;
+    color: $panel-muted;
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: $font-medium;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.18s ease;
+    margin-bottom: -1px;
+    white-space: nowrap;
+
+    .pi {
+      font-size: 11px;
+      line-height: 1;
+      opacity: 0.7;
+    }
+
+    &:hover {
+      color: $panel-text;
+      background: rgba(0,0,0,0.03);
+      .pi { opacity: 1; }
+    }
+
+    &--active {
+      color: $panel-accent;
+      border-bottom-color: $panel-accent;
+      font-weight: 700;
+      background: rgba($panel-accent, 0.04);
+
+      .pi { opacity: 1; }
+    }
+  }
+
+  &__tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: $radius-full;
+    background: $panel-danger;
+    color: $white;
+    font-size: 10px;
+    font-weight: $font-bold;
+    line-height: 1;
+  }
+
+  // ── Content ──────────────────────────────────────────
+  &__content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+
+    &::-webkit-scrollbar { width: 3px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: $panel-border; border-radius: 2px; }
+  }
+
+  // ── Chat tab ──────────────────────────────────────────
+  &__chat {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: hidden;
+    min-height: 0;
+
+    &--split {
+      .gali-panel__chat-pane {
+        min-width: 240px;
+      }
+    }
+  }
+
+  &__chat-pane {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &__context {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    min-width: 200px;
+    max-width: 70%;
+    border-right: 1px solid $panel-border;
+    background: $panel-surface;
+    overflow: hidden;
+    transition: flex-basis var(--gali-split-transition, 0.2s ease);
+  }
+
+  &__context-splitter {
+    flex-shrink: 0;
+    width: 8px;
+    height: 100%;
+  }
+
+  &__context-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $size-2;
+    padding: $size-3 $size-3 $size-2;
+    border-bottom: 1px solid $panel-border;
+    flex-shrink: 0;
+    background: rgba($primary-500, 0.04);
+  }
+
+  &__context-titles {
+    min-width: 0;
+  }
+
+  &__context-title {
+    margin: 0;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    color: $panel-text;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  &__context-sub {
+    display: block;
+    margin-top: 2px;
+    font-size: 10px;
+    color: $panel-muted;
+  }
+
+  &__context-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: $radius-sm;
+    background: transparent;
+    color: $panel-muted;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.06);
+      color: $panel-text;
+    }
+
+    .pi { font-size: 10px; }
+  }
+
+  &__context-body {
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
+    padding: $size-2;
+
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-thumb { background: $panel-border; border-radius: 2px; }
+  }
+
+  &__messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: $size-4;
+    display: flex;
+    flex-direction: column;
+    gap: $size-3;
+
+    &::-webkit-scrollbar { width: 3px; }
+    &::-webkit-scrollbar-thumb { background: $panel-border; border-radius: 2px; }
+  }
+
+  &__quick-actions {
+    display: flex;
+    gap: $size-2;
+    padding: 0 $size-4 $size-3;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+
+  &__quick-btn {
+    padding: 5px $size-3;
+    border: 1px solid $panel-border;
+    border-radius: $radius-full;
+    background: transparent;
+    color: $panel-muted;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: rgba($primary-500, 0.5);
+      color: $panel-accent;
+      background: rgba($primary-500, 0.08);
+    }
+
+    &--featured {
+      background: rgba($primary-500, 0.1);
+      border-color: rgba($primary-500, 0.3);
+      color: $panel-accent;
+      font-weight: $font-medium;
+
+      &:hover {
+        background: rgba($primary-500, 0.2);
+        border-color: $panel-accent;
+      }
+    }
+  }
+
+  &__input-row {
+    display: flex;
+    gap: $size-2;
+    padding: $size-3 $size-4;
+    border-top: 1px solid $panel-border;
+    flex-shrink: 0;
+    background: $panel-surface;
+  }
+
+  &__input {
+    flex: 1;
+    padding: $size-2 $size-3;
+    border: 1px solid $panel-border;
+    border-radius: $radius-md;
+    background: $panel-bg;
+    color: $panel-text;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    outline: none;
+    transition: border-color 0.15s ease;
+
+    &::placeholder { color: $panel-caption; }
+
+    &:focus {
+      border-color: rgba($primary-500, 0.5);
+    }
+  }
+
+  &__send {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: $radius-md;
+    background: $panel-accent;
+    color: $white;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+
+    .pi { font-size: 13px; }
+
+    &:hover:not(:disabled) {
+      background: darken(#ff6102, 8%);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+  }
+
+  // ── Agentes tab ──────────────────────────────────────────
+  &__agentes {
+    padding: $size-3 $size-4;
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+  }
+
+  &__agent-actions {
+    display: flex;
+    gap: $size-2;
+    margin-top: $size-2;
+  }
+
+  &__agent-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $size-2;
+    padding: $size-2 $size-3;
+    border: 1px solid $panel-border;
+    border-radius: $radius-md;
+    background: transparent;
+    color: $panel-muted;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    .pi { font-size: 11px; }
+
+    &:hover { border-color: rgba(0,0,0,0.2); color: $panel-text; }
+
+    &--primary {
+      border-color: rgba($primary-500, 0.4);
+      color: $panel-accent;
+
+      &:hover { background: rgba($primary-500, 0.1); border-color: $panel-accent; }
+    }
+  }
+
+  &__autopilot-section {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $size-3;
+    margin-top: $size-4;
+    padding: $size-3;
+    border: 1px solid $panel-border;
+    border-radius: $radius-md;
+    background: $panel-surface;
+  }
+
+  &__autopilot-title {
+    display: block;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    color: $panel-text;
+    margin-bottom: 3px;
+  }
+
+  &__autopilot-desc {
+    font-size: 11px;
+    color: $panel-muted;
+    line-height: 1.4;
+  }
+
+  &__toggle {
+    flex-shrink: 0;
+    width: 36px;
+    height: 20px;
+    border: none;
+    border-radius: $radius-full;
+    background: $panel-border;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s ease;
+
+    &-knob {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: $white;
+      transition: left 0.2s ease;
+    }
+
+    &--on {
+      background: $panel-accent;
+
+      .gali-panel__toggle-knob {
+        left: 18px;
+      }
+    }
+  }
+
+  // ── Señales tab ──────────────────────────────────────────
+  &__senales {
+    padding: $size-3 $size-4;
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+  }
+}
+
+// ── Chat message bubble ──────────────────────────────────────────
+.gali-msg {
+  display: flex;
+  align-items: flex-end;
+  gap: $size-2;
+
+  &--user {
+    flex-direction: row-reverse;
+
+    .gali-msg__bubble {
+      background: rgba($primary-500, 0.15);
+      border: 1px solid rgba($primary-500, 0.25);
+      border-radius: $radius-lg $radius-lg $radius-xs $radius-lg;
+    }
+  }
+
+  &--gali {
+    .gali-msg__bubble {
+      background: $panel-surface;
+      border: 1px solid $panel-border;
+      border-radius: $radius-xs $radius-lg $radius-lg $radius-lg;
+    }
+  }
+
+  &__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba($primary-500, 0.15);
+    color: $panel-accent;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  &__bubble {
+    max-width: 100%;
+    padding: $size-2 $size-3;
+  }
+
+  &__text {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $panel-text;
+    line-height: 1.5;
+    margin: 0 0 3px;
+  }
+
+  &__time {
+    font-size: 10px;
+    color: $panel-caption;
+  }
+}
+
+// ── Agent row ──────────────────────────────────────────
+.agent-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $size-3;
+  border: 1px solid $panel-border;
+  border-radius: $radius-md;
+  background: $panel-surface;
+  transition: background 0.15s ease;
+
+  &:hover { background: rgba(0, 0, 0, 0.04); }
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+    min-width: 0;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulseDot 2.5s infinite;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__name {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    color: $panel-text;
+    white-space: nowrap;
+  }
+
+  &__action {
+    font-size: 11px;
+    color: $panel-muted;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  &__status {
+    font-size: 11px;
+    color: $panel-muted;
+    flex-shrink: 0;
+
+    &--active {
+      color: $panel-success;
+    }
+  }
+}
+
+// ── Signal item ──────────────────────────────────────────
+.signal-item {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-3;
+  padding: $size-3;
+  border-radius: $radius-md;
+  border-left: 3px solid transparent;
+  background: $panel-surface;
+
+  &--critica {
+    border-left-color: $panel-danger;
+    background: rgba(239, 68, 68, 0.06);
+  }
+
+  &--sugerencia {
+    border-left-color: $panel-warning;
+    background: rgba(245, 158, 11, 0.06);
+  }
+
+  &--info {
+    border-left-color: $panel-success;
+    background: rgba(16, 185, 129, 0.06);
+  }
+
+  &__emoji {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__msg {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $panel-text;
+    line-height: 1.4;
+    margin: 0 0 3px;
+  }
+
+  &__time {
+    font-size: 10px;
+    color: $panel-caption;
+  }
+
+  &__cta {
+    flex-shrink: 0;
+    padding: 4px $size-2;
+    border: 1px solid $panel-border;
+    border-radius: $radius-sm;
+    background: transparent;
+    color: $panel-accent;
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: $font-medium;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: rgba($primary-500, 0.1);
+      border-color: rgba($primary-500, 0.5);
+    }
+  }
+}
+
+// ── Chat action buttons ──────────────────────────────────────────────────
+.gali-msg {
+  &__bubble-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__action-btn {
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: 1px solid $panel-border;
+    background: rgba(0, 0, 0, 0.03);
+    color: $panel-text;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.06);
+      color: $panel-text;
+    }
+
+    &--primary {
+      background: rgba($primary-500, 0.15);
+      border-color: rgba($primary-500, 0.5);
+      color: $primary-500;
+
+      &:hover { background: rgba($primary-500, 0.25); }
+    }
+  }
+}
+
+// Mode chip — shown when Gali switches the workspace mode
+.gali-msg__mode-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: $font-primary;
+  font-size: 10px;
+  font-weight: 700;
+  color: $panel-accent;
+  background: rgba($primary-500, 0.08);
+  border: 1px solid rgba($primary-500, 0.2);
+  border-radius: $radius-full;
+  padding: 2px 8px;
+  margin-top: 4px;
+  width: fit-content;
+
+  &-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: $panel-accent;
+  }
+}
+
+// Typing indicator
+.gali-msg__bubble--typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: $panel-muted;
+  animation: typingBounce 1.2s ease infinite;
+
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.4s; }
+}
+
+// Agent skills tags
+.agent-row {
+  &__skills {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  &__skill-tag {
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 100px;
+    background: rgba($primary-500, 0.1);
+    color: $primary-500;
+    border: 1px solid rgba($primary-500, 0.2);
+    white-space: nowrap;
+  }
+
+  &__dot--pulse {
+    animation: agentPulse 2s ease infinite;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+  }
+}
+
+// ── Live tab ──────────────────────────────────────────────────────────────
+.gali-panel__live {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.live-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $size-3 $size-4;
+  border-bottom: 1px solid $panel-border;
+  flex-shrink: 0;
+
+  &__label {
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: 600;
+    color: $panel-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__badge {
+    font-family: $font-primary;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+    color: $panel-muted;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid $panel-border;
+
+    &--on {
+      color: $panel-success;
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.3);
+      animation: agentPulse 2s ease infinite;
+    }
+  }
+}
+
+// Day summary strip
+.live-day-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: $panel-border;
+  border-bottom: 1px solid $panel-border;
+  flex-shrink: 0;
+}
+
+.live-day-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: $size-2 $size-1;
+  background: $panel-bg;
+
+  &__val {
+    font-family: $font-primary;
+    font-size: $font-base;
+    font-weight: $font-bold;
+    color: $panel-text;
+
+    &--ok { color: $panel-success; }
+    &--warn { color: $panel-warning; }
+  }
+
+  &__label {
+    font-family: $font-primary;
+    font-size: 9px;
+    color: $panel-muted;
+    text-align: center;
+    line-height: 1.3;
+  }
+}
+
+.live-autopilot-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $size-2;
+  padding: $size-2 $size-4;
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid $panel-border;
+  flex-shrink: 0;
+
+  &__text {
+    font-family: $font-primary;
+    font-size: 11px;
+    color: $panel-muted;
+    line-height: 1.4;
+  }
+}
+
+.live-empty {
+  padding: $size-8 $size-4;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $size-3;
+  color: $panel-muted;
+  font-family: $font-primary;
+  font-size: $font-xs;
+  line-height: 1.5;
+}
+
+.live-activate-btn {
+  padding: 7px 18px;
+  background: rgba($primary-500, 0.15);
+  border: 1px solid rgba($primary-500, 0.4);
+  border-radius: $radius-full;
+  color: $primary-500;
+  font-family: $font-primary;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover { background: rgba($primary-500, 0.25); }
+}
+
+.live-event {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-2;
+  padding: $size-2 $size-4;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  animation: liveEventFade 0.3s ease;
+
+  &--warn {
+    background: rgba(245, 158, 11, 0.05);
+    border-left: 2px solid $panel-warning;
+  }
+
+  &--action {
+    background: rgba($primary-500, 0.04);
+  }
+
+  &__agent-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__agent {
+    font-family: $font-primary;
+    font-size: 10px;
+    font-weight: 600;
+    color: $panel-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+  }
+
+  &__msg {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $panel-text;
+    margin: 1px 0 0;
+    line-height: 1.35;
+  }
+
+  &__time {
+    font-size: 10px;
+    color: $panel-caption;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+}
+
+// ── Tab live dot ──────────────────────────────────────────────────────────
+.gali-panel__tab-live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: $panel-success;
+  margin-left: 4px;
+  animation: agentPulse 1.5s ease infinite;
+  vertical-align: middle;
+}
+
+// ── Animations ─────────────────────────────────────────────────────────────
+@keyframes galiOsRotate {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-4px); }
+}
+
+@keyframes liveEventFade {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+// ── Context data table (editor-style) ───────────────────────────────────
+.gali-data-table-wrap {
+  overflow-x: auto;
+  border: 1px solid $panel-border;
+  border-radius: $radius-md;
+  background: $panel-bg;
+}
+
+.gali-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: $font-primary;
+  font-size: 11px;
+
+  th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    text-align: left;
+    padding: 6px 8px;
+    background: rgba(0, 0, 0, 0.04);
+    color: $panel-muted;
+    font-weight: $font-semibold;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid $panel-border;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 7px 8px;
+    color: $panel-text;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    white-space: nowrap;
+  }
+
+  tbody tr:hover td {
+    background: rgba($primary-500, 0.04);
+  }
+
+  &__mono {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: $primary-500;
+  }
+}
+
+.gali-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $size-2;
+}
+
+.gali-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: $size-3;
+  border: 1px solid $panel-border;
+  border-radius: $radius-md;
+  background: $panel-bg;
+
+  &--ok .gali-metric__value { color: $panel-success; }
+  &--warn .gali-metric__value { color: $panel-warning; }
+  &--crit .gali-metric__value { color: $panel-danger; }
+
+  &__label {
+    font-size: 10px;
+    color: $panel-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__value {
+    font-family: $font-secondary;
+    font-size: $font-lg;
+    font-weight: $font-bold;
+    color: $panel-text;
+    line-height: 1.1;
+  }
+
+  &__delta {
+    font-size: 10px;
+    color: $panel-muted;
+  }
+}
+
+// ── Context bar (agent + current tab description) ────────────────────────────
+.gali-panel__context-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $size-2;
+  padding: 5px $size-4;
+  background: $panel-surface;
+  border-bottom: 1px solid $panel-border;
+  flex-shrink: 0;
+  min-height: 32px;
+}
+
+.gali-panel__active-agent {
+  display: flex;
+  align-items: center;
+  gap: $size-2;
+  min-width: 0;
+  animation: fadeInAgent 0.2s ease;
+}
+
+.gali-panel__agent-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: agentPulse 2s infinite;
+}
+
+.gali-panel__agent-label {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-bold;
+  color: $panel-text;
+  flex-shrink: 0;
+}
+
+.gali-panel__agent-sep {
+  color: $panel-border;
+  font-size: 12px;
+}
+
+.gali-panel__agent-desc {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  color: $panel-muted;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gali-panel__tab-hint {
+  font-family: $font-primary;
+  font-size: 10px;
+  color: $panel-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@keyframes fadeInAgent {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ── Execution cards ──────────────────────────────────────────────────────────
+.exec-card {
+  margin: $size-2 $size-3;
+  border-radius: $radius-md;
+  overflow: hidden;
+  font-family: $font-primary;
+  animation: execCardIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &--running {
+    background: #1a1a22;
+    color: white;
+    padding: $size-3 $size-4;
+
+    .exec-card__header { margin-bottom: $size-2; }
+    .exec-card__skill {
+      font-size: $font-xs;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: $size-2;
+    }
+    .exec-card__hint {
+      font-size: $font-xs;
+      color: rgba(255,255,255,0.4);
+      margin-top: $size-2;
+    }
+  }
+
+  &--done {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #14532d;
+    padding: $size-3 $size-4;
+
+    .exec-card__skill {
+      font-size: $font-xs;
+      color: #166534;
+      margin-bottom: $size-2;
+    }
+    .exec-card__result {
+      font-size: $font-xs;
+      color: #166534;
+      margin-bottom: $size-2;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    margin-bottom: $size-1;
+  }
+
+  &__title {
+    font-size: $font-xs;
+    font-weight: $font-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: $primary-500;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+
+  &__check {
+    font-size: 14px;
+    color: #16a34a;
+    font-weight: 700;
+  }
+
+  &__progress {
+    height: 3px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: $size-2;
+  }
+
+  &__progress-bar {
+    height: 100%;
+    background: $primary-500;
+    border-radius: 2px;
+    animation: progressSweep 1.4s ease-in-out infinite;
+  }
+
+  &__modules {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $size-2;
+    margin-top: $size-2;
+    padding-top: $size-2;
+    border-top: 1px solid #bbf7d0;
+  }
+
+  &__modules-label {
+    font-size: $font-xs;
+    color: #166534;
+    font-weight: $font-medium;
+  }
+
+  &__module-link {
+    font-size: $font-xs;
+    color: #15803d;
+    text-decoration: none;
+    font-weight: $font-semibold;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+@keyframes execCardIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)  scale(1); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes progressSweep {
+  0%   { transform: translateX(-100%); width: 60%; }
+  50%  { transform: translateX(0);     width: 80%; }
+  100% { transform: translateX(150%);  width: 60%; }
+}
+
+// ── MEMORY TAB ──────────────────────────────────────────────────
+.gali-panel__memory {
+  padding: $size-3 $size-4;
+  display: flex;
+  flex-direction: column;
+  gap: $size-3;
+  overflow-y: auto;
+}
+
+.memory-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $size-2;
+  padding-bottom: $size-3;
+  border-bottom: 1px solid $panel-border;
+
+  &__info {
+    display: flex;
+    align-items: flex-start;
+    gap: $size-2;
+  }
+
+  &__glyph {
+    font-size: 18px;
+    color: $panel-accent;
+    flex-shrink: 0;
+    margin-top: 2px;
+    animation: agentPulse 2.4s ease-in-out infinite;
+  }
+
+  &__title {
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $panel-text;
+    font-family: $font-primary;
+  }
+
+  &__sub {
+    font-size: $font-xs;
+    color: $panel-muted;
+    margin-top: 1px;
+  }
+
+  &__count {
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    color: $panel-muted;
+    flex-shrink: 0;
+    background: $panel-surface;
+    padding: 2px 8px;
+    border-radius: $radius-sm;
+    border: 1px solid $panel-border;
+  }
+}
+
+.memory-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $size-1;
+
+  &__item {
+    font-size: 10px;
+    font-weight: $font-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 7px;
+    border-radius: $radius-sm;
+
+    &--pattern   { background: rgba(#3b82f6, 0.1); color: #3b82f6; }
+    &--decision  { background: rgba(#f59e0b, 0.12); color: #b45309; }
+    &--preference { background: rgba(#8b5cf6, 0.1); color: #7c3aed; }
+    &--insight   { background: rgba(#10b981, 0.1); color: #059669; }
+  }
+}
+
+.memory-item {
+  background: $panel-surface;
+  border: 1px solid $panel-border;
+  border-radius: $radius-md;
+  padding: $size-3;
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  transition: box-shadow 0.15s;
+
+  &:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+  &--pattern   { border-left: 3px solid #3b82f6; }
+  &--decision  { border-left: 3px solid #f59e0b; }
+  &--preference { border-left: 3px solid #8b5cf6; }
+  &--insight   { border-left: 3px solid #10b981; }
+
+  &__top {
+    display: flex;
+    gap: $size-2;
+    align-items: flex-start;
+  }
+
+  &__icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $panel-text;
+    font-family: $font-primary;
+    margin-bottom: $size-1;
+  }
+
+  &__desc {
+    font-size: $font-xs;
+    color: $panel-muted;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    flex-wrap: wrap;
+  }
+
+  &__date {
+    font-size: $font-xs;
+    color: $panel-caption;
+    flex-shrink: 0;
+  }
+
+  &__conf {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    flex: 1;
+  }
+
+  &__conf-bar {
+    flex: 1;
+    height: 3px;
+    background: $panel-border;
+    border-radius: 2px;
+    overflow: hidden;
+    max-width: 60px;
+  }
+
+  &__conf-fill {
+    display: block;
+    height: 100%;
+    background: $panel-success;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  &__conf-label {
+    font-size: 10px;
+    color: $panel-muted;
+    white-space: nowrap;
+  }
+
+  &__undo {
+    margin-left: auto;
+    font-size: $font-xs;
+    color: $panel-accent;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-weight: $font-medium;
+    transition: opacity 0.15s;
+
+    &:hover { opacity: 0.7; }
+  }
+}
+
+.memory-footer {
+  background: linear-gradient(135deg, rgba($panel-accent, 0.06), rgba($panel-accent, 0.02));
+  border: 1px solid rgba($panel-accent, 0.15);
+  border-radius: $radius-md;
+  padding: $size-3;
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+
+  &__text {
+    font-size: $font-xs;
+    color: $panel-muted;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  &__btn {
+    background: transparent;
+    border: 1px solid rgba($panel-accent, 0.3);
+    border-radius: $radius-sm;
+    color: $panel-accent;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    padding: $size-1 $size-3;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: background 0.15s;
+
+    &:hover { background: rgba($panel-accent, 0.06); }
+  }
+}
+
+// ── FILES TAB ───────────────────────────────────────────────────
+.gali-panel__files {
+  padding: $size-3 $size-4;
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  overflow-y: auto;
+}
+
+.files-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: $size-3;
+  border-bottom: 1px solid $panel-border;
+
+  &__title {
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $panel-text;
+  }
+}
+
+.files-filter {
+  display: flex;
+  gap: $size-1;
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    padding: 3px 9px;
+    border-radius: $radius-sm;
+    border: 1px solid $panel-border;
+    background: transparent;
+    color: $panel-muted;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+
+    &--active {
+      background: $panel-accent;
+      border-color: $panel-accent;
+      color: #fff;
+    }
+
+    &:not(&--active):hover {
+      background: $panel-surface;
+      color: $panel-text;
+    }
+  }
+}
+
+.files-source-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+
+  &--gdrive { background: #4285f4; }
+  &--local  { background: #6b7280; }
+}
+
+.file-row {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-2;
+  padding: $size-2 $size-2;
+  border-radius: $radius-md;
+  transition: background 0.12s;
+
+  &:hover {
+    background: $panel-surface;
+
+    .file-row__use { opacity: 1; }
+  }
+
+  &__icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    display: block;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    color: $panel-text;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    margin-top: 2px;
+    flex-wrap: wrap;
+  }
+
+  &__size,
+  &__modified {
+    font-size: 10px;
+    color: $panel-caption;
+  }
+
+  &__sep {
+    font-size: 10px;
+    color: $panel-border;
+  }
+
+  &__used {
+    font-size: 10px;
+    color: $panel-accent;
+    font-weight: $font-medium;
+  }
+
+  &__use {
+    flex-shrink: 0;
+    opacity: 0;
+    background: transparent;
+    border: 1px solid $panel-border;
+    border-radius: $radius-sm;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: $panel-muted;
+    transition: opacity 0.15s, background 0.15s, color 0.15s;
+
+    i { font-size: 11px; }
+
+    &:hover {
+      background: $panel-accent;
+      border-color: $panel-accent;
+      color: #fff;
+    }
+  }
+}
+
+.files-connect {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  margin-top: $size-2;
+  padding-top: $size-3;
+  border-top: 1px solid $panel-border;
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    color: $panel-muted;
+    background: $panel-surface;
+    border: 1px dashed $panel-border;
+    border-radius: $radius-md;
+    padding: $size-2 $size-3;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+
+    i { font-size: 13px; }
+
+    &:hover {
+      border-color: $panel-accent;
+      color: $panel-accent;
+      background: rgba($panel-accent, 0.04);
+    }
+  }
+}

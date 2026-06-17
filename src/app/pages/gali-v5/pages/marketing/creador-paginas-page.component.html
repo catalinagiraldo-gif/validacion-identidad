@@ -1,0 +1,81 @@
+<div class="creador-paginas-page">
+  <dropi-titulos title="Creador de páginas" [breadcrumbs]="breadcrumbs">
+    <dropi-button-new titulosActions label="Tiendas" hierarchy="outline" [width]="110" />
+    <dropi-button-new titulosActions label="Crear página" icon="pi-sparkles" hierarchy="primary" [width]="160" />
+  </dropi-titulos>
+
+  <div class="creador-paginas-page__filters">
+    <div class="creador-paginas-page__date">
+      <label>Fecha de creación</label>
+      <div class="creador-paginas-page__date-value">
+        <i class="pi pi-calendar"></i>
+        <span>28/07/2025 - 01/08/2025</span>
+      </div>
+    </div>
+    <select class="creador-paginas-page__select">
+      <option>Estado</option>
+      <option selected>Todos</option>
+      <option>Creada</option>
+      <option>Borrador</option>
+    </select>
+    <dropi-button-new icon="pi-arrow-right" [iconOnly]="true" hierarchy="primary" />
+    <button type="button" class="creador-paginas-page__trash-btn" title="Eliminar">
+      <i class="pi pi-trash"></i>
+    </button>
+    <dropi-search-oficial class="creador-paginas-page__search" placeholder="Buscar producto" [(ngModel)]="searchQuery" />
+  </div>
+
+  <div class="creador-paginas-page__summary">
+    <span>{{ filteredRows.length }} páginas encontradas</span>
+    <select class="creador-paginas-page__sort">
+      <option>Ordenar por: Más recientes</option>
+      <option>Más antiguas</option>
+      <option>Más exportaciones</option>
+    </select>
+  </div>
+
+  <div class="creador-paginas-page__table-wrap">
+    <table class="creador-paginas-page__table">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th style="width:180px">Origen del producto</th>
+          <th style="width:140px">Estado de página</th>
+          <th style="width:120px">Exportaciones</th>
+          <th style="width:140px">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of filteredRows; track row.id) {
+          <tr>
+            <td>
+              <div class="creador-paginas-page__product">
+                <img [src]="row.imagen" [alt]="row.producto" width="48" height="48" />
+                <div>
+                  <strong>{{ row.producto }}</strong>
+                  <span>{{ row.fecha }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <a class="creador-paginas-page__url" [href]="row.origenUrl" target="_blank" rel="noopener">
+                <i class="pi pi-link"></i> URL
+              </a>
+            </td>
+            <td><dropi-tag [label]="row.estado" variant="success" /></td>
+            <td>{{ row.exportaciones }}</td>
+            <td>
+              <div class="creador-paginas-page__actions">
+                <button type="button" title="Shopify"><i class="pi pi-shop"></i></button>
+                <button type="button" title="Web"><i class="pi pi-globe"></i></button>
+                <button type="button" title="Ver"><i class="pi pi-eye"></i></button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <dropi-paginator />
+</div>

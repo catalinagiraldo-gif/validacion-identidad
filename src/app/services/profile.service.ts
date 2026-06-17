@@ -52,7 +52,20 @@ export class ProfileService {
     return this._currentProfile$.value !== null;
   }
 
-  constructor(private router: Router) {}
+  ensureDefaultProfile(): void {
+    if (!this._currentProfile$.value) {
+      sessionStorage.setItem(SESSION_KEY, 'dropshipper');
+      this._currentProfile$.next('dropshipper');
+    }
+
+    if (!localStorage.getItem(ARCH_KEY)) {
+      localStorage.setItem(ARCH_KEY, 'old');
+    }
+  }
+
+  constructor(private router: Router) {
+    this.ensureDefaultProfile();
+  }
 
   selectProfile(profile: HubProfile): void {
     sessionStorage.setItem(SESSION_KEY, profile);

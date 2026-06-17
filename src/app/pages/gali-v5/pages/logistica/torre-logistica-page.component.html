@@ -1,0 +1,217 @@
+<div class="torre-page">
+
+  <gali-agent-alert
+    agent="vigilante"
+    variant="monitoring"
+    message="Monitoreando 47 pedidos · Smart routing activo · Coordinadora Bogotá 15% novedad → reasignando a Servientrega"
+    primaryCta="Ver smart routing"
+    primaryRoute="/gali-v5/logistica/torre-logistica"
+    secondaryCta="Ver señales →"
+    secondaryRoute="/gali-v5"
+  />
+
+  <!-- Última acción del Vigilante — explicada en lenguaje claro -->
+  <div class="vigilante-loop">
+    <div class="vigilante-loop__item">
+      <span class="vigilante-loop__icon">🔄</span>
+      <div class="vigilante-loop__text">
+        <span class="vigilante-loop__accion">
+          <abbr title="Swap automático: Vigilante cambia de transportadora de forma automática cuando una tiene muchas novedades (pedidos no entregados), para proteger tus ventas sin que tengas que hacer nada.">Swap automático</abbr>
+          — Vigilante cambió la transportadora
+        </span>
+        <span class="vigilante-loop__detalle">Movió 12 pedidos de Coordinadora a Servientrega porque Coordinadora tuvo 15% de novedades en Bogotá</span>
+      </div>
+      <span class="vigilante-loop__result">4 novedades evitadas</span>
+      <span class="vigilante-loop__time">hace 2h</span>
+    </div>
+    <div class="vigilante-loop__item vigilante-loop__item--projection">
+      <span class="vigilante-loop__icon">📊</span>
+      <div class="vigilante-loop__text">
+        <span class="vigilante-loop__accion">Proyección</span>
+        <span class="vigilante-loop__detalle">A este ritmo, 3 novedades estimadas esta semana en Bogotá</span>
+      </div>
+      <button class="vigilante-loop__action-btn" type="button" data-proto-skip>Ver análisis</button>
+    </div>
+  </div>
+
+  <!-- ── SMART ROUTING PANEL ── -->
+  <div class="smart-routing-panel">
+    <div class="smart-routing-panel__header">
+      <div class="smart-routing-panel__title-group">
+        <span class="smart-routing-panel__dot"></span>
+        <strong>Smart Routing activo · Vigilante</strong>
+        <span class="smart-routing-panel__sub">Recomendaciones basadas en datos de novedad en tiempo real</span>
+      </div>
+      @if (!smartRoutingApplied()) {
+        <button type="button" class="smart-routing-panel__apply" (click)="applySmartRouting()" data-proto-skip>
+          Aplicar todas las sugerencias
+        </button>
+      } @else {
+        <span class="smart-routing-panel__applied">✓ Routing aplicado</span>
+      }
+    </div>
+
+    <div class="smart-routing-table">
+      <div class="smart-routing-table__head">
+        <span>Ciudad</span>
+        <span>Actual</span>
+        <span>→ Sugerida</span>
+        <span>Novedad</span>
+        <span>Pedidos</span>
+        <span>Estado</span>
+      </div>
+      @for (row of smartRoutingRows; track row.ciudad) {
+        <div class="smart-routing-table__row" [class.smart-routing-table__row--alert]="row.estado === 'activo'"
+          [class.smart-routing-table__row--ok]="row.estado === 'ok'">
+          <span class="srt-ciudad">{{ row.ciudad }}</span>
+          <span class="srt-carrier srt-carrier--actual">{{ row.transportadoraActual }}</span>
+          <span class="srt-carrier srt-carrier--sugerida"
+            [class.srt-carrier--same]="row.transportadoraActual === row.transportadoraSugerida">
+            {{ row.transportadoraActual === row.transportadoraSugerida ? '— sin cambio' : '→ ' + row.transportadoraSugerida }}
+          </span>
+          <span class="srt-novedad" [class.srt-novedad--high]="row.motivoNovedad > 8"
+            [galiInsight]="'Novedad ' + row.motivoNovedad + '% en ' + row.ciudad + '. ' + (row.motivoNovedad > 8 ? 'Por encima del umbral de alerta (8%). Vigilante recomienda cambio de transportadora.' : 'Dentro del rango aceptable (<8%).')">
+            {{ row.motivoNovedad }}%
+          </span>
+          <span class="srt-pedidos">{{ row.pedidosPendientes > 0 ? row.pedidosPendientes + ' pend.' : '—' }}</span>
+          <span class="srt-estado" [class]="'srt-estado--' + row.estado">
+            {{ row.estado === 'activo' ? '⚠ Aplicando' : row.estado === 'aplicar' ? 'Revisar' : '✓ OK' }}
+          </span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="torre-intro">
+    <h2 class="torre-intro__title">¿Qué es la Torre Logística?</h2>
+    <p class="torre-intro__text">
+      Es el centro de control donde <strong>Vigilante</strong> vigila tus guías en tiempo real: elige transportadora por ciudad,
+      detecta guías estancadas y activa <em>swap automático</em> cuando una transportadora sube de novedad.
+    </p>
+  </div>
+
+  <dropi-titulos title="Torre logística" [breadcrumbs]="breadcrumbs" />
+
+  <div class="torre-tower">
+    <div class="torre-tower__filters">
+      <div class="torre-tower__filter-row">
+        <div class="torre-tower__field">
+          <label>Fecha</label>
+          <input type="date" value="2026-05-27" />
+        </div>
+        <div class="torre-tower__field">
+          <label>Departamento</label>
+          <select><option>Todos</option><option>Cundinamarca</option><option>Antioquia</option></select>
+        </div>
+        <div class="torre-tower__field">
+          <label>Ciudad</label>
+          <select><option>Todas</option><option>Bogotá</option><option>Medellín</option></select>
+        </div>
+        <div class="torre-tower__field">
+          <label>Transportadoras</label>
+          <select><option>Todas</option><option>Veloces</option><option>Servientrega</option></select>
+        </div>
+        <dropi-button-new icon="pi-arrow-right" [iconOnly]="true" hierarchy="primary" />
+      </div>
+      <div class="torre-tower__switches">
+        <label class="torre-switch">
+          <input type="checkbox" [(ngModel)]="miOperacion" />
+          <span class="torre-switch__track"></span>
+          Mi operación
+        </label>
+        <label class="torre-switch">
+          <input type="checkbox" [(ngModel)]="dropiView" />
+          <span class="torre-switch__track"></span>
+          Dropi
+        </label>
+        <div class="torre-tower__sort">
+          <span>Ordenar por:</span>
+          <button type="button">Mayor Efectividad <i class="pi pi-chevron-down"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="torre-tower__body">
+      <div class="torre-tower__indicators">
+        @for (ind of indicators; track ind.carrier) {
+          <article class="indicator-card">
+            <header class="indicator-card__head">
+              <span class="indicator-card__logo" [attr.data-carrier]="ind.carrier">{{ ind.carrier.charAt(0) }}</span>
+              <strong>{{ ind.carrier }}</strong>
+            </header>
+
+            <section class="indicator-section">
+              <div class="indicator-section__head">
+                <strong>Mi operación</strong>
+                <span>Efectividad</span>
+              </div>
+              <div class="indicator-section__bar-row">
+                <i class="pi pi-chart-bar indicator-section__icon"></i>
+                <div class="indicator-section__bar">
+                  <div class="indicator-section__fill indicator-section__fill--green" [style.width.%]="ind.myOpEffectiveness"></div>
+                </div>
+                <strong [galiInsight]="'Efectividad de ' + ind.carrier + ' en tu operación: ' + ind.myOpEffectiveness + '%. Calculado con los últimos 30 días. Incluye novedades, rechazos y devoluciones.'">{{ ind.myOpEffectiveness }}%</strong>
+              </div>
+              <div class="indicator-section__metrics">
+                <div>
+                  <span>Flete promedio</span>
+                  <strong>{{ ind.avgFreight }}</strong>
+                </div>
+                <div>
+                  <span>Tiempo de entrega</span>
+                  <strong>{{ ind.deliveryTime }}</strong>
+                </div>
+              </div>
+            </section>
+
+            <hr class="indicator-card__divider" />
+
+            <section class="indicator-section">
+              <div class="indicator-section__head">
+                <strong>Dropi</strong>
+                <span>Efectividad</span>
+              </div>
+              <div class="indicator-section__bar-row">
+                <span class="indicator-section__dropi-icon">D</span>
+                <div class="indicator-section__bar">
+                  <div
+                    class="indicator-section__fill"
+                    [class.indicator-section__fill--green]="ind.dropiEffectiveness >= 50"
+                    [class.indicator-section__fill--yellow]="ind.dropiEffectiveness < 50"
+                    [style.width.%]="ind.dropiEffectiveness"
+                  ></div>
+                </div>
+                <strong>{{ ind.dropiEffectiveness }}%</strong>
+              </div>
+              <div class="indicator-section__metrics">
+                <div>
+                  <span>Flete promedio</span>
+                  <strong>{{ ind.avgFreight }}</strong>
+                </div>
+                <div>
+                  <span>Tiempo de entrega</span>
+                  <strong>{{ ind.deliveryTimeDropi }}</strong>
+                </div>
+              </div>
+            </section>
+          </article>
+        }
+      </div>
+
+      <div class="torre-tower__map">
+        <div class="torre-tower__map-tools">
+          <dropi-button-new icon="pi-plus" [iconOnly]="true" hierarchy="outline" />
+          <dropi-button-new icon="pi-minus" [iconOnly]="true" hierarchy="outline" />
+        </div>
+        <div class="torre-tower__map-canvas">
+          <svg class="map-colombia" viewBox="0 0 400 554" aria-hidden="true">
+            <path class="map-colombia__land" d="M120 80 L280 60 L320 140 L350 220 L300 320 L240 420 L180 480 L100 400 L60 280 Z" />
+            @for (pin of mapPins; track pin.carrier) {
+              <circle [attr.cx]="pin.x" [attr.cy]="pin.y" r="6" class="map-colombia__pin" />
+            }
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

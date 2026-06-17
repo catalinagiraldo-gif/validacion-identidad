@@ -1,0 +1,72 @@
+<article class="caza">
+  <header class="caza__head">
+    <div class="caza__head-meta">
+      <span class="caza__sparkle">✦</span>
+      <span class="caza__head-tag">Caza productos despertada</span>
+    </div>
+    <h1>Productos en alza ordenados por fit con tu perfil.</h1>
+    <p class="caza__intro">
+      Gali no te muestra todo lo trending: solo lo que <em>te</em> conviene. Cada hallazgo viene con recomendación: lanzar, esperar o pasar — con la razón.
+    </p>
+  </header>
+
+  <nav class="caza__filters">
+    <button [class.is-active]="filterReco() === 'todos'" (click)="filterReco.set('todos')">
+      Todos · {{ trending().length }}
+    </button>
+    <button [class.is-active]="filterReco() === 'lanzar'" (click)="filterReco.set('lanzar')" class="is-lanzar">
+      ✓ Lanzar · {{ lanzar() }}
+    </button>
+    <button [class.is-active]="filterReco() === 'esperar'" (click)="filterReco.set('esperar')" class="is-esperar">
+      ⏳ Esperar · {{ esperar() }}
+    </button>
+    <button [class.is-active]="filterReco() === 'pasar'" (click)="filterReco.set('pasar')" class="is-pasar">
+      ✕ Pasar · {{ pasar() }}
+    </button>
+  </nav>
+
+  <section class="caza__list">
+    <article *ngFor="let p of filtered()" class="caza__card" [attr.data-reco]="p.recomendacion">
+      <div class="caza__card-main">
+        <div class="caza__img">{{ p.categoria === 'Mascotas' ? '🐕' : p.categoria === 'Hogar' ? '🏠' : p.categoria === 'Tech' ? '📱' : p.categoria === 'Fitness' ? '💪' : '🧴' }}</div>
+        <div class="caza__body">
+          <header class="caza__body-head">
+            <strong>{{ p.nombre }}</strong>
+            <span class="caza__cat">{{ p.categoria }}</span>
+          </header>
+          <div class="caza__stats">
+            <span>+{{ p.tendencia_pct }}% sem</span>
+            <span>{{ p.ventas_semana }} ventas/sem</span>
+            <span>{{ p.ventana_dias }}d ventana</span>
+            <span>margen {{ p.margen }}%</span>
+            <span class="caza__price">{{ format(p.precio) }}</span>
+          </div>
+          <div class="caza__fit">
+            <span class="caza__fit-label">Fit con tu perfil:</span>
+            <div class="caza__fit-bar">
+              <span [style.width.%]="p.fit_perfil"></span>
+            </div>
+            <span class="caza__fit-val">{{ p.fit_perfil }}%</span>
+          </div>
+        </div>
+        <div class="caza__reco">
+          <span class="caza__reco-label">Gali dice</span>
+          <strong>{{ p.recomendacion }}</strong>
+        </div>
+      </div>
+      <div class="caza__razon">
+        <span class="caza__sparkle">✦</span>
+        {{ p.razon }}
+      </div>
+      <footer class="caza__actions" *ngIf="p.recomendacion === 'lanzar'">
+        <button class="caza__cta caza__cta--primary" (click)="crearProyecto(p)">📁 Crear proyecto del producto</button>
+        <button class="caza__cta" (click)="analizar(p)">✦ Analizar más</button>
+      </footer>
+      <footer class="caza__actions" *ngIf="p.recomendacion === 'esperar'">
+        <button class="caza__cta" (click)="analizar(p)">📅 Programar alerta</button>
+      </footer>
+    </article>
+  </section>
+
+  <proximos-pasos contexto="caza"></proximos-pasos>
+</article>

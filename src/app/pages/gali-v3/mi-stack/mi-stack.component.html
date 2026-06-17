@@ -1,0 +1,232 @@
+<article class="stack">
+  <!-- Hero: Intelligence summary -->
+  <header class="stack__hero">
+    <div class="stack__hero-main">
+      <div class="stack__hero-meta">
+        <span class="stack__sparkle">✦</span>
+        <span class="stack__hero-tag">Mi Stack personal · Gali aprende de tus herramientas</span>
+      </div>
+      <h1>Cada conexión hace a Gali <em>más inteligente para ti.</em></h1>
+      <p class="stack__hero-sub">
+        Sin tu stack conectado, Gali solo ve lo que pasa dentro de Dropi —
+        una vista parcial de tu negocio. Conectando tus apps, Gali puede analizar
+        tu P&L real, tus campañas reales, tus conversaciones reales.
+      </p>
+    </div>
+
+    <div class="stack__hero-intel">
+      <div class="stack__intel-label">
+        <span class="stack__sparkle">✦</span>
+        Gali Intelligence Score
+      </div>
+      <div class="stack__intel-bar">
+        <span class="stack__intel-fill" [style.width.%]="intelligencePct()"></span>
+      </div>
+      <div class="stack__intel-stats">
+        <strong>{{ intelligenceActual() }}</strong>
+        <span>de {{ intelligenceMax() }} puntos</span>
+        <span class="stack__intel-pct">({{ intelligencePct() }}%)</span>
+      </div>
+      <div class="stack__intel-meta">
+        <span>{{ conectadas() }} de {{ plataformas().length }} apps conectadas</span>
+        <span>{{ insightsTotal() }} insights generados</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Recomendaciones de Gali -->
+  <section *ngIf="recomendadas().length > 0" class="stack__recos">
+    <header class="stack__recos-head">
+      <span class="stack__sparkle">✦</span>
+      <h2>Gali sugiere conectar primero</h2>
+      <span class="stack__recos-meta">basado en tu perfil + señales de comunidad</span>
+    </header>
+    <ul class="stack__recos-list">
+      <li *ngFor="let r of recomendadas()" class="stack__reco">
+        <div class="stack__reco-icon" [style.background]="r.color">{{ r.glyph }}</div>
+        <div class="stack__reco-body">
+          <strong>{{ r.nombre }}</strong>
+          <p>{{ r.recomendado_razon }}</p>
+        </div>
+        <div class="stack__reco-gain">
+          <strong>+{{ r.intelligence_score }}</strong>
+          <span>puntos Gali</span>
+        </div>
+        <button class="stack__reco-cta" (click)="abrirConexion(r)">
+          Conectar →
+        </button>
+      </li>
+    </ul>
+  </section>
+
+  <!-- 4 categorías -->
+  <section *ngFor="let cat of categorias()" class="stack__cat">
+    <header class="stack__cat-head">
+      <span class="stack__cat-icon">{{ cat.icon }}</span>
+      <div>
+        <h2>{{ cat.label }}</h2>
+        <p>{{ cat.descripcion }}</p>
+      </div>
+      <span class="stack__cat-count">
+        {{ porCategoria(cat).length }} apps
+      </span>
+    </header>
+
+    <ul class="stack__cards">
+      <li *ngFor="let p of porCategoria(cat)" class="stack__card"
+        [class.is-conectada]="p.estado === 'conectada'"
+        [class.is-expanded]="plataformaExpandida() === p.id">
+        <button class="stack__card-head" (click)="togglePlataforma(p)">
+          <div class="stack__card-glyph" [style.background]="p.color">
+            {{ p.glyph }}
+          </div>
+          <div class="stack__card-body">
+            <div class="stack__card-row">
+              <strong>{{ p.nombre }}</strong>
+              <span class="stack__card-status" [attr.data-estado]="p.estado">
+                <span class="stack__card-status-dot"></span>
+                {{ p.estado === 'conectada' ? 'conectada' : (p.estado === 'pendiente' ? 'falta configurar' : 'sin conectar') }}
+              </span>
+            </div>
+            <p class="stack__card-desc">{{ p.descripcion }}</p>
+            <div class="stack__card-meta">
+              <span class="stack__card-score" [attr.data-color]="scoreColor(p.intelligence_score)">
+                ✦ +{{ p.intelligence_score }} Gali intelligence
+              </span>
+              <span *ngIf="p.estado === 'conectada' && p.insights_generados > 0" class="stack__card-insights">
+                {{ p.insights_generados }} insights generados
+              </span>
+              <span *ngIf="p.ultimaSync && p.estado === 'conectada'" class="stack__card-sync">
+                · sync {{ p.ultimaSync }}
+              </span>
+            </div>
+          </div>
+          <span class="stack__card-chevron">
+            {{ plataformaExpandida() === p.id ? '▴' : '▾' }}
+          </span>
+        </button>
+
+        <div *ngIf="plataformaExpandida() === p.id" class="stack__card-detail">
+          <!-- Datos que comparte -->
+          <div class="stack__detail-block">
+            <strong>Datos que Gali ve cuando conectas:</strong>
+            <ul class="stack__detail-tags">
+              <li *ngFor="let d of p.datosCompartidos">{{ d }}</li>
+              <li *ngIf="p.datosCompartidos.length === 0" class="is-empty">
+                (Esta integración envía datos pero no comparte historial)
+              </li>
+            </ul>
+          </div>
+
+          <!-- Insights generados o ejemplos -->
+          <div class="stack__detail-block" *ngIf="p.estado === 'conectada' && p.insights_generados > 0">
+            <strong>Insights recientes con tus datos:</strong>
+            <ul class="stack__detail-insights">
+              <li *ngFor="let ej of p.ejemplos_insights">
+                <span class="stack__sparkle">✦</span> {{ ej }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="stack__detail-block" *ngIf="p.estado !== 'conectada'">
+            <strong>Lo que Gali podría hacer:</strong>
+            <ul class="stack__detail-insights stack__detail-insights--future">
+              <li *ngFor="let ej of p.ejemplos_insights">
+                <span class="stack__sparkle">✦</span> {{ ej }}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Permisos -->
+          <div class="stack__detail-block">
+            <strong>Permisos que pide:</strong>
+            <span class="stack__detail-perms">{{ p.permisos_requeridos.join(' · ') }}</span>
+            <p class="stack__detail-tiempo">Tiempo estimado de conexión: {{ p.tiempo_conexion_min }} min</p>
+          </div>
+
+          <!-- Alertas -->
+          <div *ngIf="p.alerta_compliance" class="stack__detail-alert" data-color="rust">
+            <strong>⚠ Compliance:</strong> {{ p.alerta_compliance }}
+          </div>
+          <div *ngIf="p.alerta_privacidad" class="stack__detail-alert" data-color="amber">
+            <strong>🔒 Privacidad:</strong> {{ p.alerta_privacidad }}
+          </div>
+
+          <!-- Actions -->
+          <div class="stack__detail-actions">
+            <button *ngIf="p.estado !== 'conectada'" class="stack__btn-primary"
+              (click)="abrirConexion(p)">
+              Conectar {{ p.nombre }} →
+            </button>
+            <!-- ✦ Crear bloque custom con datos de esta plataforma (cross-view Vista 8) -->
+            <button *ngIf="p.estado === 'conectada'" class="stack__btn-construct"
+              (click)="construirBloqueDesdeStack(p)">
+              <span aria-hidden="true">✦</span> Construir bloque con {{ p.nombre }}
+            </button>
+            <button *ngIf="p.estado === 'conectada'" class="stack__btn-danger"
+              (click)="desconectar(p)">
+              Desconectar
+            </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>
+</article>
+
+<!-- Modal de conexión OAuth (mock 3 pasos) -->
+<div *ngIf="modalAbierto() as p" class="stack__modal-backdrop" (click)="cerrarModal()">
+  <div class="stack__modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+    <header class="stack__modal-head">
+      <div class="stack__modal-glyph" [style.background]="p.color">{{ p.glyph }}</div>
+      <div>
+        <strong>Conectar {{ p.nombre }}</strong>
+        <span>Paso {{ pasoConexion() }} de 3 · ~{{ p.tiempo_conexion_min }} min</span>
+      </div>
+      <button class="stack__modal-close" (click)="cerrarModal()" aria-label="Cerrar">×</button>
+    </header>
+
+    <div class="stack__modal-body">
+      <!-- Paso 1: Permisos -->
+      <div *ngIf="pasoConexion() === 1">
+        <h3>Vas a darle estos permisos a Gali:</h3>
+        <ul class="stack__modal-perms">
+          <li *ngFor="let perm of p.permisos_requeridos">
+            <span>✓</span> {{ perm }}
+          </li>
+        </ul>
+        <p class="stack__modal-note">
+          Puedes pausar o revocar el acceso en cualquier momento desde esta pantalla.
+        </p>
+      </div>
+
+      <!-- Paso 2: Autenticación (mock) -->
+      <div *ngIf="pasoConexion() === 2">
+        <h3>Autenticarse en {{ p.nombre }}</h3>
+        <div class="stack__modal-fake-oauth">
+          <span class="stack__sparkle">✦</span>
+          <p>En el prototipo este paso es simulado. En producción se abre el popup OAuth oficial de {{ p.nombre }}.</p>
+        </div>
+      </div>
+
+      <!-- Paso 3: Confirmación -->
+      <div *ngIf="pasoConexion() === 3">
+        <h3>Listo — última confirmación</h3>
+        <p>
+          Al conectar {{ p.nombre }}, Gali ganará <strong>+{{ p.intelligence_score }} puntos de intelligence</strong>
+          y podrá generar insights como los que te mostré.
+        </p>
+        <p class="stack__modal-note">
+          Empezarás a ver insights aquí dentro de las próximas 24 horas a medida que Gali analiza tus datos.
+        </p>
+      </div>
+    </div>
+
+    <footer class="stack__modal-foot">
+      <button class="stack__btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      <button class="stack__btn-primary" (click)="avanzarConexion()">
+        {{ pasoConexion() === 3 ? 'Conectar' : 'Continuar →' }}
+      </button>
+    </footer>
+  </div>
+</div>

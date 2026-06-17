@@ -1,0 +1,16 @@
+<svg class="gv2-mark__svg" viewBox="0 0 32 32" aria-hidden="true">
+  <defs>
+    <radialGradient id="gv2-mark-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="currentColor" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle class="gv2-mark__halo" cx="16" cy="16" r="15" fill="url(#gv2-mark-glow)"/>
+  <g class="gv2-mark__star" transform="translate(16 16)">
+    <path d="M0 -11 L1.6 -2.2 L11 0 L1.6 2.2 L0 11 L-1.6 2.2 L-11 0 L-1.6 -2.2 Z"
+          fill="currentColor"/>
+    <path class="gv2-mark__core" d="M0 -4.5 L0.7 -0.9 L4.5 0 L0.7 0.9 L0 4.5 L-0.7 0.9 L-4.5 0 L-0.7 -0.9 Z"
+          fill="rgba(244, 237, 225, 0.92)"/>
+  </g>
+</svg>
+<span class="gv2-mark__label" *ngIf="label">{{ label }}</span>

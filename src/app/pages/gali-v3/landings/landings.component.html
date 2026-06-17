@@ -1,0 +1,126 @@
+<div class="lp-wrapper">
+  <header class="lp-head">
+    <div>
+      <span class="lp-crumb">tu operación / landings</span>
+      <h1 class="lp-title">Tus páginas de venta.</h1>
+      <p class="lp-sub">
+        Cada landing es una versión de tu producto contada para una audiencia específica.
+        Yo puedo armarte la primera versión — tú la editas con tu voz.
+      </p>
+    </div>
+    <button type="button" class="lp-cta-main" (click)="abrirPrompt()">
+      <span aria-hidden="true">✦</span> crear con Gali
+    </button>
+  </header>
+
+  <section *ngIf="landings().length === 0" class="lp-empty">
+    <span class="lp-empty-mark" aria-hidden="true">✦</span>
+    <h2>Aún no tienes landings.</h2>
+    <p>Elige un producto y yo te armo la primera en menos de un minuto.</p>
+    <button type="button" class="lp-cta-main" (click)="abrirPrompt()">crear con Gali</button>
+  </section>
+
+  <section *ngIf="landings().length" class="lp-grid">
+    <article *ngFor="let l of landings()" class="lp-card" [attr.data-estado]="l.estado">
+      <div class="lp-thumb">
+        <span class="lp-thumb-icon">{{ l.thumb }}</span>
+        <span class="lp-pill">{{ labelEstado(l.estado) }}</span>
+      </div>
+      <header class="lp-card-head">
+        <strong>{{ l.nombre }}</strong>
+        <span>{{ l.producto }}</span>
+      </header>
+      <dl class="lp-stats">
+        <div>
+          <dt>Visitas</dt>
+          <dd>{{ formatoNum(l.visitas) }}</dd>
+        </div>
+        <div>
+          <dt>Conv.</dt>
+          <dd>{{ l.conversion }}%</dd>
+        </div>
+        <div>
+          <dt>Ventas</dt>
+          <dd>{{ l.ventas }}</dd>
+        </div>
+      </dl>
+      <footer class="lp-card-foot">
+        <span class="lp-meta">act. {{ l.actualizada }}</span>
+        <button type="button" class="lp-link">editar →</button>
+      </footer>
+    </article>
+  </section>
+</div>
+
+<!-- Prompt modal -->
+<ng-container *ngIf="promptAbierto()">
+  <div class="lpmodal" role="dialog" aria-modal="true">
+    <button class="lpmodal__backdrop" (click)="cerrarPrompt()" aria-label="cerrar"></button>
+    <div class="lpmodal__panel">
+      <header class="lpmodal__head">
+        <span class="lpmodal__crumb">crear landing</span>
+        <h2 class="lpmodal__titulo">¿Qué quieres vender, y a quién?</h2>
+        <button class="lpmodal__close" (click)="cerrarPrompt()">✕</button>
+      </header>
+
+      <div class="lpmodal__cuerpo">
+        <label class="lpmodal__field">
+          <span>Producto</span>
+          <select class="lpmodal__select"
+                  [value]="productoSugerido()"
+                  (change)="productoSugerido.set($any($event.target).value)">
+            <option>Collar GPS para mascota</option>
+            <option>Silla ergonómica</option>
+            <option>Lámpara solar plegable</option>
+            <option>Aire frío portátil</option>
+          </select>
+        </label>
+
+        <label class="lpmodal__field">
+          <span>Cuéntame el ángulo</span>
+          <textarea
+            class="lpmodal__textarea"
+            [value]="prompt()"
+            (input)="prompt.set($any($event.target).value)"
+            rows="4"
+            placeholder="Ej: para mamás de mascotas pequeñas en Bogotá que viajan los fines de semana — angle dolor + seguridad emocional"></textarea>
+        </label>
+
+        <div *ngIf="generando()" class="lpmodal__loading">
+          <span class="lpmodal__loading-mark">✦</span>
+          Estoy armando tu landing — copy, ángulo y preview…
+        </div>
+
+        <div *ngIf="previewVisible()" class="lpmodal__preview">
+          <span class="lpmodal__preview-tag">PREVIEW</span>
+          <h3>{{ prompt().slice(0, 60) }}</h3>
+          <p>Tu nueva landing está lista para revisión. Está en modo borrador — puedes publicarla o editar el copy primero.</p>
+          <ul class="lpmodal__preview-bits">
+            <li>Hero con titular emocional</li>
+            <li>3 bullets de beneficio</li>
+            <li>Reseñas + CTA fijo</li>
+            <li>Captura de pixel Meta + GA conectada</li>
+          </ul>
+        </div>
+      </div>
+
+      <footer class="lpmodal__foot">
+        <button type="button" class="lpmodal__nav lpmodal__nav--ghost" (click)="cerrarPrompt()">cancelar</button>
+        <span class="lpmodal__foot-spacer"></span>
+        <button *ngIf="!previewVisible()"
+                type="button"
+                class="lpmodal__nav lpmodal__nav--primary"
+                [disabled]="!prompt().trim() || generando()"
+                (click)="generar()">
+          {{ generando() ? 'generando…' : 'generar con Gali ✦' }}
+        </button>
+        <button *ngIf="previewVisible()"
+                type="button"
+                class="lpmodal__nav lpmodal__nav--primary"
+                (click)="publicar()">
+          publicar landing →
+        </button>
+      </footer>
+    </div>
+  </div>
+</ng-container>

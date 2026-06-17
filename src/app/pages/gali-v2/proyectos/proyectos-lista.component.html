@@ -1,0 +1,67 @@
+<div class="pl">
+  <header class="pl__pulso">
+    <div class="pl__crumbs" aria-label="Dónde estás">
+      <a class="pl__crumbs-link" [routerLink]="['/gali-v2']">Lienzo</a>
+      <span class="pl__crumbs-sep">/</span>
+      <span class="pl__crumbs-here">Proyectos</span>
+    </div>
+    <div class="pl__input">
+      <gali-header-input contextoVista="proyectos"></gali-header-input>
+    </div>
+    <button type="button" class="pl__seed" (click)="resetSeed()" title="Restaurar datos de demo">reset demo</button>
+  </header>
+
+  <main class="pl__main">
+    <div class="pl__head">
+      <span class="pl__head-mono">tus proyectos</span>
+      <h1 class="pl__title">
+        Lo que <em>Gali recuerda</em><br/>con vos.
+      </h1>
+      <p class="pl__sub">
+        Cada proyecto es un hilo de decisiones, aprendizajes y acciones. Gali recuerda todo,
+        y tú puedes corregir lo que crea saber.
+      </p>
+    </div>
+
+    <div class="pl__actions">
+      <button type="button" class="pl__new" (click)="crearVacio()">
+        + nuevo proyecto
+      </button>
+    </div>
+
+    <ul class="pl__list">
+      <li *ngFor="let p of proyectos$ | async; trackBy: trackById" class="pl__item">
+        <a [routerLink]="['/gali-v2/proyectos', p.id]" class="pl__card" [attr.data-status]="p.status">
+          <header class="pl__card-head">
+            <gali-mark
+              [state]="p.status === 'activo' ? 'propuesta' : 'memoria'"
+              size="sm">
+            </gali-mark>
+            <span class="pl__card-status">{{ p.status }}</span>
+            <span class="pl__card-dot">·</span>
+            <span class="pl__card-age">hace {{ diasDesde(p.last_activity) }}d</span>
+          </header>
+
+          <h3 class="pl__card-name">{{ p.name }}</h3>
+
+          <p class="pl__card-product" *ngIf="p.product">
+            {{ p.product.nombre }} · {{ p.product.ciudadPrincipal }}
+          </p>
+
+          <div class="pl__card-metrics" *ngIf="p.status === 'activo' && p.metrics.ventasTotales > 0">
+            <div><dt>ROAS</dt><dd>{{ p.metrics.roasActual | number:'1.1-1' }}x</dd></div>
+            <div><dt>Ventas</dt><dd>{{ p.metrics.ventasTotales }}</dd></div>
+            <div><dt>Activo</dt><dd>{{ p.metrics.diasActivo }}d</dd></div>
+          </div>
+
+          <p class="pl__card-next" *ngIf="p.galiMemory.siguienteAccion">
+            <span class="pl__card-next-tag">siguiente</span>
+            {{ p.galiMemory.siguienteAccion }}
+          </p>
+        </a>
+      </li>
+    </ul>
+  </main>
+
+  <gali-response-overlay></gali-response-overlay>
+</div>

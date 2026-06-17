@@ -1,0 +1,211 @@
+@import 'styles/gali-tokens';
+
+.pa {
+  width: 280px;
+  height: 100%;
+  background: $gali-bg-surface;
+  border-right: 1px solid $gali-border-subtle;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  position: relative;
+  z-index: 5;
+  animation: pa-in 500ms $gali-ease-spring;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: $gali-border-default; border-radius: 2px; }
+
+  &__label {
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: $gali-cyan;
+    text-transform: uppercase;
+  }
+
+  &__image {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: $gali-radius-card;
+    overflow: hidden;
+    background: $gali-bg-base;
+    border: 1px solid $gali-border-default;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__lock {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: rgba(15,15,18,0.72);
+    backdrop-filter: blur(8px);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    border: 1px solid $gali-border-default;
+  }
+
+  &__title {
+    font-family: $gali-font-display;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: $gali-text-primary;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  &__supplier {
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    color: $gali-text-muted;
+    letter-spacing: 0.04em;
+
+    span { color: $gali-success; margin-right: 4px; }
+  }
+
+  &__metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px 0;
+    border-top: 1px solid $gali-border-subtle;
+    border-bottom: 1px solid $gali-border-subtle;
+  }
+
+  &__metric {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    &--accent {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__metric-label {
+    font-family: $gali-font-mono;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: $gali-text-muted;
+    text-transform: uppercase;
+  }
+
+  &__metric-value {
+    font-family: $gali-font-display;
+    font-size: 16px;
+    font-weight: 600;
+    color: $gali-text-primary;
+
+    &--strong {
+      color: $gali-margin-strong;
+      font-size: 22px;
+    }
+  }
+
+  &__sales {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__sales-num {
+    font-family: $gali-font-display;
+    font-size: 32px;
+    font-weight: 600;
+    color: $gali-text-primary;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  &__sales-text {
+    font-size: 11px;
+    color: $gali-text-secondary;
+  }
+
+  &__trend {
+    font-family: $gali-font-mono;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 4px;
+
+    &[data-direction='up'] { color: $gali-success; }
+    &[data-direction='flat'] { color: $gali-text-muted; }
+    &[data-direction='down'] { color: $gali-error; }
+  }
+
+  &__reasoning {
+    background: rgba(78, 205, 196, 0.04);
+    border: 1px solid rgba(78, 205, 196, 0.18);
+    border-radius: $gali-radius-input;
+    padding: 12px;
+  }
+
+  &__reasoning-label {
+    font-family: $gali-font-mono;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: $gali-cyan;
+    margin-bottom: 6px;
+  }
+
+  &__reasoning ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    color: $gali-text-primary;
+    line-height: 1.4;
+
+    li::before {
+      content: '▸ ';
+      color: $gali-cyan;
+    }
+  }
+
+  &__hint {
+    margin-top: auto;
+    padding: 10px 12px;
+    background: rgba(244, 154, 61, 0.06);
+    border: 1px solid rgba(244, 154, 61, 0.18);
+    border-radius: $gali-radius-input;
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    color: $gali-orange;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  &__hint-icon { font-size: 11px; }
+}
+
+@keyframes pa-in {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@include gali-reduced-motion {
+  .pa { animation: none; }
+}

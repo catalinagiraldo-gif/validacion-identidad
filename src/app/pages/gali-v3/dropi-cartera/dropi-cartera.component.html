@@ -1,0 +1,83 @@
+<article class="cart">
+  <header class="cart__head">
+    <div class="cart__head-meta">
+      <span class="cart__sparkle">✦</span>
+      <span class="cart__head-tag">Historial cartera despertado</span>
+    </div>
+    <h1>Tu flujo de caja con análisis Gali en vivo.</h1>
+    <p class="cart__intro">
+      No solo movimientos: Gali te dice cuándo retirar, cuánto reinvertir y cuándo hay riesgo de gasto sobre ingreso.
+    </p>
+  </header>
+
+  <section class="cart__resumen">
+    <div class="cart__metric">
+      <span class="cart__metric-label">Saldo actual</span>
+      <strong class="cart__metric-val">{{ format(data().resumen.saldo_actual) }}</strong>
+    </div>
+    <div class="cart__metric">
+      <span class="cart__metric-label">Ingresos 30d</span>
+      <strong class="cart__metric-val cart__up">{{ format(data().resumen.ingresos_30d) }}</strong>
+    </div>
+    <div class="cart__metric">
+      <span class="cart__metric-label">Gastos 30d</span>
+      <strong class="cart__metric-val cart__down">{{ format(data().resumen.gastos_30d) }}</strong>
+    </div>
+    <div class="cart__metric">
+      <span class="cart__metric-label">Proyección 7d</span>
+      <strong class="cart__metric-val">{{ format(data().resumen.proyeccion_7d) }}</strong>
+    </div>
+    <div class="cart__metric">
+      <span class="cart__metric-label">Mejor retiro</span>
+      <strong class="cart__metric-val cart__small">{{ data().resumen.fecha_optima_retiro }}</strong>
+    </div>
+  </section>
+
+  <section class="cart__chart">
+    <header>
+      <span class="cart__sparkle">✦</span>
+      <strong>Flujo de caja acumulado</strong>
+      <span class="cart__chart-meta">últimos {{ series().length }} movimientos</span>
+    </header>
+    <svg viewBox="0 0 600 120" preserveAspectRatio="none" class="cart__svg">
+      <defs>
+        <linearGradient id="grad-cart" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#F49A3D" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#F49A3D" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path [attr.d]="sparkline() + ' L 600 120 L 0 120 Z'" fill="url(#grad-cart)" />
+      <path [attr.d]="sparkline()" stroke="#F49A3D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </section>
+
+  <section class="cart__sugerencias">
+    <header><span class="cart__sparkle">✦</span><strong>Lo que Gali sugiere</strong></header>
+    <div class="cart__sug-grid">
+      <article *ngFor="let s of data().sugerencias_gali" class="cart__sug">
+        <h4>{{ s.titulo }}</h4>
+        <p>{{ s.descripcion }}</p>
+        <button (click)="ejecutarSugerencia(s)">{{ s.cta }} →</button>
+      </article>
+    </div>
+  </section>
+
+  <section class="cart__movs">
+    <header><strong>Últimos movimientos</strong></header>
+    <table>
+      <thead>
+        <tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of data().movimientos" [class.is-ingreso]="m.tipo === 'ingreso'" [class.is-gasto]="m.tipo === 'gasto'" [class.is-retiro]="m.tipo === 'retiro'">
+          <td class="cart__movs-fecha">{{ m.fecha }}</td>
+          <td>{{ m.concepto }}</td>
+          <td><span class="cart__movs-cat">{{ m.categoria }}</span></td>
+          <td class="cart__movs-monto">{{ formatPositive(m.monto) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <proximos-pasos contexto="cartera"></proximos-pasos>
+</article>

@@ -1,0 +1,214 @@
+<div class="pd" *ngIf="proyecto() as p; else noProj">
+  <header class="pd__pulso">
+    <div class="pd__crumbs" aria-label="Dónde estás">
+      <a class="pd__crumbs-link" [routerLink]="['/gali-v2']">Lienzo</a>
+      <span class="pd__crumbs-sep">/</span>
+      <a class="pd__crumbs-link" [routerLink]="['/gali-v2/proyectos']">Proyectos</a>
+      <span class="pd__crumbs-sep">/</span>
+      <span class="pd__crumbs-here" [title]="p.name">{{ p.name }}</span>
+    </div>
+    <div class="pd__input">
+      <gali-header-input contextoVista="proyectos"></gali-header-input>
+    </div>
+    <span class="pd__status" [attr.data-status]="p.status">{{ p.status }}</span>
+  </header>
+
+  <main class="pd__main">
+    <!-- BLOQUE 1 — Hero del proyecto -->
+    <section class="pd__hero">
+      <span class="pd__mono">proyecto</span>
+      <h1 class="pd__title">{{ p.name }}</h1>
+      <p class="pd__meta" *ngIf="p.product">
+        {{ p.product.nombre }} · {{ p.product.ciudadPrincipal }} · ángulo "{{ p.product.anguloElegido }}"
+      </p>
+
+      <ol class="pd__pipeline" aria-label="Pipeline del proyecto">
+        <li class="pd__pipeline-node" [class.pd__pipeline-node--done]="p.product">
+          <span class="pd__pipeline-mono">01</span>
+          <strong>Producto</strong>
+          <span class="pd__pipeline-state">{{ p.product ? 'elegido' : 'pendiente' }}</span>
+        </li>
+        <li class="pd__pipeline-arrow">→</li>
+        <li class="pd__pipeline-node" [class.pd__pipeline-node--done]="p.assets.length > 0">
+          <span class="pd__pipeline-mono">02</span>
+          <strong>Landing</strong>
+          <span class="pd__pipeline-state">{{ p.assets.length > 0 ? p.assets[0].status : 'pendiente' }}</span>
+        </li>
+        <li class="pd__pipeline-arrow">→</li>
+        <li class="pd__pipeline-node" [class.pd__pipeline-node--done]="p.metrics.ventasTotales > 0">
+          <span class="pd__pipeline-mono">03</span>
+          <strong>Campaña</strong>
+          <span class="pd__pipeline-state">{{ p.metrics.ventasTotales > 0 ? 'corriendo' : 'pendiente' }}</span>
+        </li>
+        <li class="pd__pipeline-arrow">→</li>
+        <li class="pd__pipeline-node" [class.pd__pipeline-node--metric]="p.metrics.roasActual > 0">
+          <span class="pd__pipeline-mono">04</span>
+          <strong>ROAS</strong>
+          <span class="pd__pipeline-state">
+            {{ p.metrics.roasActual > 0 ? (p.metrics.roasActual | number:'1.1-1') + 'x ↑' : 'sin datos' }}
+          </span>
+        </li>
+      </ol>
+    </section>
+
+    <!-- BLOQUE 2 — Gali recuerda -->
+    <section class="pd__memoria">
+      <header class="pd__sec-head">
+        <gali-mark state="memoria" size="sm"></gali-mark>
+        <span class="pd__sec-mono">Gali recuerda</span>
+        <span class="pd__sec-rule"></span>
+        <span class="pd__sec-pill">
+          <span class="pd__sec-pill-dot" aria-hidden="true"></span>
+          Click cualquier ítem para editar
+        </span>
+      </header>
+
+      <ul class="pd__memoria-list">
+        <li
+          *ngFor="let ap of p.galiMemory.aprendizajes"
+          class="pd__memoria-item"
+          [class.pd__memoria-item--obsoleto]="ap.obsoleto"
+          (click)="abrirInspector(ap)"
+          (keydown.enter)="abrirInspector(ap)"
+          tabindex="0"
+          role="button">
+          <span class="pd__memoria-bullet">·</span>
+          <div class="pd__memoria-body">
+            <p class="pd__memoria-texto">{{ ap.texto }}</p>
+            <span class="pd__memoria-origen">{{ ap.origen }}</span>
+          </div>
+          <span class="pd__memoria-conf" [attr.data-conf]="ap.confianza">{{ ap.confianza }}</span>
+        </li>
+        <li *ngIf="p.galiMemory.aprendizajes.length === 0" class="pd__memoria-empty">
+          Aún no he aprendido nada sobre este proyecto. Conversa conmigo para empezar.
+        </li>
+      </ul>
+    </section>
+
+    <!-- BLOQUE 3 — Siguiente acción -->
+    <section class="pd__siguiente">
+      <header class="pd__sec-head">
+        <gali-mark state="propuesta" size="sm"></gali-mark>
+        <span class="pd__sec-mono">siguiente acción</span>
+        <span class="pd__sec-rule"></span>
+      </header>
+      <div class="pd__siguiente-card">
+        <p class="pd__siguiente-texto">{{ p.galiMemory.siguienteAccion }}</p>
+        <p class="pd__siguiente-razon" *ngIf="p.galiMemory.siguienteAccionRazon">
+          {{ p.galiMemory.siguienteAccionRazon }}
+        </p>
+        <div class="pd__siguiente-acciones">
+          <button type="button" class="pd__accion pd__accion--primary">Sí, hazlo</button>
+          <button type="button" class="pd__accion">Cuéntame más</button>
+          <button type="button" class="pd__accion pd__accion--ghost">Más tarde</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 4 — Tabs historial -->
+    <section class="pd__historial">
+      <header class="pd__sec-head">
+        <span class="pd__sec-mono">historial del proyecto</span>
+        <span class="pd__sec-rule"></span>
+      </header>
+
+      <nav class="pd__tabs" role="tablist">
+        <button
+          *ngFor="let t of ['conversaciones','decisiones','assets','resultados']"
+          type="button"
+          role="tab"
+          [class.pd__tab--active]="tab() === t"
+          class="pd__tab"
+          (click)="setTab($any(t))">
+          {{ t }}
+        </button>
+      </nav>
+
+      <div class="pd__tab-panel" *ngIf="tab() === 'decisiones'">
+        <ol class="pd__timeline">
+          <li *ngFor="let d of p.galiMemory.decisiones" class="pd__timeline-item">
+            <div class="pd__timeline-dot"></div>
+            <div class="pd__timeline-body">
+              <h4>{{ d.texto }}</h4>
+              <p>{{ d.razonamiento }}</p>
+            </div>
+          </li>
+          <li *ngIf="p.galiMemory.decisiones.length === 0" class="pd__empty">
+            No hay decisiones registradas todavía.
+          </li>
+        </ol>
+      </div>
+
+      <div class="pd__tab-panel" *ngIf="tab() === 'conversaciones'">
+        <ul class="pd__convos">
+          <li *ngFor="let c of p.galiMemory.conversaciones" class="pd__convo">
+            <gali-mark state="memoria" size="xs"></gali-mark>
+            <span>{{ c.resumen }}</span>
+          </li>
+          <li *ngIf="p.galiMemory.conversaciones.length === 0" class="pd__empty">
+            Sin conversaciones registradas.
+          </li>
+        </ul>
+      </div>
+
+      <div class="pd__tab-panel" *ngIf="tab() === 'assets'">
+        <div class="pd__assets">
+          <article *ngFor="let a of p.assets" class="pd__asset" [attr.data-tipo]="a.tipo">
+            <span class="pd__asset-tipo">{{ a.tipo }}</span>
+            <h4 class="pd__asset-nombre">{{ a.nombre }}</h4>
+            <span class="pd__asset-status">{{ a.status }}</span>
+          </article>
+          <p *ngIf="p.assets.length === 0" class="pd__empty">Sin assets aún.</p>
+        </div>
+      </div>
+
+      <div class="pd__tab-panel" *ngIf="tab() === 'resultados'">
+        <div class="pd__resultados">
+          <div class="pd__resultado">
+            <dt>ROAS actual</dt>
+            <dd>{{ p.metrics.roasActual | number:'1.1-1' }}x</dd>
+          </div>
+          <div class="pd__resultado">
+            <dt>Ventas totales</dt>
+            <dd>{{ p.metrics.ventasTotales }}</dd>
+          </div>
+          <div class="pd__resultado">
+            <dt>Novedades relacionadas</dt>
+            <dd>{{ p.metrics.novedadesRelacionadas }}</dd>
+          </div>
+          <div class="pd__resultado">
+            <dt>Días activo</dt>
+            <dd>{{ p.metrics.diasActivo }}</dd>
+          </div>
+          <div class="pd__resultado" *ngIf="p.metrics.diasAntesSaturacion">
+            <dt>Días antes saturación</dt>
+            <dd>{{ p.metrics.diasAntesSaturacion }}</dd>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Inspector flotante -->
+  <div class="pd__inspector-overlay" *ngIf="inspeccionando() as ap" (click)="cerrarInspector()">
+    <div (click)="$event.stopPropagation()">
+      <gali-memory-inspector
+        [aprendizaje]="ap"
+        (guardar)="onGuardarAprendizaje($event)"
+        (obsoleto)="onObsoleto()"
+        (borrar)="onBorrar()"
+        (cerrar)="cerrarInspector()">
+      </gali-memory-inspector>
+    </div>
+  </div>
+
+  <gali-response-overlay></gali-response-overlay>
+</div>
+
+<ng-template #noProj>
+  <div class="pd__noproj">
+    <gali-mark state="alerta" size="lg"></gali-mark>
+    <p>Proyecto no encontrado.</p>
+    <a [routerLink]="['/gali-v2/proyectos']">← volver a la lista</a>
+  </div>
+</ng-template>

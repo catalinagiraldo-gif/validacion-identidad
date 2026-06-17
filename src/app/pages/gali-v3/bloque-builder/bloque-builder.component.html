@@ -1,0 +1,429 @@
+<article class="builder" aria-labelledby="builder-title">
+  <!-- HEADER del constructor: navegación clara + identidad + modo -->
+  <header class="builder__head">
+    <div class="builder__head-left">
+      <button type="button" class="builder__back" (click)="volverAlInicio()" aria-label="Volver al Inicio (Escape)">
+        <span aria-hidden="true">←</span>
+        <span>Volver al Inicio</span>
+        <span class="builder__back-kbd" aria-hidden="true">Esc</span>
+      </button>
+      <nav class="builder__crumbs" aria-label="Ubicación">
+        <a routerLink="/gali-v3">Inicio</a>
+        <span class="builder__crumbs-sep" aria-hidden="true">›</span>
+        <strong>
+          <span class="builder__sparkle" aria-hidden="true">✦</span>
+          Constructor de bloques
+        </strong>
+      </nav>
+    </div>
+
+    <div class="builder__head-center">
+      <h1 id="builder-title">Construye un bloque para tu lienzo</h1>
+      <p class="builder__head-sub">
+        Describe lo que quieres ver. Gali lo arma en vivo y lo guardas en tu Inicio.
+      </p>
+    </div>
+
+    <div class="builder__head-meta">
+      <div class="builder__mode-toggle" role="tablist" aria-label="Modo de construcción">
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="modo() === 'chat'"
+          [class.is-active]="modo() === 'chat'"
+          (click)="setModo('chat')">
+          <span aria-hidden="true">💬</span> Chat
+        </button>
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="modo() === 'manual'"
+          [class.is-active]="modo() === 'manual'"
+          (click)="setModo('manual')">
+          <span aria-hidden="true">⚙</span> Manual
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- BODY: split chat 40% + preview 60% -->
+  <div class="builder__body">
+    <!-- ============ LEFT: chat / form ============ -->
+    <section class="builder__panel builder__panel--left" aria-label="Construcción del bloque">
+      <!-- Modo Chat -->
+      <ng-container *ngIf="modo() === 'chat'">
+        <div class="builder__chat" #chatScroll>
+          <!-- Estado vacío con ejemplos (H#10 — novato no enfrenta campo vacío) -->
+          <div *ngIf="historial().length === 0" class="builder__empty">
+            <div class="builder__empty-icon">✦</div>
+            <h3>Hola, soy Gali. ¿Qué bloque quieres construir?</h3>
+            <p>
+              Cuéntame en español qué quieres ver. Yo lo construyo en vivo a la derecha.
+              Puedes iterar tantas veces como necesites antes de guardarlo.
+            </p>
+            <div class="builder__examples">
+              <span class="builder__examples-tag">o empieza desde un ejemplo</span>
+              <ul class="builder__examples-list">
+                <li *ngFor="let e of ejemplos()">
+                  <button type="button" class="builder__example" (click)="aplicarEjemplo(e)">
+                    <span class="builder__example-icon" aria-hidden="true">{{ e.icono }}</span>
+                    <div class="builder__example-body">
+                      <strong>{{ e.titulo }}</strong>
+                      <span>{{ e.descripcion_corta }}</span>
+                    </div>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Historial -->
+          <ul class="builder__messages" *ngIf="historial().length > 0">
+            <li *ngFor="let m of historial()" class="builder__msg" [class.is-user]="m.role === 'user'" [class.is-gali]="m.role === 'gali'">
+              <div class="builder__msg-avatar" aria-hidden="true">
+                <span *ngIf="m.role === 'gali'" class="builder__sparkle">✦</span>
+                <span *ngIf="m.role === 'user'">tú</span>
+              </div>
+              <div class="builder__msg-body">
+                <p>{{ m.content }}</p>
+                <ul *ngIf="m.cambios_aplicados?.length" class="builder__msg-changes">
+                  <li *ngFor="let c of m.cambios_aplicados">✓ {{ c }}</li>
+                </ul>
+              </div>
+            </li>
+            <li *ngIf="preview().cargando" class="builder__msg is-gali">
+              <div class="builder__msg-avatar" aria-hidden="true">
+                <span class="builder__sparkle">✦</span>
+              </div>
+              <div class="builder__msg-body">
+                <span class="builder__streaming" aria-label="Gali está pensando">
+                  <span></span><span></span><span></span>
+                </span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="builder__input-bar">
+          <textarea
+            [ngModel]="prompt()"
+            (ngModelChange)="prompt.set($event)"
+            (keydown)="onPromptKey($event)"
+            placeholder="Describe el bloque que necesitas… (Ej: 'Quiero ver fugas de pedidos por transportadora')"
+            rows="2"
+            aria-label="Describir el bloque a construir"></textarea>
+          <div class="builder__input-actions">
+            <span class="builder__shortcut" aria-hidden="true">⌘ + ↵</span>
+            <button type="button" class="builder__send" (click)="enviarPrompt()" [disabled]="!prompt().trim()" aria-label="Enviar mensaje a Gali">
+              Enviar
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Modo Manual -->
+      <ng-container *ngIf="modo() === 'manual'">
+        <form class="builder__form" (submit)="$event.preventDefault()">
+          <fieldset>
+            <legend>Identidad del bloque</legend>
+            <label>
+              <span>Título</span>
+              <input type="text" [ngModel]="bloque().titulo" (ngModelChange)="actualizarTitulo($event)" name="titulo" placeholder="Ventas por ciudad" />
+            </label>
+            <label>
+              <span>Descripción corta</span>
+              <input type="text" [ngModel]="bloque().descripcion" (ngModelChange)="actualizarDescripcion($event)" name="descripcion" placeholder="Comparativo semanal por ciudad" />
+            </label>
+            <label>
+              <span>Categoría</span>
+              <div class="builder__chips">
+                <button
+                  *ngFor="let c of categorias"
+                  type="button"
+                  class="builder__chip"
+                  [class.is-active]="bloque().categoria === c.id"
+                  (click)="cambiarCategoria(c.id)">
+                  <span aria-hidden="true">{{ c.icono }}</span> {{ c.label }}
+                </button>
+              </div>
+            </label>
+            <label>
+              <span>Ícono</span>
+              <div class="builder__icons">
+                <button
+                  *ngFor="let i of iconosOpciones"
+                  type="button"
+                  class="builder__icon-btn"
+                  [class.is-active]="bloque().icono === i"
+                  (click)="cambiarIcono(i)"
+                  [attr.aria-label]="'Ícono ' + i">{{ i }}</button>
+              </div>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Datos y visualización</legend>
+            <label>
+              <span>Fuente de datos</span>
+              <select [ngModel]="bloque().fuente_id" (ngModelChange)="cambiarFuente($event)" name="fuente">
+                <option [ngValue]="null" disabled>Selecciona una fuente…</option>
+                <option *ngFor="let f of fuentes()" [ngValue]="f.id">{{ f.label }}</option>
+              </select>
+              <small *ngIf="fuenteActiva()" class="builder__hint">
+                {{ fuenteActiva()!.descripcion }}
+                <em *ngIf="fuenteActiva()!.requiere_stack?.length">— requiere {{ fuenteActiva()!.requiere_stack!.join(', ') }} conectado</em>
+              </small>
+            </label>
+            <label>
+              <span>Tipo de visualización</span>
+              <div class="builder__chips">
+                <button
+                  *ngFor="let v of visualizaciones()"
+                  type="button"
+                  class="builder__chip"
+                  [class.is-active]="bloque().tipo_visualizacion === v.id"
+                  (click)="cambiarVisualizacion(v.id)">
+                  <span aria-hidden="true">{{ v.icono }}</span> {{ v.label }}
+                </button>
+              </div>
+            </label>
+            <label>
+              <span>Ventana temporal</span>
+              <div class="builder__chips">
+                <button
+                  *ngFor="let v of ventanas"
+                  type="button"
+                  class="builder__chip"
+                  [class.is-active]="bloque().ventana_temporal === v.id"
+                  (click)="cambiarVentana(v.id)">{{ v.label }}</button>
+              </div>
+            </label>
+            <label *ngIf="bloque().filtros.length > 0">
+              <span>Filtros aplicados</span>
+              <ul class="builder__filters">
+                <li *ngFor="let f of bloque().filtros; let i = index">
+                  <code>{{ f.campo }} {{ f.operador }} {{ f.valor }}</code>
+                  <button type="button" (click)="removerFiltro(i)" aria-label="Eliminar filtro">✕</button>
+                </li>
+              </ul>
+            </label>
+          </fieldset>
+        </form>
+      </ng-container>
+    </section>
+
+    <!-- ============ RIGHT: preview ============ -->
+    <section class="builder__panel builder__panel--right" aria-label="Vista previa del bloque">
+      <!-- Estado vacío -->
+      <div *ngIf="preview().vacio" class="builder__preview-empty">
+        <div class="builder__preview-empty-icon" aria-hidden="true">✦</div>
+        <h3>El preview de tu bloque vivirá aquí</h3>
+        <p>Empieza describiendo lo que quieres ver o eligiendo un ejemplo en el panel izquierdo.</p>
+      </div>
+
+      <!-- Cargando -->
+      <div *ngIf="preview().cargando && !preview().data" class="builder__preview-loading">
+        <span class="builder__streaming"><span></span><span></span><span></span></span>
+        <p>Gali está armando tu bloque…</p>
+      </div>
+
+      <!-- Preview activo -->
+      <ng-container *ngIf="preview().data as data">
+        <div class="builder__preview-head">
+          <div class="builder__preview-title">
+            <span class="builder__preview-icon" aria-hidden="true">{{ bloque().icono }}</span>
+            <div>
+              <h2>{{ bloque().titulo || 'Bloque sin nombre' }}</h2>
+              <p>{{ bloque().descripcion || 'Iterando con Gali…' }}</p>
+            </div>
+          </div>
+
+          <div class="builder__preview-badges">
+            <!-- H#13 — datos simulados vs reales -->
+            <span class="builder__badge"
+                  [class.is-sim]="data.datos_simulados"
+                  [class.is-real]="!data.datos_simulados">
+              <span aria-hidden="true">{{ data.datos_simulados ? '⊙' : '●' }}</span>
+              {{ data.datos_simulados ? 'Datos simulados' : 'Datos reales' }}
+            </span>
+            <!-- H#13 — confianza con color -->
+            <button type="button"
+                    class="builder__badge builder__badge--confianza"
+                    [attr.data-tier]="confianzaTier()"
+                    (click)="explicarConfianza()"
+                    [attr.aria-label]="'Confianza Gali ' + confianzaTexto(data.confianza_gali) + '. Click para entender por qué.'">
+              <span aria-hidden="true">✦</span>
+              Confianza {{ confianzaTexto(data.confianza_gali) }}
+            </button>
+          </div>
+        </div>
+
+        <!-- H#11 — razonamiento expandible -->
+        <div class="builder__reasoning" *ngIf="data.razonamiento_gali">
+          <button type="button" class="builder__reasoning-toggle" (click)="toggleRazonamiento()">
+            <span class="builder__sparkle" aria-hidden="true">✦</span>
+            <span>Razonamiento de Gali</span>
+            <span class="builder__reasoning-arrow" aria-hidden="true">{{ mostrarRazonamiento() ? '▴' : '▾' }}</span>
+          </button>
+          <p *ngIf="mostrarRazonamiento()">{{ data.razonamiento_gali }}</p>
+        </div>
+
+        <!-- ============ RENDER POR TIPO DE VIZ ============ -->
+
+        <!-- Barras agrupadas (ventas por ciudad) -->
+        <div *ngIf="data.categorias?.length" class="builder__viz builder__viz--barras">
+          <div *ngFor="let c of data.categorias" class="builder__viz-bar-row">
+            <span class="builder__viz-label">{{ c.label }}</span>
+            <div class="builder__viz-bars">
+              <div class="builder__viz-bar builder__viz-bar--now"
+                   [style.width.%]="(c.esta_semana / barrasMax()) * 100"
+                   [attr.aria-label]="c.label + ' esta semana ' + formatNumber(c.esta_semana)">
+                <span>{{ formatNumber(c.esta_semana) }}</span>
+              </div>
+              <div class="builder__viz-bar builder__viz-bar--prev"
+                   [style.width.%]="(c.semana_pasada / barrasMax()) * 100"
+                   [attr.aria-label]="c.label + ' semana pasada ' + formatNumber(c.semana_pasada)">
+                <span>{{ formatNumber(c.semana_pasada) }}</span>
+              </div>
+            </div>
+            <span class="builder__viz-delta" [class.is-up]="c.delta.startsWith('+')" [class.is-down]="c.delta.startsWith('-')">{{ c.delta }}</span>
+          </div>
+          <div class="builder__viz-legend">
+            <span class="builder__legend-dot builder__legend-dot--now"></span> Esta semana
+            <span class="builder__legend-dot builder__legend-dot--prev"></span> Semana pasada
+          </div>
+        </div>
+
+        <!-- Tabla (margen efectivo) -->
+        <div *ngIf="data.filas?.length" class="builder__viz builder__viz--tabla">
+          <table>
+            <thead>
+              <tr>
+                <th *ngFor="let col of data.columnas">{{ col }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let fila of data.filas">
+                <td *ngFor="let col of data.columnas">{{ fila[col] }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Cohort heatmap -->
+        <div *ngIf="data.cohortes?.length" class="builder__viz builder__viz--cohort">
+          <div class="builder__cohort-row builder__cohort-head">
+            <span class="builder__cohort-mes">Cohorte</span>
+            <span class="builder__cohort-tam">Tamaño</span>
+            <span class="builder__cohort-cell" *ngFor="let i of [0,1,2,3,4,5]">M{{ i }}</span>
+          </div>
+          <div *ngFor="let cohort of data.cohortes" class="builder__cohort-row">
+            <span class="builder__cohort-mes">{{ cohort.mes }}</span>
+            <span class="builder__cohort-tam">{{ cohort.tamano }}</span>
+            <span *ngFor="let v of cohort.retencion"
+                  class="builder__cohort-cell"
+                  [style.background]="'rgba(244, 154, 61, ' + (v / cohorteMax()).toFixed(2) + ')'">{{ v }}%</span>
+            <span *ngFor="let _ of cohorteEmptySlots(cohort.retencion.length)" class="builder__cohort-cell is-empty">—</span>
+          </div>
+        </div>
+
+        <!-- Funnel -->
+        <div *ngIf="data.pasos?.length" class="builder__viz builder__viz--funnel">
+          <div *ngFor="let p of data.pasos" class="builder__funnel-row">
+            <span class="builder__funnel-label">{{ p.etapa }}</span>
+            <div class="builder__funnel-bar" [style.width.%]="p.porcentaje">
+              <strong>{{ p.valor }}</strong>
+              <span>{{ p.porcentaje }}%</span>
+            </div>
+            <span class="builder__funnel-drop" *ngIf="p.drop > 0">-{{ p.drop }}% se cae aquí</span>
+          </div>
+        </div>
+
+        <!-- Líneas / proyección -->
+        <div *ngIf="data.series?.length" class="builder__viz builder__viz--lineas">
+          <svg viewBox="0 0 520 220" preserveAspectRatio="xMidYMid meet" aria-label="Gráfica de tendencia proyectada">
+            <ng-container *ngFor="let serie of data.series; let si = index">
+              <polyline
+                fill="none"
+                [attr.stroke]="serie.es_proyeccion ? '#B8593A' : '#F49A3D'"
+                [attr.stroke-dasharray]="serie.es_proyeccion ? '6 4' : '0'"
+                stroke-width="2.5"
+                [attr.points]="polylinePoints(serie.datos, si)">
+              </polyline>
+              <g *ngFor="let p of serie.datos; let i = index">
+                <circle
+                  [attr.cx]="40 + (i + (si === 1 ? 5 : 0)) * 50"
+                  [attr.cy]="200 - (p.valor / lineasMax()) * 160"
+                  r="3.5"
+                  [attr.fill]="serie.es_proyeccion ? '#B8593A' : '#F49A3D'"></circle>
+                <text
+                  [attr.x]="40 + (i + (si === 1 ? 5 : 0)) * 50"
+                  [attr.y]="195 - (p.valor / lineasMax()) * 160"
+                  text-anchor="middle"
+                  font-size="10"
+                  fill="#5C4F44">{{ p.valor }}</text>
+                <text
+                  [attr.x]="40 + (i + (si === 1 ? 5 : 0)) * 50"
+                  y="215"
+                  text-anchor="middle"
+                  font-size="9"
+                  fill="#8A7B68">{{ p.fecha }}</text>
+              </g>
+            </ng-container>
+          </svg>
+          <div class="builder__viz-legend">
+            <span class="builder__legend-dot builder__legend-dot--now"></span> Real
+            <span class="builder__legend-dot builder__legend-dot--projected"></span> Proyección Gali
+            <strong *ngIf="data.revenue_proyectado">Revenue proyectado: {{ formatNumber(data.revenue_proyectado) }}</strong>
+          </div>
+        </div>
+
+        <!-- ============ FOOTER del preview ============ -->
+        <footer class="builder__preview-foot">
+          <!-- H#5 — advertencia de costo computacional -->
+          <div class="builder__cost" *ngIf="bloque().costo_computacional.registros_a_procesar > 0">
+            <div class="builder__cost-row">
+              <span class="builder__cost-label">Costo estimado</span>
+              <span class="builder__cost-value">
+                {{ bloque().costo_computacional.registros_a_procesar | number }} registros · {{ bloque().costo_computacional.tiempo_estimado_ms }}ms
+              </span>
+            </div>
+            <p *ngIf="advertenciaCosto()" class="builder__cost-warning">
+              <span aria-hidden="true">⚠</span> {{ advertenciaCosto() }}
+            </p>
+          </div>
+
+          <!-- CTAs -->
+          <div class="builder__ctas">
+            <label class="builder__toggle">
+              <input type="checkbox" [checked]="datosReales()" (change)="toggleDatosReales()" />
+              <span class="builder__toggle-track"></span>
+              <span class="builder__toggle-label">Probar con datos reales</span>
+            </label>
+
+            <label class="builder__toggle">
+              <input type="checkbox" [checked]="compartir()" (change)="toggleCompartir()" />
+              <span class="builder__toggle-track"></span>
+              <span class="builder__toggle-label">Compartir con comunidad</span>
+            </label>
+
+            <button type="button" class="builder__cta-secondary" (click)="cerrar()">Cancelar</button>
+            <button type="button" class="builder__cta-primary" (click)="guardar()" [disabled]="!puedeGuardar()">
+              <span aria-hidden="true">✦</span> Guardar en mis bloques
+            </button>
+          </div>
+        </footer>
+
+        <!-- Toast de guardado: con CTA a inicio para cerrar el flujo -->
+        <div class="builder__toast" *ngIf="guardadoOk()" role="status">
+          <span class="builder__toast-icon" aria-hidden="true">✓</span>
+          <div class="builder__toast-body">
+            <strong>"{{ bloque().titulo }}" guardado en tus bloques</strong>
+            <span>Lo verás en la sección "Mis bloques custom" del Inicio.</span>
+          </div>
+          <a routerLink="/gali-v3" class="builder__toast-cta">Ir al Inicio →</a>
+        </div>
+      </ng-container>
+    </section>
+  </div>
+</article>

@@ -1,0 +1,211 @@
+@import 'styles/gali-tokens';
+
+.dn {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 700;
+
+  &__toggle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: $gali-bg-elevated;
+    border: 1px solid $gali-cyan;
+    color: $gali-cyan;
+    cursor: pointer;
+    font-size: 20px;
+    box-shadow: 0 8px 24px rgba(78, 205, 196, 0.25),
+                0 0 0 4px rgba(78, 205, 196, 0.08);
+    transition: all 200ms $gali-ease-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      transform: scale(1.08) rotate(45deg);
+      box-shadow: 0 12px 32px rgba(78, 205, 196, 0.4),
+                  0 0 0 6px rgba(78, 205, 196, 0.12);
+    }
+
+    &:focus-visible { @include gali-focus; }
+  }
+
+  &--expanded &__toggle {
+    transform: rotate(0);
+    background: $gali-orange;
+    border-color: $gali-orange;
+    color: $gali-bg-base;
+    box-shadow: 0 8px 24px $gali-orange-glow;
+  }
+
+  &__toggle-icon {
+    font-weight: 600;
+    font-family: $gali-font-mono;
+  }
+
+  &__menu {
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    width: 280px;
+    background: $gali-bg-elevated;
+    border: 1px solid $gali-border-default;
+    border-radius: $gali-radius-card;
+    padding: 12px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(78, 205, 196, 0.15);
+    animation: dn-menu-in 240ms $gali-ease-out;
+  }
+
+  &__header {
+    padding: 4px 4px 12px;
+    border-bottom: 1px solid $gali-border-subtle;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  &__title {
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: $gali-cyan;
+    text-transform: uppercase;
+  }
+
+  &__sub {
+    font-family: $gali-font-mono;
+    font-size: 9px;
+    color: $gali-text-muted;
+    letter-spacing: 0.04em;
+  }
+
+  &__item {
+    display: grid;
+    grid-template-columns: 20px 22px 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: $gali-radius-input;
+    background: transparent;
+    color: $gali-text-primary;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 160ms ease;
+    margin-bottom: 2px;
+    opacity: 0;
+    transform: translateX(-4px);
+    animation: dn-item-in 320ms $gali-ease-out forwards;
+
+    &:hover {
+      background: rgba(78, 205, 196, 0.06);
+    }
+
+    &--active {
+      background: rgba(244, 154, 61, 0.08);
+      border: 1px solid rgba(244, 154, 61, 0.3);
+      padding: 7px 9px;
+    }
+  }
+
+  &__item-num {
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    color: $gali-text-muted;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  &__item--active &__item-num {
+    color: $gali-orange;
+  }
+
+  &__item-icon {
+    font-size: 16px;
+    line-height: 1;
+    text-align: center;
+  }
+
+  &__item-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  &__item-label {
+    font-family: $gali-font-display;
+    font-size: 13px;
+    font-weight: 600;
+    color: $gali-text-primary;
+    letter-spacing: -0.005em;
+    line-height: 1.2;
+  }
+
+  &__item-sub {
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    color: $gali-text-muted;
+    letter-spacing: 0.02em;
+  }
+
+  &__item--active &__item-label {
+    color: $gali-orange;
+  }
+
+  &__footer {
+    padding-top: 8px;
+    margin-top: 4px;
+    border-top: 1px dashed $gali-border-subtle;
+  }
+
+  &__reset {
+    width: 100%;
+    background: transparent;
+    border: 1px solid $gali-border-default;
+    color: $gali-text-secondary;
+    font-family: $gali-font-mono;
+    font-size: 11px;
+    padding: 8px 10px;
+    border-radius: $gali-radius-input;
+    cursor: pointer;
+    transition: all 160ms ease;
+    letter-spacing: 0.04em;
+
+    &:hover {
+      background: rgba(244, 154, 61, 0.06);
+      border-color: $gali-orange;
+      color: $gali-orange;
+    }
+
+    &:focus-visible { @include gali-focus; }
+  }
+}
+
+@keyframes dn-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dn-item-in {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@include gali-reduced-motion {
+  .dn__menu, .dn__item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

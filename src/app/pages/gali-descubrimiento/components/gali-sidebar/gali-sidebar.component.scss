@@ -1,0 +1,126 @@
+@import 'styles/gali-tokens';
+
+.gs {
+  width: $gali-sidebar-width;
+  height: 100%;
+  background: $gali-bg-surface;
+  border-left: 1px solid $gali-border-subtle;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -16px 0 48px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 10;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      circle at 90% 0%,
+      rgba(78, 205, 196, 0.06) 0%,
+      transparent 50%
+    );
+    z-index: 0;
+  }
+
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 14px;
+    border-bottom: 1px solid $gali-border-subtle;
+  }
+
+  &__identity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name {
+    font-family: $gali-font-display;
+    font-size: 16px;
+    font-weight: 600;
+    color: $gali-text-primary;
+    letter-spacing: -0.01em;
+  }
+
+  &__state {
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: $gali-cyan;
+  }
+
+  &__reset {
+    width: 32px;
+    height: 32px;
+    border-radius: $gali-radius-input;
+    background: transparent;
+    border: 1px solid $gali-border-subtle;
+    color: $gali-text-secondary;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 200ms ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: $gali-text-primary;
+      border-color: $gali-border-default;
+      transform: rotate(-90deg);
+    }
+
+    &:focus-visible {
+      @include gali-focus;
+    }
+  }
+
+  &__thread {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px;
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $gali-border-default;
+      border-radius: 3px;
+    }
+  }
+
+  &__suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 16px 12px;
+  }
+
+  &__input {
+    padding: 12px 16px;
+    border-top: 1px solid $gali-border-subtle;
+  }
+}
+
+@media (max-width: 1280px) {
+  .gs {
+    width: 320px;
+  }
+}

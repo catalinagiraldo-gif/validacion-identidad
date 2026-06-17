@@ -1,0 +1,148 @@
+<div class="ob">
+  <div class="ob__atmos" aria-hidden="true"></div>
+
+  <!-- Indicador de pasos -->
+  <nav class="ob__pasos" *ngIf="paso() > 0 && paso() < 4">
+    <ol>
+      <li *ngFor="let n of [1,2,3]; let i = index"
+          [class.ob__paso--current]="paso() === n"
+          [class.ob__paso--done]="paso() > n">
+        <span>0{{ n }}</span>
+      </li>
+    </ol>
+  </nav>
+
+  <main class="ob__main" (click)="saltarStream()">
+    <!-- Paso 0: Saludo -->
+    <ng-container *ngIf="paso() === 0">
+      <gali-mark [state]="streamingActivo() ? 'actuando' : 'reposo'" size="xl"></gali-mark>
+      <p class="ob__stream">
+        {{ textoStreaming() }}<span class="ob__caret" *ngIf="streamingActivo()">▍</span>
+      </p>
+      <div class="ob__nombre-wrap" *ngIf="!streamingActivo()">
+        <label class="ob__field">
+          <span class="ob__field-label">Tu nombre <em>(opcional)</em></span>
+          <input
+            type="text"
+            class="ob__input-text"
+            [value]="nombre()"
+            (input)="nombre.set($any($event.target).value)"
+            placeholder="Alejandra"
+            autocomplete="given-name"/>
+        </label>
+        <button type="button" class="ob__cta" (click)="avanzar(); $event.stopPropagation()">
+          empezar →
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- Paso 1 -->
+    <ng-container *ngIf="paso() === 1">
+      <gali-mark [state]="streamingActivo() ? 'actuando' : 'propuesta'" size="lg"></gali-mark>
+      <h2 class="ob__pregunta">
+        {{ textoStreaming() }}<span class="ob__caret" *ngIf="streamingActivo()">▍</span>
+      </h2>
+      <ul class="ob__opciones" *ngIf="!streamingActivo()">
+        <li *ngFor="let op of opcionesEstado">
+          <button
+            type="button"
+            class="ob__opcion"
+            [class.ob__opcion--active]="estado() === op.value"
+            (click)="estado.set(op.value); $event.stopPropagation()">
+            <strong>{{ op.label }}</strong>
+            <span *ngIf="op.hint">{{ op.hint }}</span>
+          </button>
+        </li>
+      </ul>
+    </ng-container>
+
+    <!-- Paso 2 -->
+    <ng-container *ngIf="paso() === 2">
+      <gali-mark [state]="streamingActivo() ? 'actuando' : 'propuesta'" size="lg"></gali-mark>
+      <h2 class="ob__pregunta">
+        {{ textoStreaming() }}<span class="ob__caret" *ngIf="streamingActivo()">▍</span>
+      </h2>
+      <ul class="ob__opciones" *ngIf="!streamingActivo()">
+        <li *ngFor="let op of opcionesAntiguedad">
+          <button
+            type="button"
+            class="ob__opcion"
+            [class.ob__opcion--active]="antiguedad() === op.value"
+            (click)="antiguedad.set(op.value); $event.stopPropagation()">
+            <strong>{{ op.label }}</strong>
+            <span *ngIf="op.hint">{{ op.hint }}</span>
+          </button>
+        </li>
+      </ul>
+    </ng-container>
+
+    <!-- Paso 3 -->
+    <ng-container *ngIf="paso() === 3">
+      <gali-mark [state]="streamingActivo() ? 'actuando' : 'propuesta'" size="lg"></gali-mark>
+      <h2 class="ob__pregunta">
+        {{ textoStreaming() }}<span class="ob__caret" *ngIf="streamingActivo()">▍</span>
+      </h2>
+      <ul class="ob__opciones" *ngIf="!streamingActivo()">
+        <li *ngFor="let op of opcionesDolor">
+          <button
+            type="button"
+            class="ob__opcion"
+            [class.ob__opcion--active]="dolor() === op.value"
+            (click)="dolor.set(op.value); $event.stopPropagation()">
+            <strong>{{ op.label }}</strong>
+            <span *ngIf="op.hint">{{ op.hint }}</span>
+          </button>
+        </li>
+        <li *ngIf="dolor() === 'otro'">
+          <input
+            type="text"
+            class="ob__input-text"
+            [value]="dolorOtro()"
+            (input)="dolorOtro.set($any($event.target).value)"
+            placeholder="Escríbelo libre…"
+            (click)="$event.stopPropagation()"/>
+        </li>
+      </ul>
+    </ng-container>
+
+    <!-- Paso 4: Momento Wow -->
+    <ng-container *ngIf="paso() === 4">
+      <gali-mark [state]="streamingActivo() ? 'actuando' : 'propuesta'" size="xl"></gali-mark>
+
+      <div class="ob__wow-stream">
+        <pre class="ob__wow-texto" [class.ob__wow-texto--final]="!streamingActivo()">{{ textoStreaming() }}<span class="ob__caret" *ngIf="streamingActivo()">▍</span></pre>
+      </div>
+
+      <ng-container *ngIf="!streamingActivo() && misionActual() as m">
+        <div class="ob__mision">
+          <span class="ob__mision-mono">tu primera misión</span>
+          <h3 class="ob__mision-titulo">🎯 {{ m.titulo }}</h3>
+          <p class="ob__mision-desc">{{ m.descripcion }}</p>
+          <div class="ob__mision-actions">
+            <button type="button" class="ob__cta ob__cta--primary" (click)="irAMision()">
+              {{ m.cta }} →
+            </button>
+            <button type="button" class="ob__cta ob__cta--ghost" (click)="irAExplorar()">
+              Explorar Dropi primero
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </main>
+
+  <!-- Footer fijo: avanzar/retroceder -->
+  <footer class="ob__foot" *ngIf="paso() > 0 && paso() < 4 && !streamingActivo()">
+    <button type="button" class="ob__nav ob__nav--ghost" (click)="retroceder()" *ngIf="paso() > 1">
+      ← atrás
+    </button>
+    <span class="ob__foot-spacer"></span>
+    <button
+      type="button"
+      class="ob__nav ob__nav--primary"
+      (click)="avanzar()"
+      [disabled]="(paso() === 1 && !estado()) || (paso() === 2 && !antiguedad()) || (paso() === 3 && !dolor()) || (paso() === 3 && dolor() === 'otro' && !dolorOtro().trim())">
+      {{ paso() === 3 ? 'completar' : 'siguiente' }} →
+    </button>
+  </footer>
+</div>

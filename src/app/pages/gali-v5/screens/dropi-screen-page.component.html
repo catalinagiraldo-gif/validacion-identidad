@@ -1,0 +1,665 @@
+<div class="dropi-page" *ngIf="config() as cfg; else missingScreen">
+  <!-- Breadcrumbs -->
+  <nav class="dropi-page__breadcrumbs" aria-label="Breadcrumb">
+    <a routerLink="/gali-v5" class="dropi-page__crumb dropi-page__crumb--home">
+      <i class="pi pi-home" aria-hidden="true"></i>
+    </a>
+    <i class="pi pi-chevron-right dropi-page__crumb-sep" aria-hidden="true"></i>
+    <ng-container *ngFor="let crumb of cfg.breadcrumbs; let last = last">
+      <span class="dropi-page__crumb" [class.dropi-page__crumb--active]="last">{{ crumb }}</span>
+      <i *ngIf="!last" class="pi pi-chevron-right dropi-page__crumb-sep" aria-hidden="true"></i>
+    </ng-container>
+  </nav>
+
+  <!-- Title row -->
+  <header class="dropi-page__head" [class.dropi-page__head--export]="cfg.exportAction || cfg.layout === 'bank-table'">
+    <div class="dropi-page__head-title">
+      <h1 class="dropi-page__title">{{ cfg.title }}</h1>
+      <span *ngIf="cfg.layout === 'account-form'" class="dropi-page__tag dropi-page__tag--warning">Validación Pendiente</span>
+    </div>
+    <div class="dropi-page__head-actions">
+      <button *ngIf="cfg.exportAction && cfg.toolbarVariant === 'bulk-export'" type="button" class="btn-v5 btn-v5--primary btn-v5--export">
+        <i *ngIf="cfg.exportAction.icon" class="pi" [ngClass]="cfg.exportAction.icon"></i>
+        {{ cfg.exportAction.label }}
+      </button>
+      <button *ngIf="cfg.layout === 'bank-table' && cfg.primaryAction" type="button" class="btn-v5 btn-v5--primary btn-v5--export">
+        <i class="pi pi-plus"></i>
+        {{ cfg.primaryAction.label }}
+      </button>
+      <button *ngIf="cfg.layout === 'list-orders' && cfg.primaryAction" type="button" class="btn-v5 btn-v5--primary">
+        <i class="pi pi-plus"></i>
+        {{ cfg.primaryAction.label }}
+      </button>
+      <ng-container *ngIf="!isSpecialHead(cfg)">
+        <button *ngIf="cfg.secondaryAction" type="button" [class]="btnClass(cfg.secondaryAction.variant)">
+          <i *ngIf="cfg.secondaryAction.icon" class="pi" [ngClass]="cfg.secondaryAction.icon"></i>
+          {{ cfg.secondaryAction.label }}
+        </button>
+        <button *ngIf="cfg.primaryAction" type="button" [class]="btnClass(cfg.primaryAction.variant ?? 'primary')">
+          <i *ngIf="cfg.primaryAction.icon" class="pi" [ngClass]="cfg.primaryAction.icon"></i>
+          {{ cfg.primaryAction.label }}
+        </button>
+      </ng-container>
+    </div>
+  </header>
+
+  <!-- Account form alert -->
+  <div class="dropi-page__alert dropi-page__alert--warning" *ngIf="cfg.layout === 'account-form'">
+    <i class="pi pi-exclamation-circle"></i>
+    <p>Faltan tus datos personales. Complétalos para continuar con la validación.</p>
+  </div>
+
+  <!-- WALLET layout -->
+  <ng-container *ngIf="cfg.layout === 'wallet'">
+    <div class="wallet-summary">
+      <div class="wallet-summary__card wallet-summary__card--balance">
+        <span class="wallet-summary__label">Saldo disponible</span>
+        <strong class="wallet-summary__value">$ 2.717.360.700</strong>
+        <button type="button" class="btn-v5 btn-v5--primary">Recargar cartera</button>
+      </div>
+      <div class="wallet-summary__card">
+        <span class="wallet-summary__label">Entradas del mes</span>
+        <strong class="wallet-summary__value wallet-summary__value--in">+ $ 450.000</strong>
+      </div>
+      <div class="wallet-summary__card">
+        <span class="wallet-summary__label">Salidas del mes</span>
+        <strong class="wallet-summary__value wallet-summary__value--out">- $ 128.500</strong>
+      </div>
+    </div>
+    <div class="dropi-page__toolbar">
+      <div class="dropi-page__search">
+        <i class="pi pi-search"></i>
+        <input type="search" [placeholder]="cfg.searchPlaceholder ?? 'Buscar transacción…'" />
+      </div>
+      <button type="button" class="dropi-page__filter-btn"><i class="pi pi-filter"></i></button>
+    </div>
+    <div class="wallet-ledger">
+      <div *ngFor="let row of rows()" class="wallet-ledger__row">
+        <div class="wallet-ledger__main">
+          <span class="wallet-ledger__tipo" [class.wallet-ledger__tipo--in]="isEntrada(row)" [class.wallet-ledger__tipo--out]="!isEntrada(row)">
+            {{ row.cells['tipo'] ?? 'ENTRADA' }}
+          </span>
+          <div>
+            <p class="wallet-ledger__desc">{{ row.cells['descripcion'] ?? row.cells['concepto'] }}</p>
+            <span class="wallet-ledger__meta">ID {{ row.cells['id'] ?? row.cells['referencia'] }} · {{ row.cells['fecha'] }}</span>
+          </div>
+        </div>
+        <strong class="wallet-ledger__amount" [class.wallet-ledger__amount--in]="isEntrada(row)" [class.wallet-ledger__amount--out]="!isEntrada(row)">
+          {{ row.cells['monto'] }}
+        </strong>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- BANK TABLE -->
+  <ng-container *ngIf="cfg.layout === 'bank-table'">
+    <div class="dropi-page__table-scroll">
+      <table class="dropi-page__table dropi-page__table--bank">
+        <thead>
+          <tr>
+            <th>País</th><th>Banco</th><th>Número de cuenta</th><th>Tipo de cuenta</th><th>Identificación</th><th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows()">
+            <td>{{ row.cells['pais'] }}</td>
+            <td>{{ row.cells['banco'] }}</td>
+            <td><span class="dropi-page__tag dropi-page__tag--success">{{ row.cells['cuenta'] }}</span></td>
+            <td>{{ row.cells['tipo'] }}</td>
+            <td>{{ row.cells['identificacion'] }}</td>
+            <td>
+              <div class="dropi-page__row-actions">
+                <button type="button" title="Editar"><i class="pi pi-pencil"></i></button>
+                <button type="button" title="Eliminar"><i class="pi pi-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
+  <!-- ACCOUNT FORM — Información de cuenta -->
+  <ng-container *ngIf="cfg.layout === 'account-form'">
+    <div class="account-form">
+      <div class="account-form__avatar-col">
+        <div class="account-form__avatar">
+          <i class="pi pi-user"></i>
+        </div>
+        <button type="button" class="account-form__change-photo">Cambiar foto</button>
+      </div>
+      <div class="account-form__fields">
+        <div class="account-form__inner-alert">
+          <i class="pi pi-exclamation-circle"></i>
+          <p><strong>Revisa bien tus datos.</strong> Tras validarte, no podrás cambiarlos por 6 meses. ¿Dudas? <span class="account-form__alert-link">Escríbenos a soporte.</span></p>
+        </div>
+        <p class="account-form__note">
+          <strong>Si eres persona natural</strong>, ingresa tus datos según tu documento de identidad.
+          <strong>Si eres persona jurídica</strong> (empresa), ingresa únicamente los datos personales del representante legal, no los datos de la empresa.
+        </p>
+        <div class="account-form__grid">
+          <div class="account-form__field"><label>Primer nombre</label><input type="text" /></div>
+          <div class="account-form__field"><label>Segundo nombre (Opcional)</label><input type="text" /></div>
+        </div>
+        <div class="account-form__grid">
+          <div class="account-form__field"><label>Primer apellido</label><input type="text" /></div>
+          <div class="account-form__field"><label>Segundo apellido (Opcional)</label><input type="text" /></div>
+        </div>
+        <div class="account-form__grid account-form__grid--date">
+          <div class="account-form__field">
+            <label>Fecha de nacimiento</label>
+            <div class="account-form__date-wrap"><i class="pi pi-calendar"></i><input type="text" placeholder="DD/MM/AAAA" /></div>
+          </div>
+          <div class="account-form__field">
+            <label>Nacionalidad</label>
+            <select><option>Seleccionar</option><option>Colombia</option><option>Venezuela</option><option>Perú</option><option>México</option></select>
+          </div>
+        </div>
+        <hr class="account-form__divider" />
+        <h3 class="account-form__section">Identificación</h3>
+        <div class="account-form__grid">
+          <div class="account-form__field">
+            <label>Tipo de documento</label>
+            <select class="account-form__disabled"><option>Seleccionar</option><option>CC</option><option>NIT</option><option>Pasaporte</option></select>
+          </div>
+          <div class="account-form__field">
+            <label>Documento</label>
+            <input type="text" class="account-form__disabled" placeholder="" />
+          </div>
+        </div>
+        <hr class="account-form__divider" />
+        <h3 class="account-form__section">Contacto</h3>
+        <div class="account-form__grid">
+          <div class="account-form__field"><label>Email de contacto</label><input type="email" /></div>
+          <div class="account-form__field">
+            <label>Teléfono celular</label>
+            <div class="account-form__phone-wrap">
+              <div class="account-form__phone-prefix"><span>🇨🇴</span><span>57</span></div>
+              <input type="tel" />
+            </div>
+          </div>
+        </div>
+        <div class="account-form__field account-form__field--full">
+          <label>Dirección</label>
+          <input type="text" />
+        </div>
+        <div class="account-form__footer">
+          <button type="button" class="btn-v5 btn-v5--primary">{{ cfg.primaryAction?.label }}</button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- SETTINGS FORM -->
+  <ng-container *ngIf="cfg.layout === 'settings-form'">
+    <form class="settings-form">
+      <div *ngFor="let field of formFields()" class="dropi-page__field settings-form__field">
+        <label>{{ field.label }}</label>
+        <input *ngIf="field.type === 'text'" type="text" [value]="field.value" />
+        <select *ngIf="field.type === 'select'"><option>{{ field.value }}</option></select>
+      </div>
+      <button *ngIf="cfg.primaryAction" type="button" class="btn-v5 btn-v5--primary">{{ cfg.primaryAction.label }}</button>
+    </form>
+  </ng-container>
+
+  <!-- SECURITY TABS — Seguridad -->
+  <ng-container *ngIf="cfg.layout === 'security-tabs'">
+    <div class="sec-tabs">
+      <div class="sec-tabs__bar">
+        <button type="button" class="sec-tabs__tab" [class.sec-tabs__tab--active]="activeSecurityTab() === 0" (click)="setSecurityTab(0)">Datos de registro</button>
+        <button type="button" class="sec-tabs__tab" [class.sec-tabs__tab--active]="activeSecurityTab() === 1" (click)="setSecurityTab(1)">Datos de autenticación</button>
+        <button type="button" class="sec-tabs__tab" [class.sec-tabs__tab--active]="activeSecurityTab() === 2" (click)="setSecurityTab(2)">Mis sesiones</button>
+      </div>
+      <div class="sec-tabs__content" *ngIf="activeSecurityTab() === 0">
+        <div class="sec-tabs__section-head">
+          <strong>Datos de registro</strong>
+          <a class="sec-tabs__link">¿Por qué es importante validar tu número telefónico?</a>
+        </div>
+        <div class="sec-tabs__fields">
+          <div class="sec-tabs__field-group">
+            <div class="account-form__field">
+              <label>Email de registro</label>
+              <input type="email" value="marisama0209@gmail.com" readonly class="sec-tabs__readonly" />
+            </div>
+            <span class="sec-tabs__verified"><i class="pi pi-check-circle"></i> Verificado</span>
+          </div>
+          <div class="sec-tabs__field-group">
+            <div class="account-form__field">
+              <label>Número de registro</label>
+              <div class="sec-tabs__phone-wrap">
+                <div class="account-form__phone-prefix"><span>🇨🇴</span><span>57</span></div>
+                <input type="tel" value="3017393262" />
+              </div>
+            </div>
+            <span class="sec-tabs__verified"><i class="pi pi-check-circle"></i> Verificado</span>
+          </div>
+        </div>
+        <div class="sec-tabs__footer">
+          <button type="button" class="btn-v5 btn-v5--primary">Guardar datos de registro</button>
+        </div>
+      </div>
+      <div class="sec-tabs__content sec-tabs__content--empty" *ngIf="activeSecurityTab() === 1">
+        <p>Gestiona tu contraseña y métodos de autenticación en dos pasos.</p>
+      </div>
+      <div class="sec-tabs__content sec-tabs__content--empty" *ngIf="activeSecurityTab() === 2">
+        <p>Revisa y administra tus sesiones activas.</p>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- STORE CONFIG — Configuración de tienda -->
+  <ng-container *ngIf="cfg.layout === 'store-config'">
+    <form class="store-cfg">
+      <div class="store-cfg__grid">
+        <div class="account-form__field"><label>Nombre de la tienda</label><input type="text" /></div>
+        <div class="account-form__field"><label>Email</label><input type="email" /></div>
+      </div>
+      <div class="store-cfg__grid">
+        <div class="account-form__field">
+          <label>Estado por defecto de nueva orden:</label>
+          <select><option>Placeholder</option><option>Pendiente</option><option>En proceso</option><option>Activo</option></select>
+        </div>
+        <div class="account-form__field">
+          <label>Teléfono de la tienda</label>
+          <div class="account-form__phone-wrap">
+            <div class="account-form__phone-prefix"><span>🇨🇴</span><span>57</span></div>
+            <input type="tel" />
+          </div>
+        </div>
+      </div>
+      <div class="account-form__field">
+        <label>Store Url</label>
+        <input type="url" />
+      </div>
+      <div class="store-cfg__footer">
+        <button type="button" class="btn-v5 btn-v5--primary">{{ cfg.primaryAction?.label }}</button>
+      </div>
+    </form>
+  </ng-container>
+
+  <!-- REFERIDOS CONFIG -->
+  <ng-container *ngIf="cfg.layout === 'referidos-config'">
+    <div class="ref-cfg">
+      <div class="ref-cfg__link-card">
+        <div class="ref-cfg__link-row">
+          <span class="ref-cfg__link-label">Link de afiliados:</span>
+          <span class="ref-cfg__link-url">https://app.dropi.co/auth/register?afl=74525</span>
+        </div>
+        <button type="button" class="ref-cfg__copy btn-v5 btn-v5--outline"><i class="pi pi-copy"></i></button>
+      </div>
+      <div class="ref-cfg__filters">
+        <div class="ref-cfg__date-row">
+          <div class="ref-cfg__date-input"><i class="pi pi-calendar"></i><input type="text" value="09/10/2025 - 15/10/2025" readonly /></div>
+          <button type="button" class="btn-v5 btn-v5--primary ref-cfg__go"><i class="pi pi-arrow-right"></i></button>
+        </div>
+        <div class="dropi-page__search">
+          <i class="pi pi-search"></i>
+          <input type="search" placeholder="Buscar" />
+        </div>
+      </div>
+      <div class="ref-cfg__stats">
+        <span>Total Ordenes Referidos : 0</span>
+        <div class="ref-cfg__sort">Ordenar por: <strong>Orden Ascende</strong> <i class="pi pi-chevron-down"></i></div>
+      </div>
+      <div class="dropi-page__table-scroll">
+        <table class="dropi-page__table">
+          <thead>
+            <tr>
+              <th class="dropi-page__th">ID</th>
+              <th class="dropi-page__th">Nombre</th>
+              <th class="dropi-page__th">Correo</th>
+              <th class="dropi-page__th">Teléfono</th>
+              <th class="dropi-page__th">Estado</th>
+              <th class="dropi-page__th">Detalles</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of rows()">
+              <td class="dropi-page__td">{{ row.cells['id'] }}</td>
+              <td class="dropi-page__td">{{ row.cells['nombre'] }}</td>
+              <td class="dropi-page__td">{{ row.cells['correo'] }}</td>
+              <td class="dropi-page__td">{{ row.cells['telefono'] }}</td>
+              <td class="dropi-page__td"><span [class]="statusTagClass(row.cells['estado'])">{{ row.cells['estado'] }}</span></td>
+              <td class="dropi-page__td"><div class="dropi-page__row-actions"><button type="button" title="Ver"><i class="pi pi-search"></i></button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="dropi-page__pagination">
+        <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-double-left"></i></button>
+        <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-left"></i></button>
+        <button type="button" class="dropi-page__page-btn dropi-page__page-btn--active">1</button>
+        <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-right"></i></button>
+        <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-double-right"></i></button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- USUARIOS CONFIG -->
+  <ng-container *ngIf="cfg.layout === 'usuarios-config'">
+    <div class="usu-cfg">
+      <div class="usu-cfg__toolbar">
+        <button type="button" class="btn-v5 btn-v5--outline usu-cfg__permisos"><i class="pi pi-lock"></i> Permisos globles</button>
+        <div class="dropi-page__search">
+          <i class="pi pi-search"></i>
+          <input type="search" placeholder="Buscar" />
+        </div>
+      </div>
+      <div class="dropi-page__table-scroll">
+        <table class="dropi-page__table usu-cfg__table">
+          <thead>
+            <tr>
+              <th class="dropi-page__th usu-cfg__th-avatar"></th>
+              <th class="dropi-page__th">ID</th>
+              <th class="dropi-page__th">Nombre</th>
+              <th class="dropi-page__th">Correo</th>
+              <th class="dropi-page__th">Estado</th>
+              <th class="dropi-page__th">Fecha de Creación</th>
+              <th class="dropi-page__th">Último login</th>
+              <th class="dropi-page__th">Parent</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of rows()" class="usu-cfg__row">
+              <td class="dropi-page__td usu-cfg__td-avatar">
+                <div class="usu-cfg__avatar">{{ row.cells['initials'] }}</div>
+              </td>
+              <td class="dropi-page__td">{{ row.cells['id'] }}</td>
+              <td class="dropi-page__td">{{ row.cells['nombre'] }}</td>
+              <td class="dropi-page__td">{{ row.cells['correo'] }}</td>
+              <td class="dropi-page__td"><span [class]="statusTagClass(row.cells['estado'])">{{ row.cells['estado'] }}</span></td>
+              <td class="dropi-page__td">{{ row.cells['fechaCreacion'] }}</td>
+              <td class="dropi-page__td">{{ row.cells['ultimoLogin'] }}</td>
+              <td class="dropi-page__td usu-cfg__parent">
+                <ng-container *ngFor="let line of userParentLines(row.cells['parent'])">{{ line }}<br /></ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="dropi-page__pagination">
+        <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-double-left"></i></button>
+        <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-left"></i></button>
+        <button type="button" class="dropi-page__page-btn dropi-page__page-btn--active">1</button>
+        <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-right"></i></button>
+        <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-double-right"></i></button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- KPI DASHBOARD -->
+  <div class="kpi-grid" *ngIf="cfg.layout === 'kpi-dashboard'">
+    <article *ngFor="let row of rows(); let i = index" class="kpi-card" [style.animation-delay.ms]="i * 50">
+      <span class="kpi-card__label">{{ row.cells['titulo'] }}</span>
+      <strong class="kpi-card__value">{{ row.cells['valor'] }}</strong>
+      <span class="kpi-card__delta" *ngIf="row.cells['delta']">{{ row.cells['delta'] }}</span>
+    </article>
+  </div>
+
+  <!-- PLANS -->
+  <div class="plans-grid" *ngIf="cfg.layout === 'plans'">
+    <article *ngFor="let row of rows(); let i = index" class="plan-card" [class.plan-card--featured]="i === 1">
+      <h3 class="plan-card__name">{{ row.cells['titulo'] }}</h3>
+      <p class="plan-card__price">{{ planPrice(i) }}</p>
+      <ul class="plan-card__features">
+        <li *ngFor="let f of planFeatures(i)"><i class="pi pi-check"></i> {{ f }}</li>
+      </ul>
+      <button type="button" class="btn-v5" [class.btn-v5--primary]="i === 1" [class.btn-v5--outline]="i !== 1">
+        {{ i === 1 ? 'Plan actual' : 'Cambiar plan' }}
+      </button>
+    </article>
+  </div>
+
+  <!-- DROPI CARD -->
+  <div class="dropicard-layout" *ngIf="cfg.layout === 'dropicard'">
+    <div class="dropicard-visual">
+      <div class="dropicard-visual__chip"></div>
+      <span class="dropicard-visual__brand">dropi card</span>
+      <strong class="dropicard-visual__balance">{{ dropicardBalance() }}</strong>
+      <span class="dropicard-visual__number">•••• •••• •••• 4521</span>
+    </div>
+    <div class="dropicard-stats">
+      <div *ngFor="let row of rows()" class="dropicard-stat">
+        <span>{{ row.cells['titulo'] }}</span>
+        <strong>{{ row.cells['valor'] }}</strong>
+        <small *ngIf="row.cells['delta']">{{ row.cells['delta'] }}</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACADEMY -->
+  <div class="academy-v5" *ngIf="cfg.layout === 'academy-grid'">
+    <section class="academy-v5__hero">
+      <div class="academy-v5__hero-copy">
+        <p class="academy-v5__eyebrow">Como Dropshipper</p>
+        <h2 class="academy-v5__hero-title">
+          Impulsa tu negocio desde cero con <span>Dropi Academy</span>
+        </h2>
+        <p class="academy-v5__hero-text">
+          Cursos prácticos y guías paso a paso para dominar el comercio electrónico, mejorar tus ventas y sacarle el máximo provecho a Dropi.
+        </p>
+        <div class="academy-v5__hero-actions">
+          <button type="button" class="btn-v5 btn-v5--primary">Accede a Dropi Academy</button>
+          <button type="button" class="btn-v5 btn-v5--outline">Registrarse es Gratis</button>
+        </div>
+      </div>
+
+      <div class="academy-v5__hero-media">
+        <img src="assets/images/academy/video-thumbnail.svg" alt="Video de Dropi Academy" />
+        <span class="academy-v5__play"><i class="pi pi-play"></i></span>
+      </div>
+    </section>
+
+    <section class="academy-v5__summary">
+      <article class="academy-v5__metric">
+        <span>Cursos disponibles</span>
+        <strong>{{ academyCourses().length }}</strong>
+      </article>
+      <article class="academy-v5__metric">
+        <span>Rutas de aprendizaje</span>
+        <strong>{{ academyUniqueTagsCount() }}</strong>
+      </article>
+      <article class="academy-v5__metric">
+        <span>Instructores activos</span>
+        <strong>{{ academyUniqueInstructorsCount() }}</strong>
+      </article>
+    </section>
+
+    <section class="academy-v5__courses">
+      <header class="academy-v5__courses-head">
+        <h3>Explora los cursos de Dropi Academy</h3>
+        <p>Aprende a tu ritmo, sin experiencia previa.</p>
+      </header>
+
+      <div class="academy-v5__courses-carousel">
+        <button type="button" class="academy-v5__scroll-btn academy-v5__scroll-btn--left" (click)="scrollAcademyCourses('left')" aria-label="Ver cursos anteriores">
+          <i class="pi pi-chevron-left"></i>
+        </button>
+        <div class="academy-v5__courses-scroll">
+          <article *ngFor="let course of academyCourses()" class="academy-course">
+            <div class="academy-course__thumb-wrap">
+              <img [src]="course.thumbnailUrl" [alt]="course.title" class="academy-course__thumb" />
+              <span [class]="academyTagClass(course.tagColor)">
+                {{ course.tagLabel }}
+              </span>
+            </div>
+
+            <div class="academy-course__body">
+              <h4 class="academy-course__title">{{ course.title }}</h4>
+              <p class="academy-course__desc" *ngIf="course.description">{{ course.description }}</p>
+
+              <div class="academy-course__meta">
+                <i class="pi pi-book"></i>
+                <span>{{ course.modules }}</span>
+              </div>
+
+              <div class="academy-course__instructor">
+                <img [src]="course.instructorAvatar" [alt]="course.instructorName" />
+                <div>
+                  <strong>{{ course.instructorName }}</strong>
+                  <span>{{ course.instructorRole }}</span>
+                </div>
+              </div>
+              <button type="button" class="btn-v5 btn-v5--outline academy-course__cta">Ver curso</button>
+            </div>
+          </article>
+        </div>
+        <button type="button" class="academy-v5__scroll-btn academy-v5__scroll-btn--right" (click)="scrollAcademyCourses('right')" aria-label="Ver más cursos">
+          <i class="pi pi-chevron-right"></i>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- MARKETING GRID -->
+  <div class="marketing-grid" *ngIf="cfg.layout === 'marketing-grid'">
+    <article *ngFor="let row of rows()" class="marketing-card">
+      <div class="marketing-card__head">
+        <h3>{{ row.cells[marketingTitleKey(cfg)] }}</h3>
+        <span class="dropi-page__tag" [ngClass]="statusTagClass(row.cells['estado'])">{{ row.cells['estado'] }}</span>
+      </div>
+      <div class="marketing-card__meta">
+        <span *ngIf="row.cells['canal']"><i class="pi pi-send"></i> {{ row.cells['canal'] }}</span>
+        <span *ngIf="row.cells['audiencia']"><i class="pi pi-users"></i> {{ row.cells['audiencia'] }}</span>
+        <span *ngIf="row.cells['enviados']"><i class="pi pi-envelope"></i> {{ row.cells['enviados'] }} enviados</span>
+        <span *ngIf="row.cells['visitas']"><i class="pi pi-eye"></i> {{ row.cells['visitas'] }} visitas</span>
+        <span *ngIf="row.cells['conversion']"><i class="pi pi-chart-line"></i> {{ row.cells['conversion'] }} conv.</span>
+      </div>
+      <div class="marketing-card__actions">
+        <button type="button" class="btn-v5 btn-v5--outline">Ver detalle</button>
+        <button type="button" class="btn-v5 btn-v5--primary">Editar</button>
+      </div>
+    </article>
+  </div>
+
+  <!-- REPORT METRICS -->
+  <ng-container *ngIf="cfg.layout === 'report-metrics'">
+    <div class="report-kpis">
+      <div class="report-kpi"><span>Total unidades</span><strong>2.167</strong></div>
+      <div class="report-kpi"><span>Ingresos</span><strong>$ 75.5M</strong></div>
+      <div class="report-kpi"><span>Margen promedio</span><strong>42%</strong></div>
+    </div>
+    <ng-container *ngTemplateOutlet="listTable; context: { cfg: cfg }"></ng-container>
+  </ng-container>
+
+  <!-- LIST layouts (orders, cas, logistics, default, novedades, bulk) -->
+  <ng-container *ngIf="isListLayout(cfg.layout)">
+    <!-- Novedades toolbar -->
+    <div class="dropi-page__toolbar dropi-page__toolbar--novedades" *ngIf="cfg.toolbarVariant === 'novedades'">
+      <div class="dropi-page__toolbar-left">
+        <button type="button" class="btn-v5 btn-v5--outline btn-v5--actions">Acciones <i class="pi pi-chevron-down"></i></button>
+        <button type="button" class="btn-v5 btn-v5--ghost" *ngIf="cfg.historialAction">
+          <i class="pi pi-history"></i> {{ cfg.historialAction.label }}
+        </button>
+      </div>
+      <div class="dropi-page__toolbar-right">
+        <div class="dropi-page__search dropi-page__search--guia">
+          <i class="pi pi-search"></i>
+          <input type="search" [placeholder]="cfg.searchPlaceholder ?? 'Buscar…'" />
+          <button type="button" class="dropi-page__guia-btn" *ngIf="cfg.searchGuia">Guía <i class="pi pi-chevron-down"></i></button>
+        </div>
+        <button type="button" class="dropi-page__filter-btn"><i class="pi pi-filter"></i></button>
+      </div>
+    </div>
+    <!-- Etiquetas toolbar -->
+    <div class="dropi-page__toolbar dropi-page__toolbar--etiquetas" *ngIf="cfg.layout === 'list-etiquetas'">
+      <button type="button" class="btn-v5 btn-v5--primary" *ngIf="cfg.primaryAction">
+        <i class="pi pi-tag"></i> {{ cfg.primaryAction.label }}
+      </button>
+      <div class="dropi-page__toolbar-right">
+        <div class="dropi-page__search dropi-page__search--guia">
+          <i class="pi pi-search"></i>
+          <input type="search" [placeholder]="cfg.searchPlaceholder ?? 'Buscar…'" />
+          <button type="button" class="dropi-page__guia-btn" *ngIf="cfg.searchGuia">Guía <i class="pi pi-chevron-down"></i></button>
+        </div>
+        <button type="button" class="dropi-page__filter-btn"><i class="pi pi-filter"></i></button>
+      </div>
+    </div>
+    <!-- Bulk toolbar -->
+    <div class="dropi-page__toolbar dropi-page__toolbar--bulk" *ngIf="cfg.toolbarVariant === 'bulk-export'">
+      <button type="button" class="btn-v5 btn-v5--outline" *ngIf="cfg.bulkAction">
+        <i class="pi pi-upload"></i> {{ cfg.bulkAction.label }}
+      </button>
+      <button type="button" class="dropi-page__filter-btn"><i class="pi pi-filter"></i></button>
+    </div>
+    <!-- Orders / default toolbar -->
+    <div class="dropi-page__toolbar" *ngIf="cfg.toolbarVariant === 'default' && cfg.searchPlaceholder && cfg.layout !== 'list-orders'">
+      <div class="dropi-page__search">
+        <i class="pi pi-search"></i>
+        <input type="search" [placeholder]="cfg.searchPlaceholder" />
+        <button type="button" class="dropi-page__guia-btn" *ngIf="cfg.searchGuia">Guía <i class="pi pi-chevron-down"></i></button>
+      </div>
+      <button type="button" class="dropi-page__filter-btn"><i class="pi pi-filter"></i></button>
+    </div>
+    <div class="dropi-page__toolbar dropi-page__toolbar--orders" *ngIf="cfg.layout === 'list-orders'">
+      <div class="dropi-page__search dropi-page__search--guia">
+        <i class="pi pi-search"></i>
+        <input type="search" [placeholder]="cfg.searchPlaceholder ?? 'Buscar…'" />
+        <button type="button" class="dropi-page__guia-btn">Guía <i class="pi pi-chevron-down"></i></button>
+      </div>
+      <button type="button" class="dropi-page__filter-btn"><i class="pi pi-filter"></i></button>
+    </div>
+    <ng-container *ngTemplateOutlet="listTable; context: { cfg: cfg }"></ng-container>
+  </ng-container>
+</div>
+
+<ng-template #missingScreen>
+  <div class="dropi-page dropi-page--missing">
+    <nav class="dropi-page__breadcrumbs" aria-label="Breadcrumb">
+      <a routerLink="/gali-v5" class="dropi-page__crumb dropi-page__crumb--home">
+        <i class="pi pi-home" aria-hidden="true"></i>
+      </a>
+    </nav>
+    <h1 class="dropi-page__title">Pantalla no disponible</h1>
+    <p class="dropi-page__missing-msg">
+      Esta vista aún no está enlazada en el prototipo Gali V5. Usa el menú lateral para navegar.
+    </p>
+    <a routerLink="/gali-v5" class="btn-v5 btn-v5--primary">Volver al inicio</a>
+  </div>
+</ng-template>
+
+<!-- Shared list table template -->
+<ng-template #listTable let-cfg="cfg">
+  <div class="dropi-page__table-scroll" *ngIf="cfg.columns">
+    <table class="dropi-page__table" [class.dropi-page__table--cas]="cfg.layout === 'list-cas'">
+      <thead>
+        <tr>
+          <th *ngIf="cfg.showCheckbox" class="dropi-page__th dropi-page__th--check"><span class="dropi-page__checkbox"></span></th>
+          <th *ngFor="let col of dataColumns(cfg.columns)" class="dropi-page__th" [style.min-width]="col.width" [style.width]="col.width">{{ col.label }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows()" [class.dropi-page__tr--tall]="hasMultiline(cfg.columns)">
+          <td *ngIf="cfg.showCheckbox" class="dropi-page__td dropi-page__td--check"><span class="dropi-page__checkbox"></span></td>
+          <td *ngFor="let col of dataColumns(cfg.columns)" class="dropi-page__td" [class.dropi-page__td--multiline]="col.multiline" [style.min-width]="col.width" [style.width]="col.width">
+            <ng-container *ngIf="col.type === 'actions'; else cellContent">
+              <div class="dropi-page__row-actions">
+                <button *ngIf="cfg.layout === 'list-descargas'" type="button" title="Descargar"><i class="pi pi-download"></i></button>
+                <button *ngIf="cfg.layout === 'list-etiquetas'" type="button" title="Imprimir"><i class="pi pi-print"></i></button>
+                <button *ngIf="cfg.layout === 'list-etiquetas'" type="button" title="PDF"><i class="pi pi-file-pdf"></i></button>
+                <button *ngIf="cfg.layout !== 'list-descargas' && cfg.layout !== 'list-etiquetas'" type="button" title="Confirmar"><i class="pi pi-check-circle"></i></button>
+                <button *ngIf="cfg.layout !== 'list-descargas'" type="button" title="Ver"><i class="pi pi-search"></i></button>
+              </div>
+            </ng-container>
+            <ng-template #cellContent>
+              <ng-container *ngIf="isMultiline(row.cells[col.key]); else plainCell">
+                <p *ngFor="let line of asLines(row.cells[col.key])">{{ line }}</p>
+              </ng-container>
+              <ng-template #plainCell>
+                <span *ngIf="shouldBadge(col.key, cfg); else rawCell" [class]="statusTagClass(String(row.cells[col.key]))">{{ row.cells[col.key] }}</span>
+                <ng-template #rawCell>{{ row.cells[col.key] }}</ng-template>
+              </ng-template>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="dropi-page__pagination" *ngIf="cfg.columns">
+    <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-double-left"></i></button>
+    <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-left"></i></button>
+    <button type="button" class="dropi-page__page-btn dropi-page__page-btn--active">1</button>
+    <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-right"></i></button>
+    <button type="button" class="dropi-page__page-btn"><i class="pi pi-angle-double-right"></i></button>
+  </div>
+</ng-template>

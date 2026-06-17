@@ -1,0 +1,382 @@
+@if (showOnboarding()) {
+  <gali-goal-onboarding (closed)="showOnboarding.set(false)" />
+}
+
+<div class="mission">
+
+  @if (ws.hubEntryContext(); as ctx) {
+    <section class="mission__entry-banner">
+      <div class="mission__entry-banner-inner">
+        <span class="mission__entry-banner-icon" aria-hidden="true">✦</span>
+        <p class="mission__entry-banner-text">{{ ctx.message }}</p>
+        <a [routerLink]="ctx.ctaRoute" class="mission__entry-banner-cta" (click)="ws.clearHubEntryContext()">{{ ctx.ctaLabel }} →</a>
+        <button type="button" class="mission__entry-banner-dismiss" (click)="ws.clearHubEntryContext()" data-proto-skip aria-label="Cerrar">×</button>
+      </div>
+    </section>
+  }
+
+  <!-- ══ GALI INSIGHT ══ -->
+  <section class="mission__insight">
+    <div class="mission__insight-inner">
+      <span class="mission__insight-dot" aria-hidden="true"></span>
+      <div class="mission__insight-body">
+        <span class="mission__insight-label">GALI</span>
+        <p class="mission__insight-text">
+          Collar GPS lleva 52h con ROAS 2.9x sobre meta.
+          Roax sugiere escalar presupuesto +30% ($66k → $86k/día).
+        </p>
+      </div>
+      <div class="mission__insight-actions">
+        <button type="button" class="mission__insight-cta mission__insight-cta--primary">
+          Aprobar escala
+        </button>
+        <button type="button" class="mission__insight-cta mission__insight-cta--secondary">
+          Ver detalle →
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PROYECTO ACTIVO: ANATOMÍA ══ -->
+  <section class="mission__anatomy">
+    <div class="mission__anatomy-header">
+      <div class="mission__anatomy-title-group">
+        <h2 class="mission__anatomy-title">Collar GPS v2</h2>
+        <span class="mission__anatomy-badge mission__anatomy-badge--escala">↑ en escala</span>
+        <span class="mission__anatomy-meta">Sem 22 · Meta: 100 ventas/semana</span>
+        <span class="mission__anatomy-cycle-label" title="Ciclo completo: Producto → Marketing genera Pedidos → Logística entrega → Finanzas captura ingresos → Reportes miden el resultado">↻ Ciclo de negocio</span>
+      </div>
+      <button type="button" class="mission__customize-btn" (click)="showCustomizer.set(!showCustomizer())" data-proto-skip>
+        <i class="pi pi-sliders-h"></i> Personalizar
+      </button>
+      <div class="mission__anatomy-nav">
+        @for (p of proyectos; track p.id) {
+          <button
+            type="button"
+            class="mission__anatomy-tab"
+            [class.mission__anatomy-tab--active]="p.id === 'collar-gps-2026'"
+            (click)="goToProject(p.id)">
+            {{ p.nombre | slice:0:16 }}{{ p.nombre.length > 16 ? '…' : '' }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Red de nodos + panel de detalle -->
+    <div class="mission__anatomy-body">
+      <div class="mission__net" [class.mission__net--detail-open]="activeNode()">
+
+        <!-- Fila superior: Producto → Marketing → Pedidos -->
+        <div class="anatomy-node"
+             [class.anatomy-node--selected]="activeNode() === 'producto'"
+             (click)="toggleNode('producto')"
+             role="button" tabindex="0" aria-label="Ver detalle de Producto">
+          <div class="anatomy-node__header">
+            <span class="anatomy-node__icon">📦</span>
+            <span class="anatomy-node__label">PRODUCTO</span>
+          </div>
+          <div class="anatomy-node__agent">
+            <span class="anatomy-node__dot anatomy-node__dot--pulse" style="background:#818cf8"></span>
+            <span class="anatomy-node__agent-name">ADA Spy</span>
+          </div>
+          <div class="anatomy-node__metrics">
+            <span class="anatomy-node__main">847 unidades</span>
+            <span class="anatomy-node__sub">PetStore Colombia</span>
+          </div>
+        </div>
+
+        <div class="anatomy-arrow" [class.anatomy-arrow--active]="activeNode() === 'producto' || activeNode() === 'marketing'">→</div>
+
+        <div class="anatomy-node anatomy-node--highlight"
+             [class.anatomy-node--selected]="activeNode() === 'marketing'"
+             (click)="toggleNode('marketing')"
+             role="button" tabindex="0" aria-label="Ver detalle de Marketing">
+          <div class="anatomy-node__header">
+            <span class="anatomy-node__icon">📣</span>
+            <span class="anatomy-node__label">MARKETING</span>
+          </div>
+          <div class="anatomy-node__agent">
+            <span class="anatomy-node__dot anatomy-node__dot--pulse" style="background:#f97316"></span>
+            <span class="anatomy-node__agent-name">Roax</span>
+          </div>
+          <div class="anatomy-node__metrics">
+            <span class="anatomy-node__main">ROAS 2.9x</span>
+            <span class="anatomy-node__sub">$66k/día · escalando</span>
+          </div>
+        </div>
+
+        <div class="anatomy-arrow" [class.anatomy-arrow--active]="activeNode() === 'marketing' || activeNode() === 'pedidos'">→</div>
+
+        <div class="anatomy-node"
+             [class.anatomy-node--alert]="true"
+             [class.anatomy-node--selected]="activeNode() === 'pedidos'"
+             (click)="toggleNode('pedidos')"
+             role="button" tabindex="0" aria-label="Ver detalle de Pedidos">
+          <div class="anatomy-node__header">
+            <span class="anatomy-node__icon">🛒</span>
+            <span class="anatomy-node__label">PEDIDOS</span>
+            <span class="anatomy-node__badge-alert">3</span>
+          </div>
+          <div class="anatomy-node__agent">
+            <span class="anatomy-node__dot anatomy-node__dot--fast" style="background:#fbbf24"></span>
+            <span class="anatomy-node__agent-name">Vigilante</span>
+          </div>
+          <div class="anatomy-node__metrics">
+            <span class="anatomy-node__main">47 activas</span>
+            <span class="anatomy-node__sub">43 confirmadas · 3 pendientes</span>
+          </div>
+        </div>
+
+        <!-- Conectores verticales -->
+        <div class="anatomy-v-connector"></div>
+        <div class="anatomy-v-center"></div>
+        <div class="anatomy-v-connector"></div>
+
+        <!-- Fila inferior: Logística ← Finanzas ← Reportes -->
+        <div class="anatomy-node"
+             [class.anatomy-node--selected]="activeNode() === 'logistica'"
+             (click)="toggleNode('logistica')"
+             role="button" tabindex="0" aria-label="Ver detalle de Logística">
+          <div class="anatomy-node__header">
+            <span class="anatomy-node__icon">🚚</span>
+            <span class="anatomy-node__label">LOGÍSTICA</span>
+          </div>
+          <div class="anatomy-node__agent">
+            <span class="anatomy-node__dot anatomy-node__dot--pulse" style="background:#fbbf24"></span>
+            <span class="anatomy-node__agent-name">Vigilante</span>
+          </div>
+          <div class="anatomy-node__metrics">
+            <span class="anatomy-node__main">Smart routing</span>
+            <span class="anatomy-node__sub">12 pedidos redirigidos</span>
+          </div>
+        </div>
+
+        <div class="anatomy-arrow" [class.anatomy-arrow--active]="activeNode() === 'logistica' || activeNode() === 'finanzas'">→</div>
+
+        <div class="anatomy-node anatomy-node--warn"
+             [class.anatomy-node--selected]="activeNode() === 'finanzas'"
+             (click)="toggleNode('finanzas')"
+             role="button" tabindex="0" aria-label="Ver detalle de Finanzas">
+          <div class="anatomy-node__header">
+            <span class="anatomy-node__icon">💰</span>
+            <span class="anatomy-node__label">FINANZAS</span>
+            <span class="anatomy-node__badge-warn">!</span>
+          </div>
+          <div class="anatomy-node__agent">
+            <span class="anatomy-node__dot" style="background:#9ca3af"></span>
+            <span class="anatomy-node__agent-name">Siigo ○</span>
+          </div>
+          <div class="anatomy-node__metrics">
+            <span class="anatomy-node__main">$450k pend.</span>
+            <span class="anatomy-node__sub">Sin facturar — conectar Siigo</span>
+          </div>
+        </div>
+
+        <div class="anatomy-arrow" [class.anatomy-arrow--active]="activeNode() === 'finanzas' || activeNode() === 'reportes'">→</div>
+
+        <div class="anatomy-node"
+             [class.anatomy-node--selected]="activeNode() === 'reportes'"
+             (click)="toggleNode('reportes')"
+             role="button" tabindex="0" aria-label="Ver detalle de Reportes">
+          <div class="anatomy-node__header">
+            <span class="anatomy-node__icon">📊</span>
+            <span class="anatomy-node__label">REPORTES</span>
+          </div>
+          <div class="anatomy-node__agent">
+            <span class="anatomy-node__dot anatomy-node__dot--pulse" style="background:#f97316"></span>
+            <span class="anatomy-node__agent-name">Roax</span>
+          </div>
+          <div class="anatomy-node__metrics">
+            <span class="anatomy-node__main">CPA $21.4k</span>
+            <span class="anatomy-node__sub">ROAS real 1.93x vs 2.9x Meta</span>
+          </div>
+        </div>
+
+      </div><!-- /mission__net -->
+
+      <!-- Panel de detalle del nodo activo -->
+      @if (activeNodeDetail(); as detail) {
+        <div class="mission__node-detail">
+          <div class="node-detail__header" [style.border-left-color]="detail.color">
+            <span class="node-detail__agent-dot" [style.background]="detail.color"></span>
+            <span class="node-detail__agent-name">{{ detail.agentName }}</span>
+            <button type="button" class="node-detail__close" (click)="toggleNode(activeNode()!)" aria-label="Cerrar detalle">
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
+          <p class="node-detail__desc">{{ detail.description }}</p>
+          <div class="node-detail__last">
+            <span class="node-detail__last-label">Última acción</span>
+            <span class="node-detail__last-text">{{ detail.lastAction }}</span>
+          </div>
+          @if (detail.impacts.length) {
+            <div class="node-detail__impacts">
+              <span class="node-detail__impacts-label">Afecta a</span>
+              @for (imp of detail.impacts; track imp.label) {
+                <a [routerLink]="imp.route" class="node-detail__impact-link">
+                  {{ imp.label }} →
+                </a>
+              }
+            </div>
+          }
+          <div class="node-detail__actions">
+            <a [routerLink]="detail.ctaRoute" class="node-detail__cta">{{ detail.ctaLabel }} →</a>
+            <button type="button" class="node-detail__chat-btn" (click)="openChatWithNode(activeNode()!)">
+              Hablar con {{ detail.agentName }}
+            </button>
+          </div>
+        </div>
+      }
+
+    </div><!-- /mission__anatomy-body -->
+  </section>
+
+  <!-- ══ SEÑALES Y CHAT ══ -->
+  <div class="mission__bottom">
+
+    <!-- Señales recientes -->
+    <section class="mission__section mission__section--signals">
+      <div class="mission__section-head">
+        <h2 class="mission__section-title">
+          Señales
+          @if (pendingSignals > 0) {
+            <span class="mission__badge mission__badge--crit">{{ pendingSignals }}</span>
+          }
+        </h2>
+      </div>
+      <div class="mission__signals-list">
+        @for (sig of signals; track sig.id) {
+          <gali-signal-card-v2 [signal_data]="sig" />
+        }
+      </div>
+    </section>
+
+    <!-- Chat con Gali -->
+    <section class="mission__section mission__section--chat">
+      <div class="mission__section-head">
+        <h2 class="mission__section-title">✦ Hablar con Gali</h2>
+        <span class="mission__section-meta">Lanzar · Explorar · Decidir</span>
+      </div>
+      <div class="mission__chat">
+        <div class="mission__chat-messages" #lanzarScroll>
+          @for (msg of lanzarMessages(); track $index) {
+            <div class="chat-msg"
+              [class.chat-msg--gali]="msg.from === 'gali'"
+              [class.chat-msg--user]="msg.from === 'user'">
+              @if (msg.from === 'gali') {
+                <span class="chat-msg__avatar">✦</span>
+              }
+              <div class="chat-msg__bubble">{{ msg.text }}</div>
+            </div>
+          }
+          @if (lanzarTyping()) {
+            <div class="chat-msg chat-msg--gali">
+              <span class="chat-msg__avatar">✦</span>
+              <div class="chat-msg__bubble chat-typing">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          }
+          @if (lanzarMessages().length === 1 && !lanzarTyping()) {
+            <div class="chat-suggestions">
+              <button type="button" class="chat-suggestion" (click)="sendLanzar('Tengo un producto en mente')">
+                Tengo un producto en mente →
+              </button>
+              <button type="button" class="chat-suggestion" (click)="sendLanzar('Muéstrame sugerencias de ADA Spy')">
+                Sugerencias de ADA Spy →
+              </button>
+              <button type="button" class="chat-suggestion" (click)="sendLanzar('Empezar desde un objetivo de venta')">
+                Empezar desde un objetivo →
+              </button>
+            </div>
+          }
+        </div>
+        <div class="mission__chat-input">
+          <input
+            type="text"
+            class="mission__chat-field"
+            placeholder="Escríbele a Gali…"
+            [ngModel]="lanzarInput()"
+            (ngModelChange)="lanzarInput.set($event)"
+            (keydown.enter)="sendLanzar()" />
+          <button
+            type="button"
+            class="mission__chat-send"
+            [disabled]="!lanzarInput().trim() || lanzarTyping()"
+            (click)="sendLanzar()">
+            <i class="pi pi-send" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ══ AKADEMY CONNECTOR ══ -->
+  <section class="mission__akademy-strip">
+    <div class="mission__akademy-inner">
+      <span class="mission__akademy-icon">🎓</span>
+      <div class="mission__akademy-body">
+        <strong>Gali recomienda para ti en Akademy</strong>
+        <span>Basado en tu ROAS real vs declarado: <em>Optimización de P&amp;L real en Meta Ads</em> — 38 min · Avanzado</span>
+      </div>
+      <a routerLink="/gali-v5/academy" class="mission__akademy-cta">Ir a Akademy →</a>
+    </div>
+  </section>
+
+</div>
+
+<!-- ══ DASHBOARD CUSTOMIZER PANEL ══ -->
+@if (showCustomizer()) {
+  <div class="mission-customizer-overlay" (click)="saveAndCloseCustomizer()">
+    <div class="mission-customizer" (click)="$event.stopPropagation()">
+      <div class="mission-customizer__header">
+        <strong>Personalizar dashboard</strong>
+        <button type="button" (click)="saveAndCloseCustomizer()" aria-label="Cerrar">✕</button>
+      </div>
+      <p class="mission-customizer__hint">Activa o desactiva las secciones que quieres ver en tu hub de Gali.</p>
+      <div class="mission-customizer__list">
+        <label class="customizer-toggle-row">
+          <span>Insight de Gali (barra superior)</span>
+          <input type="checkbox" [checked]="dashboardSections().insight" (change)="toggleSection('insight')" />
+        </label>
+        <label class="customizer-toggle-row">
+          <span>Anatomía del proyecto (ciclo de negocio)</span>
+          <input type="checkbox" [checked]="dashboardSections().anatomy" (change)="toggleSection('anatomy')" />
+        </label>
+        <label class="customizer-toggle-row">
+          <span>Señales activas</span>
+          <input type="checkbox" [checked]="dashboardSections().signals" (change)="toggleSection('signals')" />
+        </label>
+        <label class="customizer-toggle-row">
+          <span>Chat con Gali</span>
+          <input type="checkbox" [checked]="dashboardSections().chat" (change)="toggleSection('chat')" />
+        </label>
+        <label class="customizer-toggle-row">
+          <span>Recomendaciones Akademy</span>
+          <input type="checkbox" [checked]="dashboardSections().akademy" (change)="toggleSection('akademy')" />
+        </label>
+      </div>
+      <p class="mission-customizer__chat-tip">
+        <span>✦</span> También puedes decirle a Gali: <em>"Personaliza mi dashboard"</em>
+      </p>
+      <div class="mission-customizer__footer">
+        <button type="button" class="mission-customizer__save-btn" (click)="saveAndCloseCustomizer()">
+          Guardar cambios
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ══ FEEDBACK DE GALI POST-CUSTOMIZER ══ -->
+@if (customizerSaved()) {
+  <div class="mission-gali-feedback" role="status">
+    <span class="mission-gali-feedback__dot">✦</span>
+    <div class="mission-gali-feedback__body">
+      <strong>Dashboard actualizado</strong>
+      <span>Guardé tu preferencia. Recuerda que puedes ajustarla en cualquier momento desde el botón "Personalizar".</span>
+    </div>
+    <button type="button" class="mission-gali-feedback__dismiss" (click)="customizerSaved.set(false)" aria-label="Cerrar">✕</button>
+  </div>
+}

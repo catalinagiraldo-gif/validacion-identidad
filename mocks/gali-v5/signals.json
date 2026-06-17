@@ -1,0 +1,94 @@
+[
+  {
+    "id": "sig-001",
+    "agente": "Vigilante",
+    "agente_id": "vigilante",
+    "tipo": "critica",
+    "estado": "pending_decision",
+    "titulo": "Coordinadora Bogotá: 15% novedad hoy",
+    "contexto": "Tasa 3× por encima del umbral (5%). 12 pedidos de hoy en riesgo. Último pico: hace 3 días con 11%.",
+    "timestamp": "hace 18 min",
+    "urgencia": "alta",
+    "afectados": 12,
+    "metrica_label": "Novedad Coordinadora Bogotá",
+    "metrica_valor": "15%",
+    "umbral": "5%",
+    "opciones": [
+      { "id": "a", "label": "Cambiar todos → Servientrega", "sublabel": "Tasa actual Servientrega: 3.8%" },
+      { "id": "b", "label": "Cambiar solo los de hoy", "sublabel": "Esperar datos de mañana" },
+      { "id": "c", "label": "Crear regla automática", "sublabel": "Para futuros picos de novedad" }
+    ],
+    "tabla_label": "pedidos afectados hoy",
+    "tabla_items": [
+      { "id": "P-8841", "cliente": "María L.", "ciudad": "Bogotá", "transportadora": "Coordinadora", "estado": "En camino" },
+      { "id": "P-8839", "cliente": "Carlos M.", "ciudad": "Bogotá", "transportadora": "Coordinadora", "estado": "En camino" },
+      { "id": "P-8835", "cliente": "Sandra P.", "ciudad": "Bogotá", "transportadora": "Coordinadora", "estado": "Entregando" },
+      { "id": "P-8832", "cliente": "Jorge R.", "ciudad": "Bogotá", "transportadora": "Coordinadora", "estado": "En camino" }
+    ]
+  },
+  {
+    "id": "sig-002",
+    "agente": "Roax",
+    "agente_id": "roax",
+    "tipo": "completada",
+    "estado": "completed",
+    "titulo": "Cambié Video A → Video B (CTR mejora)",
+    "contexto": "Video A cayó a CTR 0.7% durante 48h. Activé Video B automáticamente.",
+    "timestamp": "hace 2h",
+    "urgencia": "baja",
+    "resultado_antes": "CTR: 1.2% · ROAS: 2.6x",
+    "resultado_despues": "CTR: 1.8% · ROAS: 2.9x",
+    "cta_followup": "¿Crear regla automática para esto?",
+    "cta_followup_label": "Crear skill"
+  },
+  {
+    "id": "sig-003",
+    "agente": "Chatea Pro",
+    "agente_id": "chatea",
+    "tipo": "decision",
+    "estado": "pending_decision",
+    "titulo": "1 novedad requiere tu decisión",
+    "contexto": "8 novedades resueltas automáticamente. Pedido P-8801 tiene reporte inusual de transportadora — necesita confirmación manual.",
+    "timestamp": "hace 1h",
+    "urgencia": "media",
+    "afectados": 1,
+    "opciones": [
+      { "id": "a", "label": "Autorizar devolución", "sublabel": "Crédito automático al cliente" },
+      { "id": "b", "label": "Llamar al cliente", "sublabel": "Verificar antes de resolver" },
+      { "id": "c", "label": "Escalar a CAS", "sublabel": "Asignar a agente humano" }
+    ]
+  },
+  {
+    "id": "sig-004",
+    "agente": "ADA Spy",
+    "agente_id": "ada",
+    "tipo": "oportunidad",
+    "estado": "pending_decision",
+    "titulo": "Difusor de aromaterapia: +340% ventas",
+    "contexto": "Detecté tendencia en nicho. Margen est: 68%. Ventana de 10–14 días antes de saturación. Score: 87/100.",
+    "timestamp": "hace 1h",
+    "urgencia": "baja",
+    "metrica_label": "Score de oportunidad",
+    "metrica_valor": "87/100",
+    "opciones": [
+      { "id": "a", "label": "Lanzar proyecto", "sublabel": "Ir a Modo Lanzar con este producto" },
+      { "id": "b", "label": "Ver análisis completo", "sublabel": "Caza Productos · ADA Spy" },
+      { "id": "c", "label": "Guardar para después", "sublabel": "Alerta si baja el score" }
+    ]
+  },
+  {
+    "id": "sig-005",
+    "agente": "Roax",
+    "agente_id": "roax",
+    "tipo": "completada",
+    "estado": "completed",
+    "titulo": "Escalé presupuesto +15% (ROAS 2.8x+ estable)",
+    "contexto": "Condición de la skill cumplida: ROAS ≥ 2.8x durante 48h continuas.",
+    "timestamp": "hace 4h",
+    "urgencia": "baja",
+    "resultado_antes": "$57.500/día",
+    "resultado_despues": "$66.000/día",
+    "cta_followup": "¿Revertir cambio?",
+    "cta_followup_label": "Revertir"
+  }
+]

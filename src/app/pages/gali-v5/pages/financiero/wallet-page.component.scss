@@ -1,0 +1,263 @@
+@import '../shared/dropi-page-shell';
+@import '../shared/dropi-page-host';
+
+:host {
+  @include dropi-page-host;
+}
+
+.wallet-page {
+  @include dropi-page-shell;
+  min-height: 100%;
+  padding-bottom: $size-8;
+
+  &__alert {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+    min-height: 48px;
+    padding: $size-3 $size-4;
+    border-radius: $radius-lg;
+    background: rgba($info, 0.08);
+    border: 1px solid rgba($info, 0.2);
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $secondary-600;
+
+    .pi {
+      font-size: $font-lg;
+      flex-shrink: 0;
+    }
+  }
+
+  &__filters {
+    @include dropi-toolbar-row;
+    align-items: flex-end;
+    margin-bottom: $size-4;
+  }
+
+  &__date,
+  &__select {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      font-family: $font-primary;
+      font-size: $font-xs;
+      color: $gray-500;
+    }
+
+    input,
+    select {
+      height: 40px;
+      padding: 0 $size-3;
+      border: 1px solid $gray-200;
+      border-radius: $radius-lg;
+      font-family: $font-primary;
+      font-size: $font-sm;
+      background: $white;
+    }
+  }
+
+  &__date input {
+    width: 126px;
+  }
+
+  &__select select {
+    width: 180px;
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid $gray-200;
+
+    button {
+      height: 52px;
+      padding: 0 $size-5;
+      border: none;
+      background: transparent;
+      font-family: $font-primary;
+      font-size: $font-sm;
+      font-weight: $font-medium;
+      color: $gray-500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+
+      &.active {
+        color: $primary-600;
+        border-bottom-color: $primary-500;
+      }
+    }
+  }
+
+  &__empty {
+    padding: $size-8;
+    text-align: center;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-500;
+    border: 1px solid $gray-100;
+    border-radius: $radius-md;
+    background: $gray-50;
+  }
+}
+
+.wallet-table-wrap {
+  overflow-x: auto;
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  background: $white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.wallet-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  font-family: $font-primary;
+
+  th {
+    height: 55px;
+    padding: 0 $size-3;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $gray-600;
+    background: $gray-50;
+    border-bottom: 1px solid $gray-100;
+    text-align: left;
+  }
+
+  td {
+    height: 80px;
+    padding: $size-3;
+    font-size: $font-sm;
+    color: $gray-700;
+    border-bottom: 1px solid $gray-100;
+    vertical-align: middle;
+    white-space: nowrap;
+
+    &.positive {
+      color: $success;
+      font-weight: $font-semibold;
+    }
+
+    &.negative {
+      color: $error;
+      font-weight: $font-semibold;
+    }
+  }
+
+  &__desc {
+    white-space: normal;
+    min-width: 280px;
+    line-height: 1.5;
+  }
+}
+
+
+// ── Gali Agent Working Bar ──────────────────────────────
+.gali-agent-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+
+  &--ada {
+    border-left: 3px solid #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+
+    .gali-agent-bar__dot { background: #3b82f6; animation: agbar-pulse-blue 2s infinite; }
+    .gali-agent-bar__status { color: #3b82f6; }
+    .gali-agent-bar__cta { border-color: #3b82f6; color: #3b82f6; }
+    .gali-agent-bar__cta:hover { background: rgba(59,130,246,0.08); }
+  }
+
+  &--financiero {
+    border-left: 3px solid #8b5cf6;
+    background: rgba(139, 92, 246, 0.05);
+    align-items: flex-start;
+
+    .gali-agent-bar__dot { background: #8b5cf6; animation: agbar-pulse-violet 2s infinite; }
+    .gali-agent-bar__status { color: #8b5cf6; }
+    .gali-agent-bar__cta { border-color: #8b5cf6; color: #8b5cf6; }
+    .gali-agent-bar__cta:hover { background: rgba(139,92,246,0.08); }
+  }
+
+  &__left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__identity { display: flex; flex-direction: column; gap: 2px; }
+
+  &__name { font-size: 12px; font-weight: 600; color: #1c1c1e; }
+
+  &__status { font-size: 11px; }
+
+  &__action { flex: 1; font-size: 12px; color: #6b7280; }
+
+  &__finance-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  &__action-secondary { font-size: 11px; color: #9ca3af; }
+
+  &__ada-stats {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__ada-stat { font-size: 12px; color: #6b7280; strong { font-weight: 700; color: #1c1c1e; } }
+
+  &__ada-sep { color: #d1d5db; }
+
+  &__actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  &__cta {
+    padding: 5px 12px;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+  }
+
+  &__secondary {
+    padding: 5px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: transparent;
+    color: #6b7280;
+    font-size: 12px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+    &:hover { border-color: #9ca3af; }
+  }
+}
+
+@keyframes agbar-pulse-blue {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); }
+  50%       { box-shadow: 0 0 0 4px rgba(59,130,246,0); }
+}
+
+@keyframes agbar-pulse-violet {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139,92,246,0.4); }
+  50%       { box-shadow: 0 0 0 4px rgba(139,92,246,0); }
+}

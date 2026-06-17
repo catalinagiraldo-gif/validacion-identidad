@@ -1,0 +1,47 @@
+<div class="cmd-overlay" *ngIf="open()" (click)="close()">
+  <div class="cmd-panel" (click)="$event.stopPropagation()" role="dialog" aria-label="Command palette">
+    <header class="cmd-head">
+      <span class="cmd-sparkle">✦</span>
+      <input
+        #inputEl
+        type="text"
+        class="cmd-input"
+        placeholder="¿Qué quieres hacer? Busca, navega o ejecuta..."
+        [value]="query()"
+        (input)="query.set($any($event.target).value)"
+      />
+      <span class="cmd-kbd">esc</span>
+    </header>
+
+    <div class="cmd-results" *ngIf="grouped().length">
+      <section *ngFor="let g of grouped()">
+        <header class="cmd-group">{{ g.name }}</header>
+        <ul>
+          <li *ngFor="let it of g.items"
+              [class.is-selected]="flatFiltered().indexOf(it) === selectedIdx()"
+              (click)="activate(flatFiltered().indexOf(it))"
+              (mouseenter)="selectedIdx.set(flatFiltered().indexOf(it))">
+            <span class="cmd-icon">{{ it.icon }}</span>
+            <div class="cmd-body">
+              <strong>{{ it.title }}</strong>
+              <span>{{ it.subtitle }}</span>
+            </div>
+            <span class="cmd-enter" *ngIf="flatFiltered().indexOf(it) === selectedIdx()">↵</span>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="cmd-empty" *ngIf="!grouped().length">
+      <p>Nada matchea "<strong>{{ query() }}</strong>".</p>
+      <p class="cmd-empty-hint">Prueba: <em>collar</em>, <em>vigilante</em>, <em>builder</em>, <em>vista hoy</em>.</p>
+    </div>
+
+    <footer class="cmd-foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navegar</span>
+      <span><kbd>↵</kbd> abrir</span>
+      <span><kbd>esc</kbd> cerrar</span>
+      <span class="cmd-foot-tag">Gali ⌘K</span>
+    </footer>
+  </div>
+</div>

@@ -1,0 +1,129 @@
+<div class="signal-v2" [ngClass]="cardClass" [class.signal-v2--expanded]="expanded()">
+
+  <!-- ── HEADER siempre visible ── -->
+  <div class="signal-v2__header" (click)="toggleExpand()">
+    <div class="signal-v2__meta">
+      <span class="signal-v2__agent-dot" [style.background]="getAgentColor()"></span>
+      <span class="signal-v2__agent">{{ signal_data.agente }}</span>
+      <span class="signal-v2__sep">·</span>
+      <span class="signal-v2__time">{{ signal_data.timestamp }}</span>
+    </div>
+
+    <div class="signal-v2__title-row">
+      <span class="signal-v2__icon" aria-hidden="true">{{ tipoIcon }}</span>
+      <h4 class="signal-v2__title">{{ signal_data.titulo }}</h4>
+      <button type="button" class="signal-v2__expand-btn" data-proto-skip
+        [attr.aria-label]="expanded() ? 'Contraer' : 'Expandir'">
+        {{ expanded() ? '↑' : '↓' }}
+      </button>
+    </div>
+
+    <!-- Estado completed: mostrar before/after -->
+    @if (currentState() === 'completed' && signal_data.resultado_antes) {
+      <div class="signal-v2__result-bar">
+        <span class="signal-v2__before">{{ signal_data.resultado_antes }}</span>
+        <span class="signal-v2__arrow">→</span>
+        <span class="signal-v2__after">{{ signal_data.resultado_despues }}</span>
+      </div>
+    }
+
+    <!-- Estado executing: spinner -->
+    @if (currentState() === 'executing') {
+      <div class="signal-v2__executing">
+        <span class="signal-v2__spinner"></span>
+        <span>Ejecutando…</span>
+      </div>
+    }
+
+    <!-- CTAs rápidos cuando está collapsed y pendiente -->
+    @if (!expanded() && currentState() === 'pending_decision' && signal_data.opciones) {
+      <div class="signal-v2__quick-ctas">
+        @for (op of signal_data.opciones.slice(0, 2); track op.id) {
+          <button type="button" class="signal-v2__cta signal-v2__cta--ghost"
+            data-proto-skip (click)="$event.stopPropagation(); executeOpcion(op)">
+            {{ op.label }}
+          </button>
+        }
+        @if (signal_data.opciones && signal_data.opciones.length > 2) {
+          <button type="button" class="signal-v2__cta signal-v2__cta--text"
+            data-proto-skip (click)="$event.stopPropagation(); toggleExpand()">
+            +{{ signal_data.opciones.length - 2 }} más…
+          </button>
+        }
+      </div>
+    }
+
+    <!-- Follow-up CTA para completed -->
+    @if (currentState() === 'completed' && signal_data.cta_followup) {
+      <div class="signal-v2__followup">
+        <span class="signal-v2__followup-label">{{ signal_data.cta_followup }}</span>
+        <button type="button" class="signal-v2__cta signal-v2__cta--accent"
+          (click)="$event.stopPropagation(); goToSkillEditor()">
+          {{ signal_data.cta_followup_label }}
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- ── CUERPO expandido ── -->
+  @if (expanded()) {
+    <div class="signal-v2__body" [@slideIn]>
+
+      <p class="signal-v2__contexto">{{ signal_data.contexto }}</p>
+
+      @if (signal_data.metrica_label) {
+        <div class="signal-v2__metrics">
+          <div class="signal-v2__metric">
+            <span class="signal-v2__metric-label">{{ signal_data.metrica_label }}</span>
+            <strong class="signal-v2__metric-val signal-v2__metric-val--crit">{{ signal_data.metrica_valor }}</strong>
+          </div>
+          @if (signal_data.umbral) {
+            <div class="signal-v2__metric">
+              <span class="signal-v2__metric-label">Umbral seguro</span>
+              <strong class="signal-v2__metric-val signal-v2__metric-val--ok">{{ signal_data.umbral }}</strong>
+            </div>
+          }
+          @if (signal_data.afectados) {
+            <div class="signal-v2__metric">
+              <span class="signal-v2__metric-label">Afectados hoy</span>
+              <strong class="signal-v2__metric-val">{{ signal_data.afectados }}</strong>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Tabla de items -->
+      @if (signal_data.tabla_items?.length) {
+        <div class="signal-v2__tabla-wrap">
+          <p class="signal-v2__tabla-label">{{ signal_data.afectados }} {{ signal_data.tabla_label }}</p>
+          <div class="signal-v2__tabla">
+            @for (row of signal_data.tabla_items; track row.id) {
+              <div class="signal-v2__tabla-row">
+                <span class="signal-v2__tabla-id">{{ row.id }}</span>
+                <span class="signal-v2__tabla-cliente">{{ row.cliente }}</span>
+                <span class="signal-v2__tabla-ciudad">{{ row.ciudad }}</span>
+                <span class="signal-v2__tabla-estado">{{ row.estado }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Opciones de decisión -->
+      @if (signal_data.opciones && currentState() === 'pending_decision') {
+        <div class="signal-v2__opciones">
+          @for (op of signal_data.opciones; track op.id) {
+            <button type="button" class="signal-v2__opcion" data-proto-skip
+              (click)="executeOpcion(op)">
+              <span class="signal-v2__opcion-label">{{ op.label }}</span>
+              @if (op.sublabel) {
+                <span class="signal-v2__opcion-sub">{{ op.sublabel }}</span>
+              }
+            </button>
+          }
+        </div>
+      }
+
+    </div>
+  }
+</div>

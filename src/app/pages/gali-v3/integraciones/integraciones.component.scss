@@ -1,0 +1,267 @@
+@import 'styles/gali-v3-tokens';
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: $gv3-font-body;
+  color: $gv3-text-primary;
+}
+
+.ig-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $gv3-space-7 $gv3-space-8;
+  @include gv3-bg-cream-radial;
+}
+
+.ig-head { max-width: 760px; margin-bottom: $gv3-space-8; }
+.ig-crumb {
+  font-family: $gv3-font-mono; font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: $gv3-orange-hover;
+}
+.ig-title {
+  @include gv3-display-tight;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 400;
+  margin: $gv3-space-2 0 $gv3-space-3;
+  em { font-style: italic; color: $gv3-orange; }
+}
+.ig-sub {
+  font-size: $gv3-text-lg;
+  line-height: 1.55;
+  color: $gv3-text-secondary;
+  max-width: 60ch;
+  margin: 0;
+  strong { color: $gv3-text-primary; font-weight: 500; }
+}
+
+.ig-section { margin-bottom: $gv3-space-8; }
+.ig-section-head {
+  display: flex; align-items: baseline; gap: $gv3-space-3;
+  margin-bottom: $gv3-space-4;
+}
+.ig-section-mono {
+  font-family: $gv3-font-mono; font-size: $gv3-text-xs; letter-spacing: 0.14em;
+  text-transform: uppercase; color: $gv3-text-tertiary;
+}
+.ig-section-hint { font-size: $gv3-text-sm; color: $gv3-text-secondary; font-style: italic; }
+.ig-section-rule { flex: 1; height: 1px; background: linear-gradient(90deg, $gv3-border-warm 0%, transparent 100%); }
+
+.ig-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $gv3-space-4;
+}
+
+.ig-card {
+  @include gv3-card;
+  padding: $gv3-space-5;
+  display: flex; flex-direction: column; gap: $gv3-space-3;
+  transition: all $gv3-dur-base $gv3-ease-out;
+  &:hover { @include gv3-card-hover; transform: translateY(-2px); }
+  &[data-estado="conectada"] {
+    border-left: 3px solid $gv3-sage;
+  }
+  &[data-estado="pendiente"] {
+    border-left: 3px solid $gv3-amber;
+  }
+}
+.ig-card-head { display: grid; grid-template-columns: auto 1fr auto; gap: $gv3-space-3; align-items: center; }
+.ig-glyph {
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border-radius: $gv3-radius-md;
+  background: $gv3-orange-soft;
+  color: $gv3-orange-hover;
+  font-family: $gv3-font-mono; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.ig-card-head strong {
+  display: block;
+  font-family: $gv3-font-display;
+  font-variation-settings: 'opsz' 24, 'SOFT' 40;
+  font-size: $gv3-text-lg;
+  font-weight: 500;
+  color: $gv3-text-primary;
+}
+.ig-card-estado {
+  font-family: $gv3-font-mono; font-size: 10px; letter-spacing: 0.1em;
+  color: $gv3-text-tertiary; text-transform: uppercase;
+}
+.ig-card-dot { width: 10px; height: 10px; border-radius: 50%; background: $gv3-text-muted; }
+.ig-card[data-estado="conectada"] .ig-card-dot { background: $gv3-sage; box-shadow: 0 0 0 4px $gv3-sage-tint; }
+.ig-card[data-estado="pendiente"] .ig-card-dot { background: $gv3-amber; box-shadow: 0 0 0 4px $gv3-amber-tint; }
+
+.ig-card-desc { margin: 0; font-size: $gv3-text-sm; line-height: 1.55; color: $gv3-text-secondary; }
+.ig-card-valor {
+  margin: 0;
+  font-family: $gv3-font-display;
+  font-style: italic;
+  font-variation-settings: 'opsz' 18, 'SOFT' 50;
+  font-size: $gv3-text-base;
+  color: $gv3-text-primary;
+  line-height: 1.4;
+}
+
+.ig-cta {
+  appearance: none; cursor: pointer;
+  align-self: flex-start;
+  padding: 10px 18px;
+  background: $gv3-orange;
+  border: 0;
+  border-radius: $gv3-radius-pill;
+  color: $gv3-text-onAccent;
+  font-family: $gv3-font-mono; font-size: $gv3-text-xs;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+  &:hover { background: $gv3-orange-hover; transform: translateY(-1px); box-shadow: $gv3-shadow-md; }
+}
+.ig-cta--ghost {
+  background: transparent; color: $gv3-text-secondary;
+  border: 1px solid $gv3-border-default;
+  &:hover { background: $gv3-bg-cream; color: $gv3-text-primary; box-shadow: none; }
+}
+
+// --- Modal ---
+.igmodal { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; }
+.igmodal__backdrop {
+  position: absolute; inset: 0;
+  appearance: none; border: 0; padding: 0;
+  background: $gv3-bg-veil;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+.igmodal__panel {
+  position: relative;
+  width: min(560px, calc(100% - 48px));
+  max-height: calc(100% - 64px);
+  display: flex; flex-direction: column;
+  background: $gv3-bg-surface;
+  border-radius: $gv3-radius-xl;
+  box-shadow: $gv3-shadow-lg;
+  overflow: hidden;
+  animation: ig-rise $gv3-dur-slow $gv3-ease-organic;
+}
+@keyframes ig-rise {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.igmodal__head {
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: $gv3-space-3; align-items: center;
+  padding: $gv3-space-5;
+  border-bottom: 1px solid $gv3-border-whisper;
+}
+.igmodal__glyph { width: 48px; height: 48px; font-size: 12px; }
+.igmodal__crumb {
+  font-family: $gv3-font-mono; font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: $gv3-text-tertiary;
+}
+.igmodal__titulo {
+  @include gv3-display-tight;
+  font-size: $gv3-text-xl;
+  margin: 2px 0 0;
+}
+.igmodal__close {
+  appearance: none; cursor: pointer;
+  background: transparent;
+  border: 1px solid $gv3-border-subtle;
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  color: $gv3-text-tertiary;
+  &:hover { color: $gv3-text-primary; border-color: $gv3-border-warm; }
+}
+
+.igmodal__pasos {
+  display: flex; gap: $gv3-space-3;
+  padding: $gv3-space-3 $gv3-space-5;
+  background: $gv3-bg-cream;
+  border-bottom: 1px solid $gv3-border-whisper;
+}
+.igmodal__paso {
+  font-family: $gv3-font-mono; font-size: 10px; letter-spacing: 0.12em;
+  padding: 4px 10px; border-radius: $gv3-radius-pill;
+  background: $gv3-bg-surface;
+  color: $gv3-text-tertiary;
+  border: 1px solid $gv3-border-subtle;
+}
+.igmodal__paso--current { background: $gv3-orange; color: $gv3-text-onAccent; border-color: $gv3-orange; }
+.igmodal__paso--done    { background: $gv3-sage; color: $gv3-text-onAccent; border-color: $gv3-sage; }
+
+.igmodal__cuerpo {
+  padding: $gv3-space-5;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+.igmodal__h {
+  @include gv3-display-tight;
+  font-size: $gv3-text-2xl;
+  margin: 0 0 $gv3-space-3;
+}
+.igmodal__p {
+  font-size: $gv3-text-base; line-height: 1.55;
+  color: $gv3-text-secondary; margin: 0 0 $gv3-space-3;
+}
+.igmodal__bullets {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: $gv3-space-2;
+  li {
+    padding-left: $gv3-space-4;
+    position: relative;
+    font-size: $gv3-text-sm; color: $gv3-text-secondary; line-height: 1.5;
+    &::before {
+      content: '✦';
+      position: absolute; left: 0;
+      color: $gv3-orange;
+    }
+  }
+}
+.igmodal__input {
+  width: 100%;
+  padding: $gv3-space-3 $gv3-space-4;
+  border: 1px solid $gv3-border-default;
+  border-radius: $gv3-radius-md;
+  background: $gv3-bg-cream;
+  font-family: $gv3-font-mono;
+  font-size: $gv3-text-base;
+  color: $gv3-text-primary;
+  outline: 0;
+  &:focus { border-color: $gv3-orange; box-shadow: $gv3-shadow-glow-warm; }
+}
+.igmodal__hint {
+  font-family: $gv3-font-display;
+  font-style: italic;
+  font-variation-settings: 'opsz' 14, 'SOFT' 30;
+  font-size: $gv3-text-sm;
+  color: $gv3-sage;
+  margin: $gv3-space-3 0 0;
+}
+
+.igmodal__foot {
+  display: flex; align-items: center; gap: $gv3-space-3;
+  padding: $gv3-space-4 $gv3-space-5;
+  border-top: 1px solid $gv3-border-whisper;
+  background: $gv3-bg-warm;
+}
+.igmodal__foot-spacer { flex: 1; }
+.igmodal__nav {
+  appearance: none; cursor: pointer;
+  padding: 10px 18px;
+  border-radius: $gv3-radius-pill;
+  font-family: $gv3-font-mono; font-size: $gv3-text-xs;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  border: 1px solid $gv3-border-default;
+  background: transparent;
+  color: $gv3-text-secondary;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+  &:hover { color: $gv3-text-primary; border-color: $gv3-border-warm; }
+}
+.igmodal__nav--primary {
+  background: $gv3-orange; border-color: $gv3-orange; color: $gv3-text-onAccent;
+  &:hover { background: $gv3-orange-hover; border-color: $gv3-orange-hover; transform: translateY(-1px); box-shadow: $gv3-shadow-md; }
+}

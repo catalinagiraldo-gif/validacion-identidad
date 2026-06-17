@@ -1,0 +1,67 @@
+<div class="carriers-page">
+
+  <dropi-gali-bar
+    agent="Vigilante"
+    status="monitoreando transportadoras"
+    message="Coordinadora Bogotá: 15% novedad (3× el umbral) · Smart routing disponible · 12 pedidos en riesgo"
+    ctaLabel="Ver señal crítica →"
+    (ctaClick)="goToSignals()"
+  />
+
+  <nav class="carriers-page__breadcrumbs" aria-label="Breadcrumb">
+    <a routerLink="/gali-v5" class="carriers-page__crumb"><i class="pi pi-home"></i></a>
+    <i class="pi pi-chevron-right carriers-page__crumb-sep"></i>
+    <span class="carriers-page__crumb">{{ breadcrumbs[0] }}</span>
+    <i class="pi pi-chevron-right carriers-page__crumb-sep"></i>
+    <span class="carriers-page__crumb carriers-page__crumb--active">{{ breadcrumbs[1] }}</span>
+  </nav>
+
+  <h1 class="carriers-page__title">Preferencias de transportadoras</h1>
+
+  <section class="carriers-page__section">
+    <h2 class="carriers-page__section-title">Transportadora favorita</h2>
+    <p class="carriers-page__section-desc">
+      Arrastra y suelta para seleccionar el orden de preferencia de tus transportadoras (Util para integraciones y cargue masivo)
+    </p>
+
+    <div class="carriers-page__list">
+      <div *ngFor="let c of favorites" class="carrier-row">
+        <span class="carrier-row__rank">#{{ c.rank }}</span>
+        <div class="carrier-row__avatar">{{ c.name.charAt(0) }}</div>
+        <span class="carrier-row__name">{{ c.name }}</span>
+        <label *ngIf="c.insureDefault" class="carrier-row__check">
+          <input type="checkbox" checked />
+          Asegurar paquete por defecto
+          <i class="pi pi-info-circle"></i>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <section class="carriers-page__accordions">
+    <div *ngFor="let dept of departments()" class="dept-acc">
+      <button type="button" class="dept-acc__head" data-proto-skip (click)="toggleDept(dept.name)">
+        <span>{{ dept.name }}</span>
+        <i class="pi" [ngClass]="dept.expanded ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+      </button>
+      <div *ngIf="dept.expanded && dept.cities.length" class="dept-acc__matrix-wrap">
+        <table class="dept-matrix">
+          <thead>
+            <tr>
+              <th>Ciudad</th>
+              <th *ngFor="let car of dept.carriers">{{ car }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let city of dept.cities">
+              <td>{{ city }}</td>
+              <td *ngFor="let car of dept.carriers">
+                <span class="dept-matrix__radio"></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>

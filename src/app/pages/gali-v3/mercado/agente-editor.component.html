@@ -1,0 +1,190 @@
+<article class="ae">
+  <header class="ae__head">
+    <div class="ae__head-meta">
+      <span class="ae__sparkle">✦</span>
+      <span class="ae__head-tag">Editor de agente custom</span>
+    </div>
+    <h1>Construye tu agente.</h1>
+    <p class="ae__intro">
+      Define qué dispara al agente, qué herramientas usa, qué prompt sigue y cómo se ve su salida.
+      Cuando lo pruebes, se conecta a tu cuenta y trabaja por ti.
+    </p>
+    <div class="ae__progress">
+      <div class="ae__progress-bar" [style.width.%]="progress()"></div>
+    </div>
+    <nav class="ae__steps">
+      <span [class.is-active]="step() === 1" [class.is-done]="step() > 1">① Identidad</span>
+      <span [class.is-active]="step() === 2" [class.is-done]="step() > 2">② Trigger</span>
+      <span [class.is-active]="step() === 3" [class.is-done]="step() > 3">③ Prompt + herramientas</span>
+      <span [class.is-active]="step() === 4">④ Probar + guardar</span>
+    </nav>
+  </header>
+
+  <!-- Step 1: Identidad -->
+  <section class="ae__step" *ngIf="step() === 1">
+    <h2>① ¿Qué hace tu agente?</h2>
+
+    <div class="ae__field">
+      <label>Nombre del agente</label>
+      <input type="text" placeholder="Ej: Detector de pedidos urgentes"
+             [value]="nombre()" (input)="nombre.set($any($event.target).value)" />
+    </div>
+
+    <div class="ae__field">
+      <label>Tagline (1 línea, qué hace)</label>
+      <input type="text" placeholder="Ej: Te avisa si un pedido importante se está retrasando"
+             [value]="tagline()" (input)="tagline.set($any($event.target).value)" />
+    </div>
+
+    <div class="ae__field">
+      <label>Descripción larga (opcional)</label>
+      <textarea rows="3" placeholder="Cuéntale a Gali cuándo debe activarse, qué debe hacer, qué evitar..."
+                [value]="descripcion()" (input)="descripcion.set($any($event.target).value)"></textarea>
+    </div>
+
+    <div class="ae__grid">
+      <div class="ae__field">
+        <label>Ícono</label>
+        <div class="ae__icons">
+          <button *ngFor="let i of iconOptions"
+                  [class.is-selected]="icon() === i"
+                  (click)="icon.set(i)">{{ i }}</button>
+        </div>
+      </div>
+
+      <div class="ae__field">
+        <label>Color / tono</label>
+        <div class="ae__colors">
+          <button *ngFor="let c of colorOptions"
+                  [attr.data-color]="c.id"
+                  [class.is-selected]="color() === c.id"
+                  (click)="color.set(c.id)">
+            <span class="ae__color-swatch"></span>
+            {{ c.label }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ae__preview" *ngIf="step1Valid()">
+      <span class="ae__preview-tag">Vista previa</span>
+      <article class="ae__preview-card" [attr.data-color]="color()">
+        <span class="ae__preview-icon">{{ icon() }}</span>
+        <div>
+          <strong>{{ nombre() }}</strong>
+          <span>{{ tagline() }}</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Step 2: Trigger -->
+  <section class="ae__step" *ngIf="step() === 2">
+    <h2>② ¿Cuándo se activa?</h2>
+    <p class="ae__step-hint">Elige el evento que dispara al agente.</p>
+
+    <div class="ae__trigger-grid">
+      <button *ngFor="let t of triggers()"
+              class="ae__trigger-card"
+              [class.is-selected]="triggerKey() === t.id"
+              [attr.data-color]="t.color"
+              (click)="triggerKey.set(t.id)">
+        <span class="ae__trigger-icon">{{ t.icon }}</span>
+        <strong>{{ t.label }}</strong>
+        <span class="ae__trigger-cat">{{ t.categoria }}</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Step 3: Prompt + herramientas -->
+  <section class="ae__step" *ngIf="step() === 3">
+    <h2>③ Prompt y herramientas</h2>
+    <p class="ae__step-hint">Define el prompt que Gali sigue cada vez que se ejecuta, y qué herramientas conectadas usa.</p>
+
+    <div class="ae__field">
+      <label>Prompt template</label>
+      <textarea rows="6"
+                placeholder="Ej: Cuando se cumpla el trigger, analiza el pedido contra el histórico del cliente. Si es repetidor con ticket alto, notifica con prioridad alta."
+                [value]="promptTemplate()" (input)="promptTemplate.set($any($event.target).value)"></textarea>
+      <span class="ae__field-meta">{{ promptTemplate().length }} caracteres · usa [variables] para placeholders</span>
+    </div>
+
+    <div class="ae__field">
+      <label>Herramientas a conectar ({{ selectedTools().size }} seleccionadas)</label>
+      <div class="ae__tools">
+        <button *ngFor="let t of tools()"
+                [class.is-selected]="selectedTools().has(t.id)"
+                [class.is-disconnected]="!t.connected"
+                (click)="toggleTool(t.id)">
+          <span class="ae__tool-icon">{{ t.icon }}</span>
+          <span class="ae__tool-label">{{ t.label }}</span>
+          <span class="ae__tool-state" *ngIf="!t.connected">no conectado</span>
+          <span class="ae__tool-check" *ngIf="selectedTools().has(t.id)">✓</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ae__field">
+      <label>Plantilla de salida (opcional)</label>
+      <textarea rows="3"
+                placeholder="Ej: Pedido [orderId] de [cliente] — [recomendacion]"
+                [value]="outputTemplate()" (input)="outputTemplate.set($any($event.target).value)"></textarea>
+    </div>
+  </section>
+
+  <!-- Step 4: Test + Save -->
+  <section class="ae__step" *ngIf="step() === 4">
+    <h2>④ Prueba el agente</h2>
+    <p class="ae__step-hint">Antes de guardar, Gali corre un dry-run para validar que todo cuadra.</p>
+
+    <div class="ae__summary">
+      <article class="ae__summary-card" [attr.data-color]="color()">
+        <span class="ae__summary-icon">{{ icon() }}</span>
+        <div>
+          <strong>{{ nombre() }}</strong>
+          <p>{{ tagline() }}</p>
+          <div class="ae__summary-meta">
+            <span>Trigger: {{ triggers().length ? triggers()[triggers().length - 1].label : '—' }}</span>
+            <span>{{ selectedTools().size }} herramientas</span>
+            <span>{{ promptTemplate().length }} chars prompt</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <button class="ae__test" (click)="testAgent()" [disabled]="testRunning()">
+      <span *ngIf="!testRunning()">▶ Ejecutar test (dry-run)</span>
+      <span *ngIf="testRunning()">● Corriendo...</span>
+    </button>
+
+    <div class="ae__test-log" *ngIf="testLog().length">
+      <header><span class="ae__sparkle">✦</span><span>Log del test</span></header>
+      <pre>
+        <span *ngFor="let line of testLog()">{{ line }}
+</span>
+      </pre>
+    </div>
+
+    <div class="ae__save-row" *ngIf="testLog().length && !testRunning() && !saved()">
+      <button class="ae__save" (click)="save()">💾 Guardar agente</button>
+    </div>
+
+    <div class="ae__saved" *ngIf="saved()">
+      <span class="ae__sparkle">✦</span>
+      <strong>Agente guardado e instalado en tu cuenta</strong>
+      <p>Ya aparece en tu Mercado y se activará cuando se cumpla el trigger.</p>
+      <button class="ae__save" (click)="finish()">Ver en mercado →</button>
+    </div>
+  </section>
+
+  <footer class="ae__foot" *ngIf="!saved()">
+    <button class="ae__nav" (click)="prev()" [disabled]="step() === 1">← atrás</button>
+    <span class="ae__foot-step">paso {{ step() }} de 4</span>
+    <button class="ae__nav ae__nav--primary" (click)="next()"
+            [disabled]="(step() === 1 && !step1Valid()) || (step() === 2 && !step2Valid()) || (step() === 3 && !step3Valid()) || step() === 4">
+      siguiente →
+    </button>
+  </footer>
+
+  <proximos-pasos contexto="mercado"></proximos-pasos>
+</article>

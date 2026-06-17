@@ -1,0 +1,12 @@
+{
+  "proveedores": [
+    { "id": "p1", "nombre": "MascotasPlus Bogotá", "ciudad": "Bogotá", "categoria": "Mascotas", "productos": 184, "score_gali": 9.2, "entrega": "1.4 días promedio", "devoluciones_pct": 2.1, "fit_perfil": 94, "destacados": ["Collar GPS", "Cama ortopédica perro"], "alerta": null },
+    { "id": "p2", "nombre": "Skincare Importadores", "ciudad": "Medellín", "categoria": "Skincare", "productos": 312, "score_gali": 8.7, "entrega": "2.1 días promedio", "devoluciones_pct": 3.8, "fit_perfil": 62, "destacados": ["Serum vitamina C", "Mask de carbón"], "alerta": "stock variable" },
+    { "id": "p3", "nombre": "Hogar & Más", "ciudad": "Cali", "categoria": "Hogar", "productos": 421, "score_gali": 8.4, "entrega": "1.9 días promedio", "devoluciones_pct": 4.2, "fit_perfil": 71, "destacados": ["Difusor aromaterapia", "Organizador modular"], "alerta": null },
+    { "id": "p4", "nombre": "Tech Express LATAM", "ciudad": "Bogotá", "categoria": "Tech", "productos": 89, "score_gali": 7.9, "entrega": "2.4 días promedio", "devoluciones_pct": 5.8, "fit_perfil": 58, "destacados": ["Cargador 3 en 1", "Mini proyector"], "alerta": "devoluciones altas en abril" },
+    { "id": "p5", "nombre": "Fitness Pro Co", "ciudad": "Bogotá", "categoria": "Fitness", "productos": 67, "score_gali": 9.0, "entrega": "1.6 días promedio", "devoluciones_pct": 2.8, "fit_perfil": 78, "destacados": ["Bandas elásticas", "Mat yoga premium"], "alerta": null },
+    { "id": "p6", "nombre": "Pet Lovers SAS", "ciudad": "Medellín", "categoria": "Mascotas", "productos": 142, "score_gali": 8.9, "entrega": "1.8 días promedio", "devoluciones_pct": 2.4, "fit_perfil": 91, "destacados": ["Juguete interactivo", "Snack natural"], "alerta": null },
+    { "id": "p7", "nombre": "Beauty Imports CO", "ciudad": "Barranquilla", "categoria": "Beauty", "productos": 198, "score_gali": 7.6, "entrega": "2.8 días promedio", "devoluciones_pct": 6.1, "fit_perfil": 44, "destacados": ["Lipstick líquido", "Pestañas magnéticas"], "alerta": "tiempo entrega alto" },
+    { "id": "p8", "nombre": "Smart Home Pro", "ciudad": "Bogotá", "categoria": "Tech", "productos": 76, "score_gali": 8.3, "entrega": "2.0 días promedio", "devoluciones_pct": 3.1, "fit_perfil": 67, "destacados": ["Cámara WiFi", "Bombillo inteligente"], "alerta": null }
+  ]
+}

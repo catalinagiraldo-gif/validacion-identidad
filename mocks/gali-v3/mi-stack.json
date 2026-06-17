@@ -1,0 +1,288 @@
+{
+  "intelligence_summary": {
+    "conectadas": 6,
+    "total": 15,
+    "intelligence_score_actual": 42,
+    "intelligence_score_max": 100,
+    "siguiente_recomendacion": "Conectar Google Sheets para que Gali analice tu P&L real y dé proyecciones más precisas",
+    "siguiente_ganancia_intelligence": 14
+  },
+  "categorias": [
+    {
+      "id": "ads",
+      "label": "Publicidad y ads",
+      "descripcion": "Para que Gali vea tus campañas reales y proponga ajustes",
+      "icon": "📣"
+    },
+    {
+      "id": "finanzas",
+      "label": "Finanzas y P&L",
+      "descripcion": "Para proyecciones reales y alertas de flujo de caja",
+      "icon": "📊"
+    },
+    {
+      "id": "comms",
+      "label": "Comunicación con clientes",
+      "descripcion": "Para automatizar confirmaciones y leer patrones de venta",
+      "icon": "💬"
+    },
+    {
+      "id": "ecommerce",
+      "label": "E-commerce y operación",
+      "descripcion": "Para sincronizar catálogos y procesar pedidos",
+      "icon": "🛍"
+    }
+  ],
+  "plataformas": [
+    {
+      "id": "meta",
+      "nombre": "Meta Business Manager",
+      "glyph": "M",
+      "color": "#1877F2",
+      "categoria": "ads",
+      "descripcion": "Sincroniza píxel, eventos, catálogos y campañas activas de Facebook/Instagram.",
+      "estado": "conectada",
+      "ultimaSync": "hace 4 minutos",
+      "intelligence_score": 18,
+      "datosCompartidos": ["ROAS por campaña", "Audiencias activas", "Creatives performance", "Eventos de conversión"],
+      "insights_generados": 47,
+      "ejemplos_insights": [
+        "Tu campaña Collar GPS bajó ROAS 0.3 desde ayer — recomiendo pausar ad set 'Bogotá amplio'",
+        "Audiencia look-alike 1% lleva 3 días con CTR superior a 2.1% — escalar presupuesto"
+      ],
+      "permisos_requeridos": ["ads_management", "business_management", "leads_retrieval"],
+      "tiempo_conexion_min": 3
+    },
+    {
+      "id": "tiktok",
+      "nombre": "TikTok for Business",
+      "glyph": "TT",
+      "color": "#000000",
+      "categoria": "ads",
+      "descripcion": "Tracking de conversiones, pixel y catálogos para TikTok Ads.",
+      "estado": "desconectada",
+      "intelligence_score": 12,
+      "datosCompartidos": ["ROAS TikTok", "Audiencias por interés", "Creative engagement"],
+      "insights_generados": 0,
+      "ejemplos_insights": [
+        "Gali podría diversificar tu mix Meta/TikTok según CPM en tiempo real",
+        "Auto-detectar qué creative funciona mejor por plataforma"
+      ],
+      "permisos_requeridos": ["ads_read", "creative_read"],
+      "tiempo_conexion_min": 4,
+      "recomendado": true,
+      "recomendado_razon": "63% del top 100 movió budget a TikTok esta semana (señal de comunidad)"
+    },
+    {
+      "id": "google-ads",
+      "nombre": "Google Ads",
+      "glyph": "GA",
+      "color": "#4285F4",
+      "categoria": "ads",
+      "descripcion": "Performance Max, Search y Shopping con tracking de conversiones.",
+      "estado": "desconectada",
+      "intelligence_score": 10,
+      "datosCompartidos": ["Búsquedas que convierten", "Keywords activos", "Performance Max insights"],
+      "insights_generados": 0,
+      "ejemplos_insights": ["Detectar keywords con intent alto sin competencia"],
+      "permisos_requeridos": ["adwords_management"],
+      "tiempo_conexion_min": 5
+    },
+    {
+      "id": "gsheets",
+      "nombre": "Google Sheets",
+      "glyph": "GS",
+      "color": "#0F9D58",
+      "categoria": "finanzas",
+      "descripcion": "Lee tu P&L personalizado, gastos, márgenes — donde ya llevas las cuentas.",
+      "estado": "desconectada",
+      "intelligence_score": 14,
+      "datosCompartidos": ["P&L mensual", "Gastos operativos", "Márgenes por producto", "Proyecciones manuales"],
+      "insights_generados": 0,
+      "ejemplos_insights": [
+        "Gali proyectaría flujo de caja 30 días basado en tu P&L real, no en estimados",
+        "Alertaría si un producto bajó margen efectivo (incluyendo devoluciones)"
+      ],
+      "permisos_requeridos": ["spreadsheets.readonly"],
+      "tiempo_conexion_min": 2,
+      "recomendado": true,
+      "recomendado_razon": "Sin esto Gali no ve tus números reales, solo los de Dropi"
+    },
+    {
+      "id": "nequi",
+      "nombre": "Nequi",
+      "glyph": "NQ",
+      "color": "#FF1F8C",
+      "categoria": "finanzas",
+      "descripcion": "Lectura (no escritura) de movimientos y saldo para flujo de caja real.",
+      "estado": "desconectada",
+      "intelligence_score": 8,
+      "datosCompartidos": ["Saldo actual", "Ingresos vs egresos"],
+      "insights_generados": 0,
+      "ejemplos_insights": ["Gali detectaría discrepancias entre Dropi wallet y tu Nequi real"],
+      "permisos_requeridos": ["account_read"],
+      "tiempo_conexion_min": 6,
+      "alerta_compliance": "Validación legal/compliance pendiente — banca requiere consentimiento explícito"
+    },
+    {
+      "id": "bancolombia",
+      "nombre": "Bancolombia",
+      "glyph": "BC",
+      "color": "#FDDA24",
+      "categoria": "finanzas",
+      "descripcion": "Movimientos y saldo de cuenta empresarial vía Open Finance.",
+      "estado": "desconectada",
+      "intelligence_score": 8,
+      "datosCompartidos": ["Movimientos cuenta", "Pagos a proveedores"],
+      "insights_generados": 0,
+      "ejemplos_insights": ["Reconciliación automática de transferencias proveedor"],
+      "permisos_requeridos": ["account_aggregation"],
+      "tiempo_conexion_min": 8,
+      "alerta_compliance": "Open Finance disponible solo cuentas empresariales certificadas"
+    },
+    {
+      "id": "wa-business",
+      "nombre": "WhatsApp Business",
+      "glyph": "WA",
+      "color": "#25D366",
+      "categoria": "comms",
+      "descripcion": "Analiza patrones de conversación con clientes — qué preguntan, dónde se cierran ventas.",
+      "estado": "conectada",
+      "ultimaSync": "hace 12 minutos",
+      "intelligence_score": 12,
+      "datosCompartidos": ["Mensajes por hora", "Keywords frecuentes", "Tasa cierre por agente"],
+      "insights_generados": 23,
+      "ejemplos_insights": [
+        "Los pedidos que confirman en menos de 30 min tienen 18% menos devoluciones",
+        "Plantilla 'envío + tracking' aumentó retención 8% según tus chats"
+      ],
+      "permisos_requeridos": ["messages.read", "templates.read"],
+      "tiempo_conexion_min": 5
+    },
+    {
+      "id": "gmail",
+      "nombre": "Gmail",
+      "glyph": "GM",
+      "color": "#EA4335",
+      "categoria": "comms",
+      "descripcion": "Detecta correos de proveedores, alertas de plataformas y patrones de comunicación.",
+      "estado": "desconectada",
+      "intelligence_score": 6,
+      "datosCompartidos": ["Asuntos de correos proveedor", "Alertas de Meta/Google", "Patrones de respuesta"],
+      "insights_generados": 0,
+      "ejemplos_insights": ["Gali detectaría correos de baneo o restricciones de plataforma antes que tú los abras"],
+      "permisos_requeridos": ["gmail.readonly"],
+      "tiempo_conexion_min": 4,
+      "alerta_privacidad": "Solo lee asuntos y remitentes — nunca el cuerpo del correo"
+    },
+    {
+      "id": "telegram",
+      "nombre": "Telegram",
+      "glyph": "TG",
+      "color": "#229ED9",
+      "categoria": "comms",
+      "descripcion": "Recibe notificaciones de Gali en tu Telegram (alertas críticas, oportunidades).",
+      "estado": "desconectada",
+      "intelligence_score": 4,
+      "datosCompartidos": [],
+      "insights_generados": 0,
+      "ejemplos_insights": ["Notificaciones de Gali llegan a Telegram sin saturar WA personal"],
+      "permisos_requeridos": ["bot_messages"],
+      "tiempo_conexion_min": 2
+    },
+    {
+      "id": "shopify",
+      "nombre": "Shopify",
+      "glyph": "SH",
+      "color": "#7AB55C",
+      "categoria": "ecommerce",
+      "descripcion": "Sincroniza catálogo, pedidos y stock con tu tienda Shopify externa.",
+      "estado": "desconectada",
+      "intelligence_score": 10,
+      "datosCompartidos": ["Pedidos Shopify", "Inventario", "Customers", "Carritos abandonados"],
+      "insights_generados": 0,
+      "ejemplos_insights": ["Gali correlacionaría pedidos Shopify con campañas Dropi"],
+      "permisos_requeridos": ["read_orders", "read_customers", "read_inventory"],
+      "tiempo_conexion_min": 3
+    },
+    {
+      "id": "tienda-nube",
+      "nombre": "Tienda Nube",
+      "glyph": "TN",
+      "color": "#0066FF",
+      "categoria": "ecommerce",
+      "descripcion": "Catálogo, pedidos y stock en tiempo real (popular en LATAM).",
+      "estado": "conectada",
+      "ultimaSync": "hace 8 minutos",
+      "intelligence_score": 8,
+      "datosCompartidos": ["Catálogo activo", "Pedidos por hora", "Stock"],
+      "insights_generados": 14,
+      "ejemplos_insights": [
+        "Producto 'Lámpara sal' bajó stock al 22% en 3 días — anticipar reposición",
+        "Tu hora pico de ventas Tienda Nube es 8-10pm CO — alinear campañas"
+      ],
+      "permisos_requeridos": ["read_catalog", "read_orders"],
+      "tiempo_conexion_min": 3
+    },
+    {
+      "id": "mercadolibre",
+      "nombre": "Mercado Libre",
+      "glyph": "ML",
+      "color": "#FFE600",
+      "categoria": "ecommerce",
+      "descripcion": "Catálogo, preguntas y reseñas de tu publicación en MercadoLibre.",
+      "estado": "desconectada",
+      "intelligence_score": 7,
+      "datosCompartidos": ["Posicionamiento", "Preguntas frecuentes", "Reseñas"],
+      "insights_generados": 0,
+      "ejemplos_insights": ["Gali respondería automáticamente las preguntas más repetidas"],
+      "permisos_requeridos": ["read_items", "read_questions"],
+      "tiempo_conexion_min": 5
+    },
+    {
+      "id": "woocommerce",
+      "nombre": "WooCommerce",
+      "glyph": "WC",
+      "color": "#7F54B3",
+      "categoria": "ecommerce",
+      "descripcion": "Conecta tu tienda WordPress + WooCommerce.",
+      "estado": "desconectada",
+      "intelligence_score": 6,
+      "datosCompartidos": ["Pedidos Woo", "Productos", "Cupones"],
+      "insights_generados": 0,
+      "ejemplos_insights": ["Sincronizar inventario entre Dropi y Woo"],
+      "permisos_requeridos": ["api_read"],
+      "tiempo_conexion_min": 4
+    },
+    {
+      "id": "notion",
+      "nombre": "Notion",
+      "glyph": "NT",
+      "color": "#000000",
+      "categoria": "comms",
+      "descripcion": "Gali lee tus procesos, runbooks y notas operativas — y los referencia cuando aplica.",
+      "estado": "desconectada",
+      "intelligence_score": 5,
+      "datosCompartidos": ["Páginas con tag #dropi", "Procesos documentados"],
+      "insights_generados": 0,
+      "ejemplos_insights": ["Cuando una novedad coincide con un proceso documentado en Notion, Gali lo aplica automáticamente"],
+      "permisos_requeridos": ["read_workspace"],
+      "tiempo_conexion_min": 3
+    },
+    {
+      "id": "webhook-externo",
+      "nombre": "Webhook personalizado",
+      "glyph": "WH",
+      "color": "#6366F1",
+      "categoria": "ecommerce",
+      "descripcion": "Conecta cualquier sistema propio vía webhook bidireccional.",
+      "estado": "desconectada",
+      "intelligence_score": 3,
+      "datosCompartidos": ["Custom payload"],
+      "insights_generados": 0,
+      "ejemplos_insights": ["Recipes pueden disparar eventos a tu CRM/ERP propio"],
+      "permisos_requeridos": ["webhook_post"],
+      "tiempo_conexion_min": 6
+    }
+  ]
+}

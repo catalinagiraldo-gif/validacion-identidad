@@ -1,0 +1,20 @@
+<div class="shell" [class.has-rpanel-open]="rpanelOpen()">
+  <a href="#shell-main-content" class="gv3-skip-link">Saltar al contenido principal</a>
+  <gali-topbar class="shell__topbar"></gali-topbar>
+  <gali-breadcrumb class="shell__bread"></gali-breadcrumb>
+
+  <div class="shell__body">
+    <gali-navigator class="shell__nav" data-tour="shell-nav"></gali-navigator>
+
+    <main class="shell__main" id="shell-main-content" tabindex="-1" aria-label="Contenido principal de Gali">
+      <div class="shell__canvas" data-tour="shell-canvas">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+
+    <gali-right-panel class="shell__rpanel" data-tour="shell-rpanel"></gali-right-panel>
+  </div>
+
+  <gali-command-palette></gali-command-palette>
+  <gali-guide-tour></gali-guide-tour>
+</div>

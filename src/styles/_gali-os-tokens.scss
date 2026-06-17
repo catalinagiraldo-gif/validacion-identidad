@@ -1,0 +1,69 @@
+// ============================================
+// Gali OS — Light Command Center Tokens
+// Separate from Dropi DS — applies only under
+// the Gali OS workspace
+// ============================================
+
+// Backgrounds
+$os-bg:            #f4f4f7;   // main shell background (light gray — distinct from white Dropi)
+$os-surface:       #ffffff;   // panel surface
+$os-surface-2:     #f8f8fb;   // elevated surface (cards inside panels)
+$os-surface-3:     #f0f0f4;   // hover state, selected row
+
+// Borders
+$os-border:        rgba(0, 0, 0, 0.07);
+$os-border-strong: rgba(0, 0, 0, 0.12);
+
+// Text
+$os-text-primary:   #1a1a22;
+$os-text-secondary: #5a5a6e;
+$os-text-muted:     #9898a8;
+$os-text-inverse:   #f4f4f7;
+
+// Brand accent (Dropi orange — kept for continuity)
+$os-accent:         #ff6102;
+$os-accent-dim:     rgba(255, 97, 2, 0.15);
+$os-accent-text:    #ff8033;
+
+// Status
+$os-ok:      #22c55e;
+$os-ok-dim:  rgba(34, 197, 94, 0.12);
+$os-warn:    #f59e0b;
+$os-warn-dim: rgba(245, 158, 11, 0.12);
+$os-crit:    #ef4444;
+$os-crit-dim: rgba(239, 68, 68, 0.12);
+$os-info:    #38bdf8;
+$os-info-dim: rgba(56, 189, 248, 0.1);
+
+// Agents (consistent across all OS surfaces)
+$os-agent-ada:       #818cf8;  // indigo
+$os-agent-roax:      #f97316;  // orange (brand)
+$os-agent-chatea:    #34d399;  // emerald
+$os-agent-vigilante: #fbbf24;  // amber
+$os-agent-financiero:#a78bfa;  // violet
+
+// Typography
+$os-font-display: 'Syne', sans-serif;
+$os-font-body:    'DM Sans', 'Inter', sans-serif;
+$os-font-mono:    'JetBrains Mono', monospace;
+
+// Spacing (same scale, re-aliased for clarity)
+$os-1: 4px;
+$os-2: 8px;
+$os-3: 12px;
+$os-4: 16px;
+$os-5: 20px;
+$os-6: 24px;
+$os-8: 32px;
+
+// Radius
+$os-radius-sm: 6px;
+$os-radius-md: 10px;
+$os-radius-lg: 14px;
+
+// Panel header height
+$os-mode-bar-height: 52px;
+$os-panel-header-height: 36px;
+
+// Transitions
+$os-transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);

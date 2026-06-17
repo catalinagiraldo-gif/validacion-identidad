@@ -1,0 +1,119 @@
+{
+  "landingTemplates": {
+    "default": {
+      "hero": {
+        "headline": "¿Sabes dónde está tu mascota en este momento?",
+        "subheadline": "El único collar GPS que te da tranquilidad real.",
+        "ctaText": "Ver precio →",
+        "heroLine": "Disponible solo esta semana"
+      },
+      "benefits": [
+        { "icon": "📍", "title": "Ubicación en tiempo real", "desc": "Ve a tu mascota en el mapa, siempre." },
+        { "icon": "🔔", "title": "Alertas si se escapa", "desc": "Notificación instantánea cuando salga del área segura." },
+        { "icon": "🔋", "title": "Batería de 7 días", "desc": "Carga cada semana, no cada día." }
+      ],
+      "testimonials": [
+        { "stars": 5, "text": "Encontré a mi Luna en 3 minutos cuando se perdió en el parque.", "author": "María, Medellín" },
+        { "stars": 5, "text": "La paz mental que me da saber dónde está mi perro no tiene precio.", "author": "Carlos, Bogotá" }
+      ],
+      "ctaFinal": {
+        "urgencyText": "Solo hoy — envío gratis en Colombia",
+        "price": 89000,
+        "priceStruck": 149000,
+        "ctaText": "Llévatelo ahora →"
+      },
+      "tone": "Emocional",
+      "angle": "Mamá / seguridad"
+    }
+  },
+  "creatives": [
+    {
+      "id": "c-001",
+      "type": "video",
+      "ratio": "9:16",
+      "platform": "TikTok",
+      "label": "Video A · Mamá emocional",
+      "duration": "0:30",
+      "gradient": ["#FF6B6B", "#FFE66D"],
+      "isPlus": false,
+      "recommended": true,
+      "thumbnailEmoji": "🐕"
+    },
+    {
+      "id": "c-002",
+      "type": "video",
+      "ratio": "9:16",
+      "platform": "Reels",
+      "label": "Video B · Madre/hijo",
+      "duration": "0:22",
+      "gradient": ["#FFE66D", "#4ECDC4"],
+      "isPlus": false,
+      "recommended": false,
+      "thumbnailEmoji": "👨‍👩‍👧"
+    },
+    {
+      "id": "c-003",
+      "type": "banner",
+      "ratio": "1:1",
+      "platform": "Feed",
+      "label": "Banner cuadrado",
+      "gradient": ["#4ECDC4", "#5570F1"],
+      "isPlus": false,
+      "recommended": false,
+      "thumbnailEmoji": "📍"
+    },
+    {
+      "id": "c-004",
+      "type": "banner",
+      "ratio": "9:16",
+      "platform": "Story",
+      "label": "Story vertical",
+      "gradient": ["#8B5CF6", "#FF6B6B"],
+      "isPlus": false,
+      "recommended": false,
+      "thumbnailEmoji": "🔔"
+    },
+    {
+      "id": "c-005",
+      "type": "carousel",
+      "ratio": "1:1",
+      "platform": "Carousel",
+      "label": "Carrusel 4 slides",
+      "gradient": ["#f49a3d", "#FF7547"],
+      "isPlus": false,
+      "recommended": false,
+      "thumbnailEmoji": "📸"
+    },
+    {
+      "id": "c-006",
+      "type": "banner",
+      "ratio": "16:9",
+      "platform": "Wide",
+      "label": "Banner ancho",
+      "gradient": ["#6FCF97", "#4ECDC4"],
+      "isPlus": false,
+      "recommended": false,
+      "thumbnailEmoji": "🌐"
+    }
+  ],
+  "executionSteps": {
+    "creation": [
+      { "label": "Generando estructura de landing", "duration": 1400 },
+      { "label": "Inyectando ángulo emocional", "duration": 900 },
+      { "label": "Creando 6 variaciones de creatives", "duration": 2200 },
+      { "label": "Ajustando layout responsive", "duration": 700 }
+    ]
+  },
+  "messages": {
+    "intro": "Aquí está tu landing. La construí con el ángulo emocional que elegiste. El CTA lo centré en la urgencia sin ser agresivo. ¿Cómo lo ves?",
+    "elementEdited": "Anoté el cambio. Si quieres, te sugiero 3 alternativas con el mismo tono.",
+    "creativesIntro": "Generé 6 piezas basadas en tu estrategia: 2 videos para TikTok/Reels y 4 banners. El Video A tuvo mejor rendimiento en pruebas A/B similares — te lo marqué como recomendado.",
+    "creativeSelected": "Marcado. Cuando confirmes, pasamos a configurar la campaña.",
+    "ctaProceed": "Continuemos a configurar tu campaña →"
+  },
+  "plusBlock": {
+    "title": "Genera más variaciones — Plus",
+    "body": "Con Dropi AI Plus puedes generar hasta 20 variaciones por producto, A/B automático y videos con avatar.",
+    "cta": "Ver planes"
+  }
+}

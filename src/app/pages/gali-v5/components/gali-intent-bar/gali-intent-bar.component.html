@@ -1,0 +1,41 @@
+<div class="intent-bar" [class.intent-bar--active]="isActive()">
+  <div class="intent-bar__inner">
+
+    <div class="intent-bar__field-wrap">
+      <span class="intent-bar__gali-icon" aria-hidden="true">✦</span>
+      <input
+        type="text"
+        class="intent-bar__field"
+        placeholder="¿Qué quieres hacer? (ej. ver señales, lanzar producto, cuánto gané esta semana)"
+        [ngModel]="query()"
+        (ngModelChange)="query.set($event)"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+        (keydown)="onKeydown($event)"
+        aria-label="Intent de Gali" />
+      @if (query()) {
+        <button
+          type="button"
+          class="intent-bar__clear"
+          (click)="query.set('')"
+          aria-label="Limpiar">
+          <i class="pi pi-times" aria-hidden="true"></i>
+        </button>
+      }
+    </div>
+
+    <div class="intent-bar__shortcuts">
+      @for (s of shortcuts; track s.mode) {
+        <button
+          type="button"
+          class="intent-bar__shortcut"
+          (click)="triggerShortcut(s.mode)"
+          [attr.aria-label]="'Ir a modo ' + s.label">
+          <span class="intent-bar__shortcut-icon">{{ s.icon }}</span>
+          <span class="intent-bar__shortcut-label">{{ s.label }}</span>
+        </button>
+      }
+    </div>
+
+  </div>
+</div>

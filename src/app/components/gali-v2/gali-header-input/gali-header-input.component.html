@@ -1,0 +1,80 @@
+<div class="ghi" [attr.data-estado]="estado()">
+  <div class="ghi__bar">
+    <gali-mark [state]="markState()" size="md"></gali-mark>
+
+    <input
+      #inputEl
+      type="text"
+      class="ghi__input"
+      [placeholder]="placeholder()"
+      [(ngModel)]="texto"
+      (ngModelChange)="texto.set($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      (keydown.enter)="enviar()"
+      autocomplete="off"
+      aria-label="Habla con Gali"/>
+
+    <div class="ghi__actions">
+      <button
+        *ngIf="(senales$ | async) as senales"
+        type="button"
+        class="ghi__senal-btn"
+        [class.ghi__senal-btn--nuevo]="noVistasCount(senales) > 0"
+        (click)="toggleSenales()"
+        [attr.aria-label]="'Señales de Gali: ' + noVistasCount(senales) + ' nuevas'">
+        <gali-mark
+          [state]="noVistasCount(senales) > 0 ? 'propuesta' : 'memoria'"
+          size="sm">
+        </gali-mark>
+        <span class="ghi__senal-count" *ngIf="noVistasCount(senales) > 0">
+          {{ noVistasCount(senales) }}
+        </span>
+      </button>
+
+      <button
+        *ngIf="texto().length > 0 || foco()"
+        type="button"
+        class="ghi__send"
+        (click)="enviar()"
+        [disabled]="!texto().trim().length">
+        enviar
+        <span class="ghi__send-kbd">↵</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Sugerencias contextuales en foco -->
+  <div class="ghi__sug" *ngIf="estado() === 'focus' && !texto()">
+    <span class="ghi__sug-mono">prueba</span>
+    <button
+      *ngFor="let s of sugerenciasContextuales()"
+      type="button"
+      class="ghi__sug-chip"
+      (click)="usarSugerencia(s)">
+      {{ s }}
+    </button>
+  </div>
+
+  <!-- Panel de señales -->
+  <div class="ghi__senales-panel" *ngIf="panelSenalesAbierto()" role="dialog" aria-label="Señales de Gali">
+    <header class="ghi__senales-head">
+      <gali-mark state="propuesta" size="sm" label="Señales activas"></gali-mark>
+      <button type="button" class="ghi__senales-close" (click)="cerrarPanelSenales()" aria-label="Cerrar">×</button>
+    </header>
+    <ul class="ghi__senales-list">
+      <li *ngFor="let s of (senales$ | async)" class="ghi__senal-item" [attr.data-tipo]="s.tipo" [attr.data-urgencia]="s.urgencia">
+        <div class="ghi__senal-meta">
+          <span class="ghi__senal-tipo">{{ s.tipo }}</span>
+          <span class="ghi__senal-ctx">{{ s.contexto }}</span>
+        </div>
+        <h4 class="ghi__senal-titulo">{{ s.titulo }}</h4>
+        <p class="ghi__senal-desc">{{ s.descripcion }}</p>
+        <div class="ghi__senal-foot" *ngIf="s.accionSugerida">
+          <span *ngIf="s.metrica" class="ghi__senal-metrica">{{ s.metrica }}</span>
+          <button type="button" class="ghi__senal-cta">{{ s.accionSugerida }} →</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

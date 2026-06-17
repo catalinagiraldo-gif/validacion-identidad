@@ -1,0 +1,132 @@
+@import 'styles/gali-v5-tokens';
+
+@mixin dropi-page-shell {
+  display: flex;
+  flex-direction: column;
+  gap: $size-4;
+  padding: $size-4 $size-8; // Figma content padding 32px
+  box-sizing: border-box;
+  min-height: 100%;
+  background: $white;
+
+  &__breadcrumbs {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  &__crumb {
+    font-family: $font-primary;
+    font-size: 12px;
+    line-height: 1.5;
+    color: $gray-500;
+    text-decoration: none;
+
+    &--active {
+      color: $gray-700;
+    }
+  }
+
+  &__crumb-sep {
+    font-size: 10px;
+    color: $gray-400;
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-primary;
+    font-size: $font-2xl;
+    font-weight: $font-bold;
+    color: $gray-700;
+    line-height: 1.1;
+  }
+
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $size-3;
+  }
+
+  &__search {
+    flex: 1;
+    min-width: 280px;
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    height: 40px;
+    padding: 0 $size-3;
+    border: 1px solid $gray-200;
+    border-radius: 12px;
+    background: $white;
+
+    .pi {
+      color: $gray-400;
+    }
+
+    input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: $font-primary;
+      font-size: $font-sm;
+      background: transparent;
+    }
+  }
+
+  &__filter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 40px;
+    border: none;
+    border-radius: 12px;
+    background: $primary-500;
+    color: $white;
+    cursor: pointer;
+  }
+
+  &__btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-1;
+    height: 40px;
+    padding: 0 $size-4;
+    border: none;
+    border-radius: 12px;
+    background: $primary-500;
+    color: $white;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    cursor: pointer;
+  }
+
+  &__pagination {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+    padding-top: $size-3;
+  }
+
+  &__page-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid $gray-200;
+    border-radius: 50%;
+    background: $white;
+    color: $gray-600;
+    cursor: pointer;
+
+    &--active {
+      background: $primary-500;
+      border-color: $primary-500;
+      color: $white;
+    }
+  }
+}

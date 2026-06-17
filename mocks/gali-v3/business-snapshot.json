@@ -1,0 +1,36 @@
+{
+  "pedidos": {
+    "hoy": 12,
+    "nuevos": 5,
+    "en_transito": 4,
+    "entregados": 3,
+    "novedades_criticas": 1
+  },
+  "wallet": {
+    "saldo_actual": 1247000,
+    "moneda": "COP",
+    "tendencia": "alza",
+    "proyeccion_7d": 1820000,
+    "fecha_optima_retiro": "2026-05-29"
+  },
+  "campanas": {
+    "activas": 3,
+    "presupuesto_diario_total": 145000,
+    "roas_promedio": 2.8,
+    "salud_general": "buena"
+  },
+  "productos": {
+    "activos_catalogo": 24,
+    "favoritos": 8,
+    "con_ventas_semana": 3
+  },
+  "automatizaciones": {
+    "activas": 4,
+    "ejecuciones_hoy": 18,
+    "alertas_pendientes": 2
+  },
+  "alertas_recientes": [
+    { "tipo": "info", "msg": "Tu campaña Collar GPS escaló a $80k/día" },
+    { "tipo": "warning", "msg": "1 novedad logística requiere tu decisión" }
+  ]
+}

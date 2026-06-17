@@ -1,0 +1,56 @@
+<div class="clientes-page">
+  <dropi-titulos title="Clientes" [breadcrumbs]="breadcrumbs">
+    <dropi-button-new titulosActions label="Agregar" icon="pi-plus" hierarchy="primary" [width]="200" />
+  </dropi-titulos>
+
+  <div class="clientes-page__toolbar">
+    <div class="clientes-page__actions">
+      <dropi-button-new label="Importar" icon="pi-arrow-down-left" hierarchy="outline" />
+      <dropi-button-new label="Exportar" icon="pi-download" hierarchy="outline" />
+    </div>
+    <dropi-search-oficial placeholder="Buscar" [(ngModel)]="searchQuery" />
+  </div>
+
+  <div class="clientes-table-wrap">
+    <table class="clientes-table">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Teléfono</th>
+          <th class="clientes-table__email">Correo</th>
+          <th>Marketing</th>
+          <th>Etiqueta</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of clients; track c.id) {
+          <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.firstName }}</td>
+            <td>{{ c.lastName }}</td>
+            <td>{{ c.phone }}</td>
+            <td class="clientes-table__email">{{ c.email }}</td>
+            <td>
+              <dropi-tag [label]="c.marketing ? 'Sí' : 'No'" [variant]="c.marketing ? 'success' : 'neutral'" />
+            </td>
+            <td>
+              @if (c.hasTag) {
+                <i class="pi pi-ticket clientes-table__tag-icon"></i>
+              }
+            </td>
+            <td class="clientes-table__actions">
+              <button type="button" aria-label="Ver"><i class="pi pi-eye"></i></button>
+              <button type="button" aria-label="Editar"><i class="pi pi-user-edit"></i></button>
+              <button type="button" aria-label="Eliminar"><i class="pi pi-trash"></i></button>
+              <button type="button" aria-label="Tickets"><i class="pi pi-ticket"></i></button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <dropi-paginator />
+  </div>
+</div>

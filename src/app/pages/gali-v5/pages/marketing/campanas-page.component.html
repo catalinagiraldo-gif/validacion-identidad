@@ -1,0 +1,285 @@
+<div class="campanas-page">
+
+  <dropi-gali-bar
+    agent="Roax"
+    status="activo · Media Buyer"
+    [stats]="galiStats"
+    ctaLabel="Ver reglas activas"
+  />
+
+  <!-- Flujo de campaña: narrative stepper -->
+  <div class="campanas-flow-stepper">
+    <div class="campanas-flow-stepper__label">Flujo de campaña completo</div>
+    <div class="campanas-flow-stepper__steps">
+      <button type="button" class="camp-flow-step camp-flow-step--done" routerLink="/gali-v5/productos/catalogo">
+        <span class="camp-flow-step__num">✓</span>
+        <span class="camp-flow-step__name">Producto</span>
+        <span class="camp-flow-step__sub">Collar GPS</span>
+      </button>
+      <div class="camp-flow-stepper__connector camp-flow-stepper__connector--done"></div>
+      <button type="button" class="camp-flow-step camp-flow-step--done">
+        <span class="camp-flow-step__num">✓</span>
+        <span class="camp-flow-step__name">Ángulo</span>
+        <span class="camp-flow-step__sub">Mamá preocupada</span>
+      </button>
+      <div class="camp-flow-stepper__connector camp-flow-stepper__connector--done"></div>
+      <button type="button" class="camp-flow-step camp-flow-step--done" routerLink="/gali-v5/creador-de-paginas">
+        <span class="camp-flow-step__num">✓</span>
+        <span class="camp-flow-step__name">Landing</span>
+        <span class="camp-flow-step__sub">3 activas</span>
+      </button>
+      <div class="camp-flow-stepper__connector camp-flow-stepper__connector--done"></div>
+      <button type="button" class="camp-flow-step camp-flow-step--active">
+        <span class="camp-flow-step__num">4</span>
+        <span class="camp-flow-step__name">Campaña</span>
+        <span class="camp-flow-step__sub">Activa · ROAS 2.9x</span>
+      </button>
+      <div class="camp-flow-stepper__connector"></div>
+      <button type="button" class="camp-flow-step" routerLink="/gali-v5/reportes/dashboard">
+        <span class="camp-flow-step__num">5</span>
+        <span class="camp-flow-step__name">Ver mapa</span>
+        <span class="camp-flow-step__sub">Ciudades top</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Roax copiloto — panel de guía activa para campañas -->
+  <div class="campanas-roax-guide">
+    <!-- Header del copilot -->
+    <div class="campanas-roax-guide__header">
+      <div class="campanas-roax-guide__agent">
+        <span class="campanas-roax-guide__dot"></span>
+        <strong>Roax</strong>
+        <span class="campanas-roax-guide__agent-role">Media Buyer IA</span>
+      </div>
+      <div class="campanas-roax-guide__kpis">
+        <span class="campanas-roax-guide__kpi">
+          <span class="campanas-roax-guide__kpi-val"
+            galiInsight="ROAS 2.9x — por encima del objetivo 2.5x durante 52h. Roax escaló presupuesto +15% automáticamente. Break-even ROAS calculado: 1.8x. Margen de seguridad activo.">2.9x</span>
+          <span class="campanas-roax-guide__kpi-label" title="Retorno sobre la inversión en publicidad: por cada $1 invertido en pauta, generas $2.9 en ventas">ROAS</span>
+        </span>
+        <span class="campanas-roax-guide__kpi-sep">·</span>
+        <span class="campanas-roax-guide__kpi">
+          <span class="campanas-roax-guide__kpi-val"
+            galiInsight="Presupuesto escalado de $57.5k → $66k/día hace 4h. Roax aplicó la regla del 20%. Si ROAS se mantiene 48h más, próximo escalado llevaría a $79k/día.">$66k</span>
+          <span class="campanas-roax-guide__kpi-label">presupuesto/día</span>
+        </span>
+        <span class="campanas-roax-guide__kpi-sep">·</span>
+        <span class="campanas-roax-guide__kpi">
+          <span class="campanas-roax-guide__kpi-val campanas-roax-guide__kpi-val--up"
+            galiInsight="Estado: Escalando. CTR Video B: 1.8% (excelente). CTR Video C: 0.7% (cerca del umbral de pausa 0.8%). Frecuencia: 2.1 (dentro del límite de 3.0).">↑ escalando</span>
+          <span class="campanas-roax-guide__kpi-label">estado</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Decisión pendiente de Roax -->
+    <div class="campanas-roax-guide__decision">
+      <div class="campanas-roax-guide__decision-icon">📊</div>
+      <div class="campanas-roax-guide__decision-body">
+        <p class="campanas-roax-guide__decision-msg">
+          <strong>Roax está listo para escalar:</strong> El ROAS lleva 52h por encima del objetivo (2.5x).
+          Recomienda aumentar el presupuesto de $66k a $86k/día (+30%).
+        </p>
+        <p class="campanas-roax-guide__decision-sub">
+          Antes de escalar, asegúrate de tener inventario suficiente para 72h de escala.
+          Roax pausará automáticamente si el ROAS cae por debajo de 2.2x.
+        </p>
+      </div>
+      <div class="campanas-roax-guide__decision-actions">
+        <button type="button" class="campanas-roax-guide__btn-primary" data-proto-skip>
+          Aprobar escala +$20k/día
+        </button>
+        <button type="button" class="campanas-roax-guide__btn-ghost" (click)="goToSkillEditor()" data-proto-skip>
+          Crear regla automática
+        </button>
+      </div>
+    </div>
+
+    <!-- Qué hace Roax cuando creas una campaña masiva -->
+    <div class="campanas-roax-guide__steps">
+      <p class="campanas-roax-guide__steps-title">¿Cómo te ayuda Roax en campañas masivas?</p>
+      <div class="campanas-roax-guide__steps-list">
+        <div class="campanas-roax-guide__step">
+          <span class="campanas-roax-guide__step-num">1</span>
+          <div>
+            <strong>Segmenta la audiencia</strong>
+            <span>Roax analiza tu historial de clientes y construye audiencias similares (lookalike) automáticamente.</span>
+          </div>
+        </div>
+        <div class="campanas-roax-guide__step">
+          <span class="campanas-roax-guide__step-num">2</span>
+          <div>
+            <strong>Personaliza el mensaje</strong>
+            <span>Genera variantes del texto según el canal (SMS, Email) y el perfil del cliente.</span>
+          </div>
+        </div>
+        <div class="campanas-roax-guide__step">
+          <span class="campanas-roax-guide__step-num">3</span>
+          <div>
+            <strong>Mide y optimiza</strong>
+            <span>Monitorea entregabilidad, aperturas y conversiones en tiempo real. Pausa los mensajes que no convierten.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DIAGNÓSTICO CAMPAÑA PAUSADA (Post-mortem Roax) ── -->
+  <div class="campanas-postmortem">
+    <div class="campanas-postmortem__header">
+      <span class="campanas-postmortem__dot"></span>
+      <strong>Diagnóstico · Campaña pausada</strong>
+      <span class="campanas-postmortem__campaign">Bandas de Fitness — Black Friday</span>
+      <span class="campanas-postmortem__badge">pausada hace 3 días</span>
+    </div>
+
+    <div class="campanas-postmortem__body">
+      <p class="campanas-postmortem__intro">
+        Roax analizó los datos de la campaña pausada. El problema no fue solo uno — hubo 3 factores:
+      </p>
+
+      <div class="postmortem-grid">
+        <div class="postmortem-factor postmortem-factor--high">
+          <div class="postmortem-factor__header">
+            <span class="postmortem-factor__icon">📊</span>
+            <div>
+              <strong>CTR del anuncio: 0.4%</strong>
+              <span class="postmortem-factor__label postmortem-factor__label--bad">Principal culpable</span>
+            </div>
+            <span class="postmortem-factor__pct">40% del problema</span>
+          </div>
+          <p>El anuncio "Bandas cortas negro" tuvo un CTR de 0.4% — la mitad del umbral (0.8%). El ángulo "antes/después" no conectó con la audiencia.</p>
+          <div class="postmortem-factor__action">
+            <strong>Acción Roax:</strong> Probar ángulo de "conveniencia" en lugar de transformación. Crear un nuevo creativo con hook de precio/practicidad.
+          </div>
+        </div>
+
+        <div class="postmortem-factor postmortem-factor--mid">
+          <div class="postmortem-factor__header">
+            <span class="postmortem-factor__icon">🌐</span>
+            <div>
+              <strong>CVR de la landing: 0.8%</strong>
+              <span class="postmortem-factor__label postmortem-factor__label--warn">Contribuyente</span>
+            </div>
+            <span class="postmortem-factor__pct">35% del problema</span>
+          </div>
+          <p>De cada 100 personas que llegaron a la landing, solo 0.8 compraron. El promedio del nicho fitness es 1.5%. La página carga en 4.2s — muy lento para móvil.</p>
+          <div class="postmortem-factor__action">
+            <strong>Acción Roax:</strong> Cambiar a landing de carga rápida. Reducir campos del formulario de 5 a 2 (nombre + teléfono).
+          </div>
+        </div>
+
+        <div class="postmortem-factor postmortem-factor--low">
+          <div class="postmortem-factor__header">
+            <span class="postmortem-factor__icon">📦</span>
+            <div>
+              <strong>Saturación del producto: score 41/100</strong>
+              <span class="postmortem-factor__label postmortem-factor__label--info">Secundario</span>
+            </div>
+            <span class="postmortem-factor__pct">25% del problema</span>
+          </div>
+          <p>ADA Spy detectó que el mismo proveedor tiene 12 dropshippers activos en Meta con el mismo producto. El CPM subió 38% en 30 días.</p>
+          <div class="postmortem-factor__action">
+            <strong>Acción ADA:</strong> Buscar variante diferenciada (color, combo, kit). O esperar 15 días a que la saturación baje.
+          </div>
+        </div>
+      </div>
+
+      <div class="postmortem-verdict">
+        <span class="postmortem-verdict__dot"></span>
+        <div>
+          <strong>Veredicto Roax:</strong> Esta campaña puede rescatarse. Reemplaza el creativo y mejora la landing. El producto tiene 6 meses de vida útil en el mercado colombiano.
+        </div>
+        <button type="button" class="postmortem-verdict__cta" (click)="goToSkillEditor()" data-proto-skip>
+          Crear skill de rescate →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <dropi-titulos title="Campañas masivas" [breadcrumbs]="breadcrumbs">
+    <dropi-button-new titulosActions label="Nueva campaña" icon="pi-chevron-down" hierarchy="primary" [width]="200" />
+  </dropi-titulos>
+
+  <div class="campanas-page__layout">
+    <nav class="campanas-page__channels">
+      <button type="button" [class.is-active]="activeChannel === 'sms'" (click)="activeChannel = 'sms'">
+        <i class="pi pi-send"></i>
+        SMS
+      </button>
+      <button type="button" [class.is-active]="activeChannel === 'email'" (click)="activeChannel = 'email'">
+        <i class="pi pi-envelope"></i>
+        EMAIL
+      </button>
+    </nav>
+
+    <div class="campanas-page__main">
+      <div class="campanas-page__table-actions">
+        <button type="button" class="campanas-page__delete-btn" title="Eliminar seleccionados">
+          <i class="pi pi-trash"></i>
+        </button>
+      </div>
+
+      <div class="campanas-page__table-wrap">
+        <table class="campanas-page__table">
+          <thead>
+            <tr>
+              <th style="width:48px"><input type="checkbox" aria-label="Seleccionar todo" /></th>
+              <th style="width:90px">ID</th>
+              <th>Nombre</th>
+              <th style="width:140px">Estado</th>
+              <th style="width:140px">Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of filteredRows; track row.id) {
+              <tr>
+                <td><input type="checkbox" [attr.aria-label]="'Seleccionar ' + row.nombre" /></td>
+                <td>{{ row.id }}</td>
+                <td>{{ row.nombre }}</td>
+                <td><dropi-tag [label]="row.estado" [variant]="estadoVariant(row.estado)" /></td>
+                <td>{{ row.fecha }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <dropi-paginator />
+    </div>
+  </div>
+
+  <section class="campanas-postmortem">
+    <div class="campanas-postmortem__head">
+      <h2>Diagnóstico de campaña (post-mortem)</h2>
+      <span class="campanas-postmortem__badge">Gali + Roax</span>
+    </div>
+    <p class="campanas-postmortem__sub">Cuando una campaña fracasa, Gali cruza anuncio, landing y producto para decirte qué apagar o qué iterar.</p>
+    <div class="campanas-postmortem__grid">
+      <article class="campanas-postmortem__card campanas-postmortem__card--fail">
+        <span class="campanas-postmortem__label">Campaña pausada · Video C</span>
+        <strong>Problema: gancho</strong>
+        <p>CTR 0.6% en primeros 3s — el hook no genera curiosidad. Landing y producto OK.</p>
+        <button type="button" class="campanas-postmortem__cta" routerLink="/gali-v5/proyectos/nuevo" data-proto-skip>Probar nuevo ángulo →</button>
+      </article>
+      <article class="campanas-postmortem__card">
+        <span class="campanas-postmortem__label">Lookalike audiencia</span>
+        <strong>Roax expandió +18%</strong>
+        <p>Audiencia similar a compradores Collar GPS — CPA estable en $14.200.</p>
+        <button type="button" class="campanas-postmortem__cta" data-proto-skip>Expandir audiencia simulada</button>
+      </article>
+      <article class="campanas-postmortem__card">
+        <span class="campanas-postmortem__label">Regla escalamiento 20%</span>
+        <a routerLink="/gali-v5/reglas" class="campanas-postmortem__link">Configurar en Reglas →</a>
+      </article>
+    </div>
+  </section>
+</div>
+
+@if (showNewSkill()) {
+  <gali-new-skill-overlay
+    (closed)="showNewSkill.set(false)"
+    (created)="showNewSkill.set(false)"
+  />
+}

@@ -1,0 +1,74 @@
+<article class="ped">
+  <header class="ped__head">
+    <div class="ped__head-meta">
+      <span class="ped__sparkle">✦</span>
+      <span class="ped__head-tag">Pedidos · Triage Gali</span>
+    </div>
+    <h1>Gali está manejando lo manejable. Tú decides solo lo crítico.</h1>
+    <p class="ped__intro">
+      En vez de una lista plana, Gali clasifica novedades en 3 zonas: requieren tu decisión, en proceso automático, y ya resueltas.
+    </p>
+  </header>
+
+  <section class="ped__zone ped__zone--critica" *ngIf="criticas.length">
+    <header>
+      <span class="ped__zone-tag">Críticas · requieren tu decisión</span>
+      <span class="ped__zone-count">{{ criticas.length }}</span>
+    </header>
+    <ul>
+      <li *ngFor="let o of criticas" class="ped__order ped__order--critica">
+        <div class="ped__order-id">{{ o.id }}</div>
+        <div class="ped__order-body">
+          <strong>{{ o.cliente }} · {{ o.ciudad }}</strong>
+          <span class="ped__order-tipo">{{ tipoLabel(o.tipo) }}</span>
+          <p>{{ o.resumen }}</p>
+        </div>
+        <div class="ped__order-actions">
+          <button class="ped__btn ped__btn--primary" (click)="aprobar(o)">Aprobar acción Gali</button>
+          <button class="ped__btn" (click)="manejarYo(o)">Manejar yo</button>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="ped__zone ped__zone--proc" *ngIf="procesando.length">
+    <header>
+      <span class="ped__zone-tag">Gali está manejando estas</span>
+      <span class="ped__zone-count">{{ procesando.length }}</span>
+    </header>
+    <ul>
+      <li *ngFor="let o of procesando" class="ped__order ped__order--proc">
+        <div class="ped__order-id">{{ o.id }}</div>
+        <div class="ped__order-body">
+          <strong>{{ o.cliente }} · {{ o.ciudad }}</strong>
+          <span class="ped__order-tipo">{{ tipoLabel(o.tipo) }}</span>
+          <p>{{ o.resumen }}</p>
+          <div class="ped__order-status">
+            <span class="ped__sparkle">✦</span>
+            {{ o.accion_gali }} · ETA {{ o.eta }}
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="ped__zone ped__zone--resueltas" *ngIf="resueltas.length">
+    <header>
+      <span class="ped__zone-tag">Resueltas hoy por Gali</span>
+      <span class="ped__zone-count">{{ resueltas.length }}</span>
+    </header>
+    <details>
+      <summary>Ver auditoría ({{ resueltas.length }})</summary>
+      <ul>
+        <li *ngFor="let o of resueltas" class="ped__order ped__order--resuelta">
+          <div class="ped__order-id">{{ o.id }}</div>
+          <div class="ped__order-body">
+            <strong>{{ o.cliente }} · {{ o.ciudad }}</strong>
+            <span class="ped__order-tipo">{{ tipoLabel(o.tipo) }}</span>
+            <p>{{ o.accion_gali }}</p>
+          </div>
+        </li>
+      </ul>
+    </details>
+  </section>
+</article>

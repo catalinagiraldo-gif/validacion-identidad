@@ -1,0 +1,87 @@
+{
+  "signals": [
+    {
+      "id": "sig-1",
+      "tipo": "oportunidad",
+      "icon": "⚡",
+      "titulo": "Tu campaña del Collar GPS puede escalar",
+      "contexto": "ROAS 2.8x sostenido 72h. 312 campañas similares duplicaron presupuesto en día 18 y llegaron a 4.2x.",
+      "accion_sugerida": { "label": "Escalar a $160k/día", "target_route": "/gali-v3/proyecto/collar-gps-2026" },
+      "urgencia": "media",
+      "timestamp": "hace 12 min",
+      "fuente": "Datos LATAM Dropi",
+      "confianza": 0.82,
+      "razonamiento": "Basado en 312 campañas similares en Colombia con ticket $58k–$72k. Tu CTR sostenido >1.5% indica audiencia no saturada.",
+      "estado_ejecucion": "pendiente"
+    },
+    {
+      "id": "sig-2",
+      "tipo": "riesgo",
+      "icon": "⚠️",
+      "titulo": "CTR cayó 40% en últimas 6 horas",
+      "contexto": "Tu campaña 'Banner B - Hogar' precede un baneo en 67% de casos similares. Recomiendo pausar y activar Video A como reemplazo.",
+      "accion_sugerida": { "label": "Pausar y activar Video A", "target_route": "/gali-v3/proyecto/collar-gps-2026" },
+      "urgencia": "alta",
+      "timestamp": "hace 6 min",
+      "fuente": "Vigilante anti-baneo",
+      "confianza": 0.91,
+      "razonamiento": "Patrón detectado en 847 campañas Meta Colombia: caída CTR >35% en 6h precede restricción en 67% de casos. Video A tiene CTR histórico 1.8% vs Banner B 1.2%.",
+      "estado_ejecucion": "resultado",
+      "resultado": {
+        "metrica": "CTR / ROAS",
+        "antes": 1.2,
+        "despues": 1.8,
+        "delta_label": "CTR +50% · ROAS 2.6→2.9x",
+        "roas_antes": 2.6,
+        "roas_despues": 2.9,
+        "ejecutado_hace": "hace 2h"
+      },
+      "propuesta_receta": {
+        "label": "Crear receta",
+        "route": "/gali-v3/builder?preset=ctr-auto"
+      }
+    },
+    {
+      "id": "sig-3",
+      "tipo": "oportunidad",
+      "icon": "🎯",
+      "titulo": "Producto en alza: Difusor de aromaterapia",
+      "contexto": "+340% ventas semana en Colombia. Encaja con tu perfil (margen 68%, ticket $58k). Ventana 10-14 días antes de saturación.",
+      "accion_sugerida": { "label": "Ver análisis completo", "target_route": "/gali-v3/dropi/catalogo" },
+      "urgencia": "media",
+      "timestamp": "hace 1 hora",
+      "fuente": "Motor de Producto",
+      "confianza": 0.76,
+      "razonamiento": "Correlación alta con tu nicho (hogar/bienestar). Margen promedio comunidad 68% vs tu objetivo 65%.",
+      "estado_ejecucion": "pendiente"
+    },
+    {
+      "id": "sig-4",
+      "tipo": "optimizacion",
+      "icon": "🔧",
+      "titulo": "Creatives del Collar GPS llevan 14 días",
+      "contexto": "Tu audiencia ya vio cada creative ~3.2 veces. Renovar ahora previene fatiga. Gali puede generar 3 variaciones nuevas.",
+      "accion_sugerida": { "label": "Generar variaciones", "target_route": "/gali-v3/proyecto/collar-gps-2026" },
+      "urgencia": "baja",
+      "timestamp": "hace 3 horas",
+      "fuente": "Creativo autónomo",
+      "confianza": 0.84,
+      "razonamiento": "Frecuencia promedio 3.2x supera umbral de fatiga (2.8x) para audiencias Lookalike 1–3%.",
+      "estado_ejecucion": "pendiente"
+    },
+    {
+      "id": "sig-5",
+      "tipo": "optimizacion",
+      "icon": "📊",
+      "titulo": "Reporte semanal listo para WhatsApp",
+      "contexto": "Plantilla 'Reporte WA semanal' detectó tu cierre de semana. ¿Te envío el resumen al WhatsApp ahora?",
+      "accion_sugerida": { "label": "Enviar reporte", "target_route": "/gali-v3/mercado" },
+      "urgencia": "baja",
+      "timestamp": "hace 8 horas",
+      "fuente": "Plantilla activa",
+      "confianza": 0.95,
+      "razonamiento": "Receta activa desde hace 3 semanas. Último envío hace 7 días — patrón consistente domingo 8am.",
+      "estado_ejecucion": "pendiente"
+    }
+  ]
+}

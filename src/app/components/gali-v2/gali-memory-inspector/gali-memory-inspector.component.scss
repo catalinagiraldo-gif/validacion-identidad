@@ -1,0 +1,149 @@
+@import 'styles/gali-v2-tokens';
+
+:host {
+  display: block;
+  width: min(440px, 100%);
+  font-family: $gv2-font-body;
+}
+
+.gmi {
+  @include gv2-surface(3);
+  border-left: 3px solid $gv2-sage;
+}
+
+.gmi__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $gv2-space-4;
+  border-bottom: 1px solid $gv2-border-whisper;
+}
+.gmi__close {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: $gv2-text-tertiary;
+  font-size: 22px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  &:hover { color: $gv2-text-primary; background: $gv2-bg-base; }
+}
+
+.gmi__body {
+  padding: $gv2-space-5 $gv2-space-4;
+  display: flex;
+  flex-direction: column;
+  gap: $gv2-space-4;
+}
+
+.gmi__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.gmi__field--inline {
+  flex-direction: row;
+  gap: $gv2-space-5;
+  > div { display: flex; flex-direction: column; gap: 4px; }
+}
+
+.gmi__field-label {
+  font-family: $gv2-font-mono;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $gv2-text-tertiary;
+}
+
+.gmi__field-value {
+  margin: 0;
+  font-family: $gv2-font-display;
+  font-variation-settings: 'opsz' 18, 'SOFT' 50;
+  font-size: $gv2-text-base;
+  line-height: 1.5;
+  color: $gv2-text-primary;
+}
+.gmi__field-value--meta {
+  font-family: $gv2-font-body;
+  font-size: $gv2-text-sm;
+  color: $gv2-text-secondary;
+}
+
+.gmi__textarea {
+  width: 100%;
+  background: $gv2-bg-deep;
+  border: 1px solid $gv2-border-warm;
+  border-radius: $gv2-radius-md;
+  padding: $gv2-space-3;
+  color: $gv2-text-primary;
+  font-family: $gv2-font-display;
+  font-size: $gv2-text-base;
+  line-height: 1.5;
+  resize: vertical;
+  outline: 0;
+  &:focus { border-color: $gv2-terracota; box-shadow: $gv2-shadow-glow-warm; }
+}
+.gmi__hint {
+  font-family: $gv2-font-mono;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: $gv2-text-muted;
+}
+
+.gmi__chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: $gv2-radius-pill;
+  font-family: $gv2-font-mono;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid $gv2-border-subtle;
+  color: $gv2-text-secondary;
+
+  &[data-conf='alta'] { color: $gv2-sage; border-color: $gv2-sage-dim; background: $gv2-sage-dim; }
+  &[data-conf='media'] { color: $gv2-amber; border-color: $gv2-amber-dim; }
+  &[data-conf='baja'] { color: $gv2-text-muted; }
+  &[data-obso='true'] { color: $gv2-amber; border-color: $gv2-amber-dim; background: $gv2-amber-dim; }
+}
+
+.gmi__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: $gv2-space-2;
+  padding: $gv2-space-3 $gv2-space-4;
+  border-top: 1px solid $gv2-border-whisper;
+  background: $gv2-bg-deep;
+}
+
+.gmi__btn {
+  appearance: none;
+  padding: 8px 14px;
+  border-radius: $gv2-radius-pill;
+  font-family: $gv2-font-mono;
+  font-size: $gv2-text-xs;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all $gv2-dur-fast $gv2-ease-out;
+}
+.gmi__btn--ghost {
+  background: transparent;
+  border-color: $gv2-border-subtle;
+  color: $gv2-text-secondary;
+  &:hover { color: $gv2-text-primary; border-color: $gv2-border-warm; }
+}
+.gmi__btn--primary {
+  background: $gv2-terracota;
+  color: $gv2-text-primary;
+  &:hover { background: $gv2-orange; }
+}
+.gmi__btn--danger {
+  background: transparent;
+  border-color: $gv2-rust-dim;
+  color: $gv2-rust;
+  &:hover { background: $gv2-rust-dim; color: $gv2-text-primary; }
+}

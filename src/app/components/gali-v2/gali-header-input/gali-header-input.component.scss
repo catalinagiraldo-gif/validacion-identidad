@@ -1,0 +1,290 @@
+@import 'styles/gali-v2-tokens';
+
+:host {
+  display: block;
+  width: 100%;
+  font-family: $gv2-font-body;
+  position: relative;
+}
+
+.ghi {
+  position: relative;
+  width: 100%;
+}
+
+.ghi__bar {
+  display: flex;
+  align-items: center;
+  gap: $gv2-space-3;
+  padding: $gv2-space-3 $gv2-space-4;
+  background: linear-gradient(180deg, $gv2-bg-elevated 0%, $gv2-bg-surface 100%);
+  border: 1px solid $gv2-border-subtle;
+  border-radius: $gv2-radius-pill;
+  box-shadow: $gv2-shadow-sm;
+  transition: border-color $gv2-dur-base $gv2-ease-out, box-shadow $gv2-dur-base $gv2-ease-out, transform $gv2-dur-base $gv2-ease-out;
+
+  .ghi[data-estado='focus'] & {
+    border-color: $gv2-terracota;
+    box-shadow: $gv2-shadow-md, $gv2-shadow-glow-warm;
+    transform: translateY(-1px);
+  }
+
+  .ghi[data-estado='streaming'] & {
+    border-color: $gv2-orange;
+    box-shadow: $gv2-shadow-md, 0 0 32px rgba(244, 154, 61, 0.32);
+  }
+}
+
+.ghi__input {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: $gv2-text-primary;
+  font-family: $gv2-font-display;
+  font-variation-settings: 'opsz' 18, 'SOFT' 50, 'WONK' 0;
+  font-size: $gv2-text-lg;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  min-width: 0;
+
+  &::placeholder {
+    color: $gv2-text-tertiary;
+    font-style: italic;
+    font-variation-settings: 'opsz' 18, 'SOFT' 80, 'WONK' 1;
+  }
+}
+
+.ghi__actions {
+  display: flex;
+  align-items: center;
+  gap: $gv2-space-2;
+}
+
+.ghi__senal-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: $gv2-space-2;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid $gv2-border-subtle;
+  border-radius: $gv2-radius-pill;
+  color: $gv2-text-secondary;
+  cursor: pointer;
+  font-family: $gv2-font-mono;
+  font-size: $gv2-text-xs;
+  transition: all $gv2-dur-base $gv2-ease-out;
+
+  &:hover {
+    border-color: $gv2-border-warm;
+    color: $gv2-text-primary;
+  }
+  &:focus-visible {
+    outline: 2px solid $gv2-orange;
+    outline-offset: 2px;
+  }
+}
+.ghi__senal-btn--nuevo {
+  border-color: $gv2-terracota;
+  color: $gv2-text-primary;
+  background: $gv2-terracota-dim;
+}
+.ghi__senal-count {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.ghi__send {
+  display: inline-flex;
+  align-items: center;
+  gap: $gv2-space-2;
+  padding: 8px 14px;
+  background: $gv2-terracota;
+  color: $gv2-text-primary;
+  border: 0;
+  border-radius: $gv2-radius-pill;
+  font-family: $gv2-font-mono;
+  font-size: $gv2-text-xs;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: $gv2-shadow-sm;
+  transition: all $gv2-dur-base $gv2-ease-out;
+
+  &:hover:not(:disabled) {
+    background: $gv2-orange;
+    transform: translateY(-1px);
+    box-shadow: $gv2-shadow-md;
+  }
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+.ghi__send-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: rgba(244, 237, 225, 0.18);
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+// --- Sugerencias contextuales ---
+.ghi__sug {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + #{$gv2-space-2});
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $gv2-space-2;
+  padding: $gv2-space-3 $gv2-space-4;
+  @include gv2-surface(2);
+  z-index: 10;
+  animation: ghi-fade-in $gv2-dur-base $gv2-ease-out;
+}
+.ghi__sug-mono {
+  font-family: $gv2-font-mono;
+  font-size: $gv2-text-xs;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $gv2-text-tertiary;
+  margin-right: $gv2-space-2;
+}
+.ghi__sug-chip {
+  appearance: none;
+  background: $gv2-bg-base;
+  border: 1px solid $gv2-border-subtle;
+  border-radius: $gv2-radius-pill;
+  padding: 6px 12px;
+  color: $gv2-text-secondary;
+  font-family: $gv2-font-body;
+  font-size: $gv2-text-sm;
+  cursor: pointer;
+  transition: all $gv2-dur-fast $gv2-ease-out;
+
+  &:hover {
+    border-color: $gv2-terracota;
+    color: $gv2-text-primary;
+    background: $gv2-terracota-dim;
+  }
+}
+
+// --- Panel señales ---
+.ghi__senales-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + #{$gv2-space-2});
+  width: min(440px, calc(100vw - #{$gv2-space-6}));
+  z-index: 20;
+  @include gv2-surface(3);
+  padding: $gv2-space-4;
+  animation: ghi-fade-in $gv2-dur-base $gv2-ease-out;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.ghi__senales-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $gv2-space-3;
+  padding-bottom: $gv2-space-3;
+  border-bottom: 1px solid $gv2-border-whisper;
+}
+.ghi__senales-close {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: $gv2-text-tertiary;
+  font-size: 24px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover { color: $gv2-text-primary; background: $gv2-bg-base; }
+}
+.ghi__senales-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $gv2-space-3;
+}
+.ghi__senal-item {
+  padding: $gv2-space-4;
+  border-radius: $gv2-radius-md;
+  background: $gv2-bg-base;
+  border-left: 3px solid $gv2-orange;
+
+  &[data-tipo='novedad'] { border-left-color: $gv2-rust; }
+  &[data-tipo='oportunidad'] { border-left-color: $gv2-sage; }
+  &[data-tipo='campana'] { border-left-color: $gv2-orange; }
+  &[data-urgencia='alta'] { background: linear-gradient(180deg, $gv2-rust-dim 0%, $gv2-bg-base 60%); }
+}
+.ghi__senal-meta {
+  display: flex;
+  align-items: center;
+  gap: $gv2-space-2;
+  font-family: $gv2-font-mono;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $gv2-text-tertiary;
+  margin-bottom: $gv2-space-2;
+}
+.ghi__senal-tipo { color: $gv2-orange; font-weight: 500; }
+.ghi__senal-titulo {
+  margin: 0 0 $gv2-space-2;
+  font-family: $gv2-font-display;
+  font-variation-settings: 'opsz' 24, 'SOFT' 50;
+  font-size: $gv2-text-lg;
+  font-weight: 500;
+  color: $gv2-text-primary;
+  letter-spacing: -0.015em;
+}
+.ghi__senal-desc {
+  margin: 0 0 $gv2-space-3;
+  font-size: $gv2-text-sm;
+  line-height: 1.5;
+  color: $gv2-text-secondary;
+}
+.ghi__senal-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $gv2-space-3;
+}
+.ghi__senal-metrica {
+  font-family: $gv2-font-mono;
+  font-size: $gv2-text-sm;
+  color: $gv2-sage;
+  font-weight: 500;
+}
+.ghi__senal-cta {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: $gv2-terracota;
+  font-family: $gv2-font-mono;
+  font-size: $gv2-text-xs;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: $gv2-radius-sm;
+  &:hover { color: $gv2-orange; background: $gv2-orange-dim; }
+}
+
+@keyframes ghi-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,281 @@
+<article class="comunidad">
+  <!-- Hero: Líder Virtual -->
+  <header class="comunidad__hero">
+    <div class="comunidad__hero-main">
+      <div class="comunidad__hero-meta">
+        <span class="comunidad__sparkle">✦</span>
+        <span class="comunidad__hero-tag">Líder virtual · síntesis de la comunidad LATAM</span>
+      </div>
+      <h1>
+        Esta semana en <em>la comunidad</em>
+      </h1>
+
+      <div class="comunidad__hero-frases">
+        <p *ngFor="let f of resumen().frases; let i = index" class="comunidad__hero-frase"
+          [style.animation-delay.ms]="i * 120">
+          {{ f }}
+        </p>
+      </div>
+
+      <footer class="comunidad__hero-foot">
+        <span class="comunidad__hero-window">
+          📅 {{ resumen().data_window }}
+          · <strong>{{ formatoMiles(resumen().vendedores_analizados) }}</strong> vendedores analizados
+          · actualizado {{ resumen().actualizado_hace }}
+        </span>
+        <span class="comunidad__hero-confianza" [attr.data-color]="confianzaColor(resumen().confianza_global)">
+          Confianza global {{ (resumen().confianza_global * 100).toFixed(0) }}%
+          ({{ confianzaTexto(resumen().confianza_global) }})
+        </span>
+      </footer>
+
+      <!-- ✦ Data flywheel: explica de dónde vienen las señales (V4 Fase 4) -->
+      <div *ngIf="dataFlywheel() as df" class="comunidad__flywheel">
+        <header class="comunidad__flywheel-head">
+          <span class="comunidad__sparkle">✦</span>
+          <strong>Data flywheel — de dónde viene esta inteligencia</strong>
+        </header>
+        <ul class="comunidad__flywheel-stats">
+          <li>
+            <strong>{{ df.recipes_activas_aportando }}</strong>
+            <span>recipes activas aportando datos</span>
+          </li>
+          <li>
+            <strong>{{ df.bloques_compartidos_aportando }}</strong>
+            <span>bloques compartidos en marketplace</span>
+          </li>
+          <li>
+            <strong>{{ df.vendedores_publicando }}</strong>
+            <span>vendedores publicando contenido</span>
+          </li>
+          <li>
+            <strong>K≥{{ df.k_anonymity_min }}</strong>
+            <span>anonimización mínima por agregado</span>
+          </li>
+        </ul>
+        <p class="comunidad__flywheel-explain">{{ df.explicacion }}</p>
+      </div>
+    </div>
+
+    <aside class="comunidad__hero-mentor">
+      <button class="comunidad__mentor-toggle"
+        [class.is-active]="modoMentor()"
+        (click)="toggleMentor()">
+        <span class="comunidad__sparkle">✦</span>
+        <span>{{ modoMentor() ? 'Modo mentor activo' : 'Activar modo mentor' }}</span>
+      </button>
+      <p *ngIf="modoMentor()" class="comunidad__mentor-intro">{{ modoMentorIntro() }}</p>
+      <button *ngIf="modoMentor()" class="comunidad__mentor-cta" (click)="preguntarLider()">
+        Preguntar al líder virtual →
+      </button>
+    </aside>
+  </header>
+
+  <!-- Filtros de relevancia -->
+  <section class="comunidad__filtros" role="radiogroup" aria-label="Filtro de relevancia">
+    <button
+      *ngFor="let f of filtros()"
+      class="comunidad__filtro"
+      [class.is-active]="filtroActivo() === f.id"
+      [attr.aria-checked]="filtroActivo() === f.id"
+      role="radio"
+      (click)="cambiarFiltro(f.id)"
+    >
+      <strong>{{ f.label }}</strong>
+      <span>{{ f.descripcion }}</span>
+    </button>
+  </section>
+
+  <!-- Top 3 movimientos del top 10% -->
+  <section *ngIf="top3().length > 0" class="comunidad__top3">
+    <header class="comunidad__top3-head">
+      <h2>
+        <span class="comunidad__sparkle">✦</span>
+        ¿Qué haría el top 10% esta semana?
+      </h2>
+      <span class="comunidad__top3-meta">3 movimientos más inteligentes según patrones de vendedores top</span>
+    </header>
+    <ol class="comunidad__top3-list">
+      <li *ngFor="let m of top3(); let i = index" class="comunidad__top3-item">
+        <span class="comunidad__top3-num">{{ i + 1 }}</span>
+        <div class="comunidad__top3-body">
+          <strong>{{ m.titulo }}</strong>
+          <p>{{ m.accion_sugerida }}</p>
+          <button class="comunidad__top3-cta" (click)="aplicarSenal(m)">
+            Aplicar a mi negocio →
+          </button>
+        </div>
+        <span class="comunidad__top3-confianza" [attr.data-color]="confianzaColor(m.confianza)">
+          {{ (m.confianza * 100).toFixed(0) }}%
+        </span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- 3 columnas: Tendencias / Alertas / Casos -->
+  <section class="comunidad__grid">
+    <!-- Columna 1: Productos en tendencia -->
+    <section class="comunidad__col" aria-labelledby="col-trend">
+      <header class="comunidad__col-head">
+        <h2 id="col-trend">🔥 En tendencia</h2>
+        <span>productos con mayor momentum</span>
+      </header>
+      <ul class="comunidad__products">
+        <li *ngFor="let p of productos()" class="comunidad__product"
+          [class.is-expanded]="productoExpandido() === p.id">
+          <button class="comunidad__product-head" (click)="toggleProducto(p)">
+            <span class="comunidad__product-emoji" aria-hidden="true">{{ p.imagen_emoji }}</span>
+            <div class="comunidad__product-body">
+              <strong>{{ p.nombre }}</strong>
+              <span class="comunidad__product-meta">
+                +{{ p.crecimiento_semanal }}% WoW
+                · {{ p.vendedores_activos }} vendedores
+                · {{ p.margen_promedio }}% margen
+              </span>
+            </div>
+            <span class="comunidad__product-confianza"
+              [attr.data-color]="confianzaColor(p.confianza)">
+              {{ (p.confianza * 100).toFixed(0) }}%
+            </span>
+          </button>
+
+          <div *ngIf="productoExpandido() === p.id" class="comunidad__product-detail">
+            <dl>
+              <div><dt>Ticket promedio</dt><dd>${{ formatoMiles(p.ticket_promedio_cop) }} COP</dd></div>
+              <div><dt>Saturación estimada</dt><dd>{{ p.saturacion_dias }} días antes de saturar</dd></div>
+              <div><dt>Ciudades top</dt><dd>{{ p.ciudades_top.join(' · ') }}</dd></div>
+              <div><dt>Creative que funciona</dt><dd>{{ p.tendencia_creative }}</dd></div>
+            </dl>
+            <button class="comunidad__btn-link" (click)="preguntarProducto(p)">
+              ¿Tiene sentido para mi negocio?
+            </button>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Columna 2: Alertas de la comunidad -->
+    <section class="comunidad__col" aria-labelledby="col-alert">
+      <header class="comunidad__col-head">
+        <h2 id="col-alert">⚠️ Alertas</h2>
+        <span>lo que está fallando en el ecosistema</span>
+      </header>
+      <ul class="comunidad__alerts">
+        <li *ngFor="let a of alertas()" class="comunidad__alert"
+          [attr.data-severidad]="a.severidad"
+          [class.is-expanded]="alertaExpandida() === a.id"
+          role="alert">
+          <button class="comunidad__alert-head" (click)="toggleAlerta(a)">
+            <span class="comunidad__alert-icon" [attr.data-color]="severidadColor(a.severidad)">⚠</span>
+            <div class="comunidad__alert-body">
+              <strong>{{ a.titulo }}</strong>
+              <span class="comunidad__alert-meta">
+                {{ a.afectados }} vendedores afectados
+                · severidad {{ a.severidad }}
+              </span>
+            </div>
+          </button>
+
+          <div *ngIf="alertaExpandida() === a.id" class="comunidad__alert-detail">
+            <p class="comunidad__alert-context">{{ a.contexto }}</p>
+            <p class="comunidad__alert-fuente"><em>Fuente: {{ a.fuente }}</em></p>
+            <div class="comunidad__alert-alternativa">
+              <strong>Recomendación de Gali:</strong>
+              <p>{{ a.alternativa_sugerida }}</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Columna 3: Casos de éxito -->
+    <section class="comunidad__col" aria-labelledby="col-casos">
+      <header class="comunidad__col-head">
+        <h2 id="col-casos">🏆 Casos top</h2>
+        <span>vendedores que lograron lo que tú quieres</span>
+      </header>
+      <ul class="comunidad__casos">
+        <li *ngFor="let c of casos()" class="comunidad__caso"
+          [class.is-expanded]="casoExpandido() === c.id">
+          <button class="comunidad__caso-head" (click)="toggleCaso(c.id)">
+            <div class="comunidad__caso-body">
+              <strong>{{ c.resultado }}</strong>
+              <span class="comunidad__caso-meta">
+                {{ c.perfil_anonimizado }}
+                · {{ c.tiempo }}
+              </span>
+            </div>
+            <span class="comunidad__caso-chevron">
+              {{ casoExpandido() === c.id ? '▴' : '▾' }}
+            </span>
+          </button>
+
+          <div *ngIf="casoExpandido() === c.id" class="comunidad__caso-detail">
+            <div class="comunidad__caso-estrategia">
+              <strong>Lo que hizo distinto:</strong>
+              <p>{{ c.estrategia_clave }}</p>
+            </div>
+            <div class="comunidad__caso-metrics">
+              <span><strong>ROAS</strong> {{ c.metricas_finales.roas }}x</span>
+              <span><strong>{{ c.metricas_finales.pedidos_mes }}</strong> pedidos/mes</span>
+              <span><strong>{{ c.metricas_finales.productos_activos }}</strong> productos</span>
+            </div>
+            <div class="comunidad__caso-aprendizaje">
+              <span class="comunidad__sparkle">✦</span>
+              <em>Aplicable a ti: {{ c.aprendizaje_aplicable }}</em>
+            </div>
+            <span class="comunidad__caso-anon">Datos anonimizados — perfil no identificable</span>
+          </div>
+        </li>
+      </ul>
+    </section>
+  </section>
+
+  <!-- Señales completas filtradas -->
+  <section class="comunidad__senales">
+    <header class="comunidad__senales-head">
+      <h2>Señales detalladas ({{ senales().length }})</h2>
+      <span>según tu filtro activo: <strong>{{ filtroActivo() }}</strong></span>
+    </header>
+
+    <ul class="comunidad__senales-list">
+      <li *ngFor="let s of senales()" class="comunidad__senal"
+        [class.is-expanded]="senalExpandida() === s.id"
+        [attr.data-tipo]="s.tipo">
+        <button class="comunidad__senal-head" (click)="toggleSenal(s)">
+          <span class="comunidad__senal-icon" [attr.data-tipo]="s.tipo">{{ tipoIcono(s.tipo) }}</span>
+          <div class="comunidad__senal-body">
+            <strong>{{ s.titulo }}</strong>
+            <span class="comunidad__senal-meta">
+              {{ s.tipo }} · {{ s.vendedores_afectados }} vendedores
+              · {{ s.geografia.join('/') }}
+            </span>
+          </div>
+          <span class="comunidad__senal-confianza"
+            [attr.data-color]="confianzaColor(s.confianza)">
+            {{ (s.confianza * 100).toFixed(0) }}%
+            confianza
+          </span>
+          <span class="comunidad__senal-chevron">
+            {{ senalExpandida() === s.id ? '▴' : '▾' }}
+          </span>
+        </button>
+
+        <div *ngIf="senalExpandida() === s.id" class="comunidad__senal-detail">
+          <p class="comunidad__senal-context">{{ s.contexto }}</p>
+          <p class="comunidad__senal-fuente">
+            <span class="comunidad__sparkle">✦</span>
+            <em>Fuente: {{ s.fuente }}</em>
+          </p>
+          <div class="comunidad__senal-accion">
+            <strong>¿Qué haría yo en tu lugar?</strong>
+            <p>{{ s.accion_sugerida }}</p>
+            <button class="comunidad__senal-cta" (click)="aplicarSenal(s)">
+              Aplicar a mi proyecto activo →
+            </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>
+</article>

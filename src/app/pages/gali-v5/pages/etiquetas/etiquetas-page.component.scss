@@ -1,0 +1,70 @@
+@import '../shared/dropi-page-shell';
+
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.etiquetas-page {
+  @include dropi-page-shell;
+  overflow-y: auto;
+
+  &__toolbar {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.etiquetas-table-wrap {
+  border: 1px solid $gray-100;
+  border-radius: $radius-md;
+  overflow-x: auto;
+}
+
+.etiquetas-table {
+  width: 100%;
+  min-width: 960px;
+  border-collapse: collapse;
+  font-family: $font-primary;
+
+  th {
+    height: 55px;
+    padding: 0 $size-3;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $gray-600;
+    background: $gray-50;
+    border-bottom: 1px solid $gray-100;
+    text-align: left;
+  }
+
+  td {
+    height: 55px;
+    padding: 0 $size-3;
+    font-size: $font-sm;
+    color: $gray-700;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $size-2;
+
+    button {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      color: $gray-500;
+      cursor: pointer;
+
+      &:hover {
+        color: $primary-600;
+      }
+    }
+  }
+}

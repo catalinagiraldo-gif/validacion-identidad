@@ -1,0 +1,106 @@
+<div class="ap-backdrop" (click)="cancel()"></div>
+
+<div class="ap-panel" role="dialog" aria-modal="true" aria-label="Configurar Autopilot de Gali">
+
+  <div class="ap-panel__header">
+    <div class="ap-panel__title-group">
+      <span class="ap-panel__icon">✦</span>
+      <h2 class="ap-panel__title">Configurar Autopilot</h2>
+    </div>
+    <button type="button" class="ap-panel__close" (click)="cancel()" aria-label="Cerrar">
+      <i class="pi pi-times" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <p class="ap-panel__subtitle">Dime hasta dónde puede llegar Gali <strong>sin pedirte permiso</strong>.</p>
+
+  <div class="ap-panel__body">
+
+    <!-- Presupuesto -->
+    <div class="ap-scope-section">
+      <div class="ap-scope-section__header">
+        <div>
+          <strong class="ap-scope-section__label">Presupuesto de campañas</strong>
+          <p class="ap-scope-section__desc">Roax puede escalar el presupuesto dentro de este límite diario.</p>
+        </div>
+        <span class="ap-risk-badge" [style.background]="budgetRiskColor + '18'" [style.color]="budgetRiskColor" [style.border-color]="budgetRiskColor + '40'">
+          Riesgo {{ budgetRisk }}
+        </span>
+      </div>
+      <div class="ap-budget-row">
+        <input
+          type="range"
+          class="ap-slider"
+          min="10000" max="150000" step="5000"
+          [ngModel]="scope().budgetMax"
+          (ngModelChange)="toggleBudget(+$event)" />
+        <span class="ap-budget-val">{{ budgetFormatted }}/día</span>
+      </div>
+      <div class="ap-presets">
+        <button type="button" class="ap-preset" [class.ap-preset--active]="scope().budgetMax === 10000" (click)="toggleBudget(10000)">$10k</button>
+        <button type="button" class="ap-preset" [class.ap-preset--active]="scope().budgetMax === 50000" (click)="toggleBudget(50000)">$50k</button>
+        <button type="button" class="ap-preset" [class.ap-preset--active]="scope().budgetMax === 100000" (click)="toggleBudget(100000)">$100k</button>
+      </div>
+    </div>
+
+    <!-- Transportadoras -->
+    <div class="ap-scope-section">
+      <div class="ap-scope-section__toggle-row">
+        <div>
+          <strong class="ap-scope-section__label">Cambio de transportadora</strong>
+          <p class="ap-scope-section__desc">Vigilante puede redirigir pedidos si la novedad supera el 20%.</p>
+          <span class="ap-risk-inline" style="color:#f59e0b">Riesgo MEDIO</span>
+        </div>
+        <label class="ap-toggle">
+          <input type="checkbox" [ngModel]="scope().changeTransportadora" (ngModelChange)="toggleTransportadora()" />
+          <span class="ap-toggle__knob"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- WhatsApp -->
+    <div class="ap-scope-section">
+      <strong class="ap-scope-section__label">Mensajes WhatsApp (Chatea Pro)</strong>
+      <p class="ap-scope-section__desc" style="margin-bottom:12px">Riesgo BAJO — Chatea Pro responde por ti.</p>
+
+      <div class="ap-toggle-row">
+        <div>
+          <strong class="ap-toggle-label">Enviar confirmaciones de entrega</strong>
+        </div>
+        <label class="ap-toggle">
+          <input type="checkbox" [ngModel]="scope().whatsappConfirm" (ngModelChange)="toggleWhatsappConfirm()" />
+          <span class="ap-toggle__knob"></span>
+        </label>
+      </div>
+      <div class="ap-toggle-row">
+        <div>
+          <strong class="ap-toggle-label">Recuperar carritos abandonados</strong>
+        </div>
+        <label class="ap-toggle">
+          <input type="checkbox" [ngModel]="scope().whatsappRecuperar" (ngModelChange)="toggleWhatsappRecuperar()" />
+          <span class="ap-toggle__knob"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Siempre requieren permiso -->
+    <div class="ap-restricted">
+      <strong class="ap-restricted__title">Siempre requieren tu aprobación</strong>
+      <div class="ap-restricted__list">
+        <span class="ap-restricted__item">🔒 Pausar un producto completo</span>
+        <span class="ap-restricted__item">🔒 Cambiar precio de venta</span>
+        <span class="ap-restricted__item">🔒 Cancelar pedidos</span>
+        <span class="ap-restricted__item">🔒 Modificar reglas de Chatea Pro</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ap-panel__footer">
+    <button type="button" class="ap-btn ap-btn--cancel" (click)="cancel()">Cancelar</button>
+    <button type="button" class="ap-btn ap-btn--activate" (click)="activate()">
+      ✦ Activar Autopilot con esta configuración
+    </button>
+  </div>
+
+</div>

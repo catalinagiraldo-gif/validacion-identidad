@@ -1,0 +1,43 @@
+<div class="descargas-page">
+  <dropi-titulos title="Descargas" [breadcrumbs]="breadcrumbs" />
+
+  <div class="descargas-page__toolbar">
+    <dropi-search-oficial placeholder="Buscar reporte…" [(ngModel)]="searchQuery" />
+  </div>
+
+  <div class="descargas-table-wrap">
+    <table class="descargas-table">
+      <thead>
+        <tr>
+          <th>Reporte</th>
+          <th style="width:140px">Periodo</th>
+          <th style="width:100px">Formato</th>
+          <th style="width:180px">Generado</th>
+          <th style="width:120px">Estado</th>
+          <th style="width:120px">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows; track $index) {
+          <tr>
+            <td>{{ row.reporte }}</td>
+            <td>{{ row.periodo }}</td>
+            <td>{{ row.formato }}</td>
+            <td>{{ row.generado }}</td>
+            <td><dropi-tag [label]="row.estado" [variant]="estadoVariant(row.estado)" /></td>
+            <td>
+              <div class="descargas-table__actions">
+                <button type="button" title="Descargar" [disabled]="row.estado !== 'Listo'">
+                  <i class="pi pi-download"></i>
+                </button>
+                <button type="button" title="Eliminar"><i class="pi pi-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <dropi-paginator />
+</div>

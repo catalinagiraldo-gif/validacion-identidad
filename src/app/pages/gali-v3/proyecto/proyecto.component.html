@@ -1,0 +1,183 @@
+<article class="proj" *ngIf="isCreating()">
+  <header class="proj__new-hero">
+    <span class="proj__sparkle">✦</span>
+    <h1>Arranquemos un proyecto</h1>
+    <p>Dame un objetivo y arma contigo el plan: producto, ángulos, landings, campañas y automatizaciones.</p>
+  </header>
+
+  <div class="proj__new-form">
+    <label>
+      <span class="proj__new-tag">¿Qué quieres lograr?</span>
+      <input
+        type="text"
+        placeholder="Ej: Lanzar un producto de mascotas con ROAS 3x en 3 semanas"
+        [value]="newProjectName()"
+        (input)="newProjectName.set($any($event.target).value)"
+        (keydown.enter)="createNew()"
+      />
+    </label>
+    <button class="proj__new-cta" (click)="createNew()">Crear proyecto →</button>
+  </div>
+
+  <div class="proj__new-hint">
+    <span class="proj__sparkle">✦</span>
+    Si te quedas sin idea, déjame en blanco y Gali sugerirá algo basado en tu memoria.
+  </div>
+</article>
+
+<article class="proj" signalHighlight *ngIf="!isCreating() && project() as p">
+  <header class="proj__hero">
+    <div class="proj__hero-meta">
+      <span class="proj__sparkle">✦</span>
+      <span class="proj__hero-tag">Proyecto · {{ p.status }}</span>
+      <span class="proj__hero-sep">·</span>
+      <span class="proj__hero-time">{{ p.last_activity }}</span>
+    </div>
+    <h1 class="proj__hero-title">
+      <span class="proj__hero-icon">{{ p.icon }}</span>
+      {{ p.name }}
+    </h1>
+    <p class="proj__hero-sub" *ngIf="p.product?.name">
+      {{ p.product.name }} · ángulo
+      <em>"{{ p.product.angulo_elegido }}"</em>
+      · {{ p.product.ciudad_principal }}
+    </p>
+
+    <div class="proj__pipeline">
+      <div *ngFor="let s of p.pipeline; let last = last" class="proj__stage"
+        [class.is-completado]="s.status === 'completado'"
+        [class.is-activo]="s.status === 'activo'"
+        [class.is-pausado]="s.status === 'pausado'"
+        [class.is-pendiente]="s.status === 'pendiente'">
+        <span class="proj__stage-dot"></span>
+        <div>
+          <span class="proj__stage-name">{{ s.stage }}</span>
+          <span class="proj__stage-label">{{ s.label }}</span>
+        </div>
+        <span class="proj__stage-arrow" *ngIf="!last">→</span>
+      </div>
+    </div>
+
+    <div class="proj__hero-metrics">
+      <div class="proj__hero-metric">
+        <span class="proj__hero-metric-val">{{ p.metrics.roas_actual }}x</span>
+        <span class="proj__hero-metric-key">ROAS</span>
+      </div>
+      <div class="proj__hero-metric">
+        <span class="proj__hero-metric-val">{{ p.metrics.ventas_totales }}</span>
+        <span class="proj__hero-metric-key">ventas</span>
+      </div>
+      <div class="proj__hero-metric">
+        <span class="proj__hero-metric-val">{{ p.metrics.ctr_actual }}%</span>
+        <span class="proj__hero-metric-key">CTR</span>
+      </div>
+      <div class="proj__hero-metric" *ngIf="p.metrics.dias_antes_saturacion">
+        <span class="proj__hero-metric-val">{{ p.metrics.dias_antes_saturacion }}d</span>
+        <span class="proj__hero-metric-key">antes saturación</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="proj__next" data-signal="sig-1" data-signal-alt="sig-2" data-signal-alt2="sig-4">
+    <header>
+      <span class="proj__sparkle">✦</span>
+      <span class="proj__next-tag">Siguiente acción sugerida por Gali</span>
+    </header>
+    <p class="proj__next-text">{{ p.memory.siguiente_accion }}</p>
+    <p class="proj__next-why">{{ p.memory.siguiente_accion_razonamiento }}</p>
+    <div class="proj__next-actions">
+      <button class="proj__next-yes" (click)="ejecutarSiguienteAccion()">Sí, hazlo →</button>
+      <button class="proj__next-more" (click)="contarMe()">Cuéntame más</button>
+      <button class="proj__next-later" (click)="masTarde()">Más tarde</button>
+    </div>
+  </section>
+
+  <section class="proj__memory" *ngIf="p.memory.decisiones_clave.length || p.memory.aprendizajes.length">
+    <header class="proj__memory-head">
+      <span class="proj__sparkle">✦</span>
+      <h3>Lo que sé de este proyecto</h3>
+    </header>
+
+    <div class="proj__memory-cols">
+      <div class="proj__memory-col">
+        <h4>Decisiones que tomamos</h4>
+        <ul>
+          <li *ngFor="let d of p.memory.decisiones_clave">{{ d }}</li>
+        </ul>
+      </div>
+      <div class="proj__memory-col">
+        <h4>Lo que hemos aprendido</h4>
+        <ul>
+          <li *ngFor="let a of p.memory.aprendizajes">{{ a }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="proj__tabs">
+    <nav class="proj__tabs-nav">
+      <button [class.is-active]="tab() === 'memoria'" (click)="setTab('memoria')">Conversaciones</button>
+      <button [class.is-active]="tab() === 'historial'" (click)="setTab('historial')">Decisiones</button>
+      <button [class.is-active]="tab() === 'artifacts'" (click)="setTab('artifacts')">Artifacts</button>
+    </nav>
+
+    <div class="proj__tabs-body" *ngIf="tab() === 'memoria'">
+      <p class="proj__hint">El chat de abajo está conectado a este proyecto. Cualquier conversación queda guardada en su memoria.</p>
+    </div>
+
+    <div class="proj__tabs-body" *ngIf="tab() === 'historial'">
+      <ol class="proj__timeline">
+        <li *ngFor="let d of p.memory.decisiones_clave">
+          <span class="proj__timeline-dot"></span>
+          <div>{{ d }}</div>
+        </li>
+        <li *ngIf="!p.memory.decisiones_clave.length" class="is-empty">Aún no hay decisiones registradas.</li>
+      </ol>
+    </div>
+
+    <div class="proj__tabs-body" *ngIf="tab() === 'artifacts'">
+      <div class="proj__artifacts-grid">
+        <a *ngFor="let l of p.artifacts.landings"
+           [routerLink]="['/gali-v3/artifact/landing', l.id]"
+           class="proj__artifact proj__artifact--link">
+          <span class="proj__artifact-icon">📄</span>
+          <strong>{{ l.name }}</strong>
+          <span>v{{ l.version }} · click para editar</span>
+        </a>
+        <a *ngIf="!p.artifacts.landings.length" routerLink="/gali-v3/artifact/landing/land-1"
+           class="proj__artifact proj__artifact--link">
+          <span class="proj__artifact-icon">📄</span>
+          <strong>Landing demo del Collar GPS</strong>
+          <span>click para editar in-place</span>
+        </a>
+        <div *ngFor="let f of p.artifacts.flows" class="proj__artifact">
+          <span class="proj__artifact-icon">⚡</span>
+          <strong>{{ f.name }}</strong>
+          <span>{{ f.estado }} · {{ f.ejecuciones }} ejec.</span>
+        </div>
+        <div *ngFor="let v of p.artifacts.vistas" class="proj__artifact">
+          <span class="proj__artifact-icon">📊</span>
+          <strong>{{ v.name }}</strong>
+          <span>vista personalizada</span>
+        </div>
+        <div *ngFor="let a of p.artifacts.agentes" class="proj__artifact">
+          <span class="proj__artifact-icon">🤖</span>
+          <strong>{{ a.name }}</strong>
+          <span>{{ a.estado }}</span>
+        </div>
+        <div *ngIf="!p.artifacts.landings.length && !p.artifacts.flows.length && !p.artifacts.vistas.length && !p.artifacts.agentes.length"
+             class="proj__artifacts-empty">
+          Aún no has guardado artifacts en este proyecto.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <proximos-pasos contexto="proyecto"></proximos-pasos>
+</article>
+
+<div class="proj__notfound" *ngIf="!isCreating() && !project()">
+  <h2>Proyecto no encontrado</h2>
+  <p>Quizá fue archivado o renombrado.</p>
+  <a routerLink="/gali-v3">← Volver a Inicio</a>
+</div>

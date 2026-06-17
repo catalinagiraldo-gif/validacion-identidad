@@ -1,0 +1,289 @@
+@import '../../../../../styles/gali-os-tokens';
+
+:host {
+  display: block;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.mode-bar {
+  display: flex;
+  align-items: center;
+  gap: $os-4;
+  height: $os-mode-bar-height;
+  padding: 0 $os-4;
+  background: $os-surface;
+  border-bottom: 2px solid $os-border;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+
+  &__modes {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  &__subroute {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  &__subroute-sep {
+    font-family: $os-font-body;
+    font-size: 14px;
+    color: $os-text-muted;
+    font-weight: 300;
+  }
+
+  &__subroute-label {
+    font-family: $os-font-body;
+    font-size: 12px;
+    font-weight: 600;
+    color: $os-text-primary;
+  }
+
+  &__objetivo {
+    display: flex;
+    align-items: center;
+    gap: $os-3;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  &__obj-label {
+    font-family: $os-font-body;
+    font-size: 12px;
+    font-weight: 500;
+    color: $os-text-secondary;
+    white-space: nowrap;
+  }
+
+  &__obj-bar {
+    width: 120px;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  &__obj-fill {
+    height: 100%;
+    background: $os-accent;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+
+  &__obj-nums {
+    font-family: $os-font-mono;
+    font-size: 11px;
+    color: $os-text-muted;
+    white-space: nowrap;
+  }
+
+  &__gali {
+    display: flex;
+    align-items: center;
+    gap: $os-2;
+    flex-shrink: 0;
+  }
+
+  &__autopilot {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: $os-radius-sm;
+    border: 1px solid $os-border;
+    background: transparent;
+    font-family: $os-font-body;
+    font-size: 11px;
+    font-weight: 500;
+    color: $os-text-muted;
+    cursor: pointer;
+    transition: all $os-transition;
+
+    &--on {
+      color: $os-accent-text;
+      border-color: rgba($os-accent, 0.5);
+      background: $os-accent-dim;
+
+      .mode-bar__autopilot-icon {
+        animation: osAutopilotSpin 3s linear infinite;
+        color: $os-accent-text;
+      }
+    }
+
+    &:not(&--on):hover {
+      color: $os-text-secondary;
+      border-color: $os-border-strong;
+    }
+  }
+
+  &__autopilot-icon {
+    font-size: 12px;
+  }
+
+  &__gali-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px $os-3;
+    border-radius: $os-radius-sm;
+    border: 1px solid $os-border;
+    background: transparent;
+    font-family: $os-font-body;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all $os-transition;
+
+    &--active {
+      color: $os-ok;
+      border-color: rgba($os-ok, 0.3);
+      .mode-bar__gali-dot { background: $os-ok; }
+    }
+
+    &--autopilot {
+      color: $os-accent-text;
+      border-color: rgba($os-accent, 0.4);
+      background: $os-accent-dim;
+      .mode-bar__gali-dot { background: $os-accent; animation: osPulse 1.5s infinite; }
+    }
+
+    &--paused {
+      color: $os-text-muted;
+      border-color: $os-border;
+      .mode-bar__gali-dot { background: $os-text-muted; }
+    }
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  &__gali-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+}
+
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border: none;
+  border-radius: $os-radius-md;
+  background: transparent;
+  font-family: $os-font-body;
+  font-size: 12px;
+  font-weight: 500;
+  color: $os-text-secondary;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+  position: relative;
+
+  &__icon {
+    font-size: 14px;
+    line-height: 1;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  &:hover {
+    color: $os-text-primary;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &--active {
+    // High-visibility active state: orange fill with white text
+    background: $os-accent;
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba($os-accent, 0.35);
+
+    .mode-btn__icon {
+      transform: scale(1.1);
+    }
+
+    &:hover {
+      background: darken(#ff6102, 6%);
+      color: #fff;
+    }
+  }
+}
+
+// Mode description tooltip on hover
+.mode-btn::after {
+  content: attr(title);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: $os-text-primary;
+  color: #fff;
+  font-size: 10px;
+  font-family: $os-font-body;
+  font-weight: 400;
+  padding: 4px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 100;
+  max-width: 180px;
+  text-align: center;
+  white-space: normal;
+  width: max-content;
+}
+
+.mode-btn:hover::after {
+  opacity: 1;
+}
+
+.mode-bar__live-badge {
+  font-family: $os-font-mono;
+  font-size: 10px;
+  font-weight: 700;
+  color: $os-ok;
+  letter-spacing: 0.04em;
+  animation: osPulse 1.5s ease infinite;
+}
+
+@keyframes osPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes osAutopilotSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Responsive
+@media (max-width: 900px) {
+  .mode-bar {
+    &__objetivo { display: none; }
+    &__modes { overflow-x: auto; }
+  }
+
+  .mode-btn__label { display: none; }
+  .mode-btn__icon { font-size: 16px; }
+}
+
+@media (max-width: 640px) {
+  .mode-bar {
+    &__autopilot { display: none; }
+  }
+}

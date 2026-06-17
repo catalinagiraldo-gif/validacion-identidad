@@ -1,0 +1,55 @@
+<div class="config-marketing-page">
+  <dropi-titulos title="Configuraciones" [breadcrumbs]="breadcrumbs" />
+
+  <section class="config-marketing-page__section">
+    <h2 class="config-marketing-page__subtitle">SMTP</h2>
+    <p class="config-marketing-page__desc">Configuración de tu servidor smtp para envío de correos</p>
+
+    <form class="config-marketing-page__form">
+      <div class="config-marketing-page__field config-marketing-page__field--full">
+        <input type="text" placeholder="Servidor" [(ngModel)]="form.servidor" name="servidor" />
+      </div>
+
+      <div class="config-marketing-page__row">
+        <div class="config-marketing-page__field">
+          <input type="text" placeholder="Port" [(ngModel)]="form.port" name="port" />
+        </div>
+        <div class="config-marketing-page__field">
+          <select [(ngModel)]="form.security" name="security">
+            <option value="" disabled selected>Security</option>
+            <option value="tls">TLS</option>
+            <option value="ssl">SSL</option>
+            <option value="none">None</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="config-marketing-page__row">
+        <div class="config-marketing-page__field">
+          <input type="text" placeholder="Form name" [(ngModel)]="form.formName" name="formName" />
+        </div>
+        <div class="config-marketing-page__field">
+          <input type="email" placeholder="Form email address" [(ngModel)]="form.formEmail" name="formEmail" />
+        </div>
+      </div>
+
+      <label class="config-marketing-page__checkbox">
+        <input type="checkbox" [(ngModel)]="requireAuth" name="requireAuth" />
+        <span>Require authentication</span>
+      </label>
+
+      <div class="config-marketing-page__row">
+        <div class="config-marketing-page__field">
+          <input type="text" placeholder="Usuario" [(ngModel)]="form.usuario" name="usuario" />
+        </div>
+        <div class="config-marketing-page__field">
+          <input type="password" placeholder="Contraseña" [(ngModel)]="form.contrasena" name="contrasena" />
+        </div>
+      </div>
+
+      <div class="config-marketing-page__footer">
+        <dropi-button-new label="Guardar" hierarchy="primary" [width]="160" />
+      </div>
+    </form>
+  </section>
+</div>

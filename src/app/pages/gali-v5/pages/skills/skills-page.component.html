@@ -1,0 +1,306 @@
+<div class="skills-os">
+
+  <!-- Header -->
+  <div class="skills-os__header">
+    <div class="skills-os__header-left">
+      <h1 class="skills-os__title">Skills</h1>
+      <span class="skills-os__sub">{{ skills.length }} activas · Trigger → Condición → Acción</span>
+    </div>
+    <div class="skills-os__header-right">
+      <a routerLink="/gali-v5/agentes" class="skills-os__btn skills-os__btn--ghost">Agentes</a>
+      <a routerLink="/gali-v5/reglas" class="skills-os__btn skills-os__btn--ghost">Reglas</a>
+      <a routerLink="/gali-v5/skills/comunidad" class="skills-os__btn skills-os__btn--ghost">Marketplace</a>
+      <button type="button" class="skills-os__btn skills-os__btn--accent" (click)="goToNewSkill()">
+        + Crear nueva skill
+      </button>
+    </div>
+  </div>
+
+  <!-- Orquestación diagram — shows Gali → Agents → Skills/Rules hierarchy -->
+  <div class="skills-orch-diagram">
+    <div class="orch-node orch-node--gali">
+      <span class="orch-node__icon">✦</span>
+      <span class="orch-node__label">Gali orquesta</span>
+    </div>
+    <div class="orch-arrows">
+      <div class="orch-arrow-line"></div>
+      <div class="orch-branches">
+        <div class="orch-branch">
+          <div class="orch-node orch-node--agent" style="--c:#f97316">
+            <span class="orch-node__dot"></span>
+            <span class="orch-node__label">Roax</span>
+          </div>
+          <div class="orch-branch__items">
+            <span class="orch-tag orch-tag--skill">Skills Meta</span>
+          </div>
+        </div>
+        <div class="orch-branch">
+          <div class="orch-node orch-node--agent" style="--c:#fbbf24">
+            <span class="orch-node__dot"></span>
+            <span class="orch-node__label">Vigilante</span>
+          </div>
+          <div class="orch-branch__items">
+            <span class="orch-tag orch-tag--skill">Skills logística</span>
+          </div>
+        </div>
+        <div class="orch-branch">
+          <div class="orch-node orch-node--agent" style="--c:#34d399">
+            <span class="orch-node__dot"></span>
+            <span class="orch-node__label">Chatea Pro</span>
+          </div>
+          <div class="orch-branch__items">
+            <span class="orch-tag orch-tag--rule">Reglas WhatsApp</span>
+          </div>
+        </div>
+        <div class="orch-branch">
+          <div class="orch-node orch-node--agent" style="--c:#818cf8">
+            <span class="orch-node__dot"></span>
+            <span class="orch-node__label">ADA Spy</span>
+          </div>
+          <div class="orch-branch__items">
+            <span class="orch-tag orch-tag--skill">Skills mercado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="orch-legend">
+      <span class="orch-legend-item"><span class="orch-tag orch-tag--skill">Skill</span> Trigger + Condición + Acción · tiene historial</span>
+      <span class="orch-legend-sep">·</span>
+      <span class="orch-legend-item"><span class="orch-tag orch-tag--rule">Regla</span> Solo Chatea Pro · Si condición → entonces acción</span>
+    </div>
+  </div>
+
+  <!-- Body: 2 col -->
+  <div class="skills-os__body">
+
+    <!-- LEFT: My skills + Marketplace -->
+    <aside class="skills-os__sidebar">
+
+      <!-- Mis Skills grouped by agent -->
+      <div class="skills-os__sidebar-header">
+        <span class="skills-os__sidebar-label">MIS SKILLS</span>
+        <span class="skills-os__sidebar-count">{{ skills.length }}</span>
+      </div>
+
+      @for (skill of skills; track skill.id) {
+        <button
+          type="button"
+          class="skill-item"
+          [class.skill-item--selected]="selectedSkillId() === skill.id"
+          [class.skill-item--paused]="skill.status === 'paused'"
+          (click)="selectSkill(skill.id)">
+          <span class="skill-item__dot"
+            [class.skill-item__dot--on]="skill.status === 'active'"
+            [class.skill-item__dot--off]="skill.status === 'paused'">
+          </span>
+          <div class="skill-item__content">
+            <strong class="skill-item__name">{{ skill.nombre }}</strong>
+            <span class="skill-item__meta">{{ skill.trigger.agent }} · {{ skill.ejecuciones_total }} ejec.</span>
+          </div>
+        </button>
+      }
+
+      <!-- Quick link to Agentes page -->
+      <a routerLink="/gali-v5/agentes" class="skills-os__agentes-link">
+        <span>Ver mis agentes →</span>
+        <span class="skills-os__agentes-link__sub">4 activos · gestionan estas skills</span>
+      </a>
+
+      <!-- Marketplace -->
+      <div class="skills-os__mkt-section">
+        <div class="skills-os__mkt-header">
+          <span class="skills-os__sidebar-label">MARKETPLACE</span>
+        </div>
+
+        <!-- Dropi recomienda -->
+        <div class="mkt-recomienda">
+          <span class="mkt-recomienda__label">🎯 Dropi recomienda para ti</span>
+          @for (skill of dropiRecomendaciones; track skill.id) {
+            <div class="mkt-card mkt-card--featured">
+              <div class="mkt-card__badges">
+                <span class="mkt-card__tipo mkt-card__tipo--operacion">{{ skill.tipo }}</span>
+                @for (sec of skill.secciones; track sec) {
+                  <span class="mkt-card__seccion">{{ sec }}</span>
+                }
+              </div>
+              <strong class="mkt-card__name">{{ skill.nombre }}</strong>
+              <div class="mkt-card__meta">
+                <span>⭐{{ skill.rating }}</span>
+                <span>{{ skill.uses }}</span>
+                <span>{{ skill.autor }}</span>
+              </div>
+              <button type="button" class="mkt-card__cta" (click)="goToNewSkill()">Activar</button>
+            </div>
+          }
+        </div>
+
+        <!-- Tabs -->
+        <div class="skills-mkt-tabs">
+          <button type="button" class="skills-mkt-tab"
+            [class.skills-mkt-tab--active]="activeMktTab() === 'populares'"
+            (click)="activeMktTab.set('populares')">Populares</button>
+          <button type="button" class="skills-mkt-tab"
+            [class.skills-mkt-tab--active]="activeMktTab() === 'por-seccion'"
+            (click)="activeMktTab.set('por-seccion')">Por sección</button>
+          <button type="button" class="skills-mkt-tab"
+            [class.skills-mkt-tab--active]="activeMktTab() === 'expertos'"
+            (click)="activeMktTab.set('expertos')">Expertos</button>
+          <button type="button" class="skills-mkt-tab"
+            [class.skills-mkt-tab--active]="activeMktTab() === 'nuevas'"
+            (click)="activeMktTab.set('nuevas')">Nuevas</button>
+        </div>
+
+        <!-- Por sección: filtros -->
+        @if (activeMktTab() === 'por-seccion') {
+          <div class="section-filters">
+            <button type="button" class="section-filter"
+              [class.section-filter--active]="activeSectionFilter() === null"
+              (click)="activeSectionFilter.set(null)">Todos</button>
+            @for (sec of sectionFilters; track sec) {
+              <button type="button" class="section-filter"
+                [class.section-filter--active]="activeSectionFilter() === sec"
+                (click)="activeSectionFilter.set(sec)">{{ sec }}</button>
+            }
+          </div>
+          @for (mkt of marketplaceByAgent; track mkt.id) {
+            <div class="mkt-card">
+              <div class="mkt-card__badges">
+                <span class="mkt-card__seccion">{{ mkt.category }}</span>
+                <span class="mkt-card__agent">{{ mkt.agent | uppercase }}</span>
+              </div>
+              <strong class="mkt-card__name">{{ mkt.nombre }}</strong>
+              <p class="mkt-card__desc">{{ mkt.descripcion }}</p>
+              <div class="mkt-card__footer">
+                <span class="mkt-card__uses">{{ mkt.uses }} activaciones</span>
+                <button type="button" class="mkt-card__cta" (click)="goToNewSkill()">Instalar</button>
+              </div>
+            </div>
+          }
+        }
+
+        @if (activeMktTab() === 'populares') {
+          @for (mkt of marketplaceSkills; track mkt.id) {
+            <div class="mkt-preview">
+              <span class="mkt-preview__category">{{ mkt.category }}</span>
+              <strong class="mkt-preview__name">{{ mkt.nombre }}</strong>
+              <div class="mkt-preview__stats">
+                <span>⭐ {{ mkt.rating }}</span>
+                <span>🔀 {{ mkt.forks }}</span>
+                <span>{{ mkt.uses }} activ.</span>
+              </div>
+              <div class="mkt-preview__actions">
+                <button type="button" class="mkt-preview__cta mkt-preview__cta--ghost" (click)="goToNewSkill()">Clonar</button>
+                <button type="button" class="mkt-preview__cta" (click)="goToNewSkill()">Instalar</button>
+              </div>
+            </div>
+          }
+        }
+
+        @if (activeMktTab() === 'expertos') {
+          @for (skill of expertosSkills; track skill.id) {
+            <div class="mkt-card mkt-card--experto">
+              <!-- Creator profile -->
+              <div class="creator-profile">
+                <div class="creator-avatar" [style.background]="skill.autorColor">{{ skill.autorAvatar }}</div>
+                <div class="creator-info">
+                  <span class="creator-name">{{ skill.autor }}</span>
+                  <span class="creator-handle">{{ skill.handle }}</span>
+                  <span class="creator-bio">{{ skill.autorBio }}</span>
+                </div>
+                @if (skill.shared) {
+                  <span class="creator-badge">✓ Verificado</span>
+                }
+              </div>
+              <!-- Skill -->
+              <div class="mkt-card__badges" style="margin-top: 10px;">
+                <span class="mkt-card__tipo mkt-card__tipo--experto">{{ skill.tipo }}</span>
+                @for (sec of skill.secciones; track sec) {
+                  <span class="mkt-card__seccion">{{ sec }}</span>
+                }
+              </div>
+              <strong class="mkt-card__name">{{ skill.nombre }}</strong>
+              <p class="mkt-card__desc">{{ skill.descripcion }}</p>
+              <div class="mkt-card__community-stats">
+                <span class="comm-stat">⭐ {{ skill.rating }}</span>
+                <span class="comm-stat">🔀 {{ skill.forks }} forks</span>
+                <span class="comm-stat">💬 {{ skill.comments }}</span>
+                <span class="comm-stat">👥 {{ skill.uses }} usuarios</span>
+              </div>
+              <div class="mkt-card__footer">
+                <button type="button" class="mkt-card__cta mkt-card__cta--ghost" (click)="forkSkill(skill.id)">
+                  🔀 Usar como base
+                </button>
+                <button type="button" class="mkt-card__cta" (click)="goToNewSkill()">Activar</button>
+              </div>
+            </div>
+          }
+        }
+
+        @if (activeMktTab() === 'nuevas') {
+          @for (mkt of marketplaceNew; track mkt.id) {
+            <div class="mkt-preview">
+              <span class="mkt-preview__category">{{ mkt.category }}</span>
+              <strong class="mkt-preview__name">{{ mkt.nombre }}</strong>
+              <span class="mkt-preview__uses">{{ mkt.uses }} activaciones</span>
+              <button type="button" class="mkt-preview__cta" (click)="goToNewSkill()">Instalar</button>
+            </div>
+          }
+        }
+      </div>
+    </aside>
+
+    <!-- RIGHT: Skill builder -->
+    <main class="skills-os__main">
+      @if (selectedSkill) {
+        <gali-skill-builder-v2 [skill]="selectedSkill" />
+      } @else {
+        <div class="skills-os__empty">
+          <p>Selecciona una skill para ver el detalle y el historial de ejecuciones</p>
+          <button type="button" class="skills-os__btn skills-os__btn--accent"
+            (click)="goToNewSkill()" style="margin-top: 12px;">
+            + Crear primera skill
+          </button>
+        </div>
+      }
+    </main>
+
+  </div>
+</div>
+
+@if (showNewSkill()) {
+  <gali-new-skill-overlay
+    (closed)="showNewSkill.set(false)"
+    (created)="showNewSkill.set(false)"
+  />
+}
+
+@if (showShareModal()) {
+  <div class="share-modal-backdrop" (click)="showShareModal.set(false)">
+    <div class="share-modal" (click)="$event.stopPropagation()">
+      <div class="share-modal__header">
+        <span class="share-modal__icon">🔗</span>
+        <h3 class="share-modal__title">Compartir skill</h3>
+        <button type="button" class="share-modal__close" (click)="showShareModal.set(false)">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+      <p class="share-modal__desc">
+        Al compartir <strong>{{ shareSkillName() }}</strong> en el marketplace, otros dropshippers podrán activarla o usarla como base.
+      </p>
+      <div class="share-modal__options">
+        <label class="share-option">
+          <input type="radio" name="share-vis" value="public" checked> Pública — visible para todos
+        </label>
+        <label class="share-option">
+          <input type="radio" name="share-vis" value="link"> Solo con link
+        </label>
+      </div>
+      <div class="share-modal__footer">
+        <button type="button" class="share-modal__btn share-modal__btn--cancel" (click)="showShareModal.set(false)">Cancelar</button>
+        <button type="button" class="share-modal__btn share-modal__btn--primary" (click)="showShareModal.set(false)">
+          Publicar en marketplace ✦
+        </button>
+      </div>
+    </div>
+  </div>
+}

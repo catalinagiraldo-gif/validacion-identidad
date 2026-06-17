@@ -1,0 +1,132 @@
+<div class="ini">
+  <header class="ini__head">
+    <div class="ini__head-text">
+      <h1 class="ini__greet">
+        <span class="ini__greet-base">{{ saludo() }},</span>
+        <em class="ini__greet-name">{{ nombre() }}.</em>
+      </h1>
+      <p class="ini__sub">
+        Este es <strong>tu lienzo</strong>. Reordena, redimensiona o agrega bloques desde
+        “Editar lienzo”. Gali también puede armarlo por ti — escribe en
+        <kbd>⌘ K</kbd> algo como “arma mi día”.
+      </p>
+    </div>
+
+    <div class="ini__head-actions">
+      <button
+        type="button"
+        class="ini__edit-btn"
+        [class.ini__edit-btn--on]="editing()"
+        (click)="toggleEditing()"
+        [attr.aria-pressed]="editing()">
+        {{ editing() ? '✓ Listo' : '✎ Editar lienzo' }}
+      </button>
+    </div>
+  </header>
+
+  <!-- Banner de propuesta conversacional -->
+  <aside *ngIf="pending() as prop" class="ini__pending" aria-live="polite">
+    <div class="ini__pending-mark">✦</div>
+    <div class="ini__pending-body">
+      <span class="ini__pending-crumb">Gali propone una vista</span>
+      <p class="ini__pending-prompt">"{{ prop.prompt }}"</p>
+      <p class="ini__pending-expl">{{ prop.explicacion }}</p>
+    </div>
+    <div class="ini__pending-actions">
+      <button class="ini__pending-btn ini__pending-btn--primary" (click)="aceptarPreview()">guardar vista →</button>
+      <button class="ini__pending-btn" (click)="descartarPreview()">volver al lienzo</button>
+    </div>
+  </aside>
+
+  <!-- Vistas guardadas (solo si no estamos en preview) -->
+  <aside *ngIf="!previewMode() && vistas().length" class="ini__vistas" aria-label="Vistas guardadas">
+    <span class="ini__vistas-mono">vistas guardadas</span>
+    <ul>
+      <li *ngFor="let v of vistas()">
+        <button class="ini__vista" (click)="aplicarVista(v.id)" [title]="v.prompt">
+          {{ v.nombre }}
+        </button>
+        <button class="ini__vista-x" (click)="eliminarVista(v.id)" aria-label="eliminar vista">✕</button>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Layout activo / preview -->
+  <section class="ini__canvas"
+           *ngIf="hasLayout() || previewMode(); else empty"
+           [class.ini__canvas--preview]="previewMode()"
+           aria-label="Canvas personalizado">
+    <div class="ini__grid">
+      <gali-v3-block-wrapper
+        *ngFor="let item of layoutVisible()"
+        [manifest]="manifest(item.blockId)"
+        [size]="item.size"
+        [editing]="editing()"
+        [class]="'ini__cell ini__cell--' + item.size"
+        (resize)="resize(item.blockId, $event)"
+        (remove)="remove(item.blockId)">
+        <ng-container [ngSwitch]="item.blockId">
+          <block-pedidos *ngSwitchCase="'pedidos'"></block-pedidos>
+          <block-cartera *ngSwitchCase="'cartera'"></block-cartera>
+          <block-misiones *ngSwitchCase="'misiones'"></block-misiones>
+          <block-integraciones *ngSwitchCase="'integraciones'"></block-integraciones>
+          <block-landings *ngSwitchCase="'landings'"></block-landings>
+          <block-productos *ngSwitchCase="'productos'"></block-productos>
+          <block-novedades *ngSwitchCase="'novedades'"></block-novedades>
+          <block-memoria *ngSwitchCase="'memoria'" (abrirInspector)="inspectorAbierto.set(true)"></block-memoria>
+          <block-metricas *ngSwitchCase="'metricas'"></block-metricas>
+          <block-proyecto-activo *ngSwitchCase="'proyecto-activo'"></block-proyecto-activo>
+          <block-starter-tour *ngSwitchCase="'starter-tour'"></block-starter-tour>
+          <div *ngSwitchDefault class="ini__placeholder">
+            <span class="ini__placeholder-mark">✦</span>
+            <p><strong>{{ manifest(item.blockId).label }}</strong></p>
+            <span class="ini__placeholder-hint">Próximamente — este bloque está en construcción.</span>
+          </div>
+        </ng-container>
+      </gali-v3-block-wrapper>
+    </div>
+  </section>
+
+  <!-- Empty state -->
+  <ng-template #empty>
+    <section class="ini__empty" aria-label="Sin layout">
+      <span class="ini__empty-mark" aria-hidden="true">✦</span>
+      <h2 class="ini__empty-title">Tu lienzo está vacío.</h2>
+      <p class="ini__empty-sub">
+        Empieza con un layout sugerido por Gali según tu perfil, o construye desde cero.
+      </p>
+      <div class="ini__empty-actions">
+        <button type="button" class="ini__cta-btn ini__cta-btn--primary" (click)="applyDefault()">
+          Usar layout sugerido
+        </button>
+      </div>
+    </section>
+  </ng-template>
+
+  <!-- Atajos de empezar -->
+  <section class="ini__quicklinks" aria-label="Acciones rápidas" *ngIf="!editing()">
+    <a class="ini__cta" routerLink="/gali-v3/onboarding">
+      <span class="ini__cta-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+      </span>
+      <strong>Conoce a Gali</strong>
+      <span>3 preguntas para empezar</span>
+    </a>
+    <a class="ini__cta" routerLink="/gali-v3/integraciones">
+      <span class="ini__cta-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/><path d="M15 15v4a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-4"/><path d="M3 12h6M15 12h6M9 9h6M9 15h6"/></svg>
+      </span>
+      <strong>Conecta tu tienda</strong>
+      <span>Tienda Nube, Shopify, Meta</span>
+    </a>
+    <a class="ini__cta" routerLink="/gali-v3/landings">
+      <span class="ini__cta-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+      </span>
+      <strong>Arma tu landing</strong>
+      <span>Crea con Gali en minutos</span>
+    </a>
+  </section>
+
+  <gali-v3-memory-inspector *ngIf="inspectorAbierto()" (cerrar)="inspectorAbierto.set(false)"></gali-v3-memory-inspector>
+</div>

@@ -1,0 +1,167 @@
+@import 'styles/gali-v5-tokens';
+@import '../shared/dropi-page-shell';
+
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.garantias-page {
+  @include dropi-page-shell;
+
+  &__alert {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    padding: $size-3 $size-4;
+    border-radius: $radius-md;
+    background: rgba($primary-500, 0.08);
+    border: 1px solid rgba($primary-500, 0.2);
+    font-size: $font-sm;
+    color: $gray-700;
+
+    .pi {
+      color: $primary-500;
+      font-size: 18px;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__table-scroll {
+    overflow-x: auto;
+    border: 1px solid $gray-100;
+    border-radius: $radius-lg;
+  }
+}
+
+.garantias-table {
+  width: 100%;
+  min-width: 960px;
+  border-collapse: collapse;
+  font-family: $font-primary;
+  font-size: $font-sm;
+
+  th {
+    padding: 12px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: $font-medium;
+    color: $gray-600;
+    background: $gray-50;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  td {
+    padding: 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid $gray-100;
+    color: $gray-700;
+  }
+
+  &__checkbox {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 1px solid $gray-300;
+    border-radius: 4px;
+  }
+
+  &__tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 32px;
+    font-size: 11px;
+    font-weight: $font-bold;
+    background: rgba($warning, 0.12);
+    color: darken($warning, 12%);
+
+    &--carrier {
+      background: rgba($primary-500, 0.12);
+      color: $primary-600;
+      margin-right: 4px;
+    }
+  }
+
+  &__guide {
+    display: block;
+    font-size: 12px;
+    color: $gray-500;
+    margin-top: 4px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 4px;
+
+    button {
+      width: 32px;
+      height: 32px;
+      border: 1px solid $gray-200;
+      border-radius: 8px;
+      background: $white;
+      color: $gray-600;
+      cursor: pointer;
+    }
+  }
+}
+
+// ── Gali Agent Bar ──────────────────────────────
+.garantias-agent-bar {
+  margin: 16px 0 0;
+}
+
+.agent-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border-left: 3px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.06);
+
+  &__left { display: flex; align-items: center; gap: 10px; }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f59e0b;
+    flex-shrink: 0;
+    animation: agBar-pulse-w 2s infinite;
+  }
+
+  &__identity { display: flex; flex-direction: column; gap: 2px; }
+
+  &__name { font-size: 12px; font-weight: 600; color: #1c1c1e; }
+
+  &__status { font-size: 11px; color: #f59e0b; }
+
+  &__action { flex: 1; font-size: 12px; color: #6b7280; }
+
+  &__cta {
+    padding: 5px 12px;
+    border: 1px solid #f59e0b;
+    border-radius: 6px;
+    background: transparent;
+    color: #f59e0b;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+
+    &:hover { background: rgba(245, 158, 11, 0.1); }
+  }
+}
+
+@keyframes agBar-pulse-w {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  50%       { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0); }
+}

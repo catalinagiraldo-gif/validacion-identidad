@@ -1,0 +1,184 @@
+<div class="mkt">
+
+  <!-- Hero header -->
+  <header class="mkt__hero">
+    <div class="mkt__hero-left">
+      <span class="mkt__eyebrow">🌐 Comunidad Dropi</span>
+      <h1 class="mkt__title">Marketplace de Skills</h1>
+      <p class="mkt__desc">Recetas creadas por la comunidad y el equipo Dropi. Instala en un clic, activa en segundos.</p>
+    </div>
+    <div class="mkt__hero-right">
+      <div class="mkt__stats">
+        <div class="mkt__stat">
+          <span class="mkt__stat-num">{{ instaladosCount() }}</span>
+          <span class="mkt__stat-label">Skills activas</span>
+        </div>
+        <div class="mkt__stat">
+          <span class="mkt__stat-num">{{ allSkills.length }}</span>
+          <span class="mkt__stat-label">Disponibles</span>
+        </div>
+      </div>
+      <button type="button" class="btn-mkt btn-mkt--primary" (click)="showEditor.set(true)">
+        <i class="pi pi-plus"></i>
+        Crear mi skill
+      </button>
+    </div>
+  </header>
+
+  <!-- Skills personalizados para ti -->
+  <section class="mkt__personalized">
+    <div class="mkt__personalized-header">
+      <h2>✦ Personalizado para ti</h2>
+      <span>Basado en tu ROAS 2.9x, novedades Bogotá 15% y Collar GPS activo</span>
+    </div>
+    <div class="mkt__personalized-grid">
+      @for (skill of personalizedSkills; track skill.id) {
+        <div class="mkt-p-card">
+          <div class="mkt-p-card__agent-bar" [style.background]="skill.agentColor + '20'" [style.border-color]="skill.agentColor + '40'">
+            <span class="mkt-p-card__agent-dot" [style.background]="skill.agentColor"></span>
+            <span class="mkt-p-card__agent-name" [style.color]="skill.agentColor">{{ skill.agent }}</span>
+          </div>
+          <strong class="mkt-p-card__title">{{ skill.title }}</strong>
+          <p class="mkt-p-card__reason">{{ skill.reason }}</p>
+          @if (isPersonalizedInstalled(skill.id)) {
+            <span class="mkt-p-card__installed">✓ Activado</span>
+          } @else {
+            <button class="mkt-p-card__cta" type="button" (click)="installPersonalized(skill.id)" data-proto-skip>
+              {{ skill.cta }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Filters bar -->
+  <div class="mkt__filters">
+    <div class="mkt__search-wrap">
+      <i class="pi pi-search"></i>
+      <input
+        type="text"
+        placeholder="Buscar skills..."
+        class="mkt__search"
+        [ngModel]="busqueda()"
+        (ngModelChange)="busqueda.set($event)" />
+    </div>
+
+    <div class="mkt__tipo-filters">
+      <button
+        *ngFor="let t of ['todos', 'gratuita', 'experto', 'premium']"
+        type="button"
+        class="tipo-chip"
+        [class.tipo-chip--active]="tipoFiltro() === t"
+        (click)="setTipoFiltro(t)"
+        data-proto-skip>
+        {{ t === 'todos' ? 'Todos' : t === 'gratuita' ? 'Gratuitas' : t === 'experto' ? 'Expertos' : 'Premium' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Agent tabs -->
+  <nav class="mkt__agent-tabs">
+    <button
+      *ngFor="let tab of agenteTabs"
+      type="button"
+      class="agent-tab"
+      [class.agent-tab--active]="agenteTab() === tab.id"
+      (click)="agenteTab.set(tab.id)"
+      data-proto-skip>
+      <span>{{ tab.icono }}</span>
+      <span>{{ tab.label }}</span>
+    </button>
+  </nav>
+
+  <!-- Skills grid -->
+  <div class="mkt__content">
+    <p class="mkt__count" *ngIf="filteredSkills().length > 0">
+      {{ filteredSkills().length }} skills {{ agenteTab() !== 'todos' ? 'de ' + agenteTab() : '' }}
+    </p>
+
+    <!-- Empty state -->
+    <div class="mkt__empty" *ngIf="filteredSkills().length === 0">
+      <span class="mkt__empty-icon">🔍</span>
+      <p>No hay skills con ese filtro todavía.</p>
+    </div>
+
+    <div class="mkt__grid">
+      <div
+        *ngFor="let skill of filteredSkills()"
+        class="skill-card"
+        [class.skill-card--instalada]="isInstalada(skill)"
+        [class.skill-card--premium]="skill.tipo === 'premium'">
+
+        <!-- Card header with agente badge -->
+        <div class="skill-card__top">
+          <span class="skill-card__icon">{{ skill.icono }}</span>
+          <span class="skill-card__agente-tag">{{ skill.agente }}</span>
+          <span class="skill-card__badge" [class]="getTipoBadgeClass(skill.tipo)">
+            {{ skill.tipo === 'gratuita' ? 'Gratis' : skill.tipo === 'experto' ? '✦ Experto' : '⭐ Premium' }}
+          </span>
+        </div>
+
+        <!-- Main info -->
+        <h3 class="skill-card__nombre">{{ skill.nombre }}</h3>
+
+        <!-- Rating & Usage -->
+        <div class="skill-card__meta">
+          <div class="skill-card__stars">
+            <span class="skill-card__star-val">⭐ {{ skill.rating }}</span>
+            <span class="skill-card__usos">· {{ formatUsos(skill.usos) }} usos</span>
+          </div>
+          <div class="skill-card__creador">
+            Por {{ skill.creador }}
+            <span *ngIf="skill.verificado" class="skill-card__verified" title="Verificado por Dropi">✓</span>
+          </div>
+        </div>
+
+        <p class="skill-card__desc">{{ skill.descripcion }}</p>
+
+        <!-- CTA -->
+        <div class="skill-card__footer">
+          <button
+            *ngIf="!isInstalada(skill) && !isInstalando(skill)"
+            type="button"
+            class="btn-skill btn-skill--install"
+            (click)="instalar(skill)">
+            Activar
+          </button>
+          <button
+            *ngIf="isInstalando(skill)"
+            type="button"
+            class="btn-skill btn-skill--loading"
+            disabled>
+            <i class="pi pi-spin pi-spinner"></i>
+          </button>
+          <button
+            *ngIf="isInstalada(skill) && !isInstalando(skill)"
+            type="button"
+            class="btn-skill btn-skill--installed">
+            <i class="pi pi-check"></i> Activa
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Share CTA -->
+    <div class="mkt__share-cta" (click)="showEditor.set(true)" style="cursor: pointer;">
+      <span class="mkt__share-icon">💡</span>
+      <div>
+        <strong>¿Tienes una receta que funciona?</strong>
+        <p>Publícala y ayuda a otros dropshippers. Si supera 500 activaciones, apareces en el newsletter de Dropi.</p>
+      </div>
+      <button type="button" class="btn-mkt btn-mkt--primary" data-proto-skip>Compartir mi receta →</button>
+    </div>
+  </div>
+
+  <!-- Skills Editor Modal -->
+  <app-skills-editor-modal
+    *ngIf="showEditor()"
+    agenteNombre="Mi agente"
+    (closed)="showEditor.set(false)"
+    (saved)="showEditor.set(false)">
+  </app-skills-editor-modal>
+
+</div>

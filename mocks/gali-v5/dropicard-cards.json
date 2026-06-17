@@ -1,0 +1,52 @@
+{
+  "cards": [
+    {
+      "id": "car_02zt8k3m9p1q",
+      "idDisplay": "car_02zt...",
+      "holder": "Marcela Valencia",
+      "type": "physical",
+      "typeLabel": "Tarjeta Física",
+      "status": "pending",
+      "statusLabel": "Pendiente",
+      "balance": "$ 0",
+      "balanceVisible": false,
+      "image": "assets/images/gali-v5/dropicard/card-physical.png"
+    },
+    {
+      "id": "car_02zt8k3m9p2r",
+      "idDisplay": "car_02zt...",
+      "holder": "Marcela Valencia",
+      "type": "virtual",
+      "typeLabel": "Tarjeta Virtual",
+      "status": "active",
+      "statusLabel": "Activa",
+      "balance": "$ 400.000",
+      "balanceVisible": true,
+      "image": "assets/images/gali-v5/dropicard/card-virtual.png"
+    },
+    {
+      "id": "car_02zt8k3m9p3s",
+      "idDisplay": "car_02zt...",
+      "holder": "Marcela Valencia",
+      "type": "physical",
+      "typeLabel": "Tarjeta Física",
+      "status": "active",
+      "statusLabel": "Activa",
+      "balance": "$ 845.900",
+      "balanceVisible": true,
+      "image": "assets/images/gali-v5/dropicard/card-physical.png"
+    },
+    {
+      "id": "car_02zt8k3m9p4t",
+      "idDisplay": "car_02zt...",
+      "holder": "Marcela Valencia",
+      "type": "physical",
+      "typeLabel": "Tarjeta Física",
+      "status": "active",
+      "statusLabel": "Activa",
+      "balance": "$ 120.000",
+      "balanceVisible": true,
+      "image": "assets/images/gali-v5/dropicard/card-physical.png"
+    }
+  ]
+}

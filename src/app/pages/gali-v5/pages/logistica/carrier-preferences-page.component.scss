@@ -1,0 +1,144 @@
+@import 'styles/gali-v5-tokens';
+@import '../shared/dropi-page-shell';
+
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.carriers-page {
+  @include dropi-page-shell;
+
+  &__section-title {
+    margin: 0 0 4px;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-700;
+  }
+
+  &__section-desc {
+    margin: 0 0 $size-4;
+    font-size: $font-sm;
+    color: $gray-600;
+    line-height: 1.5;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: $size-6;
+  }
+}
+
+.carrier-row {
+  display: flex;
+  align-items: center;
+  gap: $size-3;
+  padding: $size-3 $size-4;
+  border: 1px solid $gray-100;
+  border-radius: $radius-md;
+  background: $gray-50;
+
+  &__rank {
+    min-width: 32px;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-600;
+  }
+
+  &__avatar {
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    background: $white;
+    border: 1px solid $gray-200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: $font-bold;
+    color: $primary-500;
+  }
+
+  &__name {
+    flex: 1;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $gray-700;
+  }
+
+  &__check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: $font-sm;
+    color: $gray-600;
+    cursor: pointer;
+
+    .pi {
+      font-size: 14px;
+      color: $gray-400;
+    }
+  }
+}
+
+.dept-acc {
+  border: 1px solid $gray-100;
+  border-radius: $radius-md;
+  margin-bottom: $size-2;
+  overflow: hidden;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: $size-4 $size-6;
+    border: none;
+    background: $white;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-700;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  &__matrix-wrap {
+    overflow-x: auto;
+    border-top: 1px solid $gray-100;
+  }
+}
+
+.dept-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+
+  th,
+  td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  th:first-child,
+  td:first-child {
+    text-align: left;
+    font-weight: $font-medium;
+    min-width: 140px;
+  }
+
+  &__radio {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid $gray-300;
+    border-radius: 50%;
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "transactions": [
+    {
+      "num": "50028",
+      "fecha": "16/03/2026 4:23 p. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 49.000",
+      "montoPrevio": "$ 59.175.505",
+      "descripcion": "ENTRADA POR GANANCIA EN LA ORDEN COMO DROPSHIPPER: 33885851* GUIA: *014144658336*"
+    },
+    {
+      "num": "50027",
+      "fecha": "16/03/2026 3:10 p. m.",
+      "tipo": "SALIDA",
+      "monto": "$ 12.500",
+      "montoPrevio": "$ 59.126.505",
+      "descripcion": "SALIDA POR COMISIÓN DE LOGÍSTICA EN ORDEN: 33885840* GUIA: *014144658320*"
+    },
+    {
+      "num": "50026",
+      "fecha": "16/03/2026 1:45 p. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 85.000",
+      "montoPrevio": "$ 59.139.005",
+      "descripcion": "ENTRADA POR RECAUDO DE ORDEN ENTREGADA: 33885822* GUIA: *014144658301*"
+    },
+    {
+      "num": "50025",
+      "fecha": "15/03/2026 6:20 p. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 120.000",
+      "montoPrevio": "$ 59.054.005",
+      "descripcion": "ENTRADA POR RECARGA SPEI DE CARTERA USUARIO"
+    },
+    {
+      "num": "50024",
+      "fecha": "15/03/2026 11:30 a. m.",
+      "tipo": "SALIDA",
+      "monto": "$ 50.000",
+      "montoPrevio": "$ 58.934.005",
+      "descripcion": "SALIDA POR RETIRO DE SALDO A CUENTA BANCARIA ****4521"
+    },
+    {
+      "num": "50023",
+      "fecha": "14/03/2026 4:55 p. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 67.200",
+      "montoPrevio": "$ 58.984.005",
+      "descripcion": "ENTRADA POR GANANCIA EN LA ORDEN COMO DROPSHIPPER: 33885790* GUIA: *014144658280*"
+    },
+    {
+      "num": "50022",
+      "fecha": "14/03/2026 2:15 p. m.",
+      "tipo": "SALIDA",
+      "monto": "$ 8.500",
+      "montoPrevio": "$ 58.916.805",
+      "descripcion": "SALIDA POR FLETE DE TRANSPORTADORA EN ORDEN: 33885775*"
+    },
+    {
+      "num": "50021",
+      "fecha": "13/03/2026 5:40 p. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 200.000",
+      "montoPrevio": "$ 58.925.305",
+      "descripcion": "ENTRADA POR RECARGA PSE DE CARTERA USUARIO"
+    },
+    {
+      "num": "50020",
+      "fecha": "13/03/2026 9:20 a. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 45.900",
+      "montoPrevio": "$ 58.725.305",
+      "descripcion": "ENTRADA POR GANANCIA EN LA ORDEN COMO DROPSHIPPER: 33885750* GUIA: *014144658250*"
+    },
+    {
+      "num": "50019",
+      "fecha": "12/03/2026 3:30 p. m.",
+      "tipo": "SALIDA",
+      "monto": "$ 15.750",
+      "montoPrevio": "$ 58.679.405",
+      "descripcion": "SALIDA POR COMISIÓN DE PEDIDO #160612"
+    },
+    {
+      "num": "50018",
+      "fecha": "12/03/2026 10:00 a. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 92.000",
+      "montoPrevio": "$ 58.695.155",
+      "descripcion": "ENTRADA POR GANANCIA EN LA ORDEN COMO DROPSHIPPER: 33885720* GUIA: *014144658220*"
+    },
+    {
+      "num": "50017",
+      "fecha": "11/03/2026 6:10 p. m.",
+      "tipo": "SALIDA",
+      "monto": "$ 100.000",
+      "montoPrevio": "$ 58.603.155",
+      "descripcion": "SALIDA POR RETIRO DE SALDO A NEQUI ****8832"
+    },
+    {
+      "num": "50016",
+      "fecha": "11/03/2026 1:25 p. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 150.000",
+      "montoPrevio": "$ 58.703.155",
+      "descripcion": "ENTRADA POR RECAUDO DE ORDEN ENTREGADA: 33885690*"
+    },
+    {
+      "num": "50015",
+      "fecha": "10/03/2026 4:50 p. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 28.990",
+      "montoPrevio": "$ 58.553.155",
+      "descripcion": "ENTRADA POR GANANCIA EN LA ORDEN COMO DROPSHIPPER: 33885660*"
+    },
+    {
+      "num": "50014",
+      "fecha": "10/03/2026 11:15 a. m.",
+      "tipo": "SALIDA",
+      "monto": "$ 72.800",
+      "montoPrevio": "$ 58.524.165",
+      "descripcion": "SALIDA POR PAGO A PROVEEDOR EN ORDEN #160611"
+    },
+    {
+      "num": "50013",
+      "fecha": "09/03/2026 5:00 p. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 500.000",
+      "montoPrevio": "$ 58.596.965",
+      "descripcion": "ENTRADA POR RECARGA SPEI DE CARTERA USUARIO"
+    },
+    {
+      "num": "50012",
+      "fecha": "09/03/2026 2:30 p. m.",
+      "tipo": "SALIDA",
+      "monto": "$ 11.000",
+      "montoPrevio": "$ 58.096.965",
+      "descripcion": "SALIDA POR COMISIÓN DE PEDIDO #160604"
+    },
+    {
+      "num": "50011",
+      "fecha": "08/03/2026 3:45 p. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 89.000",
+      "montoPrevio": "$ 58.107.965",
+      "descripcion": "ENTRADA POR RECAUDO DE ORDEN ENTREGADA: 33885620*"
+    },
+    {
+      "num": "50010",
+      "fecha": "08/03/2026 9:30 a. m.",
+      "tipo": "ENTRADA",
+      "monto": "$ 250.000",
+      "montoPrevio": "$ 58.018.965",
+      "descripcion": "ENTRADA POR RECARGA PSE DE CARTERA USUARIO"
+    },
+    {
+      "num": "50009",
+      "fecha": "07/03/2026 4:20 p. m.",
+      "tipo": "SALIDA",
+      "monto": "$ 22.500",
+      "montoPrevio": "$ 57.768.965",
+      "descripcion": "SALIDA POR COMISIÓN DE PEDIDO #160623"
+    }
+  ],
+  "alertMessage": "Los pedidos Sin Recaudo no generan movimiento de entrada en tu wallet hasta que sean entregados y confirmados por la transportadora."
+}

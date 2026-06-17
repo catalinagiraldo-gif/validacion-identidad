@@ -1,0 +1,184 @@
+<aside class="nav" aria-label="Navigator Gali">
+  <section class="nav__section nav__section--ahora">
+    <header class="nav__head">
+      <span class="nav__head-label">⚡ Ahora</span>
+      <span class="nav__head-meta">live</span>
+    </header>
+    <ul class="nav__list nav__list--kpi">
+      <li><span class="nav__kpi">{{ snapshot().pedidos.hoy }} pedidos hoy</span></li>
+      <li><span class="nav__kpi nav__kpi--warn">{{ snapshot().pedidos.novedades_criticas }} novedades</span></li>
+      <li><span class="nav__kpi">ROAS {{ snapshot().campanas.roas_promedio }}x</span></li>
+    </ul>
+    <ul class="nav__list nav__list--links">
+      <li><a routerLink="/gali-v3/objetivo" routerLinkActive="is-active" class="nav__item nav__item--compact"><span>🎯</span> Objetivo</a></li>
+      <li><a routerLink="/gali-v3/comunidad" routerLinkActive="is-active" class="nav__item nav__item--compact"><span>👥</span> Comunidad</a></li>
+      <li><a routerLink="/gali-v3/mi-stack" routerLinkActive="is-active" class="nav__item nav__item--compact"><span>🔌</span> Mi Stack</a></li>
+    </ul>
+  </section>
+
+  <section class="nav__section nav__section--map">
+    <a routerLink="/gali-v3/mapa" routerLinkActive="is-active" class="nav__item nav__item--map" data-tour="nav-mapa">
+      <span class="nav__item-icon">🗺</span>
+      <span class="nav__item-label">Mapa del negocio</span>
+      <span class="nav__item-badge nav__item-badge--cmd">⌘M</span>
+    </a>
+  </section>
+
+  <section class="nav__section">
+    <header class="nav__head">
+      <span class="nav__head-label">Mi negocio</span>
+      <span class="nav__head-meta">live</span>
+    </header>
+    <ul class="nav__list">
+      <li>
+        <a routerLink="/gali-v3/dropi/pedidos" routerLinkActive="is-active" class="nav__item">
+          <span class="nav__item-icon">🛒</span>
+          <span class="nav__item-label">Pedidos</span>
+          <span class="nav__item-badge" *ngIf="snapshot().pedidos.hoy">{{ snapshot().pedidos.hoy }}</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/gali-v3/dropi/catalogo" routerLinkActive="is-active" class="nav__item">
+          <span class="nav__item-icon">📦</span>
+          <span class="nav__item-label">Catálogo</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/gali-v3/dropi/campanas" routerLinkActive="is-active" class="nav__item">
+          <span class="nav__item-icon">📣</span>
+          <span class="nav__item-label">Campañas</span>
+          <span class="nav__item-status is-activo" *ngIf="snapshot().campanas.activas"></span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/historial-de-cartera" class="nav__item">
+          <span class="nav__item-icon">💰</span>
+          <span class="nav__item-label">Wallet</span>
+          <span class="nav__item-amount">{{ format(snapshot().wallet.saldo_actual) }}</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="nav__section">
+    <header class="nav__head">
+      <span class="nav__head-label">Proyectos</span>
+      <a routerLink="/gali-v3/proyecto/nuevo" class="nav__head-action" title="Crear proyecto">+</a>
+    </header>
+    <ul class="nav__list">
+      <li *ngFor="let p of proyectosActivos()">
+        <a [routerLink]="['/gali-v3/proyecto', p.id]" routerLinkActive="is-active" class="nav__item is-project">
+          <span class="nav__item-emoji">{{ p.icon }}</span>
+          <span class="nav__item-label">{{ p.name }}</span>
+          <span class="nav__item-status is-activo" title="Activo"></span>
+        </a>
+      </li>
+      <li *ngFor="let p of proyectosPausados()">
+        <a [routerLink]="['/gali-v3/proyecto', p.id]" routerLinkActive="is-active" class="nav__item is-project">
+          <span class="nav__item-emoji">{{ p.icon }}</span>
+          <span class="nav__item-label">{{ p.name }}</span>
+          <span class="nav__item-status is-pausado" title="Pausado"></span>
+        </a>
+      </li>
+      <li class="nav__group" *ngIf="proyectosCompletados().length">
+        <details>
+          <summary>Archivados ({{ proyectosCompletados().length }})</summary>
+          <ul class="nav__list nav__list--nested">
+            <li *ngFor="let p of proyectosCompletados()">
+              <a [routerLink]="['/gali-v3/proyecto', p.id]" routerLinkActive="is-active" class="nav__item is-project is-archived">
+                <span class="nav__item-emoji">{{ p.icon }}</span>
+                <span class="nav__item-label">{{ p.name }}</span>
+              </a>
+            </li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+  </section>
+
+  <section class="nav__section">
+    <header class="nav__head">
+      <span class="nav__head-label">Mercado</span>
+      <a routerLink="/gali-v3/mercado" class="nav__head-action" title="Explorar mercado">→</a>
+    </header>
+    <ul class="nav__list">
+      <li>
+        <a routerLink="/gali-v3/mercado" [queryParams]="{ tab: 'plantillas' }" class="nav__item">
+          <span class="nav__item-icon">⚡</span>
+          <span class="nav__item-label">Plantillas</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/gali-v3/mercado" [queryParams]="{ tab: 'agentes' }" class="nav__item">
+          <span class="nav__item-icon">🤖</span>
+          <span class="nav__item-label">Agentes</span>
+          <span class="nav__item-badge is-soft" *ngIf="agentesInstalados().length">{{ agentesInstalados().length }}</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/gali-v3/mercado" [queryParams]="{ tab: 'conexiones' }" class="nav__item">
+          <span class="nav__item-icon">🔌</span>
+          <span class="nav__item-label">Conexiones</span>
+          <span class="nav__item-badge is-soft" *ngIf="conexionesActivas().length">{{ conexionesActivas().length }}</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="nav__section">
+    <header class="nav__head">
+      <span class="nav__head-label">Recetas</span>
+    </header>
+    <ul class="nav__list">
+      <li>
+        <a routerLink="/gali-v3/builder" routerLinkActive="is-active" class="nav__item">
+          <span class="nav__item-icon">🔧</span>
+          <span class="nav__item-label">Mis recetas</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/gali-v3/bloque-builder" routerLinkActive="is-active" class="nav__item">
+          <span class="nav__item-icon">✦</span>
+          <span class="nav__item-label">Constructor de tableros</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/gali-v3/vista/operacion-hoy" routerLinkActive="is-active" class="nav__item">
+          <span class="nav__item-icon">📋</span>
+          <span class="nav__item-label">Mis vistas</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/gali-v3/equipo" routerLinkActive="is-active" class="nav__item">
+          <span class="nav__item-icon">👥</span>
+          <span class="nav__item-label">Mi equipo</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="nav__section">
+    <header class="nav__head">
+      <span class="nav__head-label">Programa V4</span>
+    </header>
+    <ul class="nav__list">
+      <li>
+        <a routerLink="/gali-v3/builders" routerLinkActive="is-active" class="nav__item">
+          <span class="nav__item-icon">🏆</span>
+          <span class="nav__item-label">Mi perfil de builder</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/gali-v3/roadmap" routerLinkActive="is-active" class="nav__item">
+          <span class="nav__item-icon">🗺</span>
+          <span class="nav__item-label">Roadmap post-V4</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <footer class="nav__foot">
+    <a routerLink="/gali-v3/playground-maestria" class="nav__foot-link">Mi maestría</a>
+    <a routerLink="/home" class="nav__foot-link">Salir a Dropi clásico</a>
+  </footer>
+</aside>

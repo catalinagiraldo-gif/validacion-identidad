@@ -1,0 +1,156 @@
+<div class="proyectos-page">
+
+  <dropi-gali-bar
+    agent="Gali"
+    status="orquestando proyectos"
+    message="{{ activeCount }} proyectos activos · {{ proyectos.length }} en total · ADA Spy tiene 2 análisis listos"
+    ctaLabel="Diagnóstico cruzado →"
+    secondaryCta="Ver en Hub"
+    (ctaClick)="openDiagnostico()"
+    (secondaryClick)="goToHub()"
+  />
+
+  <!-- Breadcrumb -->
+  <nav class="proyectos-page__breadcrumbs" aria-label="Breadcrumb">
+    <button type="button" class="proyectos-page__crumb" (click)="goToHub()" data-proto-skip>
+      <i class="pi pi-home"></i>
+      <span>Gali Hub</span>
+    </button>
+    <i class="pi pi-chevron-right proyectos-page__crumb-sep"></i>
+    <span class="proyectos-page__crumb proyectos-page__crumb--active">Mis Proyectos</span>
+  </nav>
+
+  <!-- Header + CTA -->
+  <div class="proyectos-page__header">
+    <div>
+      <h1>Mis Proyectos</h1>
+      <p>{{ proyectos.length }} proyectos · {{ activeCount }} activos</p>
+    </div>
+    <button class="proyectos-page__new-btn" type="button" (click)="newProject()" data-proto-skip>
+      <i class="pi pi-plus"></i>
+      Nuevo proyecto
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="proyectos-page__filters">
+    <button
+      class="pf-tab"
+      [class.pf-tab--active]="activeFilter() === 'todos'"
+      type="button"
+      (click)="activeFilter.set('todos')"
+      data-proto-skip>Todos ({{ proyectos.length }})</button>
+    <button
+      class="pf-tab"
+      [class.pf-tab--active]="activeFilter() === 'activos'"
+      type="button"
+      (click)="activeFilter.set('activos')"
+      data-proto-skip>Activos</button>
+    <button
+      class="pf-tab"
+      [class.pf-tab--active]="activeFilter() === 'pausados'"
+      type="button"
+      (click)="activeFilter.set('pausados')"
+      data-proto-skip>Pausados</button>
+    <button
+      class="pf-tab"
+      [class.pf-tab--active]="activeFilter() === 'borradores'"
+      type="button"
+      (click)="activeFilter.set('borradores')"
+      data-proto-skip>Borradores</button>
+  </div>
+
+  <!-- Lista de proyectos -->
+  <div class="proyectos-list">
+    @for (p of filteredProyectos; track p.id) {
+      <div
+        class="proyecto-row"
+        [class.proyecto-row--warn]="p.galiStatus === 'warn'"
+        [class.proyecto-row--pausado]="p.estado === 'pausado'"
+        [class.proyecto-row--borrador]="p.estado === 'borrador'">
+
+        <!-- Estado badge -->
+        <div class="proyecto-row__estado">
+          <span class="prow-badge"
+            [class.prow-badge--escala]="p.estado === 'en_escala'"
+            [class.prow-badge--activo]="p.estado === 'activo'"
+            [class.prow-badge--pausado]="p.estado === 'pausado'"
+            [class.prow-badge--borrador]="p.estado === 'borrador'">
+            {{ estadoLabel(p.estado) }}
+          </span>
+        </div>
+
+        <!-- Nombre -->
+        <div class="proyecto-row__nombre">
+          <span class="proyecto-row__icono">{{ p.icono }}</span>
+          <div>
+            <strong>{{ p.nombre }}</strong>
+            <div class="proyecto-row__agentes">
+              @for (a of p.agentes; track a) {
+                <span class="prow-agent-tag">{{ a }}</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Métricas -->
+        <div class="proyecto-row__metrics">
+          <div class="prow-metric">
+            <span class="prow-metric__label">ROAS</span>
+            <strong class="prow-metric__val">{{ p.roas }}</strong>
+          </div>
+          <div class="prow-metric">
+            <span class="prow-metric__label">Pedidos/sem</span>
+            <strong class="prow-metric__val">{{ p.pedidos || '—' }}</strong>
+          </div>
+          <div class="prow-metric">
+            <span class="prow-metric__label">Ganancia</span>
+            <strong class="prow-metric__val">{{ p.ganancia }}</strong>
+          </div>
+        </div>
+
+        <!-- Gali dice -->
+        <div class="proyecto-row__gali">
+          <span class="prow-gali-icon"
+            [class.prow-gali-icon--warn]="p.galiStatus === 'warn'"
+            [class.prow-gali-icon--ok]="p.galiStatus === 'ok'"
+            [class.prow-gali-icon--info]="p.galiStatus === 'info'">
+            @if (p.galiStatus === 'warn') { ⚠ }
+            @else if (p.galiStatus === 'ok') { ✓ }
+            @else if (p.galiStatus === 'info') { 💡 }
+            @else { ○ }
+          </span>
+          <span class="prow-gali-msg">{{ p.galiMsg }}</span>
+        </div>
+
+        <!-- Acción -->
+        <div class="proyecto-row__action">
+          <button
+            class="prow-action-btn"
+            type="button"
+            (click)="goToProject(p.id)"
+            data-proto-skip>
+            Ver proyecto
+            <i class="pi pi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Resumen global -->
+  <div class="proyectos-page__summary">
+    <span>Total semana: 70 pedidos · $609k ganancia neta · {{ activeCount }} proyectos activos</span>
+  </div>
+</div>
+
+@if (showCrearModal()) {
+  <crear-proyecto-modal
+    (closed)="showCrearModal.set(false)"
+    (created)="goToProject($event)"
+  />
+}
+
+@if (showDiagnostico()) {
+  <app-diagnostico-modal (closed)="showDiagnostico.set(false)" />
+}

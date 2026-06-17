@@ -9,4 +9,6 @@ export interface PrototypeMeta {
   dateAdded: string;
   thumbnail: string;
   architecture: 'old' | 'new';
+  folder?: string;
+  absoluteRoute?: string;
 }

@@ -1,0 +1,86 @@
+<div
+  class="gali-v5-shell"
+  [class.gali-v5-shell--compact]="isCompactNav()"
+  [class.gali-v5-shell--no-section]="!hasSectionPanel()"
+  [class.gali-v5-shell--nav-collapsed]="sectionNavCollapsed()"
+  [class.gali-v5-shell--panel-open]="galiState.galiMode() > 0">
+
+  <dropi-header-ia2
+    [userName]="(auth.user$ | async)?.name ?? 'Alejandra'"
+    [galiMode]="galiState.galiMode()"
+    [autopilotOn]="galiState.galiMode() === 2"
+  />
+
+  <div class="gali-v5-shell__body">
+    <dropi-icon-rail />
+
+    <dropi-section-nav
+      *ngIf="hasSectionPanel()"
+      [panel]="sectionPanel()"
+      [collapsed]="sectionNavCollapsed()"
+      (collapseRequested)="collapseSectionNav()"
+      (expandRequested)="toggleSectionNav()"
+    />
+
+    <dropi-panel-splitter
+      *ngIf="hasSectionPanel() && !sectionNavCollapsed()"
+      [currentWidth]="sectionWidth()"
+      (widthChange)="onSplitterWidthChange($event)"
+      (dragStart)="onSplitterDragStart()"
+      (dragEnd)="onSplitterDragEnd()"
+    />
+
+    <main class="gali-v5-shell__content" [class.gali-v5-shell__content--os]="isOsWorkspace()">
+      <gali-context-strip [contextKey]="currentContextKey()" />
+      <gali-intent-bar />
+      <div class="gali-v5-shell__outlet">
+        <router-outlet />
+      </div>
+    </main>
+  </div>
+
+  <!-- Panel derecho de Gali -->
+  @if (galiState.galiMode() > 0) {
+    <div
+      class="gali-v5-shell__panel-overlay"
+      [style.width.px]="galiState.panelWidth()">
+      <dropi-panel-splitter
+        class="gali-v5-shell__panel-resize"
+        edge="left"
+        [currentWidth]="galiState.panelWidth()"
+        [minWidth]="380"
+        [maxWidth]="panelMaxWidth()"
+        (widthChange)="onGaliPanelWidthChange($event)"
+        (dragStart)="onSplitterDragStart()"
+        (dragEnd)="onSplitterDragEnd()"
+      />
+      <gali-right-panel (closed)="galiState.togglePanel()" />
+    </div>
+  }
+
+  <!-- Toast de Gali (cross-módulo) con link a Memoria -->
+  @if (ws.toast(); as t) {
+    <div class="gali-v5-shell__gali-toast" [class.gali-v5-shell__gali-toast--warn]="t.tipo === 'warn'">
+      <span class="gali-toast__agent-dot" [style.background]="agentColor(t.agente)"></span>
+      <div class="gali-toast__content">
+        <span class="gali-toast__agent">{{ t.agente }}</span>
+        <span class="gali-toast__msg">{{ t.message }}</span>
+      </div>
+      <button type="button" class="gali-toast__memory-link" (click)="galiState.openPanelToMemory()" data-proto-skip>
+        Ver en Memoria →
+      </button>
+      <button type="button" class="gali-toast__dismiss" (click)="ws.toast.set(null)" data-proto-skip aria-label="Cerrar">✕</button>
+    </div>
+  }
+
+  <dropi-menu-action />
+
+  <div
+    *ngIf="feedback.toast() as t"
+    class="gali-v5-shell__toast"
+    role="status"
+    aria-live="polite">
+    <i class="pi pi-check-circle"></i>
+    {{ t.message }}
+  </div>
+</div>

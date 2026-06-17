@@ -1,0 +1,118 @@
+<header class="topbar">
+  <div class="topbar__brand" routerLink="/gali-v3">
+    <span class="topbar__sparkle" aria-hidden="true">✦</span>
+    <span class="topbar__name">Gali</span>
+    <span class="topbar__version" aria-label="Versión 4.1">V4.1</span>
+    <span class="topbar__divider">·</span>
+    <span class="topbar__tag topbar__tag--mode">{{ modeHeader() }}</span>
+  </div>
+
+  <nav class="topbar__modos" aria-label="Modos de trabajo">
+    <button
+      *ngFor="let m of modos"
+      type="button"
+      class="topbar__modo"
+      [class.is-active]="isModoActive(m.id)"
+      (click)="navigateModo(m.id)"
+      [title]="m.label">
+      {{ m.emoji }} {{ m.label }}
+    </button>
+  </nav>
+
+  <nav class="topbar__nav" aria-label="Navegación principal Gali" data-tour="topbar-nav">
+    <a routerLink="/gali-v3" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="is-active">Inicio</a>
+    <a routerLink="/gali-v3/builder" routerLinkActive="is-active">Recetas</a>
+    <a routerLink="/gali-v3/mercado" routerLinkActive="is-active">Mercado</a>
+    <a routerLink="/gali-v3/dropi/catalogo" routerLinkActive="is-active">Catálogo</a>
+  </nav>
+
+  <div class="topbar__right">
+    <button
+      class="topbar__signals"
+      data-tour="topbar-signals"
+      [class.has-critical]="signalsCriticas().length > 0"
+      [attr.aria-expanded]="popoverOpen()"
+      (click)="togglePopover()"
+    >
+      <span class="topbar__signals-icon">⚡</span>
+      <span class="topbar__signals-count" *ngIf="signalsCount() > 0">{{ signalsCount() }} señales</span>
+      <span class="topbar__signals-count is-empty" *ngIf="signalsCount() === 0">Sin señales</span>
+      <span class="topbar__signals-dot" *ngIf="signalsCount() > 0"></span>
+    </button>
+
+    <button
+      type="button"
+      class="topbar__cmdk-hint"
+      data-tour="topbar-cmdk"
+      (click)="openCommandPalette()"
+      aria-label="Abrir command palette (⌘K)"
+      title="Command palette (⌘K)">
+      <kbd>⌘K</kbd>
+    </button>
+
+    <button
+      type="button"
+      class="topbar__tour"
+      (click)="restartTour()"
+      aria-label="Ver tour guiado de Gali V4"
+      title="Tour guiado">
+      ?
+    </button>
+
+    <button
+      type="button"
+      class="topbar__rpanel-toggle"
+      [class.is-open]="rpanelOpen()"
+      (click)="togglePanel()"
+      [attr.aria-pressed]="rpanelOpen()"
+      [attr.aria-label]="(rpanelOpen() ? 'Cerrar' : 'Abrir') + ' panel Gali (⌘J)'"
+      title="Panel Gali (⌘J)">
+      <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2.5" y="3.5" width="15" height="13" rx="2"/>
+        <line x1="12.5" y1="3.5" x2="12.5" y2="16.5"/>
+      </svg>
+      <span>Gali</span>
+      <span class="topbar__rpanel-kbd" aria-hidden="true">⌘J</span>
+    </button>
+
+    <div class="topbar__avatar" [title]="memoria().perfil.nombre">
+      {{ memoria().perfil.nombre.charAt(0) }}
+    </div>
+  </div>
+
+  <div class="topbar__popover" *ngIf="popoverOpen()" (click)="$event.stopPropagation()">
+    <header class="topbar__popover-head">
+      <h4>Señales activas de Gali</h4>
+      <p>Cosas que detecté sin que las pidieras</p>
+    </header>
+    <ul class="topbar__signals-list">
+      <li
+        *ngFor="let s of signalsActive()"
+        class="topbar__signal"
+        [class.is-alta]="s.urgencia === 'alta'"
+        [class.is-tipo-riesgo]="s.tipo === 'riesgo'"
+        [class.is-tipo-oportunidad]="s.tipo === 'oportunidad'"
+        [class.is-tipo-optimizacion]="s.tipo === 'optimizacion'"
+      >
+        <div class="topbar__signal-icon">{{ s.icon }}</div>
+        <div class="topbar__signal-body" (click)="goToSignal(s.accion_sugerida.target_route, s.id)">
+          <div class="topbar__signal-meta">
+            <span class="topbar__signal-tipo">{{ s.tipo }}</span>
+            <span class="topbar__signal-fuente">· {{ s.fuente }}</span>
+            <span class="topbar__signal-ago">· {{ s.timestamp }}</span>
+          </div>
+          <strong class="topbar__signal-titulo">{{ s.titulo }}</strong>
+          <p class="topbar__signal-ctx">{{ s.contexto }}</p>
+          <button class="topbar__signal-cta">
+            {{ s.accion_sugerida.label }} →
+          </button>
+        </div>
+        <button class="topbar__signal-dismiss" (click)="dismissSignal(s.id, $event)" aria-label="Descartar">×</button>
+      </li>
+      <li *ngIf="signalsActive().length === 0" class="topbar__signal-empty">
+        Todo tranquilo. Gali sigue monitoreando.
+      </li>
+    </ul>
+  </div>
+  <div class="topbar__popover-backdrop" *ngIf="popoverOpen()" (click)="closePopover()"></div>
+</header>

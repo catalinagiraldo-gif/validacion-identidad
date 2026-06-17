@@ -1,0 +1,37 @@
+{
+  "agentes": [
+    {
+      "id": "ag-vigilante-log",
+      "nombre": "Vigilante logístico",
+      "icono": "🚛",
+      "estado": "activo",
+      "progreso_texto": "Revisando 3 novedades > 5 días sin actualización…",
+      "confianza": 0.91,
+      "memoria_usada": ["Collar GPS", "Cali", "Coordinadora"],
+      "iniciado_hace": "hace 2 min",
+      "marketplace_id": "ag-2"
+    },
+    {
+      "id": "ag-collar-medellin",
+      "nombre": "Análisis Collar GPS Medellín",
+      "icono": "📊",
+      "estado": "esperando",
+      "progreso_texto": "ROAS subió 0.2x tras pausar Video B — ¿escalo presupuesto?",
+      "confianza": 0.78,
+      "memoria_usada": ["Collar GPS", "Medellín", "ROAS objetivo 3x"],
+      "iniciado_hace": "hace 2 h",
+      "marketplace_id": "ag-1"
+    },
+    {
+      "id": "ag-receta-novedades",
+      "nombre": "Receta novedades auto",
+      "icono": "⚙️",
+      "estado": "pausa",
+      "progreso_texto": "En pausa · 3 ejecuciones hoy",
+      "confianza": 0.85,
+      "memoria_usada": ["WhatsApp", "Umbral 8% novedad"],
+      "iniciado_hace": "hace 8 h",
+      "marketplace_id": null
+    }
+  ]
+}

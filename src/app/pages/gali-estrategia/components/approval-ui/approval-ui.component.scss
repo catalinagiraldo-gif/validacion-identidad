@@ -1,0 +1,182 @@
+@import 'styles/gali-tokens';
+
+.ap {
+  background: linear-gradient(
+    180deg,
+    $gali-bg-surface 0%,
+    rgba(244, 154, 61, 0.04) 100%
+  );
+  border: 1px solid rgba(244, 154, 61, 0.28);
+  border-radius: $gali-radius-card;
+  padding: 24px 26px;
+  box-shadow: 0 12px 32px rgba(244, 154, 61, 0.10),
+              0 0 0 1px rgba(244, 154, 61, 0.10);
+  animation: ap-in 600ms $gali-ease-spring;
+  margin-top: 8px;
+
+  &__header {
+    margin-bottom: 18px;
+  }
+
+  &__chip {
+    display: inline-block;
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: $gali-orange;
+    padding: 3px 10px;
+    background: rgba(244, 154, 61, 0.10);
+    border: 1px solid rgba(244, 154, 61, 0.25);
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+
+  &__title {
+    font-family: $gali-font-display;
+    font-size: 24px;
+    font-weight: 600;
+    color: $gali-text-primary;
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  &__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid $gali-border-subtle;
+    border-radius: $gali-radius-input;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 16px;
+    padding: 10px 14px;
+    border-bottom: 1px solid $gali-border-subtle;
+    align-items: center;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &--copy {
+      align-items: flex-start;
+    }
+  }
+
+  &__label {
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: $gali-text-muted;
+    text-transform: uppercase;
+  }
+
+  &__value {
+    font-family: $gali-font-body;
+    font-size: 14px;
+    color: $gali-text-primary;
+    font-weight: 500;
+
+    &--accent {
+      color: $gali-cyan;
+    }
+
+    &--italic {
+      font-family: $gali-font-display;
+      font-style: italic;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+  }
+
+  &__prediction {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 14px;
+    padding: 16px;
+    background: $gali-bg-elevated;
+    border: 1px solid $gali-border-default;
+    border-radius: $gali-radius-input;
+    margin-bottom: 20px;
+  }
+
+  &__pred-icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  &__pred-text {
+    margin: 0 0 10px;
+    font-family: $gali-font-body;
+    font-size: 14px;
+    line-height: 1.55;
+    color: $gali-text-primary;
+
+    strong {
+      color: $gali-orange;
+      font-weight: 700;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  &__btn {
+    padding: 12px 22px;
+    border-radius: $gali-radius-input;
+    font-family: $gali-font-body;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 160ms ease;
+
+    &:focus-visible { @include gali-focus; }
+
+    &--ghost {
+      background: transparent;
+      border-color: $gali-border-default;
+      color: $gali-text-secondary;
+
+      &:hover {
+        background: rgba(255,255,255,0.04);
+        color: $gali-text-primary;
+      }
+    }
+
+    &--primary {
+      background: $gali-orange;
+      color: $gali-bg-base;
+      box-shadow: $gali-shadow-cta;
+
+      &:hover {
+        background: $gali-orange-hover;
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
+
+@keyframes ap-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@include gali-reduced-motion {
+  .ap { animation: none; }
+}

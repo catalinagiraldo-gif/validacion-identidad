@@ -1,0 +1,192 @@
+@import 'styles/gali-v5-tokens';
+@import './gali-v5-nav-icons';
+
+// Figma Menu-1 item tokens (Re-arquitectura UI Oficial)
+$rail-hover-outer: #e9eef5; // gray-100 Figma
+$rail-hover-inner: #f0f4f9; // gray-50 Figma panel
+
+:host {
+  display: block;
+  grid-column: 1;
+  grid-row: 1;
+  width: var(--dropi-rail-width, 72px);
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.icon-rail {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: $white;
+  border-right: 1px solid $gray-100;
+  padding: 4px 4px 8px;
+  box-sizing: border-box;
+
+  &__main {
+    flex: 1;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $size-4;
+    padding-top: 4px;
+    width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: $gray-200 transparent;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $gray-200;
+      border-radius: 4px;
+    }
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  &__divider {
+    width: 34px;
+    height: 1px;
+    background: $gray-200;
+    margin: 0 auto;
+    flex-shrink: 0;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: $size-3 0 $size-2;
+  }
+
+  // ── Logo ✦ Gali Hub ─────────────────────────────────────────────────
+  &__logo-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 44px;
+    flex-shrink: 0;
+    text-decoration: none;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    &--active .icon-rail__spark {
+      color: $primary-500;
+      opacity: 1;
+      animation: logo-breathe 3s ease-in-out infinite;
+    }
+  }
+
+  &__spark {
+    font-size: 16px;
+    color: $gray-400;
+    line-height: 1;
+    transition: color 0.15s ease;
+  }
+
+  // ── Navigation items ──────────────────────────────────────────────────
+  &__item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 40px;
+    border-radius: $radius-lg;
+    text-decoration: none;
+    color: $gray-700;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+
+    &:hover:not(&--active) {
+      background: $rail-hover-outer;
+
+      .icon-rail__item-inner {
+        background: $rail-hover-inner;
+      }
+    }
+
+    &--active {
+      .icon-rail__item-inner {
+        background: $primary-500;
+      }
+
+      .icon-rail__svg {
+        @include nav-icon-active-white;
+      }
+
+      &:hover .icon-rail__item-inner {
+        background: $primary-600;
+      }
+    }
+
+    &--heart {
+      color: $primary-500;
+
+      .pi {
+        font-size: 19px;
+        line-height: 1;
+      }
+
+      &:hover:not(.icon-rail__item--active) {
+        background: $rail-hover-outer;
+
+        .icon-rail__item-inner {
+          background: rgba($primary-500, 0.08);
+        }
+      }
+    }
+  }
+
+  &__item-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-md;
+    transition: background 0.15s ease, border-left 0.15s ease;
+  }
+
+  &__svg {
+    @include nav-icon-shell;
+  }
+
+  &__item:not(&__item--active):not(&__item--heart) .icon-rail__svg {
+    @include nav-icon-default;
+  }
+
+  &__item--active .icon-rail__svg {
+    @include nav-icon-active-white;
+  }
+}
+
+@keyframes logo-breathe {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}

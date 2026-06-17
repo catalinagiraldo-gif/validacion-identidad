@@ -1,0 +1,123 @@
+@import 'styles/gali-v3-tokens';
+
+:host { display: block; margin-top: $gv3-space-5; }
+
+.pp {
+  padding: $gv3-space-4 $gv3-space-5;
+  background:
+    linear-gradient(135deg, $gv3-orange-tint 0%, transparent 50%),
+    $gv3-bg-surface;
+  border: 1px solid $gv3-border-warm;
+  border-radius: $gv3-radius-lg;
+  position: relative;
+  overflow: hidden;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, $gv3-orange 0%, transparent 100%);
+  }
+}
+
+.pp__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: $gv3-space-3;
+  h4 {
+    margin: 0;
+    font-family: $gv3-font-display;
+    font-size: $gv3-text-lg;
+    font-weight: 500;
+    color: $gv3-text-primary;
+  }
+}
+
+.pp__sparkle {
+  color: $gv3-sparkle-color;
+  filter: drop-shadow($gv3-sparkle-glow);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.pp__meta {
+  @include gv3-mono-tag;
+  color: $gv3-text-tertiary;
+  margin-left: auto;
+}
+
+.pp__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $gv3-space-3;
+}
+
+.pp__chip {
+  display: grid;
+  grid-template-columns: 32px 1fr 18px;
+  gap: $gv3-space-2;
+  align-items: center;
+  padding: $gv3-space-3;
+  background: $gv3-bg-surface;
+  border: 1px solid $gv3-border-whisper;
+  border-radius: $gv3-radius-md;
+  cursor: pointer;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+  text-align: left;
+  font-family: $gv3-font-body;
+  opacity: 0;
+  animation: gv3-artifact-enter $gv3-dur-base $gv3-ease-out forwards;
+  &:hover {
+    border-color: $gv3-border-warm;
+    background: $gv3-orange-tint;
+    transform: translateY(-1px);
+    .pp__chip-arrow { color: $gv3-orange-hover; transform: translateX(3px); }
+  }
+  &:focus-visible {
+    outline: 2px solid $gv3-orange;
+    outline-offset: 2px;
+  }
+}
+
+.pp__chip-icon {
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $gv3-bg-warm;
+  border-radius: $gv3-radius-sm;
+}
+
+.pp__chip-body {
+  min-width: 0;
+  strong {
+    display: block;
+    font-size: $gv3-text-sm;
+    color: $gv3-text-primary;
+    font-weight: 500;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  span {
+    display: block;
+    font-size: 11.5px;
+    color: $gv3-text-tertiary;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.pp__chip-arrow {
+  font-size: 14px;
+  color: $gv3-text-muted;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+}

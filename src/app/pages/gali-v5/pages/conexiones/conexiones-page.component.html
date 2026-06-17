@@ -1,0 +1,175 @@
+<div class="conexiones-page">
+
+  <!-- Header -->
+  <div class="conexiones-page__header">
+    <div>
+      <h1 class="conexiones-page__title">Mapa de Conexiones</h1>
+      <p class="conexiones-page__subtitle">Así fluye la información entre Gali, tus agentes y las herramientas externas.</p>
+    </div>
+    <div class="conexiones-page__stats">
+      <div class="conexiones-stat conexiones-stat--ok">
+        <span class="conexiones-stat__num">{{ connectedCount }}</span>
+        <span class="conexiones-stat__label">Conectadas</span>
+      </div>
+      @if (urgentCount > 0) {
+        <div class="conexiones-stat conexiones-stat--warn">
+          <span class="conexiones-stat__num">{{ urgentCount }}</span>
+          <span class="conexiones-stat__label">Urgentes</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="conexiones-layout" [class.conexiones-layout--panel-open]="selectedNode()">
+
+    <!-- MAP -->
+    <div class="map-container">
+
+      <!-- GALI CORE — Center node -->
+      <div class="map-core">
+        <div class="map-core__node">
+          <div class="map-core__pulse" aria-hidden="true"></div>
+          <div class="map-core__pulse map-core__pulse--2" aria-hidden="true"></div>
+          <span class="map-core__icon">✦</span>
+          <span class="map-core__label">GALI</span>
+        </div>
+        <div class="map-core__connector" aria-hidden="true"></div>
+      </div>
+
+      <!-- AGENTS LAYER -->
+      <div class="map-layer map-layer--agents">
+        <div class="map-layer__label">Agentes de Gali</div>
+        <div class="map-layer__nodes">
+          @for (agent of agentNodes; track agent.id) {
+            <button
+              type="button"
+              class="map-node map-node--agent"
+              [class.map-node--selected]="selectedNode()?.id === agent.id"
+              [class.map-node--connected]="agent.status === 'connected'"
+              [style.--node-color]="agent.agenteColor"
+              (click)="selectNode(agent)"
+              [attr.aria-label]="'Ver detalle de ' + agent.label">
+              <div class="map-node__pulse" aria-hidden="true"></div>
+              <span class="map-node__emoji">{{ agent.emoji }}</span>
+              <span class="map-node__label">{{ agent.label }}</span>
+              <span class="map-node__status-dot" [style.background]="statusColor(agent.status)" aria-hidden="true"></span>
+            </button>
+          }
+        </div>
+        <div class="map-layer__connector-down" aria-hidden="true"></div>
+      </div>
+
+      <!-- PLATFORMS LAYER -->
+      <div class="map-layer map-layer--platforms">
+        <div class="map-layer__label">Plataformas externas</div>
+        <div class="map-layer__nodes map-layer__nodes--platforms">
+          @for (platform of platformNodes; track platform.id) {
+            <button
+              type="button"
+              class="map-node map-node--platform"
+              [class.map-node--selected]="selectedNode()?.id === platform.id"
+              [class.map-node--connected]="platform.status === 'connected'"
+              [class.map-node--pending]="platform.status === 'pending'"
+              [class.map-node--urgent]="platform.urgente && platform.status !== 'connected'"
+              (click)="selectNode(platform)"
+              [attr.aria-label]="'Ver detalle de ' + platform.label">
+              <span class="map-node__emoji map-node__emoji--sm">{{ platform.emoji }}</span>
+              <span class="map-node__label map-node__label--sm">{{ platform.label }}</span>
+              <span
+                class="map-node__status-dot map-node__status-dot--sm"
+                [style.background]="statusColor(platform.status)"
+                aria-hidden="true"></span>
+              @if (platform.urgente && platform.status !== 'connected') {
+                <span class="map-node__urgente" aria-label="Requiere atención">!</span>
+              }
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="map-legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#22c55e"></span> Conectado</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span> Pendiente</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#9ca3af"></span> Desconectado</span>
+      </div>
+
+    </div><!-- /map-container -->
+
+    <!-- DETAIL PANEL -->
+    @if (selectedNode(); as node) {
+      <aside class="node-detail-panel">
+        <div class="node-detail-panel__header" [style.--node-color]="node.agenteColor || '#6b7280'">
+          <div class="node-detail-panel__title-row">
+            <span class="node-detail-panel__emoji">{{ node.emoji }}</span>
+            <div>
+              <h2 class="node-detail-panel__title">{{ node.label }}</h2>
+              <span class="node-detail-panel__status" [style.color]="statusColor(node.status)">
+                {{ statusLabel(node.status) }}
+              </span>
+            </div>
+          </div>
+          <button type="button" class="node-detail-panel__close" (click)="selectedNode.set(null)" aria-label="Cerrar">
+            <i class="pi pi-times" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="node-detail-panel__body">
+
+          <p class="node-detail-panel__desc">{{ node.desc }}</p>
+
+          @if (node.metricas?.length) {
+            <div class="node-detail-panel__section">
+              <h3 class="node-detail-panel__section-title">Actividad reciente</h3>
+              <div class="node-metrics">
+                @for (m of node.metricas!; track m.label) {
+                  <div class="node-metric">
+                    <span class="node-metric__label">{{ m.label }}</span>
+                    <strong class="node-metric__val">{{ m.val }}</strong>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          @if (node.permisos?.length) {
+            <div class="node-detail-panel__section">
+              <h3 class="node-detail-panel__section-title">Permisos activos</h3>
+              <div class="node-permisos">
+                @for (p of node.permisos!; track p) {
+                  <span class="node-permiso">{{ p }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          <div class="node-detail-panel__section">
+            <h3 class="node-detail-panel__section-title">Impacto en tu negocio</h3>
+            <p class="node-impact">{{ node.impacto }}</p>
+          </div>
+
+        </div>
+
+        <div class="node-detail-panel__footer">
+          @if (node.ctaRoute) {
+            <a [routerLink]="node.ctaRoute" class="node-detail-panel__cta node-detail-panel__cta--primary">
+              {{ node.ctaLabel }}
+            </a>
+          } @else {
+            <button type="button" class="node-detail-panel__cta node-detail-panel__cta--connect" data-proto-skip>
+              {{ node.ctaLabel }}
+            </button>
+          }
+          @if (node.status === 'connected') {
+            <button type="button" class="node-detail-panel__cta node-detail-panel__cta--revoke" data-proto-skip>
+              Revocar acceso
+            </button>
+          }
+        </div>
+
+      </aside>
+    }
+
+  </div>
+
+</div>

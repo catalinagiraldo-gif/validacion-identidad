@@ -1,0 +1,53 @@
+<header class="h">
+  <!-- Logo Dropi -->
+  <a class="h__logo" routerLink="/gali-v3" aria-label="Dropi — al inicio">
+    <span class="h__logo-mark">d</span>
+    <span class="h__logo-word">dropi</span>
+  </a>
+
+  <!-- Búsqueda IA / input Gali integrado -->
+  <div class="h__search" [class.h__search--focus]="enfocado()">
+    <span class="h__search-mark" aria-hidden="true">✦</span>
+    <input
+      #galiInput
+      type="text"
+      class="h__search-input"
+      placeholder="Busca productos, pedidos o pregúntale a Gali…"
+      [value]="texto()"
+      (input)="texto.set($any($event.target).value)"
+      (focus)="enfocado.set(true)"
+      (blur)="enfocado.set(false)"
+      (keydown.enter)="enviar()"
+      aria-label="Búsqueda y Gali" />
+    <kbd class="h__search-kbd" aria-hidden="true">⌘ K</kbd>
+  </div>
+
+  <!-- Right cluster: BETA, balance, bell, perfil -->
+  <div class="h__right">
+    <span class="h__beta" title="Versión beta">BETA</span>
+
+    <button type="button" class="h__balance" (click)="toggleSaldo()" [attr.aria-label]="'Saldo disponible. Click para ' + (saldoVisible() ? 'ocultar' : 'mostrar')">
+      <span class="h__balance-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="6" width="20" height="13" rx="2"/>
+          <path d="M2 10h20"/>
+          <path d="M6 15h2"/>
+        </svg>
+      </span>
+      <span class="h__balance-amount" *ngIf="saldoVisible(); else hidden">{{ formatearCOP(saldo) }}</span>
+      <ng-template #hidden><span class="h__balance-amount">$ • • •</span></ng-template>
+    </button>
+
+    <button type="button" class="h__bell" [class.h__bell--active]="senalesNoVistas() > 0" aria-label="Notificaciones">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+        <path d="M10 21a2 2 0 0 0 4 0"/>
+      </svg>
+      <span class="h__bell-dot" *ngIf="senalesNoVistas() > 0">{{ senalesNoVistas() }}</span>
+    </button>
+
+    <button type="button" class="h__avatar" [attr.aria-label]="'Perfil de ' + nombreCorto()">
+      <span class="h__avatar-initial">{{ inicial() }}</span>
+    </button>
+  </div>
+</header>

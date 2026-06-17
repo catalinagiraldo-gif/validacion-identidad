@@ -1,0 +1,54 @@
+{
+  "global": [
+    { "command": "/proyecto-nuevo", "label": "Crear proyecto nuevo", "icon": "📁", "description": "Gali te guía a armar un proyecto desde cero" },
+    { "command": "/analiza", "label": "Analizar...", "icon": "🔍", "description": "Análisis de producto, campaña o métrica" },
+    { "command": "/automatiza", "label": "Automatizar un flujo", "icon": "⚡", "description": "Abre el Builder con sugerencias" },
+    { "command": "/vista", "label": "Crear vista personalizada", "icon": "📊", "description": "Compón widgets en una pantalla nueva" },
+    { "command": "/bloque-nuevo", "label": "Crear un bloque custom", "icon": "✦", "description": "Constructor con chat + preview en vivo" },
+    { "command": "/recuerda", "label": "Recordar algo nuevo", "icon": "🧠", "description": "Agregar contexto a la memoria de Gali" }
+  ],
+  "inicio": [
+    "¿Qué quiero vender esta semana?",
+    "Muéstrame mis productos ganadores",
+    "Reanuda mi último proyecto",
+    "Arma un reporte de mi negocio hoy",
+    "Construye un bloque que muestre ventas por ciudad"
+  ],
+  "bloque-builder": [
+    "Ventas por ciudad esta semana vs la pasada",
+    "Margen efectivo descontando devoluciones",
+    "Cohorts de clientes recompradores",
+    "Fuga de pedidos por etapa del funnel",
+    "Proyección de pedidos a 30 días"
+  ],
+  "proyecto": [
+    "¿Cómo va este proyecto?",
+    "Renueva mis creatives",
+    "Expande a otra ciudad",
+    "Genera la siguiente landing"
+  ],
+  "catalogo": [
+    "/analiza este producto",
+    "Genera ángulos de venta",
+    "Productos en tendencia esta semana",
+    "Compara con mi historial"
+  ],
+  "campanas": [
+    "/diagnostica esta campaña",
+    "Escala la que mejor va",
+    "Pausa la que está perdiendo plata",
+    "Genera creatives nuevos"
+  ],
+  "builder": [
+    "Pausar campañas con CTR bajo",
+    "Notificar a WA cuando hay pedido",
+    "Renovar creatives cada 14 días",
+    "Reporte semanal automático"
+  ],
+  "mercado": [
+    "Plantillas para empezar",
+    "Agentes recomendados para mi perfil",
+    "Conectar mi WhatsApp Business",
+    "Importar agente de Claude"
+  ]
+}

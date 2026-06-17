@@ -1,0 +1,838 @@
+@import '../../../../../styles/gali-os-tokens';
+@import '../shared/dropi-page-host';
+
+:host {
+  @include dropi-page-host;
+  display: flex;
+  flex-direction: column;
+  background: $os-bg;
+}
+
+// ── Page shell ──────────────────────────────────────────────────────────────
+
+.mkt-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: $os-bg;
+  font-family: $os-font-body;
+  -webkit-font-smoothing: antialiased;
+
+  // ── Header ──
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $os-4;
+    padding: $os-4 $os-5;
+    border-bottom: 1px solid $os-border;
+    background: $os-surface;
+    flex-shrink: 0;
+  }
+
+  &__header-left {
+    display: flex;
+    align-items: center;
+    gap: $os-3;
+  }
+
+  &__back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: $os-bg;
+    border: 1px solid $os-border;
+    color: $os-text-secondary;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+
+    &:hover {
+      background: $os-surface-3;
+      color: $os-text-primary;
+    }
+
+    i { font-size: 13px; }
+  }
+
+  &__title {
+    font-family: $os-font-display;
+    font-size: 18px;
+    font-weight: 800;
+    color: $os-text-primary;
+    margin: 0 0 2px;
+    line-height: 1.2;
+  }
+
+  &__sub {
+    font-size: 11px;
+    color: $os-text-muted;
+    font-family: $os-font-mono;
+  }
+
+  &__header-right {
+    display: flex;
+    gap: $os-2;
+  }
+
+  // ── Toolbar ──
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    gap: $os-3;
+    padding: $os-3 $os-5;
+    background: $os-surface;
+    border-bottom: 1px solid $os-border;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  &__search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+    max-width: 380px;
+  }
+
+  &__search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: $os-text-muted;
+    pointer-events: none;
+  }
+
+  &__search {
+    width: 100%;
+    padding: 7px 10px 7px 30px;
+    border: 1px solid $os-border;
+    border-radius: 8px;
+    background: $os-bg;
+    font-size: 13px;
+    color: $os-text-primary;
+    font-family: $os-font-body;
+    outline: none;
+    transition: border-color 0.15s;
+
+    &::placeholder { color: $os-text-muted; }
+    &:focus { border-color: $os-accent; }
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  &__tab {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid $os-border;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 500;
+    color: $os-text-secondary;
+    font-family: $os-font-body;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+
+    &:hover {
+      background: $os-surface-3;
+      color: $os-text-primary;
+    }
+
+    &--active {
+      background: $os-accent;
+      color: #fff;
+      border-color: $os-accent;
+      font-weight: 600;
+    }
+  }
+
+  // ── Section filters ──
+  &__section-filters {
+    display: flex;
+    gap: $os-2;
+    padding: $os-2 $os-5;
+    background: $os-bg;
+    border-bottom: 1px solid $os-border;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  // ── Stats strip ──
+  &__stats-strip {
+    display: flex;
+    align-items: center;
+    gap: $os-3;
+    padding: $os-2 $os-5;
+    background: $os-surface;
+    border-bottom: 1px solid $os-border;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  // ── Grid ──
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: $os-4;
+    padding: $os-5;
+    align-content: start;
+  }
+
+  // ── Empty state ──
+  &__empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $os-3;
+    padding: $os-8 $os-5;
+    color: $os-text-muted;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  // ── Buttons ──
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: $os-font-body;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s;
+
+    &--publish {
+      background: $os-accent;
+      color: #fff;
+
+      &:hover { opacity: 0.88; }
+    }
+
+    &--ghost {
+      background: transparent;
+      color: $os-text-secondary;
+      border: 1px solid $os-border;
+
+      &:hover {
+        background: $os-surface-3;
+        color: $os-text-primary;
+      }
+    }
+  }
+}
+
+// ── Section filter pills ─────────────────────────────────────────────────────
+
+.mkt-sec-filter {
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid $os-border;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  color: $os-text-secondary;
+  font-family: $os-font-body;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: $os-surface-3;
+    color: $os-text-primary;
+  }
+
+  &--active {
+    background: $os-accent;
+    color: #fff;
+    border-color: $os-accent;
+  }
+}
+
+// ── Stats strip ──────────────────────────────────────────────────────────────
+
+.mkt-stat {
+  font-size: 12px;
+  color: $os-text-secondary;
+
+  strong {
+    color: $os-text-primary;
+    font-weight: 600;
+  }
+
+  &-sep {
+    color: $os-border;
+    font-size: 12px;
+  }
+
+  &--highlight {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #22c55e;
+    font-weight: 500;
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+// ── Skill Card ───────────────────────────────────────────────────────────────
+
+.mkt-card {
+  display: flex;
+  flex-direction: column;
+  gap: $os-3;
+  padding: $os-4;
+  background: $os-surface;
+  border: 1px solid $os-border;
+  border-radius: 12px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: rgba($os-accent, 0.4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  }
+
+  &--verified {
+    border-left: 3px solid $os-accent;
+  }
+
+  // Top row
+  &__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $os-2;
+  }
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  &__tipo {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    &--op   { background: rgba(#f49a3d, 0.12); color: $os-accent; }
+    &--exp  { background: rgba(#818cf8, 0.12); color: #818cf8; }
+    &--prem { background: rgba(#fbbf24, 0.12); color: #fbbf24; }
+    &--lanz { background: rgba(#34d399, 0.12); color: #34d399; }
+  }
+
+  &__sec {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    background: $os-surface-3;
+    color: $os-text-secondary;
+  }
+
+  &__tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    background: rgba(#22c55e, 0.1);
+    color: #22c55e;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__nombre {
+    font-size: 14px;
+    font-weight: 700;
+    color: $os-text-primary;
+    font-family: $os-font-display;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  &__desc {
+    font-size: 12px;
+    color: $os-text-secondary;
+    line-height: 1.5;
+    margin: 0;
+    flex: 1;
+  }
+
+  &__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $os-2;
+    margin-top: auto;
+  }
+
+  &__btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: $os-font-body;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s, background 0.15s;
+
+    &--primary {
+      background: $os-accent;
+      color: #fff;
+
+      &:hover { opacity: 0.88; }
+    }
+
+    &--ghost {
+      background: $os-surface-3;
+      color: $os-text-secondary;
+      border: 1px solid $os-border;
+
+      &:hover {
+        background: darken($os-surface-3, 3%);
+        color: $os-text-primary;
+      }
+    }
+  }
+}
+
+// ── Creator block ─────────────────────────────────────────────────────────────
+
+.mkt-creator {
+  display: flex;
+  align-items: flex-start;
+  gap: $os-2;
+  padding: $os-2;
+  background: $os-bg;
+  border-radius: 8px;
+  border: 1px solid $os-border;
+
+  &__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 12px;
+    font-weight: 600;
+    color: $os-text-primary;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: $os-accent;
+    color: #fff;
+    font-size: 8px;
+    font-weight: 700;
+  }
+
+  &__bio {
+    font-size: 11px;
+    color: $os-text-muted;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__handle {
+    font-size: 11px;
+    color: $os-accent;
+    font-family: $os-font-mono;
+  }
+}
+
+// ── Stat pills ────────────────────────────────────────────────────────────────
+
+.mkt-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: $os-surface-3;
+  font-size: 11px;
+  color: $os-text-secondary;
+
+  i { font-size: 10px; }
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+
+.mkt-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: $os-surface;
+  border: 1px solid $os-border;
+  border-left: 3px solid $os-accent;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: $os-text-primary;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  animation: toast-in 0.3s ease;
+
+  i { color: $os-accent; font-size: 15px; }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+// ── Share modal ───────────────────────────────────────────────────────────────
+
+.mkt-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  animation: fade-in 0.2s ease;
+}
+
+.mkt-modal {
+  width: 460px;
+  max-width: 95vw;
+  background: $os-surface;
+  border: 1px solid $os-border;
+  border-radius: 16px;
+  padding: $os-5;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: modal-in 0.25s ease;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $os-2;
+    margin-bottom: $os-3;
+  }
+
+  &__icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  &__title {
+    flex: 1;
+    font-family: $os-font-display;
+    font-size: 15px;
+    font-weight: 700;
+    color: $os-text-primary;
+    margin: 0;
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: $os-surface-3;
+    border-radius: 6px;
+    cursor: pointer;
+    color: $os-text-secondary;
+    transition: background 0.15s;
+
+    &:hover { background: $os-border; }
+    i { font-size: 12px; }
+  }
+
+  &__desc {
+    font-size: 13px;
+    color: $os-text-secondary;
+    line-height: 1.5;
+    margin: 0 0 $os-4;
+  }
+
+  &__options {
+    display: flex;
+    flex-direction: column;
+    gap: $os-2;
+    margin-bottom: $os-4;
+  }
+
+  &__option {
+    display: flex;
+    align-items: flex-start;
+    gap: $os-2;
+    padding: $os-3;
+    border: 1px solid $os-border;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: $os-text-secondary;
+    transition: border-color 0.15s;
+
+    &:hover { border-color: $os-accent; }
+
+    input[type="radio"] { margin-top: 2px; accent-color: $os-accent; }
+
+    strong { color: $os-text-primary; }
+  }
+
+  &__footer {
+    display: flex;
+    gap: $os-2;
+    justify-content: flex-end;
+  }
+
+  &__btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: $os-font-body;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s;
+
+    &--cancel {
+      background: $os-surface-3;
+      color: $os-text-secondary;
+      border: 1px solid $os-border;
+    }
+
+    &--primary {
+      background: $os-accent;
+      color: #fff;
+
+      &:hover { opacity: 0.88; }
+    }
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+// ── Skill Creator Dashboard ──────────────────────────────────────────────────
+
+.creator-dashboard {
+  margin-bottom: $size-5;
+  border: 1px solid rgba($primary-500, 0.2);
+  border-radius: $radius-xl;
+  overflow: hidden;
+  background: $white;
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    gap: $size-3;
+    padding: $size-3 $size-5;
+    background: linear-gradient(135deg, rgba($primary-500, 0.04) 0%, $white 70%);
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__title {
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-800;
+  }
+
+  &__sub {
+    font-size: $font-xs;
+    color: $gray-500;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-bottom: 1px solid $gray-100;
+  }
+}
+
+.creator-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $size-4 $size-3;
+  border-right: 1px solid $gray-100;
+  text-align: center;
+
+  &:last-child { border-right: none; }
+
+  &__value {
+    font-size: 24px;
+    font-weight: $font-bold;
+    color: $gray-800;
+    line-height: 1.1;
+  }
+
+  &__label {
+    margin-top: $size-1;
+    font-size: $font-xs;
+    color: $gray-500;
+  }
+
+  &--highlight &__value {
+    color: $primary-600;
+  }
+}
+
+.creator-my-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.creator-skill-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: $size-3;
+  align-items: center;
+  padding: $size-3 $size-5;
+  border-bottom: 1px solid $gray-50;
+  transition: background 0.1s;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: $gray-50; }
+  &--draft { opacity: 0.7; }
+
+  &__info {
+    min-width: 0;
+
+    strong {
+      display: block;
+      font-size: $font-sm;
+      font-weight: $font-semibold;
+      color: $gray-800;
+    }
+  }
+
+  &__meta {
+    display: block;
+    font-size: $font-xs;
+    color: $gray-500;
+    margin-top: 2px;
+  }
+
+  &__metrics {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+    flex-shrink: 0;
+  }
+
+  &__rating {
+    font-size: $font-xs;
+    color: #b45309;
+    font-weight: $font-semibold;
+  }
+
+  &__version {
+    font-size: 11px;
+    color: $gray-400;
+    font-family: 'IBM Plex Sans', monospace;
+  }
+
+  &__status {
+    font-size: 11px;
+    font-weight: $font-semibold;
+
+    &--active { color: #15803d; }
+    &--draft { color: $gray-400; }
+  }
+
+  &__edit {
+    padding: $size-1 $size-3;
+    border: 1px solid $gray-200;
+    border-radius: $radius-full;
+    background: $white;
+    color: $primary-600;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: $font-primary;
+    white-space: nowrap;
+    transition: border-color 0.12s, background 0.12s;
+
+    &:hover {
+      border-color: $primary-400;
+      background: rgba($primary-500, 0.04);
+    }
+  }
+}

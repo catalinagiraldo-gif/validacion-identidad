@@ -1,0 +1,60 @@
+<article
+  class="bw"
+  [attr.data-size]="size"
+  [attr.data-editing]="editing"
+  [class.gali-active]="galiHighlight() === 'active'"
+  [class.gali-done]="galiHighlight() === 'done'">
+  <header class="bw__head">
+    <div class="bw__title">
+      <h3>{{ manifest.label }}</h3>
+      <span class="bw__hint">{{ manifest.hint }}</span>
+    </div>
+    <span *ngIf="galiHighlight() === 'active'" class="bw__gali-badge">✦ Gali revisando…</span>
+    <span *ngIf="galiHighlight() === 'done' && galiDelta() as d" class="bw__gali-badge bw__gali-badge--done">✦ {{ d }}</span>
+
+    <div class="bw__actions">
+      <a
+        *ngIf="manifest.expandRuta"
+        [routerLink]="manifest.expandRuta"
+        class="bw__expand"
+        [attr.aria-label]="'Abrir ' + manifest.label">
+        Ver todo →
+      </a>
+
+      <button
+        *ngIf="editing"
+        type="button"
+        class="bw__menu-btn"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-label="Opciones del bloque">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
+        </svg>
+      </button>
+
+      <div class="bw__menu" *ngIf="editing && menuOpen()" role="menu">
+        <div class="bw__menu-section">
+          <span class="bw__menu-label">Tamaño</span>
+          <div class="bw__menu-sizes">
+            <button
+              *ngFor="let s of manifest.sizes"
+              type="button"
+              class="bw__size-btn"
+              [class.bw__size-btn--active]="s === size"
+              (click)="onResize(s)">
+              {{ s }}
+            </button>
+          </div>
+        </div>
+        <button type="button" class="bw__remove" (click)="onRemove()">
+          Quitar bloque
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="bw__body">
+    <ng-content></ng-content>
+  </div>
+</article>

@@ -1,0 +1,30 @@
+@import 'styles/gali-v2-tokens';
+
+:host { display: block; height: 100%; overflow: hidden; }
+
+.shell {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  height: 100%;
+  background: $gv2-bg-deep;
+}
+
+.shell__dock {
+  height: 100%;
+}
+
+.shell__content {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+  // El dock se reubica via su propio CSS (position: fixed bottom).
+  // Reservamos espacio inferior para que no tape contenido.
+  .shell__content { padding-bottom: 60px; }
+}

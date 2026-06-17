@@ -1,0 +1,118 @@
+@import 'styles/gali-v3-tokens';
+
+:host {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  font-family: $gv3-font-body;
+  color: $gv3-text-primary;
+  background: $gv3-bg-cream;
+}
+
+.shell {
+  height: 100%;
+  display: grid;
+  grid-template-rows: $gv3-topbar-h 28px 1fr;
+  overflow: hidden;
+}
+
+.shell__topbar { z-index: 30; }
+.shell__bread { z-index: 25; }
+
+// ============================================
+// BODY GRID — navigator (full 248px) · canvas · rpanel (toggleable)
+// ============================================
+.shell__body {
+  display: grid;
+  // Por default: rpanel colapsado (chip 40px)
+  grid-template-columns: $gv3-navigator-w 1fr $gv3-rpanel-w-collapsed;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  transition: grid-template-columns $gv3-dur-base $gv3-ease-out;
+}
+
+.shell.has-rpanel-open .shell__body {
+  grid-template-columns: $gv3-navigator-w 1fr $gv3-rpanel-w;
+}
+
+.shell__nav { z-index: 20; min-width: 0; overflow: hidden; }
+.shell__rpanel { z-index: 22; min-width: 0; overflow: hidden; }
+
+.shell__main {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  @include gv3-bg-cream-radial;
+}
+
+.shell__canvas {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $gv3-space-5 $gv3-space-6;
+  @include gv3-scrollbar-subtle;
+}
+
+// ============================================
+// RESPONSIVE
+// ============================================
+
+// Laptops 1280-1440px: rpanel un poco más estrecho para dar aire al canvas
+@media (max-width: 1440px) {
+  .shell.has-rpanel-open .shell__body {
+    grid-template-columns: $gv3-navigator-w 1fr 340px;
+  }
+}
+
+// Tablets 1024-1280px: rpanel auto-colapsado, canvas máx prioridad
+@media (max-width: 1280px) {
+  .shell__body {
+    grid-template-columns: 220px 1fr $gv3-rpanel-w-collapsed;
+  }
+  .shell.has-rpanel-open .shell__body {
+    grid-template-columns: 220px 1fr 320px;
+  }
+}
+
+// Tablets pequeñas 768-1024px: navigator se reduce, rpanel overlay cuando abierto
+@media (max-width: 1024px) {
+  .shell__body {
+    grid-template-columns: 200px 1fr $gv3-rpanel-w-collapsed;
+  }
+  .shell.has-rpanel-open .shell__body {
+    grid-template-columns: 200px 1fr 0;
+  }
+  .shell.has-rpanel-open .shell__rpanel {
+    position: absolute;
+    top: calc(#{$gv3-topbar-h} + 28px);
+    right: 0;
+    height: calc(100% - #{$gv3-topbar-h} - 28px);
+    width: 360px;
+    box-shadow: -8px 0 32px rgba(60, 30, 10, 0.12);
+  }
+  .shell__canvas {
+    padding: $gv3-space-4 $gv3-space-5;
+  }
+}
+
+// Mobile < 768px: navigator collapsed a chip + rpanel siempre overlay
+@media (max-width: 768px) {
+  .shell__body {
+    grid-template-columns: 0 1fr $gv3-rpanel-w-collapsed;
+  }
+  .shell.has-rpanel-open .shell__body {
+    grid-template-columns: 0 1fr 0;
+  }
+  .shell__nav {
+    display: none;
+  }
+  .shell.has-rpanel-open .shell__rpanel {
+    width: 100vw;
+    max-width: 380px;
+  }
+  .shell__canvas {
+    padding: $gv3-space-3 $gv3-space-4;
+  }
+}

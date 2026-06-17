@@ -1,0 +1,86 @@
+{
+  "perfilJugador": {
+    "nombre": "Alejandra",
+    "nivel": "operador",
+    "puntos_totales": 1840,
+    "racha_dias": 12,
+    "racha_max": 18,
+    "ultima_actividad": "hace 2 horas",
+    "rank_cohorte": 23,
+    "cohorte_total": 312,
+    "siguiente_insignia": "Estratega de Ángulos"
+  },
+  "insignias_ganadas": [
+    { "id": "ins-1", "nombre": "Primera venta", "icon": "🎯", "fecha": "2026-04-12", "rara": false },
+    { "id": "ins-2", "nombre": "ROAS 2x sostenido", "icon": "📈", "fecha": "2026-04-28", "rara": false },
+    { "id": "ins-3", "nombre": "10 días seguidos activa", "icon": "🔥", "fecha": "2026-05-08", "rara": false },
+    { "id": "ins-4", "nombre": "Primera escala", "icon": "🚀", "fecha": "2026-05-15", "rara": false },
+    { "id": "ins-5", "nombre": "Vigilante instalado", "icon": "🛡", "fecha": "2026-05-18", "rara": false },
+    { "id": "ins-6", "nombre": "Top 25 de tu cohorte", "icon": "🏆", "fecha": "2026-05-22", "rara": true }
+  ],
+  "insignias_proximas": [
+    { "id": "ins-p1", "nombre": "Estratega de Ángulos", "icon": "🎨", "descripcion": "Prueba 3 ángulos distintos en un producto", "progreso": 67 },
+    { "id": "ins-p2", "nombre": "Automatizador", "icon": "⚡", "descripcion": "Configura 5 flows activos", "progreso": 80 },
+    { "id": "ins-p3", "nombre": "Maestro WA", "icon": "💬", "descripcion": "Procesa 50 pedidos por WhatsApp", "progreso": 12 }
+  ],
+  "retos_diarios": [
+    { "id": "r-d1", "titulo": "Revisa tu campaña Collar GPS", "descripcion": "Mira ROAS, CTR y aplica una optimización si corresponde.", "puntos": 30, "completado": true, "deadline": "hoy 23:59" },
+    { "id": "r-d2", "titulo": "Renueva 1 creative con fatiga", "descripcion": "Tu Video B lleva 14 días — genera variación con Gali.", "puntos": 50, "completado": false, "deadline": "hoy 23:59", "ruta": "/gali-v3/artifact/landing/land-1" },
+    { "id": "r-d3", "titulo": "Resuelve 1 novedad crítica", "descripcion": "1 pedido espera tu decisión en triage.", "puntos": 40, "completado": false, "deadline": "hoy 23:59", "ruta": "/gali-v3/dropi/pedidos" },
+    { "id": "r-d4", "titulo": "Explora 1 producto en alza", "descripcion": "Caza productos tiene 10 hallazgos nuevos hoy.", "puntos": 20, "completado": false, "deadline": "hoy 23:59", "ruta": "/gali-v3/dropi/caza-productos" }
+  ],
+  "retos_semanales": [
+    { "id": "r-s1", "titulo": "Llega a ROAS 3.0x sostenido", "descripcion": "Mantén el ROAS del proyecto Collar GPS arriba de 3x por 72h.", "puntos": 200, "progreso": 93, "deadline": "domingo 23:59", "cohorte_completaron": 28 },
+    { "id": "r-s2", "titulo": "Configura 1 automatización nueva", "descripcion": "Builder o plantilla del mercado.", "puntos": 100, "progreso": 50, "deadline": "domingo 23:59", "ruta": "/gali-v3/builder", "cohorte_completaron": 47 },
+    { "id": "r-s3", "titulo": "Activa el agente Vigilante anti-baneo", "descripcion": "Para que revise tus creatives antes de publicar.", "puntos": 80, "progreso": 100, "completado": true, "deadline": "domingo 23:59", "cohorte_completaron": 89 },
+    { "id": "r-s4", "titulo": "Atiende 10 pedidos en menos de 2h", "descripcion": "Velocidad de respuesta marca diferencia en NPS.", "puntos": 120, "progreso": 70, "deadline": "domingo 23:59", "cohorte_completaron": 31 }
+  ],
+  "misiones_largas": [
+    {
+      "id": "m-l1",
+      "titulo": "Escala tu primer producto a $5M/mes",
+      "descripcion": "Tu Collar GPS facturó $1.2M este mes. La meta: llegar a $5M sostenido por 4 semanas.",
+      "puntos": 1500,
+      "progreso": 24,
+      "deadline": "30 días",
+      "checkpoints": [
+        { "label": "$1M sostenido 1 semana", "done": true },
+        { "label": "$2M sostenido 1 semana", "done": false },
+        { "label": "$3M sostenido 1 semana", "done": false },
+        { "label": "$5M sostenido 4 semanas", "done": false }
+      ],
+      "razon_gali": "Tu nicho y tu margen lo permiten. Necesitas escalar presupuesto + expandir ciudades."
+    },
+    {
+      "id": "m-l2",
+      "titulo": "Diversifica con 2 productos más",
+      "descripcion": "Un solo producto es riesgo. Agrega 2 más complementarios.",
+      "puntos": 800,
+      "progreso": 0,
+      "deadline": "60 días",
+      "checkpoints": [
+        { "label": "Producto #2 lanzado con ROAS 2x+", "done": false },
+        { "label": "Producto #3 lanzado", "done": false }
+      ],
+      "razon_gali": "Tienes margen mental para 2 más. Bandas elásticas y cargadores funcionan para tu audiencia."
+    }
+  ],
+  "lider_comunidad": {
+    "id": "lider-virtual",
+    "nombre": "Juan Felipe (virtual)",
+    "icon": "👤",
+    "tagline": "Modelo IA del Top 1 dropshipper de Dropi",
+    "descripcion": "Aprendí de las decisiones de Juan Felipe en sus últimos 2 años. Respondo como él lo haría, con sus razones y experiencia.",
+    "activo": false,
+    "ejemplo_consejo": "Vi tu ROAS en 2.8x. Cuando yo estaba ahí en abril 2025, lo primero que hice fue cambiar el horario de publicación de 9am a 7pm. Eso solo me subió a 3.4x. ¿Quieres probar?",
+    "ratings_dropshippers": 4.7,
+    "consultas_resueltas": 1284
+  },
+  "cohorte_top": [
+    { "rank": 1, "nombre": "María L.", "puntos": 3450, "ciudad": "Bogotá" },
+    { "rank": 2, "nombre": "Andrés V.", "puntos": 3120, "ciudad": "Medellín" },
+    { "rank": 3, "nombre": "Carlos P.", "puntos": 2890, "ciudad": "Cali" },
+    { "rank": 23, "nombre": "Alejandra (tú)", "puntos": 1840, "ciudad": "Bogotá", "yo": true },
+    { "rank": 24, "nombre": "Lina R.", "puntos": 1830, "ciudad": "Medellín" }
+  ]
+}

@@ -1,0 +1,125 @@
+@import '../shared/dropi-page-shell';
+
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.validador-page {
+  @include dropi-page-shell;
+  overflow-y: auto;
+
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: $size-3;
+  }
+
+  &__filters {
+    display: flex;
+    align-items: flex-end;
+    gap: $size-3;
+  }
+
+  &__select {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 151px;
+
+    label {
+      font-family: $font-primary;
+      font-size: $font-xs;
+      color: $gray-500;
+    }
+
+    select {
+      height: 40px;
+      padding: 0 $size-3;
+      border: 1px solid $gray-200;
+      border-radius: $radius-lg;
+      font-family: $font-primary;
+      font-size: $font-sm;
+      background: $white;
+      color: $gray-700;
+    }
+  }
+
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: $size-4;
+    margin-top: $size-3;
+  }
+}
+
+.address-card {
+  height: 135px; // Figma Tarjeta height
+  padding: $size-4;
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  background: $white;
+  box-shadow: $shadow-small;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $size-3;
+
+    strong {
+      font-family: $font-primary;
+      font-size: $font-base;
+      color: $gray-700;
+    }
+  }
+
+  &__location {
+    margin: 0;
+    font-size: $font-sm;
+    color: $gray-500;
+  }
+
+  &__address {
+    margin: 0;
+    font-size: $font-sm;
+    color: $gray-600;
+  }
+
+  &__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: $font-xs;
+    color: $gray-400;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $size-2;
+
+    button {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      color: $gray-500;
+      cursor: pointer;
+      border-radius: $radius-md;
+
+      &:hover {
+        color: $primary-600;
+        background: $gray-50;
+      }
+    }
+  }
+}

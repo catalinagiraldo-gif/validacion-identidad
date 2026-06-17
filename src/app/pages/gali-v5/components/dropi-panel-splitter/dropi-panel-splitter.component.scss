@@ -1,0 +1,58 @@
+:host {
+  display: block;
+  grid-column: 3;
+  grid-row: 1;
+  width: 8px;
+  height: 100%;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.splitter {
+  width: 100%;
+  height: 100%;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 97, 2, 0.08);
+
+    .splitter__grip span {
+      background: #ff6102;
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    background: rgba(255, 97, 2, 0.15);
+  }
+
+  &__grip {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: center;
+
+    span {
+      display: block;
+      width: 2px;
+      height: 14px;
+      border-radius: 2px;
+      background: #d1d5db;
+      opacity: 0.7;
+      transition: all 0.15s ease;
+    }
+  }
+}
+
+// Global: previene selección de texto durante resize
+:global(body.is-resizing) {
+  user-select: none;
+  cursor: col-resize !important;
+  * { cursor: col-resize !important; }
+}

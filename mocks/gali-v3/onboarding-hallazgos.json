@@ -1,0 +1,42 @@
+{
+  "hallazgos": [
+    {
+      "icono": "🛒",
+      "titulo": "12 pedidos hoy — 3 en novedad crítica",
+      "descripcion": "Coordinadora con 12% de novedad esta semana (tu umbral: 8%).",
+      "accion_label": "Ver pedidos",
+      "target_route": "/gali-v3/dropi/pedidos",
+      "confianza": 0.92
+    },
+    {
+      "icono": "📣",
+      "titulo": "CTR cayó 40% en Banner B",
+      "descripcion": "Gali ya pausó Video B y activó Video A — resultado visible en panel.",
+      "accion_label": "Ver campaña",
+      "target_route": "/gali-v3/proyecto/collar-gps-2026",
+      "confianza": 0.88
+    },
+    {
+      "icono": "📦",
+      "titulo": "Proveedor PetStore — stock OK (847 uds)",
+      "descripcion": "Precio estable $28.500 · cumplimiento 96% este mes.",
+      "accion_label": "Ver proveedor",
+      "target_route": "/gali-v3/dropi/proveedores",
+      "confianza": 0.85
+    },
+    {
+      "icono": "💰",
+      "titulo": "Ganancia neta $411k esta semana",
+      "descripcion": "ROAS real 1.93x (no 2.8x) — margen cayó 4 pts por novedades Cali.",
+      "accion_label": "Ver P&L",
+      "target_route": "/gali-v3/vista/operacion-hoy",
+      "confianza": 0.79
+    }
+  ],
+  "checklist": [
+    "Revisa que tus pedidos fluyan",
+    "Monitorea tus campañas",
+    "Alerta si un proveedor falla",
+    "Ejecuta lo que le pidas en 1 mensaje"
+  ]
+}

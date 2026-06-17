@@ -1,0 +1,48 @@
+{
+  "reglas": [
+    {
+      "id": "rule-001", "nombre": "Auto-pausa CTR bajo",
+      "agente": "Roax", "estado": "activa",
+      "trigger": "CTR < 0.8% por 48h", "accion": "Pausar campaña",
+      "notificacion": "Notificarme con diagnóstico",
+      "ejecuciones": 4, "ultima_ejecucion": "hace 2 días",
+      "desde_skill": "sk-001"
+    },
+    {
+      "id": "rule-002", "nombre": "Prepago zona rural",
+      "agente": "Chatea Pro", "estado": "activa",
+      "trigger": "Municipio en lista_rural", "accion": "Solicitar anticipo 50%",
+      "notificacion": "No notificar (ejecutar y reportar)",
+      "ejecuciones": 12, "ultima_ejecucion": "hace 3 horas",
+      "desde_skill": "sk-003"
+    },
+    {
+      "id": "rule-003", "nombre": "Cambio transportadora Cali",
+      "agente": "Vigilante", "estado": "activa",
+      "trigger": "Tasa novedad Cali > 10%", "accion": "Reasignar a Servientrega",
+      "notificacion": "Notificarme qué cambió",
+      "ejecuciones": 7, "ultima_ejecucion": "hoy",
+      "desde_skill": "sk-007"
+    }
+  ],
+  "triggers_disponibles": [
+    { "id": "ctr_bajo", "label": "CTR cae por debajo de", "tipo": "umbral", "agente": "Roax", "unidad": "%" },
+    { "id": "roas_bajo", "label": "ROAS cae por debajo de", "tipo": "umbral", "agente": "Roax", "unidad": "x" },
+    { "id": "roas_alto", "label": "ROAS supera", "tipo": "umbral", "agente": "Roax", "unidad": "x" },
+    { "id": "frecuencia_alta", "label": "Frecuencia supera", "tipo": "umbral", "agente": "Roax", "unidad": "x" },
+    { "id": "novedad_pct", "label": "Tasa de novedad supera", "tipo": "umbral", "agente": "Vigilante", "unidad": "%" },
+    { "id": "zona_rural", "label": "Municipio en lista rural", "tipo": "condicion", "agente": "Chatea Pro", "unidad": null },
+    { "id": "pedido_sin_confirmar", "label": "Pedido sin confirmar por más de", "tipo": "tiempo", "agente": "Chatea Pro", "unidad": "h" },
+    { "id": "stock_bajo", "label": "Stock del proveedor cae por debajo de", "tipo": "umbral", "agente": "ADA Spy", "unidad": "unidades" },
+    { "id": "saldo_bajo", "label": "Saldo en wallet cae por debajo de", "tipo": "umbral", "agente": "Financiero", "unidad": "COP" }
+  ],
+  "acciones_disponibles": [
+    { "id": "pausar_campaña", "label": "Pausar campaña", "agente": "Roax", "requiere_aprobacion": false },
+    { "id": "escalar_presupuesto", "label": "Aumentar presupuesto", "agente": "Roax", "requiere_aprobacion": false },
+    { "id": "activar_creative", "label": "Activar creative alternativo", "agente": "Roax", "requiere_aprobacion": false },
+    { "id": "solicitar_anticipo", "label": "Solicitar anticipo al cliente", "agente": "Chatea Pro", "requiere_aprobacion": false },
+    { "id": "reasignar_transportadora", "label": "Reasignar transportadora", "agente": "Vigilante", "requiere_aprobacion": false },
+    { "id": "notificar_usuario", "label": "Notificarme con diagnóstico", "agente": "Gali", "requiere_aprobacion": false },
+    { "id": "pedir_aprobacion", "label": "Pedir mi aprobación antes de actuar", "agente": "Gali", "requiere_aprobacion": true }
+  ]
+}

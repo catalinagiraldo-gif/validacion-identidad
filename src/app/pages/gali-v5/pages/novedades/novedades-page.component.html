@@ -1,0 +1,81 @@
+<div class="novedades-page">
+  <dropi-titulos title="Novedades" [breadcrumbs="breadcrumbs" />
+
+  <!-- ✦ GALI CLASSIFICATION BANNER -->
+  <div class="gali-nov-banner">
+    <span class="gali-nov-banner__icon">✦</span>
+    <div class="gali-nov-banner__text">
+      <strong>Gali clasificó {{ rows.length }} novedades</strong>
+      <span>{{ galiSummary.recuperables }} recuperables · {{ galiSummary.irreversibles }} irreversibles · puede resolver {{ galiSummary.puedeResolver }} sin tu intervención</span>
+    </div>
+    <button type="button" class="gali-nov-banner__cta" (click)="goToOperar()">
+      Ver señales en Gali →
+    </button>
+  </div>
+
+  <div class="novedades-page__toolbar">
+    <dropi-button-new label="Acciones" icon="pi-chevron-down" hierarchy="outline" [width]="120" />
+    <dropi-button-new label="Ir al Historial de Novedades" icon="pi-history" hierarchy="secondary" />
+    <dropi-search-oficial
+      placeholder="Buscar novedad"
+      guiaLabel="Guía"
+      [(ngModel)]="searchQuery"
+    />
+  </div>
+
+  <div class="novedades-table-wrap">
+    <table class="novedades-table">
+      <thead>
+        <tr>
+          <th class="novedades-table__th" style="width:90px">#</th>
+          <th class="novedades-table__th" style="width:211px">Fecha de Novedad</th>
+          <th class="novedades-table__th">Datos de la tienda</th>
+          <th class="novedades-table__th">Datos</th>
+          <th class="novedades-table__th" style="width:120px">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows; track row.num) {
+          <tr class="novedades-table__row"
+            [class.novedades-table__row--resolved]="isResolved(row.num)">
+            <td class="novedades-table__td">{{ row.num }}</td>
+            <td class="novedades-table__td">{{ row.fecha }}</td>
+            <td class="novedades-table__td novedades-table__td--multiline">
+              @for (line of row.tienda.split('\n'); track line) {
+                <span>{{ line }}</span>
+              }
+            </td>
+            <td class="novedades-table__td novedades-table__td--multiline">
+              @for (line of row.datos.split('\n'); track line) {
+                <span>{{ line }}</span>
+              }
+              <!-- Gali auto-classification tag -->
+              <span class="nov-tipo-tag" [class]="getTipoClass(getNovedadTipo(row.datos))">
+                {{ getTipoLabel(getNovedadTipo(row.datos)) }}
+              </span>
+            </td>
+            <td class="novedades-table__td">
+              <div class="novedades-table__actions" *ngIf="!isResolved(row.num)">
+                <button type="button" title="Ver"><i class="pi pi-eye"></i></button>
+                <button
+                  *ngIf="getNovedadTipo(row.datos) === 'recuperable'"
+                  type="button"
+                  class="gali-resolve-btn"
+                  title="Dejar que Gali resuelva"
+                  (click)="resolveWithGali(row.num)">
+                  ✦ Gali
+                </button>
+                <button *ngIf="getNovedadTipo(row.datos) !== 'recuperable'" type="button" title="Resolver"><i class="pi pi-check"></i></button>
+              </div>
+              <span *ngIf="isResolved(row.num)" class="nov-resolved-badge">
+                <i class="pi pi-check"></i> Resuelta por Gali
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <dropi-paginator />
+</div>

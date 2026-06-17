@@ -1,0 +1,888 @@
+@import 'styles/gali-v5-tokens';
+
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.cas-page-intro {
+  grid-row: 1;
+  grid-column: 1 / -1;
+  padding: $size-3 $size-6;
+  border-bottom: 1px solid $gray-100;
+  background: $white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $size-6;
+  flex-wrap: wrap;
+
+  &__left { flex: 1; min-width: 200px; }
+
+  &__title {
+    margin: 0 0 4px;
+    font-size: $font-base;
+    font-weight: $font-bold;
+    color: $gray-800;
+  }
+
+  &__text {
+    margin: 0;
+    font-size: $font-sm;
+    color: $gray-500;
+    line-height: 1.4;
+  }
+
+  &__flow {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    flex-shrink: 0;
+  }
+}
+
+.cas-flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: $size-2 $size-3;
+  border-radius: $radius-md;
+  background: $gray-50;
+  border: 1px solid $gray-100;
+  min-width: 90px;
+
+  &--agent {
+    background: rgba(52, 211, 153, 0.07);
+    border-color: rgba(52, 211, 153, 0.25);
+  }
+
+  &--human {
+    background: rgba($primary-500, 0.06);
+    border-color: rgba($primary-500, 0.2);
+  }
+
+  &__icon { font-size: 16px; }
+
+  &__label {
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: $font-semibold;
+    color: $gray-700;
+    text-align: center;
+  }
+
+  &__sub {
+    font-family: $font-primary;
+    font-size: 10px;
+    color: $gray-400;
+    text-align: center;
+  }
+}
+
+.cas-flow-arrow {
+  font-size: $font-sm;
+  color: $gray-300;
+  flex-shrink: 0;
+}
+
+.cas-bandeja {
+  display: grid;
+  grid-template-columns: 360px 1fr 320px;
+  grid-template-rows: auto auto auto auto 1fr;
+  height: 100%;
+  background: $white;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: 300px 1fr;
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+
+  dropi-gali-bar {
+    grid-row: 3;
+    grid-column: 1 / -1;
+  }
+
+  .cas-explainer {
+    grid-row: 2;
+    grid-column: 1 / -1;
+  }
+
+  gali-chip {
+    grid-row: 4;
+    grid-column: 1 / -1;
+    margin: $size-3 $size-4 0;
+  }
+
+  &__inbox {
+    width: auto;
+    grid-row: 5;
+    grid-column: 1;
+    flex-shrink: 0;
+    border-right: 1px solid $gray-100;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  &__inbox-head {
+    padding: $size-4;
+    border-bottom: 1px solid $gray-100;
+
+    h2 {
+      margin: 0 0 $size-3;
+      font-family: $font-primary;
+      font-size: $font-lg;
+      font-weight: $font-bold;
+      color: $gray-700;
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    padding: 0 $size-4;
+    border-bottom: 1px solid $gray-100;
+
+    button {
+      flex: 1;
+      height: 40px;
+      border: none;
+      background: transparent;
+      font-family: $font-primary;
+      font-size: $font-sm;
+      color: $gray-500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+
+      &.active {
+        color: $primary-600;
+        border-bottom-color: $primary-500;
+      }
+    }
+  }
+
+  &__ticket-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: $size-2;
+  }
+
+  &__chat {
+    grid-row: 5;
+    grid-column: 2;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid $gray-100;
+  }
+
+  &__chat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $size-4;
+    border-bottom: 1px solid $gray-100;
+
+    h3 {
+      margin: 0;
+      font-family: $font-primary;
+      font-size: $font-base;
+      font-weight: $font-semibold;
+      color: $gray-700;
+    }
+
+    span {
+      font-size: $font-xs;
+      color: $gray-500;
+    }
+  }
+
+  &__messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: $size-4;
+    display: flex;
+    flex-direction: column;
+    gap: $size-3;
+    background: $gray-50;
+  }
+
+  &__composer {
+    display: flex;
+    gap: $size-2;
+    padding: $size-3 $size-4;
+    border-top: 1px solid $gray-100;
+
+    input {
+      flex: 1;
+      height: 40px;
+      padding: 0 $size-3;
+      border: 1px solid $gray-200;
+      border-radius: $radius-lg;
+      font-family: $font-primary;
+      font-size: $font-sm;
+    }
+
+    button {
+      width: 42px;
+      height: 40px;
+      border: none;
+      border-radius: $radius-lg;
+      background: $primary-500;
+      color: $white;
+      cursor: pointer;
+    }
+  }
+
+  &__pqr {
+    grid-row: 5;
+    grid-column: 3;
+    min-height: 0;
+    overflow-y: auto;
+    padding: $size-4;
+    background: $gray-50;
+    border-left: 1px solid $gray-100;
+  }
+}
+
+.ticket-card {
+  width: 100%;
+  text-align: left;
+  padding: $size-3;
+  border: 1px solid transparent;
+  border-radius: $radius-lg;
+  background: $white;
+  cursor: pointer;
+  margin-bottom: $size-2;
+
+  &:hover {
+    background: $gray-50;
+  }
+
+  &--active {
+    border-color: $primary-500;
+    background: rgba($primary-500, 0.06);
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+
+    strong {
+      font-family: $font-primary;
+      font-size: $font-sm;
+      color: $gray-700;
+    }
+  }
+
+  &__subject {
+    margin: 0 0 4px;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $gray-700;
+  }
+
+  &__meta {
+    margin: 0;
+    font-size: $font-xs;
+    color: $gray-400;
+  }
+}
+
+.chat-msg {
+  max-width: 75%;
+  padding: $size-3;
+  border-radius: $radius-lg;
+  background: $white;
+  box-shadow: $shadow-small;
+
+  &--agent {
+    align-self: flex-start;
+  }
+
+  &:not(&--agent) {
+    align-self: flex-end;
+    background: rgba($primary-500, 0.1);
+  }
+
+  p {
+    margin: 0 0 4px;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-700;
+  }
+
+  time {
+    font-size: $font-xs;
+    color: $gray-400;
+  }
+}
+
+// ── Gali Agent Bar + Chatea Pro chips ──────────────────────────────
+.cas-agent-bar {
+  grid-column: 1 / -1;
+  margin: 0 0 0;
+  border-radius: 0;
+  border-left: none;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.04);
+  position: relative;
+  z-index: 1;
+}
+
+.agent-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+
+  &__left { display: flex; align-items: center; gap: 10px; }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    flex-shrink: 0;
+    animation: agBar-pulse-g 2s infinite;
+  }
+
+  &__identity { display: flex; flex-direction: column; gap: 2px; }
+
+  &__name { font-size: 12px; font-weight: 600; color: #1c1c1e; }
+
+  &__status { font-size: 11px; color: #10b981; }
+
+  &__stats {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__stat {
+    font-size: 12px;
+    color: #6b7280;
+
+    strong { font-weight: 700; color: #1c1c1e; }
+
+    &--ok strong { color: #10b981; }
+    &--warn strong { color: #f59e0b; }
+  }
+
+  &__stat-sep { color: #d1d5db; font-size: 12px; }
+
+  &__cta {
+    padding: 5px 12px;
+    border: 1px solid #10b981;
+    border-radius: 6px;
+    background: transparent;
+    color: #10b981;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+
+    &:hover { background: rgba(16, 185, 129, 0.1); }
+  }
+}
+
+@keyframes agBar-pulse-g {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  50%       { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); }
+}
+
+.ticket-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.chatea-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #6b7280;
+
+  &--managing {
+    background: rgba(255, 97, 2, 0.08);
+    border-color: rgba(255, 97, 2, 0.25);
+    color: #ff6102;
+  }
+
+  &--human {
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.25);
+    color: #d97706;
+  }
+
+  &--resolved {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.25);
+    color: #059669;
+  }
+}
+
+// ── Nuevos estilos CAS ─────────────────────────────────────────────────
+.ticket-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.ticket-card--urgent {
+  border-left: 3px solid #f59e0b !important;
+  background: rgba(245, 158, 11, 0.03);
+}
+
+.cas-bandeja__chat-head-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cas-bandeja__urgent-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #d97706;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 20px;
+  padding: 2px 10px;
+}
+
+.cas-bandeja__gali-action {
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  p { font-size: 12px; color: #6b7280; margin: 0; }
+}
+
+.cas-bandeja__gali-info {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #10b981;
+  padding: 8px 12px;
+  background: rgba(16, 185, 129, 0.06);
+  border-radius: 6px;
+}
+
+.cas-bandeja__btn {
+  padding: 7px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: white;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  .pi { font-size: 12px; }
+
+  &:hover { border-color: #9ca3af; }
+
+  &--primary {
+    background: #ff6102;
+    border-color: #ff6102;
+    color: white;
+    &:hover { background: #e55802; border-color: #e55802; }
+  }
+}
+
+.agent-bar__stat-sep { color: #d1d5db; font-size: 12px; }
+
+.agent-bar__stat--neutral strong { color: #10b981; }
+
+// ── PQR Intelligence Panel ───────────────────────────────────────────
+.pqr-panel__head {
+  margin-bottom: $size-4;
+
+  h4 {
+    margin: 0 0 4px;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-xs;
+    color: $gray-500;
+  }
+}
+
+.pqr-panel__list {
+  display: flex;
+  flex-direction: column;
+  gap: $size-3;
+}
+
+.pqr-card {
+  background: $white;
+  border: 1px solid $gray-200;
+  border-radius: $radius-lg;
+  padding: $size-3;
+  border-left: 3px solid $gray-300;
+
+  &--warn { border-left-color: $warning; background: rgba($warning, 0.04); }
+  &--critical { border-left-color: $error; background: rgba($error, 0.05); }
+  &--ok { border-left-color: $success; }
+
+  &--rising {
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: $size-3;
+      right: $size-3;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: $primary-500;
+      animation: agBar-pulse-g 2s infinite;
+    }
+  }
+
+  &__top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $size-2;
+    margin-bottom: $size-2;
+  }
+
+  &__producto {
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    color: $gray-700;
+  }
+
+  &__tipo {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: $radius-pill;
+    background: $gray-100;
+    color: $gray-600;
+    text-transform: uppercase;
+  }
+
+  &__stats {
+    font-size: $font-xs;
+    color: $gray-600;
+    margin-bottom: $size-2;
+
+    strong { color: $gray-800; }
+  }
+
+  &__trend {
+    margin-left: $size-2;
+    color: $primary-600;
+    font-weight: $font-semibold;
+
+    &--down { color: $success; }
+  }
+
+  &__motivo {
+    margin: 0 0 $size-2;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    color: $gray-700;
+  }
+
+  &__insight {
+    margin: 0 0 $size-2;
+    font-size: $font-xs;
+    color: $gray-600;
+    line-height: 1.45;
+    font-style: italic;
+  }
+
+  &__impacto {
+    margin: 0 0 $size-3;
+    font-size: 10px;
+    color: $gray-500;
+  }
+
+  &__cta {
+    width: 100%;
+    padding: 8px $size-3;
+    border: 1px solid $primary-500;
+    border-radius: $radius-md;
+    background: transparent;
+    color: $primary-600;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: rgba($primary-500, 0.06);
+    }
+  }
+}
+
+// Explainer conceptual: cómo funciona Chatea Pro en el CAS
+.cas-explainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $size-4;
+  padding: $size-3 $size-4;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: $radius-md;
+  flex-wrap: wrap;
+
+  &__flow {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+    flex-wrap: wrap;
+  }
+
+  &__node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-600;
+    min-width: 100px;
+
+    &--agent { color: #0284c7; }
+    &--human { color: $primary-600; }
+
+    strong {
+      display: block;
+      font-size: $font-xs;
+      font-weight: $font-bold;
+    }
+  }
+
+  &__node-icon { font-size: 18px; }
+
+  &__arrow {
+    font-size: $font-sm;
+    color: $gray-400;
+    flex-shrink: 0;
+  }
+
+  &__close {
+    height: 28px;
+    padding: 0 $size-3;
+    border: 1px solid #93c5fd;
+    border-radius: $radius-sm;
+    background: $white;
+    color: #0284c7;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+    &:hover { background: #eff6ff; }
+  }
+}
+
+// ── Ticket category headers ─────────────────────────────────────────────────
+.ticket-category {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $gray-400;
+  position: sticky;
+  top: 0;
+  background: $white;
+  z-index: 1;
+
+  &--urgent { color: #ef4444; }
+  &--waiting { color: $primary-600; }
+  &--resolved { color: #22c55e; }
+
+  &__icon { font-size: 13px; }
+  &__count {
+    margin-left: auto;
+    background: $gray-100;
+    border-radius: 100px;
+    padding: 0 6px;
+    font-size: 10px;
+    color: $gray-600;
+    font-weight: 700;
+  }
+}
+
+.ticket-card--resolved {
+  opacity: 0.7;
+}
+
+// ── Chatea Pro suggested response ───────────────────────────────────────────
+.cas-suggested {
+  margin: 8px 12px;
+  border: 2px solid rgba(#34d399, 0.4);
+  border-radius: 16px;
+  background: rgba(#34d399, 0.04);
+  overflow: hidden;
+  flex-shrink: 0;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid rgba(#34d399, 0.2);
+  }
+
+  &__agent {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(#34d399, 0.9);
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #34d399;
+    animation: dot-pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__edit-btn {
+    border: none;
+    background: rgba(#34d399, 0.12);
+    color: rgba(#34d399, 0.9);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 100px;
+    cursor: pointer;
+    font-family: $font-primary;
+    transition: background 0.15s;
+
+    &:hover { background: rgba(#34d399, 0.22); }
+  }
+
+  &__text {
+    font-size: 13px;
+    color: $gray-700;
+    line-height: 1.6;
+    margin: 0;
+    padding: 10px 14px;
+    font-style: italic;
+  }
+
+  &__editor {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    color: $gray-700;
+    line-height: 1.6;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    resize: vertical;
+    outline: none;
+    font-family: $font-primary;
+  }
+
+  &__footer {
+    display: flex;
+    gap: 8px;
+    padding: 8px 14px 12px;
+  }
+
+  &__send {
+    flex: 1;
+    padding: 8px 14px;
+    background: #34d399;
+    color: $white;
+    border: none;
+    border-radius: $radius-md;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: $font-primary;
+    transition: background 0.15s, box-shadow 0.15s;
+
+    &:hover {
+      background: darken(#34d399, 8%);
+      box-shadow: 0 3px 10px rgba(#34d399, 0.3);
+    }
+  }
+
+  &__skip {
+    padding: 8px 12px;
+    background: transparent;
+    color: $gray-400;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: $font-primary;
+    transition: border-color 0.15s, color 0.15s;
+
+    &:hover { border-color: #ef4444; color: #ef4444; }
+  }
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}

@@ -1,0 +1,105 @@
+{
+  "userProfile": {
+    "nichos": ["mascotas", "tecnología wearables", "skincare"],
+    "productosVendidos": ["Collar GPS", "Reloj Smartwatch", "Mascarilla Facial"],
+    "mejorRoas": "Collar GPS (2.9x)",
+    "ciudadesTop": ["Bogotá", "Medellín", "Cali"]
+  },
+  "productosHistorial": [
+    {
+      "id": "ph1",
+      "nombre": "Rastreador GPS para mochilas",
+      "nicho": "mascotas/viaje",
+      "fitScore": 94,
+      "margen": "42%",
+      "saturacion": "baja",
+      "tendencia": "+280% 30d",
+      "razon": "Complementario a Collar GPS — misma audiencia",
+      "adaMsg": "Tu audiencia ya compra accesorios GPS"
+    },
+    {
+      "id": "ph2",
+      "nombre": "Comedero automático WiFi",
+      "nicho": "mascotas",
+      "fitScore": 89,
+      "margen": "38%",
+      "saturacion": "media",
+      "tendencia": "+180% 30d",
+      "razon": "Bundle natural con Collar GPS",
+      "adaMsg": "Bundle potencial: $62k/pedido promedio combinado"
+    },
+    {
+      "id": "ph3",
+      "nombre": "Smartwatch Fitness Band v3",
+      "nicho": "tecnología wearables",
+      "fitScore": 85,
+      "margen": "44%",
+      "saturacion": "baja",
+      "tendencia": "+320% 30d",
+      "razon": "Actualización del Smartwatch Pro",
+      "adaMsg": "Tu audiencia busca versión más nueva"
+    },
+    {
+      "id": "ph4",
+      "nombre": "Collar antipulgas premium",
+      "nicho": "mascotas",
+      "fitScore": 82,
+      "margen": "51%",
+      "saturacion": "baja",
+      "tendencia": "+95% 30d",
+      "razon": "Mismo nicho mascotas — cross-sell",
+      "adaMsg": "47 ventas/semana en Collar GPS — audiencia caliente"
+    },
+    {
+      "id": "ph5",
+      "nombre": "Serum vitamina C coreano",
+      "nicho": "skincare",
+      "fitScore": 78,
+      "margen": "55%",
+      "saturacion": "media",
+      "tendencia": "+210% 30d",
+      "razon": "Complemento K-Beauty activo",
+      "adaMsg": "Skincare K-Beauty ROAS 2.1x — expande portafolio"
+    }
+  ],
+  "problemSearchExample": {
+    "query": "personas que no duermen bien por estrés",
+    "problemaRaiz": "Insomnio / ansiedad nocturna",
+    "audienciaEstimada": "2.3M personas en Colombia",
+    "nodos": [
+      {
+        "problema": "No pueden dormir bien",
+        "productos": [
+          { "nombre": "Almohada ergonómica cervical", "margen": "45%", "saturacion": "baja" },
+          { "nombre": "Difusor aromaterapia ultrasónico", "margen": "52%", "saturacion": "baja" },
+          { "nombre": "Máscara de ojos para dormir", "margen": "61%", "saturacion": "muy baja" }
+        ],
+        "angulos": ["Para quien trabaja desde casa", "Para mamás que no descansan", "Para estudiantes nocturnos"],
+        "conexion": null
+      },
+      {
+        "problema": "Fatiga visual (pantallas)",
+        "conexion": "misma audiencia — problema relacionado",
+        "productos": [
+          { "nombre": "Lentes bloqueadores luz azul", "margen": "58%", "saturacion": "media" },
+          { "nombre": "Lámpara LED escritorio sin parpadeo", "margen": "41%", "saturacion": "baja" }
+        ],
+        "angulos": ["Para freelancers", "Para gamer nocturno"]
+      },
+      {
+        "problema": "Estrés en el trabajo",
+        "conexion": "causa raíz — problema relacionado",
+        "productos": [
+          { "nombre": "Pelota anti-estrés inteligente", "margen": "67%", "saturacion": "muy baja" },
+          { "nombre": "Masajeador portátil cuello", "margen": "48%", "saturacion": "baja" }
+        ],
+        "angulos": ["Para ejecutivos", "Para empleados con trabajo remoto"]
+      }
+    ],
+    "perfilesAudiencia": [
+      { "perfil": "Mamá trabajadora 28-40", "problema": "Insomnio por múltiples responsabilidades" },
+      { "perfil": "Freelancer 22-35", "problema": "Ansiedad + pantallas" },
+      { "perfil": "Adulto mayor 55+", "problema": "Insomnio por cambios hormonales" }
+    ]
+  }
+}

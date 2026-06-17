@@ -1,0 +1,292 @@
+@import '../../../../../styles/gali-os-tokens';
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.skill-builder {
+  background: $os-surface;
+  border: 1px solid $os-border;
+  border-radius: $os-radius-lg;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $os-3;
+    padding: $os-4 $os-5;
+    border-bottom: 1px solid $os-border;
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: $os-3;
+  }
+
+  &__status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    &--on {
+      background: $os-ok;
+      box-shadow: 0 0 6px $os-ok;
+      animation: skillPulse 2s ease infinite;
+    }
+    &--off { background: $os-text-muted; }
+    &--exec {
+      background: $os-accent;
+      animation: skillPulse 0.8s ease infinite;
+    }
+  }
+
+  &__name {
+    font-family: $os-font-display;
+    font-size: 16px;
+    font-weight: 700;
+    color: $os-text-primary;
+    margin: 0;
+  }
+
+  &__header-actions {
+    display: flex;
+    gap: $os-2;
+  }
+
+  &__btn {
+    font-family: $os-font-body;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: $os-radius-sm;
+    cursor: pointer;
+    transition: all $os-transition;
+    border: 1px solid $os-border-strong;
+    background: rgba(0, 0, 0, 0.03);
+    color: $os-text-secondary;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.06);
+      color: $os-text-primary;
+    }
+
+    &--ghost {
+      border-color: $os-border;
+      background: transparent;
+      color: $os-text-muted;
+    }
+
+    &--accent {
+      background: $os-accent-dim;
+      border-color: rgba($os-accent, 0.4);
+      color: $os-accent-text;
+
+      &:hover { background: rgba($os-accent, 0.25); }
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: $os-2;
+    padding: $os-3 $os-5;
+    border-top: 1px solid $os-border;
+    background: rgba(0, 0, 0, 0.02);
+  }
+}
+
+// ── Pipeline ─────────────────────────────────────────────────────────────
+.skill-pipeline {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: $os-5;
+  border-bottom: 1px solid $os-border;
+  overflow-x: auto;
+  background: rgba(0, 0, 0, 0.02);
+
+  &__step {
+    display: flex;
+    flex-direction: column;
+    gap: $os-2;
+    min-width: 140px;
+  }
+
+  &__label {
+    font-family: $os-font-mono;
+    font-size: 9px;
+    font-weight: 700;
+    color: $os-text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__block {
+    flex: 1;
+    padding: $os-3;
+    border-radius: $os-radius-sm;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border: 1px solid;
+
+    &--trigger {
+      background: rgba($os-info, 0.08);
+      border-color: rgba($os-info, 0.25);
+    }
+    &--condition {
+      background: rgba($os-warn, 0.06);
+      border-color: rgba($os-warn, 0.2);
+    }
+    &--action {
+      background: rgba($os-ok, 0.06);
+      border-color: rgba($os-ok, 0.2);
+    }
+    &--notif {
+      background: rgba(0, 0, 0, 0.02);
+      border-color: $os-border;
+    }
+  }
+
+  &__agent {
+    font-family: $os-font-body;
+    font-size: 12px;
+    font-weight: 600;
+    color: $os-text-primary;
+  }
+
+  &__metric {
+    font-family: $os-font-mono;
+    font-size: 12px;
+    font-weight: 700;
+    color: $os-warn;
+  }
+
+  &__action-label {
+    font-family: $os-font-body;
+    font-size: 12px;
+    font-weight: 600;
+    color: $os-ok;
+  }
+
+  &__sub {
+    font-family: $os-font-body;
+    font-size: 10px;
+    color: $os-text-muted;
+    line-height: 1.4;
+  }
+
+  &__arrow {
+    display: flex;
+    align-items: center;
+    padding: 0 $os-2;
+    color: $os-text-muted;
+    font-size: 14px;
+    align-self: center;
+    margin-top: 18px; // offset for the label above
+    flex-shrink: 0;
+  }
+}
+
+// ── Status bar ────────────────────────────────────────────────────────────
+.skill-statusbar {
+  display: flex;
+  align-items: center;
+  gap: $os-3;
+  padding: $os-2 $os-5;
+  border-bottom: 1px solid $os-border;
+  background: rgba(0, 0, 0, 0.02);
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: $os-font-body;
+    font-size: 11px;
+    color: $os-text-muted;
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+
+    &--on { background: $os-ok; }
+    &--off { background: $os-text-muted; }
+  }
+
+  &__sep {
+    color: $os-border-strong;
+  }
+}
+
+// ── History table ─────────────────────────────────────────────────────────
+.skill-history {
+  padding: $os-4 $os-5;
+  display: flex;
+  flex-direction: column;
+  gap: $os-3;
+
+  &__title {
+    font-family: $os-font-body;
+    font-size: 11px;
+    font-weight: 700;
+    color: $os-text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0;
+  }
+
+  &__table {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 120px 100px 1fr 90px;
+    gap: $os-3;
+    align-items: center;
+    padding: $os-2 $os-3;
+    border-radius: $os-1;
+    font-family: $os-font-mono;
+    font-size: 11px;
+    color: $os-text-muted;
+
+    &--header {
+      font-family: $os-font-body;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding-bottom: $os-1;
+      color: $os-text-muted;
+    }
+
+    &--ok {
+      background: rgba($os-ok, 0.04);
+      .skill-history__status { color: $os-ok; }
+      .skill-history__impacto { color: $os-ok; font-weight: 600; }
+      .skill-history__detalle { color: $os-text-secondary; }
+    }
+
+    &--skip {
+      opacity: 0.5;
+    }
+  }
+
+  &__fecha { color: $os-text-muted; }
+}
+
+@keyframes skillPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

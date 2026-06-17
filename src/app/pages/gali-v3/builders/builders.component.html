@@ -1,0 +1,165 @@
+<article class="builders">
+  <!-- HERO: identidad del builder anonimizada + tier + ganancias -->
+  <header class="builders__hero">
+    <div class="builders__hero-main">
+      <span class="builders__tag">
+        <span class="builders__sparkle" aria-hidden="true">✦</span>
+        Programa de Builders · Gali V4
+      </span>
+      <h1>
+        Hola, <em>{{ data.perfil.nombre_anonimo }}</em>.
+      </h1>
+      <p class="builders__lead">
+        Has publicado <strong>{{ data.stats.items_publicados }} items</strong> que otros dropshippers usan
+        en su día a día. {{ data.stats.instalaciones_acumuladas }} instalaciones acumuladas ·
+        rating promedio <strong>★ {{ data.stats.rating_promedio }}</strong>.
+      </p>
+      <ul class="builders__hero-meta">
+        <li>{{ data.perfil.miembro_desde }}</li>
+        <li>{{ data.perfil.ciudad_base }}</li>
+        <li>{{ data.perfil.destacado_en }}</li>
+      </ul>
+    </div>
+
+    <aside class="builders__tier">
+      <span class="builders__tier-label">Tier actual</span>
+      <strong class="builders__tier-name">{{ data.perfil.tier }}</strong>
+      <div class="builders__tier-bar">
+        <span class="builders__tier-fill" [style.width.%]="pctTier()"></span>
+      </div>
+      <span class="builders__tier-progress">
+        {{ pctTier() }}% al siguiente nivel ({{ data.next_tier_requirements.tier_destino }})
+      </span>
+      <div class="builders__earnings">
+        <div>
+          <strong>{{ formatCop(data.perfil.earnings_lifetime_cop) }}</strong>
+          <span>ganado lifetime</span>
+        </div>
+        <div>
+          <strong>{{ formatCop(data.perfil.earnings_pendientes_cop) }}</strong>
+          <span>pendiente este mes</span>
+        </div>
+      </div>
+      <span class="builders__split">Revenue share: {{ data.perfil.split_revenue_share }}</span>
+    </aside>
+  </header>
+
+  <!-- STATS row -->
+  <section class="builders__stats">
+    <article *ngFor="let stat of [
+      { l: 'Items publicados', v: data.stats.items_publicados, i: '✦' },
+      { l: 'Instalaciones', v: data.stats.instalaciones_acumuladas, i: '⬇' },
+      { l: 'Rating promedio', v: '★ ' + data.stats.rating_promedio, i: '⭐' },
+      { l: 'Ranking global', v: '#' + data.stats.ranking_global, i: '🌎' },
+      { l: 'Ranking nicho', v: '#' + data.stats.ranking_nicho, i: '🎯' },
+      { l: 'Trending score', v: data.stats.trending_score, i: '🔥' }
+    ]">
+      <span class="builders__stat-icon">{{ stat.i }}</span>
+      <strong>{{ stat.v }}</strong>
+      <span>{{ stat.l }}</span>
+    </article>
+  </section>
+
+  <!-- BADGES -->
+  <section class="builders__section">
+    <header>
+      <h2>Badges desbloqueados</h2>
+      <span>{{ data.badges.length }} de 12 totales</span>
+    </header>
+    <ul class="builders__badges">
+      <li *ngFor="let b of data.badges" class="builders__badge" [attr.data-tier]="b.tier">
+        <span class="builders__badge-icon">{{ b.icon }}</span>
+        <div>
+          <strong>{{ b.label }}</strong>
+          <span>{{ b.fecha }}</span>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ITEMS PUBLICADOS -->
+  <section class="builders__section">
+    <header>
+      <h2>Items publicados</h2>
+      <a routerLink="/gali-v4/mercado" [queryParams]="{ tab: 'bloques' }">Ver en mercado →</a>
+    </header>
+    <table class="builders__items">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Tipo</th>
+          <th>Instalaciones</th>
+          <th>Rating</th>
+          <th>Ganancias</th>
+          <th>Publicado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data.items_publicados">
+          <td><strong>{{ item.titulo }}</strong></td>
+          <td>
+            <span class="builders__chip" [attr.data-tipo]="item.tipo">
+              {{ item.tipo === 'bloque' ? '✦ bloque' : '⚡ recipe' }}
+            </span>
+          </td>
+          <td>{{ item.instalaciones }}</td>
+          <td>★ {{ item.rating }}</td>
+          <td>{{ formatCop(item.ganancias_lifetime_cop) }}</td>
+          <td>{{ item.publicado_hace }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- INSTALACIONES RECIENTES -->
+  <section class="builders__section">
+    <header>
+      <h2>Instalaciones recientes</h2>
+      <span>actualizado en vivo</span>
+    </header>
+    <ul class="builders__recent">
+      <li *ngFor="let r of data.recent_installs">
+        <div>
+          <strong>{{ r.user }}</strong>
+          <span>instaló "{{ r.item_titulo }}"</span>
+        </div>
+        <div class="builders__recent-meta">
+          <span>{{ r.hace }}</span>
+          <strong>+{{ formatCop(r.fee_cop) }}</strong>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- NEXT TIER -->
+  <section class="builders__section builders__next-tier">
+    <header>
+      <h2>
+        <span class="builders__sparkle">✦</span>
+        Camino a {{ data.next_tier_requirements.tier_destino }}
+      </h2>
+    </header>
+    <p class="builders__next-benefit">{{ data.next_tier_requirements.benefit_oro }}</p>
+    <ul class="builders__requisitos">
+      <li *ngFor="let req of data.next_tier_requirements.requisitos"
+          [class.is-completed]="req.completado"
+          [class.is-casi]="req.casi">
+        <div class="builders__req-head">
+          <strong>{{ req.label }}</strong>
+          <span>{{ req.actual }} / {{ req.objetivo }}</span>
+        </div>
+        <div class="builders__req-bar">
+          <span class="builders__req-fill" [style.width.%]="pctRequisito(req.actual, req.objetivo)"></span>
+        </div>
+      </li>
+    </ul>
+    <footer class="builders__cta-foot">
+      <a routerLink="/gali-v4/bloque-builder" class="builders__cta-primary">
+        <span aria-hidden="true">✦</span> Construir + publicar otro bloque
+      </a>
+      <a routerLink="/gali-v4/builder" class="builders__cta-secondary">
+        ⚡ Compartir una recipe
+      </a>
+    </footer>
+  </section>
+</article>

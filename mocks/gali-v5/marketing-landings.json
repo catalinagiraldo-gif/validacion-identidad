@@ -1,0 +1,94 @@
+{
+  "pages": [
+    {
+      "id": "lp-001",
+      "producto": "Robot de Limpieza Inteligente",
+      "fecha": "01/08/2025 11:14am",
+      "origenUrl": "https://dropi.co/p/robot-limpieza",
+      "estado": "Creada",
+      "exportaciones": 1,
+      "imagen": "assets/images/dropi-baseline/catalog/product-1.png"
+    },
+    {
+      "id": "lp-002",
+      "producto": "Collar GPS para Mascotas",
+      "fecha": "31/07/2025 3:22pm",
+      "origenUrl": "https://dropi.co/p/collar-gps",
+      "estado": "Creada",
+      "exportaciones": 3,
+      "imagen": "assets/images/dropi-baseline/catalog/product-2.png"
+    },
+    {
+      "id": "lp-003",
+      "producto": "Kit Skincare Premium",
+      "fecha": "30/07/2025 9:45am",
+      "origenUrl": "https://dropi.co/p/skincare-kit",
+      "estado": "Creada",
+      "exportaciones": 0,
+      "imagen": "assets/images/dropi-baseline/catalog/product-3.png"
+    },
+    {
+      "id": "lp-004",
+      "producto": "Smartwatch TW8 Pro",
+      "fecha": "29/07/2025 2:10pm",
+      "origenUrl": "https://dropi.co/p/smartwatch-tw8",
+      "estado": "Creada",
+      "exportaciones": 5,
+      "imagen": "assets/images/dropi-baseline/catalog/product-4.png"
+    },
+    {
+      "id": "lp-005",
+      "producto": "Audífonos Bluetooth TWS",
+      "fecha": "28/07/2025 4:55pm",
+      "origenUrl": "https://dropi.co/p/audifonos-tws",
+      "estado": "Creada",
+      "exportaciones": 2,
+      "imagen": "assets/images/dropi-baseline/catalog/product-1.png"
+    },
+    {
+      "id": "lp-006",
+      "producto": "Lámpara LED Escritorio",
+      "fecha": "28/07/2025 10:30am",
+      "origenUrl": "https://dropi.co/p/lampara-led",
+      "estado": "Creada",
+      "exportaciones": 1,
+      "imagen": "assets/images/dropi-baseline/catalog/product-2.png"
+    },
+    {
+      "id": "lp-007",
+      "producto": "Organizador de Cocina",
+      "fecha": "27/07/2025 1:15pm",
+      "origenUrl": "https://dropi.co/p/organizador-cocina",
+      "estado": "Creada",
+      "exportaciones": 4,
+      "imagen": "assets/images/dropi-baseline/catalog/product-3.png"
+    },
+    {
+      "id": "lp-008",
+      "producto": "Mochila Antirrobo",
+      "fecha": "27/07/2025 8:00am",
+      "origenUrl": "https://dropi.co/p/mochila-antirrobo",
+      "estado": "Creada",
+      "exportaciones": 0,
+      "imagen": "assets/images/dropi-baseline/catalog/product-4.png"
+    },
+    {
+      "id": "lp-009",
+      "producto": "Mini Proyector HD",
+      "fecha": "26/07/2025 6:40pm",
+      "origenUrl": "https://dropi.co/p/mini-proyector",
+      "estado": "Creada",
+      "exportaciones": 2,
+      "imagen": "assets/images/dropi-baseline/catalog/product-1.png"
+    },
+    {
+      "id": "lp-010",
+      "producto": "Set Herramientas 45 pzas",
+      "fecha": "26/07/2025 11:20am",
+      "origenUrl": "https://dropi.co/p/set-herramientas",
+      "estado": "Creada",
+      "exportaciones": 1,
+      "imagen": "assets/images/dropi-baseline/catalog/product-2.png"
+    }
+  ]
+}

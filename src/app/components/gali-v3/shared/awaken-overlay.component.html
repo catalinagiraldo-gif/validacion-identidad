@@ -1,0 +1,44 @@
+<button class="ao__fab" (click)="toggle()" [class.is-open]="open()" [attr.aria-expanded]="open()" aria-label="Abrir Gali en esta sección">
+  <span class="ao__fab-sparkle">✦</span>
+  <span class="ao__fab-label" *ngIf="!open()">Gali</span>
+</button>
+
+<div class="ao__drawer" *ngIf="open()" role="dialog" [attr.aria-label]="'Gali para ' + section">
+  <header class="ao__head">
+    <span class="ao__sparkle">✦</span>
+    <div>
+      <strong>{{ title }}</strong>
+      <span class="ao__head-sub">Gali en {{ section }}</span>
+    </div>
+    <button class="ao__close" (click)="close()" aria-label="Cerrar">×</button>
+  </header>
+
+  <section class="ao__resumen">
+    <span class="ao__resumen-label">Lo que Gali ve aquí</span>
+    <p>{{ resumen }}</p>
+  </section>
+
+  <section class="ao__suggestions">
+    <span class="ao__suggestions-label">Sugerencias</span>
+    <button *ngFor="let s of suggestions" class="ao__suggestion" (click)="pickSuggestion(s)">
+      <span class="ao__suggestion-icon">{{ s.icon }}</span>
+      <div>
+        <strong>{{ s.label }}</strong>
+        <span>{{ s.meta }}</span>
+      </div>
+      <span class="ao__suggestion-arrow">→</span>
+    </button>
+  </section>
+
+  <section class="ao__chat">
+    <textarea
+      rows="2"
+      placeholder="Pídele a Gali algo específico sobre esta sección..."
+      [value]="draft()"
+      (input)="draft.set($any($event.target).value)"
+      (keydown.enter)="$event.preventDefault(); send()"></textarea>
+    <button class="ao__send" (click)="send()" [disabled]="!draft().trim()">↑ Enviar</button>
+  </section>
+</div>
+
+<div class="ao__backdrop" *ngIf="open()" (click)="close()"></div>

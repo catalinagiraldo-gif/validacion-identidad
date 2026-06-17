@@ -1,0 +1,108 @@
+@import '../../../../../styles/variables';
+
+.gali-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: $size-2;
+  padding: $size-2 $size-3;
+  border-radius: $radius-md;
+  border-left: 3px solid $primary-500;
+  background: rgba($primary-500, 0.1);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  color: $gray-800;
+  max-width: 100%;
+
+  strong {
+    font-weight: 600;
+    color: $gray-900;
+  }
+
+  &__agent {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: $primary-500;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  &__sep {
+    margin: 0 2px;
+    color: $gray-500;
+  }
+
+  &__badge {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: $primary-500;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $primary-500;
+    flex-shrink: 0;
+    animation: galiChipPulse 2s ease-in-out infinite;
+  }
+
+  &__cta {
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: $primary-600;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &--ok {
+    border-left-color: #10b981;
+    background: rgba(16, 185, 129, 0.08);
+  }
+
+  &--warn {
+    border-left-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+  }
+
+  &--critical {
+    border-left-color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+  }
+
+  &--running {
+    border-left-color: $primary-500;
+  }
+}
+
+@keyframes galiChipPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba($primary-500, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba($primary-500, 0);
+  }
+}

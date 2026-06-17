@@ -1,0 +1,850 @@
+@import 'styles/gali-v5-tokens';
+@import './marketing-shared';
+
+:host {
+  @include marketing-page-shell;
+}
+
+.campanas-page {
+  @include marketing-page-inner;
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 148px minmax(0, 1fr);
+    gap: $size-5;
+    align-items: start;
+  }
+
+  &__channels {
+    @include marketing-channel-tabs;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: $size-4;
+    min-width: 0;
+    padding: $size-4;
+    @include marketing-content-card;
+  }
+
+  &__table-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: $radius-md;
+    background: $error;
+    color: $white;
+    cursor: pointer;
+
+    i {
+      font-size: 16px;
+    }
+  }
+
+  &__table-wrap {
+    @include marketing-table-wrap;
+    border: none;
+    box-shadow: none;
+  }
+
+  &__table {
+    @include marketing-table;
+  }
+}
+
+@media (max-width: 900px) {
+  .campanas-page__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .campanas-page__channels {
+    flex-direction: row;
+  }
+}
+
+// ── Roax Agent Bar ──────────────────────────────
+.campanas-agent-bar {
+  margin: 16px 0 0;
+}
+
+.agent-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border-left: 3px solid #ff6102;
+  background: rgba(255, 97, 2, 0.05);
+
+  &__left { display: flex; align-items: center; gap: 10px; }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff6102;
+    flex-shrink: 0;
+    animation: agBar-pulse-o 2s infinite;
+  }
+
+  &__identity { display: flex; flex-direction: column; gap: 2px; }
+
+  &__name { font-size: 12px; font-weight: 600; color: #1c1c1e; }
+
+  &__status { font-size: 11px; color: #ff6102; }
+
+  &__stats {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__stat {
+    font-size: 12px;
+    color: #6b7280;
+
+    &--ok { color: #10b981; }
+    &--warn { color: #f59e0b; }
+  }
+
+  &__stat-sep { color: #d1d5db; }
+
+  &__cta {
+    padding: 5px 12px;
+    border: 1px solid #ff6102;
+    border-radius: 6px;
+    background: transparent;
+    color: #ff6102;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+
+    &:hover { background: rgba(255, 97, 2, 0.08); }
+  }
+}
+
+// ── Campaign flow stepper ─────────────────────────────────────────
+.campanas-flow-stepper {
+  background: white;
+  border: 1px solid $gray-200;
+  border-radius: 10px;
+  padding: $size-3 $size-4;
+  margin-bottom: $size-4;
+
+  &__label {
+    font-size: 10px;
+    font-weight: 700;
+    color: $gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: $size-3;
+  }
+
+  &__steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+}
+
+.camp-flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: $size-2;
+  background: none;
+  border: none;
+  cursor: pointer;
+  min-width: 80px;
+  text-align: center;
+  border-radius: 8px;
+  transition: background 0.15s;
+
+  &:hover { background: $gray-50; }
+
+  &__num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid $gray-300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: $gray-500;
+    background: white;
+
+    .camp-flow-step--done & { background: $primary-500; border-color: $primary-500; color: white; font-size: 12px; }
+    .camp-flow-step--active & { border-color: $primary-500; color: $primary-500; }
+  }
+
+  &__name {
+    font-size: 11px;
+    font-weight: 700;
+    color: $gray-500;
+
+    .camp-flow-step--done &  { color: $primary-600; }
+    .camp-flow-step--active & { color: $gray-800; }
+  }
+
+  &__sub {
+    font-size: 9px;
+    color: $gray-400;
+
+    .camp-flow-step--active & { color: $primary-500; font-weight: 600; }
+  }
+}
+
+.camp-flow-stepper__connector {
+  flex: 1;
+  height: 2px;
+  background: $gray-200;
+  margin-bottom: 18px;
+
+  &--done { background: $primary-500; }
+}
+
+@keyframes agBar-pulse-o {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 97, 2, 0.4); }
+  50%       { box-shadow: 0 0 0 4px rgba(255, 97, 2, 0); }
+}
+
+// ── Skill interconnection banner ──────────────────────────────────────────
+.campanas-skill-banner {
+  display: flex;
+  align-items: center;
+  gap: $size-3;
+  padding: $size-3 $size-4;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: $radius-md;
+  margin: $size-3 $size-4 0;
+
+  &__icon { font-size: 16px; flex-shrink: 0; }
+
+  &__text {
+    flex: 1;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-700;
+    line-height: 1.4;
+
+    strong { display: block; margin-bottom: 2px; font-weight: $font-semibold; color: $gray-800; }
+  }
+
+  &__btn {
+    white-space: nowrap;
+    padding: 6px 14px;
+    background: $primary-500;
+    border: none;
+    border-radius: $radius-sm;
+    color: white;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+
+    &:hover { background: $primary-600; }
+  }
+}
+
+// Gali copiloto panel
+.campanas-gali-guide {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  padding: $size-3 $size-4;
+  border: 1px solid rgba(#f97316, 0.2);
+  border-left: 3px solid #f97316;
+  border-radius: $radius-md;
+  background: #fff8f4;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+  }
+
+  &__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #f97316;
+    flex-shrink: 0;
+    animation: roax-pulse 2.5s ease-in-out infinite;
+  }
+
+  &__title {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-bold;
+    color: $gray-700;
+  }
+
+  &__meta {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-500;
+    margin-left: $size-1;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+    padding-left: $size-4;
+  }
+
+  &__insight {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+    flex-wrap: wrap;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-700;
+  }
+
+  &__insight-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  &__cta {
+    height: 28px;
+    padding: 0 $size-3;
+    border: none;
+    border-radius: $radius-sm;
+    background: #f97316;
+    color: $white;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-bold;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+    &:hover { opacity: 0.88; }
+  }
+
+  &__next {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-500;
+  }
+
+  &__next-link {
+    color: $primary-500;
+    text-decoration: none;
+    font-weight: $font-medium;
+    margin-left: $size-1;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+@keyframes roax-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+// ── Roax Copilot Guide ─────────────────────────────────────────────────────
+.campanas-roax-guide {
+  margin: 0 $size-6 $size-4;
+  background: linear-gradient(135deg, #fff8f3 0%, #fffaf7 100%);
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  border-left: 4px solid #f97316;
+  border-radius: $radius-lg;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $size-3 $size-4;
+    border-bottom: 1px solid rgba(249, 115, 22, 0.12);
+    flex-wrap: wrap;
+    gap: $size-3;
+  }
+
+  &__agent {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-800;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f97316;
+    animation: roax-pulse 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  &__agent-role {
+    font-weight: $font-regular;
+    color: $gray-500;
+    font-size: $font-xs;
+  }
+
+  &__kpis {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+  }
+
+  &__kpi {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+  }
+
+  &__kpi-val {
+    font-family: $font-mono;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-800;
+
+    &--up { color: #16a34a; }
+  }
+
+  &__kpi-label {
+    font-family: $font-primary;
+    font-size: 10px;
+    color: $gray-400;
+    cursor: help;
+    border-bottom: 1px dashed $gray-300;
+  }
+
+  &__kpi-sep {
+    color: $gray-300;
+    font-size: 14px;
+    align-self: center;
+  }
+
+  &__decision {
+    display: flex;
+    align-items: flex-start;
+    gap: $size-4;
+    padding: $size-4;
+    flex-wrap: wrap;
+  }
+
+  &__decision-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &__decision-body {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: $size-1;
+  }
+
+  &__decision-msg {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-800;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  &__decision-sub {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-500;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  &__decision-actions {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+    flex-shrink: 0;
+  }
+
+  &__btn-primary {
+    padding: 8px 16px;
+    background: #f97316;
+    color: $white;
+    border: none;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+
+    &:hover { background: darken(#f97316, 8%); }
+    &:active { transform: scale(0.98); }
+  }
+
+  &__btn-ghost {
+    padding: 7px 16px;
+    background: transparent;
+    color: #f97316;
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+
+    &:hover { background: rgba(249, 115, 22, 0.06); }
+  }
+
+  &__steps {
+    padding: $size-3 $size-4 $size-4;
+    border-top: 1px solid rgba(249, 115, 22, 0.1);
+    background: rgba(249, 115, 22, 0.02);
+  }
+
+  &__steps-title {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-bold;
+    color: $gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 $size-3;
+  }
+
+  &__steps-list {
+    display: flex;
+    gap: $size-4;
+    flex-wrap: wrap;
+  }
+
+  &__step {
+    display: flex;
+    align-items: flex-start;
+    gap: $size-2;
+    flex: 1;
+    min-width: 160px;
+
+    strong {
+      display: block;
+      font-family: $font-primary;
+      font-size: $font-xs;
+      font-weight: $font-semibold;
+      color: $gray-800;
+      margin-bottom: 2px;
+    }
+
+    span {
+      font-family: $font-primary;
+      font-size: 11px;
+      color: $gray-500;
+      line-height: 1.4;
+    }
+  }
+
+  &__step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(249, 115, 22, 0.12);
+    color: #f97316;
+    font-family: $font-mono;
+    font-size: 11px;
+    font-weight: $font-bold;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+}
+
+.campanas-postmortem {
+  margin-top: $size-6;
+  padding: $size-5;
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  background: $gray-50;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    margin-bottom: $size-2;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: $font-md;
+    font-weight: $font-bold;
+    color: $gray-800;
+  }
+
+  &__badge {
+    padding: 2px 8px;
+    border-radius: $radius-full;
+    background: rgba($primary-500, 0.12);
+    color: $primary-600;
+    font-size: 10px;
+    font-weight: $font-bold;
+  }
+
+  &__sub {
+    margin: 0 0 $size-4;
+    font-size: $font-sm;
+    color: $gray-600;
+    max-width: 60ch;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $size-3;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__card {
+    padding: $size-4;
+    border-radius: $radius-md;
+    background: $white;
+    border: 1px solid $gray-100;
+    font-size: $font-sm;
+    color: $gray-600;
+
+    strong {
+      display: block;
+      margin: $size-1 0;
+      color: $gray-800;
+    }
+
+    &--fail {
+      border-color: rgba(239, 68, 68, 0.25);
+      background: rgba(239, 68, 68, 0.03);
+    }
+  }
+
+  &__label {
+    font-size: 10px;
+    font-weight: $font-semibold;
+    color: $gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__cta, &__link {
+    display: inline-block;
+    margin-top: $size-2;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    color: $primary-500;
+    text-decoration: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+  }
+}
+
+// ── Diagnóstico Post-mortem Roax ─────────────────────────────────────────────
+
+.campanas-postmortem {
+  margin: $size-4 0;
+  border: 1px solid rgba($primary-500, 0.2);
+  border-radius: $radius-xl;
+  overflow: hidden;
+  background: $white;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $size-3;
+    padding: $size-4 $size-5;
+    background: linear-gradient(135deg, rgba($primary-500, 0.04) 0%, $white 70%);
+    border-bottom: 1px solid $gray-100;
+    font-size: $font-sm;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+    flex-shrink: 0;
+  }
+
+  &__campaign {
+    font-weight: $font-semibold;
+    color: $gray-800;
+  }
+
+  &__badge {
+    padding: 2px 8px;
+    border-radius: $radius-full;
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    font-size: 11px;
+    font-weight: $font-semibold;
+  }
+
+  &__body {
+    padding: $size-5;
+  }
+
+  &__intro {
+    margin: 0 0 $size-4;
+    font-size: $font-sm;
+    color: $gray-600;
+  }
+}
+
+.postmortem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $size-4;
+  margin-bottom: $size-4;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.postmortem-factor {
+  padding: $size-4;
+  border-radius: $radius-lg;
+  font-size: $font-sm;
+
+  &--high { background: rgba(239, 68, 68, 0.04); border: 1px solid rgba(239, 68, 68, 0.2); }
+  &--mid { background: rgba(251, 191, 36, 0.04); border: 1px solid rgba(251, 191, 36, 0.2); }
+  &--low { background: rgba(129, 140, 248, 0.04); border: 1px solid rgba(129, 140, 248, 0.15); }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: $size-2;
+    margin-bottom: $size-2;
+    flex-wrap: wrap;
+
+    strong {
+      font-weight: $font-semibold;
+      color: $gray-800;
+    }
+  }
+
+  &__icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: $radius-sm;
+    font-size: 10px;
+    font-weight: $font-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+
+    &--bad  { background: rgba(239, 68, 68, 0.12); color: #dc2626; }
+    &--warn { background: rgba(251, 191, 36, 0.12); color: #b45309; }
+    &--info { background: rgba(129, 140, 248, 0.12); color: #4338ca; }
+  }
+
+  &__pct {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: $font-bold;
+    color: $gray-500;
+    white-space: nowrap;
+  }
+
+  p {
+    margin: 0 0 $size-2;
+    font-size: $font-xs;
+    color: $gray-600;
+    line-height: 1.5;
+  }
+
+  &__action {
+    font-size: $font-xs;
+    color: $gray-500;
+    border-left: 2px solid rgba($primary-500, 0.3);
+    padding-left: $size-2;
+    line-height: 1.45;
+
+    strong { color: $primary-600; }
+  }
+}
+
+.postmortem-verdict {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-3;
+  padding: $size-4;
+  border-radius: $radius-lg;
+  background: linear-gradient(135deg, rgba($primary-500, 0.06) 0%, $gray-50 100%);
+  border: 1px solid rgba($primary-500, 0.15);
+  font-size: $font-sm;
+
+  &__dot {
+    color: $primary-500;
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  div {
+    flex: 1;
+    color: $gray-700;
+    line-height: 1.5;
+
+    strong { color: $gray-800; }
+  }
+
+  &__cta {
+    flex-shrink: 0;
+    padding: $size-2 $size-4;
+    border: none;
+    border-radius: $radius-full;
+    background: $primary-500;
+    color: $white;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: $font-primary;
+    transition: background 0.15s;
+
+    &:hover { background: $primary-600; }
+  }
+}

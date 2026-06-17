@@ -1,0 +1,124 @@
+<div class="crear-modal-overlay" (click)="step() === 1 && close()">
+  <div class="crear-modal" (click)="$event.stopPropagation()">
+
+    <!-- Gali header -->
+    <div class="crear-modal__header">
+      <div class="crear-modal__gali">
+        <span class="crear-modal__gali-icon">✦</span>
+        <span class="crear-modal__gali-label">Gali</span>
+      </div>
+      <button type="button" class="crear-modal__close" (click)="close()">✕</button>
+    </div>
+
+    <!-- Stepper -->
+    <div class="crear-modal__stepper">
+      <div class="crear-modal__step" [class.crear-modal__step--active]="step() >= 1" [class.crear-modal__step--done]="step() > 1">
+        <span>1</span><label>Producto</label>
+      </div>
+      <div class="crear-modal__step-line"></div>
+      <div class="crear-modal__step" [class.crear-modal__step--active]="step() >= 2" [class.crear-modal__step--done]="step() > 2">
+        <span>2</span><label>Confirmar</label>
+      </div>
+      <div class="crear-modal__step-line"></div>
+      <div class="crear-modal__step" [class.crear-modal__step--active]="step() >= 3">
+        <span>3</span><label>Lanzar</label>
+      </div>
+    </div>
+
+    <!-- Step 1: ¿Qué quieres vender? -->
+    @if (step() === 1) {
+      <div class="crear-modal__body">
+        <h2 class="crear-modal__question">¿Qué quieres vender?</h2>
+        <p class="crear-modal__hint">Cuéntame el producto o nicho y ADA buscará las mejores opciones disponibles en el catálogo.</p>
+        <input
+          type="text"
+          class="crear-modal__input"
+          placeholder="Ej: collar GPS para mascotas, suplementos, proyector..."
+          [value]="productQuery()"
+          (input)="productQuery.set($any($event.target).value)"
+          (keydown.enter)="step.set(2)"
+          autofocus
+        />
+        <div class="crear-modal__actions">
+          <button type="button" class="crear-modal__cta" (click)="step.set(2)" [disabled]="!productQuery().trim()">
+            Buscar con ADA →
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Step 2: Seleccionar producto y nombre -->
+    @if (step() === 2) {
+      <div class="crear-modal__body">
+        <h2 class="crear-modal__question">ADA encontró estas opciones</h2>
+        <p class="crear-modal__hint">Selecciona el producto que quieres escalar.</p>
+
+        <div class="crear-modal__products">
+          @for (p of suggestedProducts; track p.id) {
+            <button
+              type="button"
+              class="crear-prod-card"
+              [class.crear-prod-card--selected]="selectedProduct()?.id === p.id"
+              (click)="selectedProduct.set(p); projectName.set(p.name)">
+              <div class="crear-prod-card__score" [style.background]="p.score >= 80 ? '#f97316' : p.score >= 70 ? '#f59e0b' : '#6b7280'">{{ p.score }}</div>
+              <div class="crear-prod-card__info">
+                <strong>{{ p.name }}</strong>
+                <span>{{ p.proveedor }} · Stock: {{ p.stock }}</span>
+              </div>
+              @if (selectedProduct()?.id === p.id) {
+                <span class="crear-prod-card__check">✓</span>
+              }
+            </button>
+          }
+        </div>
+
+        <div class="crear-modal__name-group">
+          <label>Nombre del proyecto</label>
+          <input
+            type="text"
+            class="crear-modal__input"
+            [value]="projectName()"
+            (input)="projectName.set($any($event.target).value)"
+            placeholder="Ej: Collar GPS · Lanzamiento Mayo"
+          />
+        </div>
+
+        <div class="crear-modal__actions">
+          <button type="button" class="crear-modal__back" (click)="step.set(1)">← Volver</button>
+          <button type="button" class="crear-modal__cta" (click)="step.set(3)" [disabled]="!selectedProduct() || !projectName().trim()">
+            Siguiente →
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Step 3: ¿Cuándo empezamos? -->
+    @if (step() === 3) {
+      <div class="crear-modal__body">
+        <h2 class="crear-modal__question">¿Cuándo empezamos?</h2>
+        <p class="crear-modal__hint">El proyecto <strong>{{ projectName() }}</strong> está listo para configurarse.</p>
+
+        <div class="crear-modal__launch-options">
+          <button type="button" class="crear-launch-option crear-launch-option--primary" (click)="launchNow()">
+            <span class="crear-launch-option__icon">🚀</span>
+            <div>
+              <strong>Lanzar ahora</strong>
+              <span>Gali abre el workspace de lanzamiento y te guía paso a paso</span>
+            </div>
+          </button>
+          <button type="button" class="crear-launch-option" (click)="saveDraft()">
+            <span class="crear-launch-option__icon">📋</span>
+            <div>
+              <strong>Guardar como borrador</strong>
+              <span>El proyecto queda guardado. Puedes lanzarlo cuando quieras</span>
+            </div>
+          </button>
+        </div>
+
+        <div class="crear-modal__actions">
+          <button type="button" class="crear-modal__back" (click)="step.set(2)">← Volver</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

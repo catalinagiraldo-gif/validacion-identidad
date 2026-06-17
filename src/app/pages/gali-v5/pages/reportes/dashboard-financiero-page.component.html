@@ -1,0 +1,317 @@
+<div class="fin-dashboard">
+
+  <!-- Header -->
+  <div class="fin-header">
+    <div class="fin-header__left">
+      <h1 class="fin-header__title">Dashboard Financiero</h1>
+      <span class="fin-header__sub">
+        <abbr title="P&L = Pérdidas y Ganancias. Muestra cuánto dinero real te quedó después de restar todos los costos: producto, pauta, logística, novedades y garantías.">P&amp;L real</abbr>
+        · Mayo 2026 · calculado por Gali
+      </span>
+    </div>
+    <div class="fin-header__gali">
+      <span class="fin-header__gali-dot"></span>
+      <span class="fin-header__gali-label">Agente Financiero · Gali</span>
+    </div>
+  </div>
+
+  <!-- Glosario para novatos — desplegable -->
+  <details class="fin-glosario">
+    <summary class="fin-glosario__toggle">
+      <span>¿Qué significan estos términos?</span>
+      <span class="fin-glosario__icon">▾</span>
+    </summary>
+    <div class="fin-glosario__body">
+      <div class="fin-glosario__item">
+        <span class="fin-glosario__term">P&amp;L</span>
+        <span class="fin-glosario__def">Pérdidas y Ganancias — lo que te queda después de restar todos los costos al ingreso bruto.</span>
+      </div>
+      <div class="fin-glosario__item">
+        <span class="fin-glosario__term">ROAS</span>
+        <span class="fin-glosario__def">Retorno sobre inversión en publicidad — si gastas $1 en pauta y vendes $2.9, tu ROAS es 2.9x.</span>
+      </div>
+      <div class="fin-glosario__item">
+        <span class="fin-glosario__term">CPA</span>
+        <span class="fin-glosario__def">Costo por adquisición — cuánto te cuesta en publicidad conseguir un cliente o una venta.</span>
+      </div>
+      <div class="fin-glosario__item">
+        <span class="fin-glosario__term">Novedad</span>
+        <span class="fin-glosario__def">Pedido que no se entregó y regresó — pérdida de flete y tiempo. Objetivo: mantenerlo por debajo del 15%.</span>
+      </div>
+      <div class="fin-glosario__item">
+        <span class="fin-glosario__term">Margen neto</span>
+        <span class="fin-glosario__def">% de utilidad real sobre el total vendido. Un negocio sano de dropshipping apunta a 15–30%.</span>
+      </div>
+      <div class="fin-glosario__item">
+        <span class="fin-glosario__term">LTV</span>
+        <span class="fin-glosario__def">Valor de vida del cliente — cuánto te deja un comprador en promedio si repite.</span>
+      </div>
+      <div class="fin-glosario__item">
+        <span class="fin-glosario__term">CAC</span>
+        <span class="fin-glosario__def">Costo de adquisición — lo que gastas en pauta (y operación) para conseguir un cliente nuevo.</span>
+      </div>
+      <div class="fin-glosario__item">
+        <span class="fin-glosario__term">EBITDA</span>
+        <span class="fin-glosario__def">Utilidad operativa antes de impuestos y depreciación — salud del negocio sin contabilidad pesada.</span>
+      </div>
+      <div class="fin-glosario__item">
+        <span class="fin-glosario__term">SDE</span>
+        <span class="fin-glosario__def">Ganancia del dueño — utilidad ajustada si tú eres el operador principal (común al vender la tienda).</span>
+      </div>
+      <div class="fin-glosario__item">
+        <span class="fin-glosario__term">MMM</span>
+        <span class="fin-glosario__def">Modelo de medios mixtos — reparte el crédito de ventas entre Meta, TikTok y orgánico (nivel avanzado).</span>
+      </div>
+    </div>
+  </details>
+
+  <!-- KPI cards — galiInsight on hover -->
+  <div class="kpi-grid">
+    @for (kpi of kpis; track kpi.label) {
+      <div class="kpi-card" [class.kpi-card--warn]="kpi.tone === 'warn'">
+        <span class="kpi-card__label">{{ kpi.label }}</span>
+        <span class="kpi-card__value" [galiInsight]="kpi.insight">{{ kpi.value }}</span>
+        <span class="kpi-card__delta" [class.kpi-card__delta--warn]="kpi.tone === 'warn'">{{ kpi.delta }}</span>
+      </div>
+    }
+  </div>
+
+  <!-- Waterfall P&L -->
+  <div class="waterfall-section">
+    <div class="waterfall-section__header">
+      <h2 class="waterfall-section__title">Waterfall P&L — Mayo 2026</h2>
+      <span class="waterfall-section__sub">¿Qué pasó con cada peso que entró?</span>
+    </div>
+
+    <div class="waterfall">
+      @for (bar of waterfallBars; track bar.label) {
+        <div class="waterfall-row" [class]="'waterfall-row--' + bar.type">
+          <div class="waterfall-row__label-col">
+            <span class="waterfall-row__label">{{ bar.label }}</span>
+            <span class="waterfall-row__tooltip">{{ bar.tooltip }}</span>
+          </div>
+          <div class="waterfall-row__bar-col">
+            <div class="waterfall-row__bar-track">
+              <div
+                class="waterfall-row__bar"
+                [style.width.%]="barWidth(bar.value)"
+                [class]="'waterfall-row__bar--' + bar.type">
+              </div>
+            </div>
+            <span class="waterfall-row__value" [class.waterfall-row__value--neg]="bar.value < 0">
+              {{ bar.value < 0 ? '−' : '+' }}{{ formatCOP(bar.value) }}
+            </span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Net result callout -->
+    <div class="pl-net-result">
+      <div class="pl-net-result__left">
+        <span class="pl-net-result__label">Utilidad neta real del mes</span>
+        <span class="pl-net-result__sub">Mayo 2026 · 4 semanas completas</span>
+      </div>
+      <div class="pl-net-result__right">
+        <span class="pl-net-result__value">$3.808.000</span>
+        <span class="pl-net-result__margin">25.7% de margen</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly breakdown -->
+  <div class="weekly-section">
+    <div class="weekly-section__header">
+      <h2 class="weekly-section__title">Desglose semanal</h2>
+      <div class="week-filter">
+        <button type="button" class="week-filter__btn"
+          [class.week-filter__btn--active]="activeWeekFilter() === '4s'"
+          (click)="activeWeekFilter.set('4s')">Últimas 4 sem.</button>
+        <button type="button" class="week-filter__btn"
+          [class.week-filter__btn--active]="activeWeekFilter() === '8s'"
+          (click)="activeWeekFilter.set('8s')">Últimas 8 sem.</button>
+      </div>
+    </div>
+
+    <div class="weekly-table-wrap">
+      <table class="weekly-table">
+        <thead>
+          <tr>
+            <th>Semana</th>
+            <th>Ventas</th>
+            <th>COGS</th>
+            <th>Pauta</th>
+            <th>Flete</th>
+            <th>Novedades</th>
+            <th>Utilidad</th>
+            <th>ROAS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of activeWeeks; track row.week) {
+            <tr class="weekly-row">
+              <td class="weekly-row__week">{{ row.week }}</td>
+              <td class="weekly-row__num">{{ formatCOP(row.ventas) }}</td>
+              <td class="weekly-row__num weekly-row__num--cost">−{{ formatCOP(row.cogs) }}</td>
+              <td class="weekly-row__num weekly-row__num--cost">−{{ formatCOP(row.pauta) }}</td>
+              <td class="weekly-row__num weekly-row__num--cost">−{{ formatCOP(row.flete) }}</td>
+              <td class="weekly-row__num weekly-row__num--warn">−{{ formatCOP(row.novedad) }}</td>
+              <td class="weekly-row__num weekly-row__num--profit">{{ formatCOP(row.utilidad) }}</td>
+              <td>
+                <span class="roas-badge"
+                  [class.roas-badge--ok]="row.roas >= 4.5"
+                  [class.roas-badge--warn]="row.roas < 4.5"
+                  [galiInsight]="row.roas >= 4.5 ? 'ROAS sobre objetivo (4.5×). Gali considera escalar presupuesto.' : 'ROAS bajo objetivo. Roax está evaluando optimizaciones creativas.'">
+                  {{ row.roas.toFixed(1) }}×
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr class="weekly-total">
+            <td>TOTAL</td>
+            <td>{{ formatCOP(totalRow().ventas) }}</td>
+            <td class="weekly-row__num--cost">−{{ formatCOP(totalRow().cogs) }}</td>
+            <td class="weekly-row__num--cost">−{{ formatCOP(totalRow().pauta) }}</td>
+            <td class="weekly-row__num--cost">−{{ formatCOP(totalRow().flete) }}</td>
+            <td class="weekly-row__num--warn">−{{ formatCOP(totalRow().novedad) }}</td>
+            <td class="weekly-row__num--profit">{{ formatCOP(totalRow().utilidad) }}</td>
+            <td>
+              <span class="roas-badge roas-badge--ok">{{ totalRow().roas.toFixed(1) }}×</span>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- Gali Projections -->
+  <div class="projections-section">
+    <div class="projections-header">
+      <div class="projections-header__left">
+        <span class="projections-header__glyph">✦</span>
+        <div>
+          <h2 class="projections-header__title">Proyecciones de Gali — próximas 4 semanas</h2>
+          <span class="projections-header__sub">Basadas en tu objetivo de $5M/mes y el rendimiento actual</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-tabs">
+      @for (proj of projections; track proj.scenario) {
+        <button type="button"
+          class="proj-tab"
+          [class.proj-tab--active]="activeProjection() === proj.scenario"
+          [class.proj-tab--recommended]="proj.scenario === 'base'"
+          (click)="activeProjection.set(proj.scenario)">
+          {{ proj.label }}
+          @if (proj.scenario === 'base') {
+            <span class="proj-tab__rec">✦</span>
+          }
+        </button>
+      }
+    </div>
+
+    <div class="proj-detail">
+      <div class="proj-metrics">
+        <div class="proj-metric">
+          <span class="proj-metric__label">Utilidad proyectada</span>
+          <span class="proj-metric__value">{{ formatCOP(activeProjectionData.utilidadProyectada) }}</span>
+          <span class="proj-metric__compare">vs $3.8M actual</span>
+        </div>
+        <div class="proj-metric">
+          <span class="proj-metric__label">ROAS proyectado</span>
+          <span class="proj-metric__value">{{ activeProjectionData.roasProyectado.toFixed(1) }}×</span>
+          <span class="proj-metric__compare">vs 4.78× actual</span>
+        </div>
+        <div class="proj-metric">
+          <span class="proj-metric__label">vs objetivo $5M</span>
+          <span class="proj-metric__value"
+            [class.proj-metric__value--ok]="activeProjectionData.utilidadProyectada >= 5_000_000"
+            [class.proj-metric__value--warn]="activeProjectionData.utilidadProyectada < 5_000_000">
+            {{ activeProjectionData.utilidadProyectada >= 5_000_000 ? '✓ Alcanzable' : '⚠ Por debajo' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="proj-actions">
+        <div class="proj-actions__label">Acciones que Gali sugiere</div>
+        @for (accion of activeProjectionData.acciones; track $index) {
+          <div class="proj-action-item">
+            <span class="proj-action-num">{{ $index + 1 }}</span>
+            <span class="proj-action-text">{{ accion }}</span>
+          </div>
+        }
+        <button type="button" class="proj-execute-btn"
+          routerLink="/gali-v5">
+          Ejecutar plan con Gali ✦
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ECONOMÍA UNITARIA POR PRODUCTO ── -->
+  <div class="eco-section">
+    <div class="eco-section__header">
+      <div class="eco-section__title-group">
+        <h2 class="eco-section__title">Economía unitaria por producto</h2>
+        <span class="eco-section__sub">LTV, CAC y margen de contribución por cada peso invertido</span>
+      </div>
+      <div class="eco-section__gali">
+        <span class="eco-section__gali-dot"></span>
+        <span>Agente Financiero · Gali</span>
+      </div>
+    </div>
+
+    <div class="eco-table">
+      <div class="eco-table__head">
+        <span>Producto</span>
+        <span>Precio</span>
+        <span>COGS+Flete</span>
+        <span>Pauta/u</span>
+        <span>Margen/u</span>
+        <span>ROAS Min.</span>
+        <span>ROAS Real</span>
+        <span>LTV/CAC</span>
+        <span>Break-even</span>
+        <span>Estado</span>
+      </div>
+      @for (p of unitEconomics; track p.product) {
+        <div class="eco-table__row" [class.eco-table__row--riesgo]="p.status === 'riesgo'"
+          [class.eco-table__row--pausado]="p.status === 'pausado'">
+          <span class="eco-table__product">{{ p.product }}</span>
+          <span class="eco-table__num" [galiInsight]="'Precio de venta unitario: ' + formatCOPShort(p.precio) + '. Margen bruto: ' + formatCOPShort(p.margenUnit)">{{ formatCOPShort(p.precio) }}</span>
+          <span class="eco-table__num eco-table__num--cost">{{ formatCOPShort(p.cogs + p.flete) }}</span>
+          <span class="eco-table__num eco-table__num--cost" [galiInsight]="'Costo de pauta por unidad vendida basado en ROAS actual. Si ROAS baja, este valor sube — menos margen.'">{{ formatCOPShort(p.pauta) }}</span>
+          <span class="eco-table__num eco-table__num--margin" [class.eco-table__num--low]="p.margenUnit < 10_000"
+            [galiInsight]="'Margen neto por unidad después de todos los costos variables. Objetivo mínimo sano: $20k/u.'">{{ formatCOPShort(p.margenUnit) }}</span>
+          <span class="eco-table__num" [galiInsight]="'Break-even ROAS = Precio ÷ Margen bruto. Si ROAS cae bajo este número, cada venta genera pérdida.'">{{ p.roasBreakeven }}×</span>
+          <span class="eco-table__num" [class.eco-table__num--danger]="p.roasReal < p.roasBreakeven"
+            [galiInsight]="p.roasReal < p.roasBreakeven ? '⚠ ROAS real está POR DEBAJO del break-even. Cada venta genera pérdida.' : 'ROAS real por encima del break-even — operación rentable.'">
+            {{ p.roasReal }}×
+          </span>
+          <span class="eco-table__num eco-table__num--ltv"
+            [galiInsight]="'LTV/CAC ' + p.ltvCacRatio + '× — por cada peso invertido en captar un cliente, ese cliente te devuelve ' + p.ltvCacRatio + '× en su vida útil. >3× es saludable.'">
+            {{ p.ltvCacRatio }}×
+          </span>
+          <span class="eco-table__num" [galiInsight]="'Semanas hasta recuperar la inversión inicial de pauta. Menos de 8 semanas es el umbral de viabilidad en dropshipping.'">
+            Sem {{ p.semanaBreakeven }}
+          </span>
+          <span class="eco-status" [class]="unitStatusClass(p.status)">{{ unitStatusLabel(p.status) }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="eco-insight">
+      <span class="eco-insight__dot">✦</span>
+      <div class="eco-insight__body">
+        <strong>Gali recomienda:</strong> Skincare K-Beauty tiene ROAS real (1.8×) por debajo del break-even (1.97×).
+        Cada venta te cuesta $12k. Pausa o mejora el creativo antes de escalar.
+        Bandas de Fitness necesita 14 semanas para recuperar inversión — demasiado para el ciclo de vida del producto.
+      </div>
+      <a routerLink="/gali-v5/reglas" class="eco-insight__cta">Ver reglas de Roax →</a>
+    </div>
+  </div>
+
+</div>

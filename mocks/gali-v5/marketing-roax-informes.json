@@ -1,0 +1,42 @@
+{
+  "dateRange": "Mayo 23 – 29, 2026 · Semana 3 de 4",
+  "kpis": [
+    { "label": "Impresiones", "value": "2.4M", "delta": "+18%", "trend": "up" },
+    { "label": "Inversión total", "value": "$462k", "delta": "+15%", "trend": "up" },
+    { "label": "Conversiones (Dropi)", "value": "70", "delta": "+12%", "trend": "up" },
+    { "label": "ROAS Meta (declarado)", "value": "5.0x", "delta": "+0.3x", "trend": "up" },
+    { "label": "ROAS real (Gali)", "value": "2.9x", "delta": "+0.2x", "trend": "up" },
+    { "label": "CPC promedio", "value": "$6.600", "delta": "-4%", "trend": "up" },
+    { "label": "CPM promedio", "value": "$192k", "delta": "-2%", "trend": "up" },
+    { "label": "Ganancia neta real", "value": "$411k", "delta": "+$89k", "trend": "up" }
+  ],
+  "weeklyTrend": [
+    { "dia": "Lun 23", "inversion": 64, "conversiones": 8, "roas_meta": 4.6, "roas_real": 2.6, "ctr": 1.6 },
+    { "dia": "Mar 24", "inversion": 64, "conversiones": 9, "roas_meta": 4.8, "roas_real": 2.7, "ctr": 1.7 },
+    { "dia": "Mié 25", "inversion": 66, "conversiones": 11, "roas_meta": 5.1, "roas_real": 2.9, "ctr": 1.9 },
+    { "dia": "Jue 26", "inversion": 68, "conversiones": 12, "roas_meta": 5.2, "roas_real": 3.0, "ctr": 2.0 },
+    { "dia": "Vie 27", "inversion": 70, "conversiones": 13, "roas_meta": 5.3, "roas_real": 3.1, "ctr": 2.1 },
+    { "dia": "Sáb 28", "inversion": 66, "conversiones": 10, "roas_meta": 4.9, "roas_real": 2.8, "ctr": 1.8 },
+    { "dia": "Dom 29", "inversion": 64, "conversiones": 7, "roas_meta": 4.5, "roas_real": 2.6, "ctr": 1.5 }
+  ],
+  "creativos": [
+    { "id": "video-b", "nombre": "Video B (UGC)", "estado": "activo", "inversion": 310, "ctr": 1.8, "roas": 3.1, "conversiones": 45, "skill": "Escalado ROAS" },
+    { "id": "video-a", "nombre": "Video A (Demo)", "estado": "pausado", "inversion": 0, "ctr": 0.7, "roas": 1.2, "conversiones": 0, "skill": "Auto-pausa CTR" },
+    { "id": "carrusel-k", "nombre": "Carrusel K-Beauty", "estado": "activo", "inversion": 152, "ctr": 1.1, "roas": 2.1, "conversiones": 23, "skill": null }
+  ],
+  "costoWaterfall": {
+    "revenue": "$2.31M",
+    "inversion_pauta": "$462k (20%)",
+    "cogs": "$924k (40%)",
+    "flete": "$185k (8%)",
+    "novedades": "$73k (3.2%)",
+    "garantias": "$23k (1%)",
+    "ganancia_neta": "$643k",
+    "margen": "27.8%"
+  },
+  "skillImpact": [
+    { "skill": "Escalado ROAS automático", "evento": "Subió budget +15% (2.9x ROAS sostenido)", "impacto": "+$142k revenue adicional", "tipo": "ok" },
+    { "skill": "Auto-pausa CTR bajo", "evento": "Pausó Video A (CTR 0.7% por 48h)", "impacto": "+$38k ROAS recuperado", "tipo": "ok" },
+    { "skill": "Anti-Baneo Meta", "evento": "Reducción nocturna 11pm–6am", "impacto": "4 ejecuciones preventivas", "tipo": "info" }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "novedades": [
+    {"num": "1", "fecha": "27/05/2026 14:32", "tienda": "Dropi Tienda\nShopify · dropitienda.myshopify.com", "datos": "Guía: 1123266584698\nMotivo: Dirección errada\nCliente: María Vergara"},
+    {"num": "2", "fecha": "27/05/2026 12:10", "tienda": "ModaFit\nTienda Nube · modafit.co", "datos": "Guía: 8876543210123\nMotivo: Rechazado en destino\nCliente: Carlos Mendoza"},
+    {"num": "3", "fecha": "26/05/2026 18:40", "tienda": "TechStore\nWooCommerce · techstore.com", "datos": "Guía: 5544332211009\nMotivo: Devuelto a bodega\nCliente: Laura Torres"},
+    {"num": "4", "fecha": "26/05/2026 09:15", "tienda": "Dropi Tienda\nShopify · dropitienda.myshopify.com", "datos": "Guía: 240024091046\nMotivo: En investigación\nCliente: Andrea Gutiérrez"},
+    {"num": "5", "fecha": "25/05/2026 16:22", "tienda": "BeautyBox\nShopify · beautybox.co", "datos": "Guía: 9988776655443\nMotivo: Reprogramado\nCliente: Juan Pablo Ruiz"},
+    {"num": "6", "fecha": "25/05/2026 11:05", "tienda": "ModaFit\nTienda Nube · modafit.co", "datos": "Guía: 1123266584699\nMotivo: Contactar cliente\nCliente: Diego Herrera"},
+    {"num": "7", "fecha": "24/05/2026 20:18", "tienda": "TechStore\nWooCommerce · techstore.com", "datos": "Guía: 8876543210124\nMotivo: Dirección errada\nCliente: Valentina Ruiz"},
+    {"num": "8", "fecha": "24/05/2026 08:44", "tienda": "Dropi Tienda\nShopify · dropitienda.myshopify.com", "datos": "Guía: 5544332211010\nMotivo: Rechazado en destino\nCliente: Sebastián Moreno"},
+    {"num": "9", "fecha": "23/05/2026 15:30", "tienda": "PetLovers\nShopify · petlovers.co", "datos": "Guía: 240024091047\nMotivo: Devuelto a bodega\nCliente: Camila Ortiz"},
+    {"num": "10", "fecha": "23/05/2026 10:12", "tienda": "BeautyBox\nShopify · beautybox.co", "datos": "Guía: 1123266584700\nMotivo: En investigación\nCliente: Fernando López"},
+    {"num": "11", "fecha": "22/05/2026 19:55", "tienda": "ModaFit\nTienda Nube · modafit.co", "datos": "Guía: 8876543210125\nMotivo: Reprogramado\nCliente: Isabel Navarro"},
+    {"num": "12", "fecha": "22/05/2026 07:20", "tienda": "TechStore\nWooCommerce · techstore.com", "datos": "Guía: 9988776655444\nMotivo: Contactar cliente\nCliente: Olga Camacho"},
+    {"num": "13", "fecha": "21/05/2026 14:08", "tienda": "Dropi Tienda\nShopify · dropitienda.myshopify.com", "datos": "Guía: 240024091048\nMotivo: Dirección errada\nCliente: Pedro Sánchez"},
+    {"num": "14", "fecha": "21/05/2026 09:33", "tienda": "PetLovers\nShopify · petlovers.co", "datos": "Guía: 5544332211011\nMotivo: Rechazado en destino\nCliente: Lucía Ramírez"},
+    {"num": "15", "fecha": "20/05/2026 17:45", "tienda": "BeautyBox\nShopify · beautybox.co", "datos": "Guía: 1123266584701\nMotivo: Devuelto a bodega\nCliente: Roberto Vega"},
+    {"num": "16", "fecha": "20/05/2026 11:22", "tienda": "ModaFit\nTienda Nube · modafit.co", "datos": "Guía: 8876543210126\nMotivo: En investigación\nCliente: Patricia Morales"},
+    {"num": "17", "fecha": "19/05/2026 16:10", "tienda": "TechStore\nWooCommerce · techstore.com", "datos": "Guía: 240024091049\nMotivo: Reprogramado\nCliente: Andrés Castillo"},
+    {"num": "18", "fecha": "19/05/2026 08:55", "tienda": "Dropi Tienda\nShopify · dropitienda.myshopify.com", "datos": "Guía: 9988776655445\nMotivo: Contactar cliente\nCliente: Sandra Mejía"},
+    {"num": "19", "fecha": "18/05/2026 13:40", "tienda": "PetLovers\nShopify · petlovers.co", "datos": "Guía: 5544332211012\nMotivo: Dirección errada\nCliente: Miguel Ángel Díaz"},
+    {"num": "20", "fecha": "18/05/2026 06:18", "tienda": "BeautyBox\nShopify · beautybox.co", "datos": "Guía: 1123266584702\nMotivo: Rechazado en destino\nCliente: Ana María Castro"}
+  ]
+}

@@ -1,0 +1,144 @@
+@import 'styles/gali-v3-tokens';
+
+:host { display: block; max-width: 1200px; margin: 0 auto; }
+.lh { display: flex; flex-direction: column; gap: $gv3-space-4; }
+
+.lh__sparkle { color: $gv3-sparkle-color; filter: drop-shadow($gv3-sparkle-glow); }
+
+.lh__head {
+  @include gv3-artifact;
+  padding: $gv3-space-5 $gv3-space-6;
+}
+.lh__head-meta {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; background: $gv3-bg-warm; border-radius: $gv3-radius-pill;
+  margin-bottom: $gv3-space-3;
+}
+.lh__icon { font-size: 18px; }
+.lh__head-tag { @include gv3-mono-tag; color: $gv3-text-secondary; }
+.lh__head h1 { @include gv3-display-tight; font-size: 32px; margin: 0 0 $gv3-space-2; }
+.lh__intro { margin: 0 0 $gv3-space-3; font-size: $gv3-text-base; color: $gv3-text-secondary; line-height: 1.55; max-width: 720px; }
+
+.lh__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: $gv3-orange-tint;
+  border: 1px dashed $gv3-border-warm;
+  border-radius: $gv3-radius-md;
+  font-size: 12px;
+  color: $gv3-text-primary;
+  strong { color: $gv3-orange-hover; }
+}
+
+.lh__embed {
+  @include gv3-artifact;
+  padding: $gv3-space-4 $gv3-space-5;
+}
+
+// --- CAS preview ---
+.lh__cas {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: $gv3-space-3;
+  height: 480px;
+}
+.lh__cas-list {
+  background: $gv3-bg-warm;
+  border-radius: $gv3-radius-md;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  header { padding: 10px 14px; @include gv3-mono-tag; color: $gv3-text-secondary; border-bottom: 1px solid $gv3-border-whisper; }
+  ul { list-style: none; padding: 0; margin: 0; flex: 1; overflow-y: auto; }
+  li {
+    padding: 10px 14px;
+    border-bottom: 1px solid $gv3-border-whisper;
+    cursor: pointer;
+    &:hover { background: $gv3-bg-surface; }
+    &.is-active { background: $gv3-orange-tint; border-left: 3px solid $gv3-orange; }
+    strong { display: block; font-size: 12.5px; color: $gv3-text-primary; }
+    span { display: block; font-size: 11px; color: $gv3-text-secondary; margin-top: 2px; }
+    em { font-family: $gv3-font-mono; font-size: 10px; color: $gv3-text-tertiary; font-style: normal; }
+  }
+}
+.lh__cas-chat {
+  background: $gv3-bg-surface;
+  border: 1px solid $gv3-border-whisper;
+  border-radius: $gv3-radius-md;
+  display: flex;
+  flex-direction: column;
+  > header { padding: 12px 16px; border-bottom: 1px solid $gv3-border-whisper; strong { display: block; font-size: 13px; } span { display: block; font-size: 11px; color: $gv3-text-tertiary; } }
+  > footer { padding: 10px; border-top: 1px solid $gv3-border-whisper; display: flex; gap: 6px; textarea { flex: 1; padding: 8px 10px; border: 1px solid $gv3-border-whisper; border-radius: $gv3-radius-sm; font-family: $gv3-font-body; font-size: 12px; resize: none; } button { padding: 0 16px; background: $gv3-orange; color: $gv3-text-onAccent; border: 0; border-radius: $gv3-radius-sm; font-weight: 600; cursor: pointer; } }
+}
+.lh__cas-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.lh__cas-msg {
+  max-width: 75%;
+  padding: 8px 12px;
+  border-radius: $gv3-radius-md;
+  font-size: 12.5px;
+  line-height: 1.5;
+  p { margin: 0; }
+  &--in { background: $gv3-bg-warm; align-self: flex-start; border-bottom-left-radius: 4px; }
+}
+
+// --- Academy preview ---
+.lh__academy {
+  display: flex; flex-direction: column; gap: $gv3-space-3;
+  > header { display: flex; justify-content: space-between; align-items: baseline; h2 { margin: 0; font-family: $gv3-font-display; font-size: $gv3-text-xl; font-weight: 500; } span { @include gv3-mono-tag; color: $gv3-text-tertiary; } }
+}
+.lh__academy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $gv3-space-2;
+}
+.lh__academy-card {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: $gv3-space-3;
+  padding: $gv3-space-3;
+  background: $gv3-bg-warm;
+  border-radius: $gv3-radius-md;
+  border: 1px solid $gv3-border-whisper;
+  &--featured { border-color: $gv3-orange; background: linear-gradient(135deg, $gv3-orange-tint, transparent 60%), $gv3-bg-warm; }
+  strong { display: block; font-size: $gv3-text-sm; color: $gv3-text-primary; margin-bottom: 4px; }
+  p { margin: 0; font-size: 11.5px; color: $gv3-text-secondary; line-height: 1.4; }
+}
+.lh__academy-thumb {
+  width: 64px; height: 64px;
+  border-radius: $gv3-radius-sm;
+  background: $gv3-bg-surface;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+}
+.lh__academy-meta { @include gv3-mono-tag; color: $gv3-text-tertiary; margin-top: 4px; }
+
+// --- Dropi Card preview ---
+.lh__card { display: grid; grid-template-columns: 320px 1fr; gap: $gv3-space-4; align-items: start; }
+.lh__card-visual {
+  padding: $gv3-space-5;
+  background: linear-gradient(135deg, $gv3-orange 0%, $gv3-rust 100%);
+  color: $gv3-text-onAccent;
+  border-radius: $gv3-radius-lg;
+  aspect-ratio: 1.586;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: $gv3-shadow-lg;
+  header { @include gv3-mono-tag; opacity: 0.8; letter-spacing: 0.12em; }
+  strong { font-family: $gv3-font-mono; font-size: $gv3-text-xl; letter-spacing: 0.1em; }
+  footer { display: flex; justify-content: space-between; @include gv3-mono-tag; opacity: 0.9; }
+}
+.lh__card-stats {
+  display: flex;
+  flex-direction: column;
+  gap: $gv3-space-2;
+  div {
+    padding: $gv3-space-2 $gv3-space-3;
+    background: $gv3-bg-warm;
+    border-radius: $gv3-radius-md;
+    span { display: block; @include gv3-mono-tag; color: $gv3-text-tertiary; }
+    strong { display: block; @include gv3-display-tight; font-size: $gv3-text-xl; color: $gv3-text-primary; font-weight: 500; margin-top: 2px; }
+  }
+}

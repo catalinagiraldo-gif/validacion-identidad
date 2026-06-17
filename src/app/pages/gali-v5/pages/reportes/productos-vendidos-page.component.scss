@@ -1,0 +1,278 @@
+@import '../shared/dropi-page-shell';
+
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sold-products-page {
+  @include dropi-page-shell;
+
+  &__filters {
+    display: flex;
+    flex-direction: column;
+    gap: $size-3;
+  }
+
+  &__filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: $size-3;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 137px;
+
+    label {
+      font-size: 12px;
+      color: $gray-600;
+    }
+
+    input,
+    select {
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid $gray-200;
+      border-radius: 12px;
+      font-family: $font-primary;
+      font-size: $font-sm;
+      color: $gray-500;
+      background: $white;
+    }
+  }
+}
+
+.sold-products-table {
+  border: 1px solid $gray-100;
+  border-radius: 12px;
+  overflow: hidden;
+  background: $white;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid $gray-100;
+    background: $white;
+  }
+
+  &__col {
+    flex: 1;
+    font-family: $font-primary;
+    font-size: 12px;
+    font-weight: $font-bold;
+    color: $gray-700;
+    padding: 0 16px;
+
+    &--product {
+      flex: 0 0 428px;
+      max-width: 428px;
+    }
+  }
+}
+
+.sold-product-row {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid $gray-100;
+  gap: 16px;
+
+  &__info {
+    flex: 0 0 428px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  &__image {
+    width: 148px;
+    height: 148px;
+    border-radius: 12px;
+    border: 1px solid $gray-100;
+    object-fit: cover;
+    background: $gray-50;
+    flex-shrink: 0;
+  }
+
+  &__details {
+    flex: 1;
+    min-width: 0;
+
+    h3 {
+      margin: 0 0 4px;
+      font-family: $font-primary;
+      font-size: $font-base;
+      font-weight: $font-medium;
+      color: $gray-700;
+      line-height: 1.5;
+    }
+
+    p {
+      margin: 0 0 2px;
+      font-size: $font-sm;
+      color: $gray-600;
+
+      span {
+        color: $gray-500;
+      }
+    }
+  }
+
+  &__chips {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  &__chip {
+    height: 24px;
+    padding: 4px 8px;
+    border: 1px solid $gray-200;
+    border-radius: 8px;
+    background: $gray-50;
+    font-size: 12px;
+    color: $gray-600;
+  }
+
+  &__stock {
+    height: 26px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba($success, 0.12);
+    color: darken($success, 8%);
+    font-size: 12px;
+    font-weight: $font-medium;
+
+    &--low {
+      background: rgba($warning, 0.12);
+      color: darken($warning, 10%);
+    }
+  }
+
+  &__metrics {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.metric-cell {
+  flex: 1;
+  padding: 0 16px;
+  text-align: center;
+
+  span {
+    display: block;
+    font-size: 12px;
+    color: $gray-500;
+    margin-bottom: 4px;
+  }
+
+  strong {
+    font-family: $font-primary;
+    font-size: $font-base;
+    font-weight: $font-bold;
+    color: $gray-700;
+  }
+
+  &--earnings strong {
+    color: darken($success, 8%);
+  }
+}
+
+// ── Gali Financial Summary ────────────────────────────────────────
+.sold-gali-summary {
+  background: linear-gradient(135deg, rgba(255, 97, 2, 0.04), white);
+  border: 1px solid rgba(255, 97, 2, 0.15);
+  border-radius: 10px;
+  padding: $size-4;
+  margin-bottom: $size-4;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+    margin-bottom: $size-3;
+
+    strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: $gray-900;
+    }
+
+    span {
+      font-size: 11px;
+      color: $gray-500;
+    }
+
+    div { flex: 1; }
+  }
+
+  &__icon {
+    font-size: 20px;
+    color: #f97316;
+    flex-shrink: 0;
+  }
+
+  &__full-btn {
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    background: #f97316;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: filter 0.15s;
+    &:hover { filter: brightness(0.9); }
+  }
+
+  &__metrics {
+    display: flex;
+    gap: $size-3;
+    flex-wrap: wrap;
+  }
+}
+
+.sold-gali-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: $size-2 $size-3;
+  background: white;
+  border: 1px solid $gray-100;
+  border-radius: 8px;
+  min-width: 90px;
+
+  &--highlight {
+    background: rgba(34, 197, 94, 0.06);
+    border-color: rgba(34, 197, 94, 0.2);
+  }
+
+  &__label {
+    font-size: 10px;
+    color: $gray-500;
+  }
+
+  &__val {
+    font-size: 16px;
+    font-weight: 800;
+    color: $gray-900;
+
+    &--warn { color: #f59e0b; }
+    &--info { font-size: 11px; color: #ef4444; }
+  }
+}

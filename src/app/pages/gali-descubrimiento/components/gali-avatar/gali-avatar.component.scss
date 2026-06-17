@@ -1,0 +1,230 @@
+@import 'styles/gali-tokens';
+
+.avatar {
+  position: relative;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &--hero {
+    width: 80px;
+    height: 80px;
+  }
+
+  &--sidebar {
+    width: 48px;
+    height: 48px;
+  }
+
+  &--inline {
+    width: 32px;
+    height: 32px;
+  }
+
+  &__core {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: $gali-bg-elevated;
+    border: 2px solid $gali-text-primary;
+    box-shadow: $gali-shadow-gali;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      border: 1px solid rgba(78, 205, 196, 0.5);
+    }
+  }
+
+  &__mesh {
+    width: 100%;
+    height: 100%;
+    background: conic-gradient(
+      from 0deg at 50% 50%,
+      $gali-cyan 0deg,
+      $gali-blue 120deg,
+      $gali-violet 240deg,
+      $gali-cyan 360deg
+    );
+    filter: blur(4px);
+    animation: gali-mesh-rotate 8s linear infinite;
+  }
+
+  // STATES
+  &[data-state='thinking'] {
+    .avatar__mesh {
+      animation-duration: 2s;
+    }
+    animation: gali-pulse 800ms ease-in-out infinite;
+  }
+
+  &[data-state='speaking'] {
+    animation: gali-speak-bounce 1.6s ease-in-out infinite;
+  }
+
+  &[data-state='alert'] {
+    .avatar__mesh {
+      background: conic-gradient(
+        from 0deg,
+        $gali-orange,
+        #ff7547,
+        $gali-orange
+      );
+    }
+    animation: gali-alert-bounce 400ms $gali-ease-out;
+  }
+
+  &[data-state='success'] {
+    .avatar__mesh {
+      background: radial-gradient(circle at 50% 50%, $gali-success, #4eb888);
+    }
+  }
+
+  &__sonar {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid $gali-cyan;
+    animation: gali-sonar 1.2s ease-out infinite;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  &__orbital {
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: gali-orbit-rotate 1.2s linear infinite;
+    z-index: 3;
+
+    .dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: $gali-cyan;
+      border-radius: 50%;
+      box-shadow: 0 0 8px $gali-cyan-glow;
+
+      &:nth-child(1) {
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      &:nth-child(2) {
+        bottom: 8%;
+        right: 8%;
+      }
+      &:nth-child(3) {
+        bottom: 8%;
+        left: 8%;
+      }
+    }
+  }
+
+  &__success,
+  &__alert {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: $gali-font-display;
+    font-weight: 700;
+    color: $gali-text-primary;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  &--hero &__success,
+  &--hero &__alert {
+    font-size: 36px;
+  }
+
+  &--sidebar &__success,
+  &--sidebar &__alert {
+    font-size: 22px;
+  }
+
+  &--inline &__success,
+  &--inline &__alert {
+    font-size: 14px;
+  }
+}
+
+@keyframes gali-mesh-rotate {
+  from {
+    transform: rotate(0deg) scale(1.4);
+  }
+  to {
+    transform: rotate(360deg) scale(1.4);
+  }
+}
+
+@keyframes gali-pulse {
+  0%, 100% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes gali-speak-bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes gali-alert-bounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes gali-sonar {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+@keyframes gali-orbit-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@include gali-reduced-motion {
+  .avatar__mesh,
+  .avatar__orbital,
+  .avatar__sonar {
+    animation: none !important;
+  }
+  .avatar {
+    animation: none !important;
+  }
+}

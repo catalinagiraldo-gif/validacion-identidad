@@ -1,0 +1,197 @@
+<div class="ns-backdrop" (click)="close()"></div>
+
+<div class="ns" role="dialog" aria-label="Crear nueva skill">
+
+  <!-- Header -->
+  <div class="ns__header">
+    <div>
+      <span class="ns__eyebrow">
+        NUEVA SKILL
+        @switch (step()) {
+          @case ('template') { · Elegir punto de partida }
+          @case ('build') { · Configurar }
+          @case ('confirm') { · Confirmar }
+        }
+      </span>
+      <h2 class="ns__title">Crear automatización</h2>
+    </div>
+    <button type="button" class="ns__close" data-proto-skip (click)="close()">✕</button>
+  </div>
+
+  <!-- Steps indicator -->
+  <div class="ns__steps">
+    <div class="ns__step" [class.ns__step--active]="step() === 'template'" [class.ns__step--done]="step() !== 'template'">
+      <span class="ns__step-num">1</span> Plantilla
+    </div>
+    <div class="ns__step-line"></div>
+    <div class="ns__step" [class.ns__step--active]="step() === 'build'" [class.ns__step--done]="step() === 'confirm'">
+      <span class="ns__step-num">2</span> Configurar
+    </div>
+    <div class="ns__step-line"></div>
+    <div class="ns__step" [class.ns__step--active]="step() === 'confirm'">
+      <span class="ns__step-num">3</span> Confirmar
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="ns__body">
+
+    <!-- STEP 1: Choose template or scratch -->
+    @if (step() === 'template') {
+      <div class="ns__templates">
+        <p class="ns__section-label">Plantillas populares del marketplace</p>
+        @for (tmpl of marketplaceTemplates; track tmpl.id) {
+          <div class="ns__template-card" (click)="useTemplate(tmpl)">
+            <div class="ns__template-header">
+              <strong class="ns__template-name">{{ tmpl.nombre }}</strong>
+              <span class="ns__template-uses">{{ tmpl.uses }} usos</span>
+            </div>
+            <div class="ns__template-pipeline">
+              <span class="ns__tp-block ns__tp-block--trigger">{{ tmpl.trigger.agent | uppercase }} · {{ tmpl.trigger.interval }}</span>
+              <span class="ns__tp-arrow">→</span>
+              <span class="ns__tp-block ns__tp-block--cond">{{ tmpl.condition.metric }} {{ tmpl.condition.operator }} {{ tmpl.condition.value }}</span>
+              <span class="ns__tp-arrow">→</span>
+              <span class="ns__tp-block ns__tp-block--action">{{ tmpl.action.detail }}</span>
+            </div>
+          </div>
+        }
+        <button type="button" class="ns__from-scratch" data-proto-skip (click)="startFromScratch()">
+          + Crear desde cero
+        </button>
+      </div>
+    }
+
+    <!-- STEP 2: Build -->
+    @if (step() === 'build') {
+      <div class="ns__build">
+
+        <div class="ns__field-group">
+          <label class="ns__label">Nombre de la skill</label>
+          <input type="text" class="ns__input" placeholder="Ej: Auto-pausa si CTR cae"
+            [value]="draft().nombre"
+            (input)="onNombreChange($event)" />
+        </div>
+
+        <!-- TRIGGER block -->
+        <div class="ns__pipeline-block ns__pipeline-block--trigger">
+          <span class="ns__block-label">TRIGGER — ¿Cuándo se activa?</span>
+          <div class="ns__block-row">
+            <select class="ns__select" [value]="selectedAgent()"
+              (change)="onTriggerAgentChange($event)">
+              @for (ag of agentOptions; track ag.id) {
+                <option [value]="ag.id">{{ ag.label }}</option>
+              }
+            </select>
+            <select class="ns__select" [value]="draft().trigger.interval"
+              (change)="onTriggerIntervalChange($event)">
+              <option>cada 1h</option>
+              <option>cada 2h</option>
+              <option>cada 4h</option>
+              <option>cada 6h</option>
+              <option>cada 12h</option>
+              <option>cada 24h</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- CONDITION block -->
+        <div class="ns__pipeline-block ns__pipeline-block--condition">
+          <span class="ns__block-label">CONDICIÓN — ¿Cuándo es verdad?</span>
+          <div class="ns__block-row">
+            <select class="ns__select" [value]="draft().condition.metric"
+              (change)="onConditionMetricChange($event)">
+              @for (m of metrics(); track m) {
+                <option [value]="m">{{ m }}</option>
+              }
+            </select>
+            <select class="ns__select ns__select--op" [value]="draft().condition.operator"
+              (change)="onConditionOperatorChange($event)">
+              <option value="<">&lt;</option>
+              <option value=">">&gt;</option>
+              <option value="≥">≥</option>
+              <option value="≤">≤</option>
+              <option value="=">=</option>
+            </select>
+            <input type="text" class="ns__input ns__input--sm" placeholder="valor"
+              [value]="draft().condition.value"
+              (input)="onConditionValueChange($event)" />
+            <input type="text" class="ns__input ns__input--sm" placeholder="por ej: 48h"
+              [value]="draft().condition.duration"
+              (input)="onConditionDurationChange($event)" />
+          </div>
+        </div>
+
+        <!-- ACTION block -->
+        <div class="ns__pipeline-block ns__pipeline-block--action">
+          <span class="ns__block-label">ACCIÓN — ¿Qué hace Gali?</span>
+          <div class="ns__block-row">
+            <select class="ns__select" [value]="draft().action.type"
+              (change)="onActionTypeChange($event)">
+              @for (ac of actions(); track ac.id) {
+                <option [value]="ac.id">{{ ac.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <!-- NOTIFICATION block -->
+        <div class="ns__pipeline-block ns__pipeline-block--notif">
+          <span class="ns__block-label">NOTIFICACIÓN — ¿Qué te avisa?</span>
+          <input type="text" class="ns__input" placeholder="Mensaje que recibirás cuando se ejecute"
+            [value]="draft().notification"
+            (input)="onNotificationChange($event)" />
+        </div>
+
+      </div>
+    }
+
+    <!-- STEP 3: Confirm -->
+    @if (step() === 'confirm') {
+      <div class="ns__confirm">
+        <div class="ns__confirm-card">
+          <h4 class="ns__confirm-name">{{ draft().nombre }}</h4>
+
+          <div class="ns__confirm-pipeline">
+            <div class="ns__cp-step">
+              <span class="ns__cp-label">TRIGGER</span>
+              <span class="ns__cp-value">{{ agentLabel(draft().trigger.agent) }} · {{ draft().trigger.interval }}</span>
+            </div>
+            <div class="ns__cp-arrow">→</div>
+            <div class="ns__cp-step">
+              <span class="ns__cp-label">CONDICIÓN</span>
+              <span class="ns__cp-value">{{ draft().condition.metric }} {{ draft().condition.operator }} {{ draft().condition.value }}{{ draft().condition.duration ? ' por ' + draft().condition.duration : '' }}</span>
+            </div>
+            <div class="ns__cp-arrow">→</div>
+            <div class="ns__cp-step">
+              <span class="ns__cp-label">ACCIÓN</span>
+              <span class="ns__cp-value">{{ draft().action.detail }}</span>
+            </div>
+          </div>
+
+          <div class="ns__confirm-notif">
+            <span class="ns__confirm-notif-icon">🔔</span>
+            <span>{{ draft().notification }}</span>
+          </div>
+        </div>
+
+        <p class="ns__confirm-hint">La skill quedará activa de inmediato. Puedes pausarla en cualquier momento desde Modo Construir.</p>
+      </div>
+    }
+
+  </div>
+
+  <!-- Footer -->
+  <div class="ns__footer">
+    @if (step() === 'template') {
+      <button type="button" class="ns__btn ns__btn--ghost" data-proto-skip (click)="close()">Cancelar</button>
+    }
+    @if (step() === 'build') {
+      <button type="button" class="ns__btn ns__btn--ghost" data-proto-skip (click)="step.set('template')">← Atrás</button>
+      <button type="button" class="ns__btn ns__btn--primary" data-proto-skip (click)="goToConfirm()">Revisar →</button>
+    }
+    @if (step() === 'confirm') {
+      <button type="button" class="ns__btn ns__btn--ghost" data-proto-skip (click)="step.set('build')">← Editar</button>
+      <button type="button" class="ns__btn ns__btn--primary" data-proto-skip (click)="confirm()">✓ Activar skill</button>
+    }
+  </div>
+</div>

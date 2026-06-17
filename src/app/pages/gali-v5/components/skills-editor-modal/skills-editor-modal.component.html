@@ -1,0 +1,213 @@
+<div class="se-overlay" (click)="cerrar()">
+  <div class="se-modal" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="se-modal__header">
+      <div class="se-modal__title-group">
+        <span class="se-modal__eyebrow">⚙️ Editor de Reglas · {{ agenteNombre }}</span>
+        <h2 class="se-modal__title">
+          {{ step() === 1 ? 'Paso 1: Cuándo actuar' :
+             step() === 2 ? 'Paso 2: Qué hacer' :
+             'Paso 3: Confirmar y activar' }}
+        </h2>
+      </div>
+      <div class="se-modal__header-right">
+        <!-- Stepper -->
+        <div class="wizard-stepper">
+          <div class="wizard-step" [class.wizard-step--done]="step() > 1" [class.wizard-step--active]="step() === 1">1</div>
+          <div class="wizard-connector" [class.wizard-connector--done]="step() > 1"></div>
+          <div class="wizard-step" [class.wizard-step--done]="step() > 2" [class.wizard-step--active]="step() === 2">2</div>
+          <div class="wizard-connector" [class.wizard-connector--done]="step() > 2"></div>
+          <div class="wizard-step" [class.wizard-step--active]="step() === 3">3</div>
+        </div>
+        <button type="button" class="se-close-btn" (click)="cerrar()" data-proto-skip>
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="se-modal__body">
+
+      <!-- REGLAS EXISTENTES (sidebar) -->
+      <div class="se-sidebar">
+        <h3 class="se-sidebar__title">Mis reglas activas</h3>
+        <div class="regla-item" *ngFor="let r of reglas" [class.regla-item--active]="r.estado === 'activa'">
+          <div class="regla-item__header">
+            <span class="regla-item__nombre">{{ r.nombre }}</span>
+            <span class="regla-item__badge">{{ r.agente }}</span>
+          </div>
+          <p class="regla-item__trigger">{{ r.trigger }}</p>
+          <p class="regla-item__meta">{{ r.ejecuciones }} ejecuciones · {{ r.ultimaEjecucion }}</p>
+        </div>
+        <button type="button" class="add-regla-btn">+ Nueva regla</button>
+      </div>
+
+      <!-- WIZARD MAIN -->
+      <div class="se-main">
+
+        <!-- PASO 1: Trigger -->
+        <div *ngIf="step() === 1" class="wizard-step-panel">
+          <div class="wizard-field">
+            <label class="wizard-label">CUANDO...</label>
+            <select class="wizard-select" [ngModel]="selectedTrigger()" (ngModelChange)="selectedTrigger.set($event)">
+              <option *ngFor="let t of triggers" [value]="t.id">{{ t.label }}</option>
+            </select>
+          </div>
+
+          <div class="wizard-field" *ngIf="currentTrigger?.unidad !== null">
+            <label class="wizard-label">VALOR</label>
+            <div class="wizard-input-row">
+              <input
+                type="number"
+                class="wizard-input wizard-input--short"
+                [ngModel]="triggerValue()"
+                (ngModelChange)="triggerValue.set(+$event)"
+                step="0.1" min="0" />
+              <span class="wizard-unit">{{ currentTrigger?.unidad }}</span>
+            </div>
+          </div>
+
+          <div class="wizard-field" *ngIf="currentTrigger?.unidad !== null">
+            <label class="wizard-label">POR MÁS DE...</label>
+            <div class="wizard-input-row">
+              <input
+                type="number"
+                class="wizard-input wizard-input--short"
+                [ngModel]="triggerDuration()"
+                (ngModelChange)="triggerDuration.set(+$event)"
+                step="1" min="1" />
+              <span class="wizard-unit">horas consecutivas</span>
+            </div>
+          </div>
+
+          <div class="wizard-preview">
+            <span class="wizard-preview__label">Vista previa:</span>
+            <p class="wizard-preview__text">{{ triggerPreview }}</p>
+          </div>
+        </div>
+
+        <!-- PASO 2: Acción -->
+        <div *ngIf="step() === 2" class="wizard-step-panel">
+          <div class="wizard-field">
+            <label class="wizard-label">ENTONCES...</label>
+            <div class="accion-options">
+              <div
+                *ngFor="let a of acciones"
+                class="accion-option"
+                [class.accion-option--selected]="selectedAccion() === a.id"
+                (click)="selectedAccion.set(a.id); requiereAprobacion.set(a.requiereAprobacion)">
+                <div class="accion-option__check" [class.accion-option__check--on]="selectedAccion() === a.id">
+                  <i class="pi pi-check" *ngIf="selectedAccion() === a.id"></i>
+                </div>
+                <div class="accion-option__info">
+                  <span class="accion-option__label">{{ a.label }}</span>
+                  <span class="accion-option__agente">via {{ a.agente }}</span>
+                </div>
+                <span class="accion-option__tag" *ngIf="a.requiereAprobacion">requiere aprobación</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-field" *ngIf="selectedAccion() === 'escalar_presupuesto'">
+            <label class="wizard-label">¿CUÁNTO AUMENTAR?</label>
+            <div class="wizard-input-row">
+              <input type="range" class="wizard-range" [ngModel]="presupuestoPct()" (ngModelChange)="presupuestoPct.set(+$event)" min="5" max="50" step="5" />
+              <span class="wizard-range-val">+{{ presupuestoPct() }}%</span>
+            </div>
+          </div>
+
+          <div class="wizard-preview">
+            <span class="wizard-preview__label">Vista previa:</span>
+            <p class="wizard-preview__text">{{ triggerPreview }}, entonces: {{ accionPreview }}</p>
+          </div>
+        </div>
+
+        <!-- PASO 3: Confirmar -->
+        <div *ngIf="step() === 3" class="wizard-step-panel">
+          <div class="wizard-field">
+            <label class="wizard-label">NOMBRE DE LA REGLA</label>
+            <input
+              type="text"
+              class="wizard-input wizard-input--full"
+              [ngModel]="nombreRegla()"
+              (ngModelChange)="nombreRegla.set($event)"
+              placeholder="Ej. Auto-escalar cuando ROAS es bueno" />
+          </div>
+
+          <!-- Dry Run -->
+          <div class="dry-run-box">
+            <span class="dry-run-box__icon">🧪</span>
+            <div class="dry-run-box__content">
+              <span class="dry-run-box__title">Simulación con tu historial</span>
+              <p class="dry-run-box__body">
+                Si esta regla hubiera existido {{ dryRunResult.periodo }}, se habría activado
+                <strong>{{ dryRunResult.activaciones }} veces</strong>.
+                {{ dryRunResult.impacto }}.
+              </p>
+            </div>
+          </div>
+
+          <!-- Resumen final -->
+          <div class="rule-summary">
+            <div class="rule-summary__row">
+              <span class="rule-summary__key">Cuándo</span>
+              <span class="rule-summary__val">{{ triggerPreview }}</span>
+            </div>
+            <div class="rule-summary__row">
+              <span class="rule-summary__key">Acción</span>
+              <span class="rule-summary__val">{{ accionPreview }}</span>
+            </div>
+            <div class="rule-summary__row">
+              <span class="rule-summary__key">Agente</span>
+              <span class="rule-summary__val">{{ currentAccion?.agente }}</span>
+            </div>
+          </div>
+
+          <div class="wizard-field">
+            <label class="wizard-toggle-label">
+              <input type="checkbox" [ngModel]="activarAhora()" (ngModelChange)="activarAhora.set($event)" class="wizard-checkbox" />
+              <span>Activar esta regla inmediatamente</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="se-modal__footer">
+      <button
+        *ngIf="step() > 1"
+        type="button"
+        class="btn-se btn-se--ghost"
+        (click)="prevStep()"
+        data-proto-skip>
+        ← Atrás
+      </button>
+      <div style="flex: 1"></div>
+      <button type="button" class="btn-se btn-se--ghost" (click)="cerrar()" data-proto-skip>
+        Cancelar
+      </button>
+      <button
+        *ngIf="step() < 3"
+        type="button"
+        class="btn-se btn-se--primary"
+        (click)="nextStep()"
+        data-proto-skip>
+        Continuar →
+      </button>
+      <button
+        *ngIf="step() === 3"
+        type="button"
+        class="btn-se btn-se--primary"
+        [disabled]="saved$()"
+        (click)="guardar()">
+        <i *ngIf="saved$()" class="pi pi-spin pi-spinner"></i>
+        <span *ngIf="!saved$()">{{ activarAhora() ? 'Activar regla' : 'Guardar como borrador' }}</span>
+        <span *ngIf="saved$()">Guardando...</span>
+      </button>
+    </div>
+
+  </div>
+</div>

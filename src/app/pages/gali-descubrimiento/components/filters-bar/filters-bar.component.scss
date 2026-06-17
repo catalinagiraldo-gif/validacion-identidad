@@ -1,0 +1,171 @@
+@import 'styles/gali-tokens';
+
+.fb {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 12px 0;
+  margin-bottom: 16px;
+  border-bottom: 1px solid $gali-border-subtle;
+
+  &__filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__label,
+  &__sort-label {
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: $gali-text-muted;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid $gali-border-subtle;
+    border-radius: $gali-radius-pill;
+    color: $gali-text-secondary;
+    font-family: $gali-font-body;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 160ms ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: $gali-text-primary;
+      border-color: $gali-border-default;
+    }
+
+    &--active {
+      background: $gali-orange-soft;
+      border-color: $gali-orange;
+      color: $gali-orange;
+      animation: fb-chip-bounce 240ms $gali-ease-out;
+    }
+
+    &:focus-visible {
+      @include gali-focus;
+    }
+  }
+
+  &__chip-icon {
+    font-size: 11px;
+  }
+
+  &__sort {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+  }
+
+  &__select-wrap {
+    position: relative;
+  }
+
+  &__select-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid $gali-border-default;
+    border-radius: $gali-radius-input;
+    color: $gali-text-primary;
+    font-family: $gali-font-body;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 160ms ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &:focus-visible {
+      @include gali-focus;
+    }
+
+    &--open {
+      border-color: $gali-cyan;
+      .fb__chevron {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  &__select-icon {
+    font-size: 12px;
+  }
+
+  &__chevron {
+    color: $gali-text-muted;
+    font-size: 10px;
+    transition: transform 160ms ease;
+  }
+
+  &__select-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: $gali-bg-elevated;
+    border: 1px solid $gali-border-default;
+    border-radius: $gali-radius-input;
+    list-style: none;
+    padding: 4px;
+    margin: 0;
+    min-width: 180px;
+    box-shadow: $gali-shadow-card;
+    z-index: 20;
+    animation: fb-menu-in 200ms $gali-ease-out;
+  }
+
+  &__select-opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: $gali-text-primary;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 160ms ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    &--active {
+      background: rgba(244, 154, 61, 0.08);
+      color: $gali-orange;
+    }
+  }
+}
+
+@keyframes fb-chip-bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fb-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

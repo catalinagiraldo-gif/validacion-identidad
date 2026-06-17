@@ -1,0 +1,15 @@
+{
+  "producto": "Collar GPS",
+  "periodo": "esta semana",
+  "ventas_brutas": 1240000,
+  "costo_proveedor": { "total": 339500, "unidades": 47, "unitario": 28500, "pct": 27 },
+  "inversion_pauta": { "total": 310000, "pct": 25 },
+  "novedades": { "total": 85500, "unidades": 3, "pct": 7 },
+  "logistica": { "total": 94000, "pct": 8 },
+  "ganancia_neta": { "total": 411000, "margen_pct": 33 },
+  "roas_mostrado": 2.8,
+  "roas_real": 1.93,
+  "delta_vs_semana_anterior": -4,
+  "insight_gali": "Tu margen real cayó 4 pts vs semana pasada. La causa: más novedades de Cali.",
+  "moneda": "COP"
+}

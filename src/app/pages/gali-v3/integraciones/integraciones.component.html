@@ -1,0 +1,107 @@
+<div class="ig-wrapper">
+  <header class="ig-head">
+    <div>
+      <span class="ig-crumb">tu operación / integraciones</span>
+      <h1 class="ig-title">Conecta donde ya vendes.</h1>
+      <p class="ig-sub">
+        Tu catálogo, tus campañas y tu mensajería en un mismo flujo. Sin exportar CSVs, sin pegar IDs entre sistemas.
+        <strong>{{ conectadas() }} de {{ plataformas().length }} conectadas.</strong>
+      </p>
+    </div>
+  </header>
+
+  <section *ngFor="let c of categorias" class="ig-section">
+    <div class="ig-section-head">
+      <span class="ig-section-mono">{{ c.label }}</span>
+      <span class="ig-section-hint">{{ c.hint }}</span>
+      <span class="ig-section-rule"></span>
+    </div>
+
+    <div class="ig-grid">
+      <article *ngFor="let p of porCategoria(c.id)"
+               class="ig-card"
+               [attr.data-estado]="p.estado">
+        <header class="ig-card-head">
+          <span class="ig-glyph">{{ p.glyph }}</span>
+          <div>
+            <strong>{{ p.nombre }}</strong>
+            <span class="ig-card-estado">{{ labelEstado(p.estado) }}</span>
+          </div>
+          <span class="ig-card-dot" aria-hidden="true"></span>
+        </header>
+        <p class="ig-card-desc">{{ p.descripcion }}</p>
+        <p class="ig-card-valor">{{ p.valor }}</p>
+        <button
+          type="button"
+          class="ig-cta"
+          [class.ig-cta--ghost]="p.estado === 'conectada'"
+          (click)="abrirModal(p)">
+          {{ p.estado === 'conectada' ? 'gestionar' : p.estado === 'pendiente' ? 'continuar' : 'conectar' }}
+        </button>
+      </article>
+    </div>
+  </section>
+</div>
+
+<!-- Modal de conexión -->
+<ng-container *ngIf="modalAbierto() as plat">
+  <div class="igmodal" role="dialog" aria-modal="true">
+    <button class="igmodal__backdrop" (click)="cerrarModal()" aria-label="cerrar"></button>
+    <div class="igmodal__panel">
+      <header class="igmodal__head">
+        <span class="ig-glyph igmodal__glyph">{{ plat.glyph }}</span>
+        <div>
+          <span class="igmodal__crumb">conectar {{ plat.nombre.toLowerCase() }}</span>
+          <h2 class="igmodal__titulo">{{ plat.nombre }}</h2>
+        </div>
+        <button class="igmodal__close" (click)="cerrarModal()">✕</button>
+      </header>
+
+      <nav class="igmodal__pasos">
+        <span *ngFor="let n of [1,2,3]"
+              class="igmodal__paso"
+              [class.igmodal__paso--current]="paso() === n"
+              [class.igmodal__paso--done]="paso() > n">0{{ n }}</span>
+      </nav>
+
+      <div class="igmodal__cuerpo">
+        <ng-container [ngSwitch]="paso()">
+          <div *ngSwitchCase="1">
+            <h3 class="igmodal__h">Vincula tu cuenta</h3>
+            <p class="igmodal__p">Abriremos una ventana segura para iniciar sesión en {{ plat.nombre }} y autorizar el acceso de lectura.</p>
+            <ul class="igmodal__bullets">
+              <li>Solo leemos catálogo, pedidos y métricas.</li>
+              <li>No tocamos contraseñas ni datos sensibles del cliente.</li>
+              <li>Puedes desconectar cuando quieras.</li>
+            </ul>
+          </div>
+
+          <div *ngSwitchCase="2">
+            <h3 class="igmodal__h">Pega tu API key (opcional)</h3>
+            <p class="igmodal__p">Si prefieres conexión directa por API, pega aquí tu clave personal de {{ plat.nombre }}.</p>
+            <input
+              type="text"
+              class="igmodal__input"
+              [value]="apiKey()"
+              (input)="apiKey.set($any($event.target).value)"
+              placeholder="sk_••••••••••••••"/>
+          </div>
+
+          <div *ngSwitchCase="3">
+            <h3 class="igmodal__h">Confirma y conecta</h3>
+            <p class="igmodal__p">Voy a importar tu catálogo, sincronizar tus pedidos pendientes y armar el primer reporte. Te toma ~2 minutos.</p>
+            <p class="igmodal__hint">Cuando termine, te aviso aquí mismo y en tu lienzo.</p>
+          </div>
+        </ng-container>
+      </div>
+
+      <footer class="igmodal__foot">
+        <button type="button" class="igmodal__nav igmodal__nav--ghost" *ngIf="paso() > 1" (click)="retroceder()">← atrás</button>
+        <span class="igmodal__foot-spacer"></span>
+        <button type="button" class="igmodal__nav igmodal__nav--primary" (click)="avanzar()">
+          {{ paso() === 3 ? 'conectar' : 'siguiente →' }}
+        </button>
+      </footer>
+    </div>
+  </div>
+</ng-container>

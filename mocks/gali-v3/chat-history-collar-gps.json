@@ -1,0 +1,72 @@
+{
+  "projectId": "collar-gps-2026",
+  "messages": [
+    {
+      "id": "msg-1",
+      "role": "gali",
+      "timestamp": "2026-05-08T10:14:00",
+      "content": "Hola Alejandra. Veo que vendes mascotas y tu perfil convierte mejor con tono emocional. Encontré 3 productos con tendencia esta semana — ¿quieres revisarlos?",
+      "artifacts": []
+    },
+    {
+      "id": "msg-2",
+      "role": "user",
+      "timestamp": "2026-05-08T10:15:00",
+      "content": "Muéstrame productos para mamás dueñas de perro"
+    },
+    {
+      "id": "msg-3",
+      "role": "gali",
+      "timestamp": "2026-05-08T10:15:18",
+      "content": "Listo. Encontré 3 productos con esa intersección. El que destaca es el Collar GPS — 340 ventas/sem en Colombia, margen 71%, ventana de 14 días antes de saturación.",
+      "artifacts": [
+        { "type": "product-card", "ref": "prod-001" }
+      ]
+    },
+    {
+      "id": "msg-4",
+      "role": "user",
+      "timestamp": "2026-05-08T10:18:00",
+      "content": "Elijo el Collar GPS. ¿Qué ángulos están funcionando?"
+    },
+    {
+      "id": "msg-5",
+      "role": "gali",
+      "timestamp": "2026-05-08T10:18:25",
+      "content": "Analicé 47 vendedores activos esta semana. 38% usaron 'Mamá / seguridad emocional', 29% 'Regalo ideal', 22% 'Control sin ansiedad'. ¿Vamos con el primero? Encaja con tu tono histórico.",
+      "artifacts": [
+        { "type": "angles-panel", "ref": "angles-collar-gps" }
+      ]
+    },
+    {
+      "id": "msg-6",
+      "role": "user",
+      "timestamp": "2026-05-08T10:21:00",
+      "content": "Sí, vamos con mamá / seguridad"
+    },
+    {
+      "id": "msg-7",
+      "role": "gali",
+      "timestamp": "2026-05-08T10:21:30",
+      "content": "Perfecto. Guardé tu decisión en memoria del proyecto. Ahora armo la landing — toma 30 segundos. Mientras tanto, ¿quieres que también genere las 3 piezas de creatives?",
+      "artifacts": [
+        { "type": "landing-artifact", "ref": "land-1" }
+      ]
+    },
+    {
+      "id": "msg-8",
+      "role": "user",
+      "timestamp": "2026-05-20T15:42:00",
+      "content": "¿Cómo voy con la campaña?"
+    },
+    {
+      "id": "msg-9",
+      "role": "gali",
+      "timestamp": "2026-05-20T15:42:08",
+      "content": "ROAS 2.8x sostenido, 47 ventas en 18 días. Detecté que el Creative B tiene 2x más CTR que el A. Recomiendo pausar el A y redirigir presupuesto. ¿Lo hago?",
+      "artifacts": [
+        { "type": "campaign-health", "ref": "camp-collar-gps" }
+      ]
+    }
+  ]
+}

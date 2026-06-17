@@ -1,0 +1,34 @@
+@import 'styles/gali-v5-tokens';
+
+/**
+ * Host de cada página dentro del shell de Gali v5.
+ * flex:1 + min-height:0 hace que el host llene el espacio disponible del flex column del shell.
+ * overflow-y:auto activa el scroll interno del componente (los estilos del shell no atraviesan view encapsulation).
+ */
+@mixin dropi-page-host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+@mixin dropi-content-panel {
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  background: $white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+@mixin dropi-toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $size-3;
+  padding: $size-3 $size-4;
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  background: $gray-50;
+}

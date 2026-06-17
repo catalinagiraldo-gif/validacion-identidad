@@ -1,0 +1,109 @@
+<div class="lz">
+  <div class="lz__atmos" aria-hidden="true"></div>
+
+  <header class="lz__pulso">
+    <div class="lz__crumbs" aria-label="Dónde estás">
+      <span class="lz__crumbs-here">Lienzo</span>
+      <span class="lz__crumbs-sep">·</span>
+      <span class="lz__crumbs-mono">tu punto de partida</span>
+    </div>
+
+    <div class="lz__input-wrap">
+      <gali-header-input contextoVista="lienzo"></gali-header-input>
+    </div>
+
+    <div class="lz__pulso-aside" aria-hidden="true">
+      <kbd class="lz__kbd">⌘ K</kbd>
+      <span class="lz__pulso-hint">para hablar con Gali</span>
+    </div>
+  </header>
+
+  <main class="lz__main">
+    <!-- Tus proyectos -->
+    <aside class="lz__rail-memoria" aria-label="Tus proyectos">
+      <header class="lz__rail-head">
+        <gali-mark state="memoria" size="sm"></gali-mark>
+        <span class="lz__rail-mono">Tus proyectos</span>
+        <a class="lz__rail-link" [routerLink]="['/gali-v2/proyectos']" aria-label="Ver todos los proyectos">ver todos</a>
+      </header>
+
+      <ul class="lz__proj-list" *ngIf="(proyectos$ | async) as proyectos">
+        <li *ngFor="let p of proyectos.slice(0, 4)" class="lz__proj">
+          <a [routerLink]="['/gali-v2/proyectos', p.id]" class="lz__proj-link">
+            <span class="lz__proj-status" [attr.data-status]="p.status"></span>
+            <div class="lz__proj-body">
+              <strong class="lz__proj-name">{{ p.name }}</strong>
+              <span class="lz__proj-next" *ngIf="p.galiMemory.siguienteAccion">
+                {{ p.galiMemory.siguienteAccion }}
+              </span>
+            </div>
+            <span class="lz__proj-metric" *ngIf="p.metrics.roasActual > 0">
+              {{ p.metrics.roasActual | number:'1.1-1' }}x
+            </span>
+          </a>
+        </li>
+      </ul>
+
+    </aside>
+
+    <!-- Centro -->
+    <section class="lz__foco">
+      <span class="lz__foco-mono">Ahora mismo</span>
+      <ng-container *ngIf="tituloFoco(nivel$ | async) as t">
+        <h1 class="lz__title">
+          {{ t.intro }}<br/>
+          <em>{{ t.em }}</em>
+        </h1>
+      </ng-container>
+
+      <p class="lz__persona" *ngIf="persona$ | async as persona">
+        Modo <strong>{{ persona.label }}</strong> · {{ persona.tagline }}
+      </p>
+
+      <div class="lz__atajos">
+        <a
+          class="lz__atajo lz__atajo--cta"
+          [routerLink]="['/gali-v2/onboarding']"
+          *ngIf="!(perfil$ | async)">
+          <span class="lz__atajo-mono">M3 · primero</span>
+          <strong>Conóceme en 3 preguntas</strong>
+          <span class="lz__atajo-desc">Onboarding de Gali. Tres preguntas, momento wow personalizado.</span>
+        </a>
+        <a class="lz__atajo" [routerLink]="['/gali-v2/proyectos']">
+          <span class="lz__atajo-mono">M4</span>
+          <strong>Mis Proyectos</strong>
+          <span class="lz__atajo-desc">Lo que Gali recuerda contigo. Memoria viva, editable.</span>
+        </a>
+        <a class="lz__atajo" [routerLink]="['/gali-v2/novedades']">
+          <span class="lz__atajo-mono">M5</span>
+          <strong>Novedades · Triage</strong>
+          <span class="lz__atajo-desc">3 zonas de peso visual distinto. Alivio, no overwhelm.</span>
+        </a>
+        <a class="lz__atajo" [routerLink]="['/gali-v2/playground-maestria']">
+          <span class="lz__atajo-mono">M1</span>
+          <strong>Playground Maestría</strong>
+          <span class="lz__atajo-desc">La voz adaptativa en los 3 niveles, lado a lado.</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Señales activas -->
+    <aside class="lz__rail-accion" aria-label="Señales activas">
+      <header class="lz__rail-head">
+        <gali-mark state="propuesta" size="sm"></gali-mark>
+        <span class="lz__rail-mono">Señales activas</span>
+      </header>
+
+      <ul class="lz__senal-list" *ngIf="(senales$ | async) as senales">
+        <li *ngFor="let s of senales.slice(0, 3)" class="lz__senal" [attr.data-tipo]="s.tipo">
+          <span class="lz__senal-tipo">{{ s.tipo }}</span>
+          <strong class="lz__senal-titulo">{{ s.titulo }}</strong>
+          <span class="lz__senal-desc">{{ s.descripcion }}</span>
+          <span class="lz__senal-cta" *ngIf="s.accionSugerida">{{ s.accionSugerida }} →</span>
+        </li>
+      </ul>
+    </aside>
+  </main>
+
+  <gali-response-overlay></gali-response-overlay>
+</div>

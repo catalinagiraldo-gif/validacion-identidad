@@ -1,0 +1,133 @@
+@import 'styles/gali-v5-tokens';
+
+$alert-agent-color: var(--alert-agent-color, #{$primary-500});
+
+.gali-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $size-4;
+  padding: $size-3 $size-4;
+  border-radius: $radius-md;
+  border-left: 3px solid $alert-agent-color;
+  background: rgba(0, 0, 0, 0.025);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+
+  // Variante: decisión (urgente — fondo más intenso)
+  &--decision {
+    background: #fffbeb;
+    border-left-color: #f59e0b;
+  }
+
+  // Variante: oportunidad (índigo suave)
+  &--opportunity {
+    background: #f5f3ff;
+    border-left-color: #818cf8;
+  }
+
+  // Variante: completado (verde suave)
+  &--completed {
+    background: #f0fdf4;
+    border-left-color: #22c55e;
+  }
+
+  // Variante: monitoring (borde del agente, fondo neutro)
+  &--monitoring {
+    background: $gray-50;
+    border-left-color: $alert-agent-color;
+  }
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $alert-agent-color;
+    flex-shrink: 0;
+
+    &--pulse {
+      animation: alert-dot-pulse 2.4s ease-in-out infinite;
+    }
+  }
+
+  &__body {
+    display: flex;
+    align-items: baseline;
+    gap: $size-2;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+
+  &__agent {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-bold;
+    color: $gray-700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__message {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    color: $gray-600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    flex-shrink: 0;
+  }
+
+  &__cta {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 $size-3;
+    border-radius: $radius-sm;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    white-space: nowrap;
+    border: 1px solid transparent;
+
+    &--primary {
+      background: $alert-agent-color;
+      color: $white;
+
+      &:hover { opacity: 0.88; }
+    }
+
+    &--secondary {
+      background: transparent;
+      color: $gray-600;
+      border-color: $gray-200;
+
+      &:hover {
+        background: $gray-50;
+        border-color: $gray-300;
+      }
+    }
+  }
+}
+
+@keyframes alert-dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}

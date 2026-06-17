@@ -1,0 +1,92 @@
+<div class="pm">
+  <div class="pm__atmos" aria-hidden="true"></div>
+
+  <header class="pm__head">
+    <div class="pm__crumbs">
+      <span class="pm__crumbs-mono">gali-v2 / playground</span>
+      <span class="pm__crumbs-dot">·</span>
+      <a class="pm__crumbs-link" [routerLink]="['/gali-v2']">ir al lienzo →</a>
+    </div>
+
+    <div class="pm__mast">
+      <gali-mark state="reposo" size="xl"></gali-mark>
+      <div class="pm__mast-text">
+        <h1 class="pm__title">
+          La misma <em>voz</em>,<br/>tres formas de hablarte.
+        </h1>
+        <p class="pm__sub">
+          Gali se reconfigura según tu nivel de maestría — densidad, verbosidad, controles.
+          Cambia de nivel y observa cómo el mismo hecho se cuenta distinto.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <section class="pm__section" aria-label="Selector de nivel">
+    <div class="pm__section-head">
+      <span class="pm__section-mono">01 — Nivel actual</span>
+      <span class="pm__section-rule"></span>
+    </div>
+
+    <div class="pm__levels">
+      <button
+        *ngFor="let n of niveles"
+        type="button"
+        class="pm__level"
+        [class.pm__level--active]="(nivelActual$ | async) === n"
+        (click)="setNivel(n)">
+        <span class="pm__level-mono">{{ n.toUpperCase() }}</span>
+        <strong class="pm__level-label">{{ persona(n).label }}</strong>
+        <span class="pm__level-tag">{{ persona(n).tagline }}</span>
+        <dl class="pm__level-meta">
+          <div><dt>Densidad</dt><dd>{{ persona(n).densidad }}</dd></div>
+          <div><dt>Voz</dt><dd>{{ persona(n).verbosidad }}</dd></div>
+          <div><dt>Avanzado</dt><dd>{{ persona(n).controlesAvanzados ? 'sí' : 'no' }}</dd></div>
+        </dl>
+      </button>
+    </div>
+  </section>
+
+  <section class="pm__section" aria-label="Comparativa de voz">
+    <div class="pm__section-head">
+      <span class="pm__section-mono">02 — Comparativa de voz</span>
+      <span class="pm__section-rule"></span>
+    </div>
+
+    <div class="pm__samples">
+      <article class="pm__sample" *ngFor="let s of samples">
+        <header class="pm__sample-head">
+          <gali-mark state="propuesta" size="sm"></gali-mark>
+          <span>{{ s.context }}</span>
+        </header>
+        <div class="pm__sample-grid">
+          <div
+            *ngFor="let n of niveles"
+            class="pm__sample-voice"
+            [class.pm__sample-voice--active]="(nivelActual$ | async) === n">
+            <span class="pm__sample-voice-tag">{{ persona(n).label }}</span>
+            <p class="pm__sample-voice-text">{{ s.voices[n] }}</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="pm__section" aria-label="Estados del sello">
+    <div class="pm__section-head">
+      <span class="pm__section-mono">03 — Estados del sello ✦</span>
+      <span class="pm__section-rule"></span>
+    </div>
+
+    <div class="pm__marks">
+      <div class="pm__mark-cell" *ngFor="let st of markStates">
+        <gali-mark [state]="st" size="xl"></gali-mark>
+        <span class="pm__mark-cell-label">{{ st }}</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pm__foot">
+    <span class="pm__foot-mono">gali-v2 · prototipo disruptivo · cuaderno de operador</span>
+  </footer>
+</div>

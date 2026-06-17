@@ -1,0 +1,136 @@
+{
+  "plantillas": [
+    {
+      "id": "tpl-1",
+      "name": "Lanza tu primer producto",
+      "icon": "🚀",
+      "descripcion": "Flujo guiado de descubrimiento → estrategia → landing → campaña. Para empezar sin perderte.",
+      "categoria": "Para empezar",
+      "nivel": "aprendiz",
+      "popularidad": 1247,
+      "tiempo_estimado": "2-3 horas",
+      "tags": ["lanzamiento", "primera venta", "wizard"]
+    },
+    {
+      "id": "tpl-2",
+      "name": "Auto-pausa CTR bajo",
+      "icon": "⏸",
+      "descripcion": "Si una campaña baja de CTR 2% en 24h, la pausa automáticamente y te avisa por WhatsApp.",
+      "categoria": "Automatización",
+      "nivel": "operador",
+      "popularidad": 892,
+      "tiempo_estimado": "5 min",
+      "tags": ["automatización", "campañas", "alertas"]
+    },
+    {
+      "id": "tpl-3",
+      "name": "Reporte semanal por WhatsApp",
+      "icon": "📊",
+      "descripcion": "Cada domingo Gali te envía resumen al WA: pedidos, ROAS, productos top, alertas.",
+      "categoria": "Reportes",
+      "nivel": "operador",
+      "popularidad": 1532,
+      "tiempo_estimado": "3 min",
+      "tags": ["reportes", "whatsapp", "automatización"]
+    },
+    {
+      "id": "tpl-4",
+      "name": "Recuperar carritos abandonados",
+      "icon": "🛒",
+      "descripcion": "Detecta carritos sin completar y envía secuencia de mensajes WA con descuento progresivo.",
+      "categoria": "Conversión",
+      "nivel": "operador",
+      "popularidad": 743,
+      "tiempo_estimado": "10 min",
+      "tags": ["conversión", "whatsapp", "abandonos"]
+    },
+    {
+      "id": "tpl-5",
+      "name": "Escala lo que funciona",
+      "icon": "📈",
+      "descripcion": "Cuando ROAS supere 3.0x sostenido 72h, duplica presupuesto automáticamente (con tope que tú defines).",
+      "categoria": "Automatización",
+      "nivel": "estratega",
+      "popularidad": 412,
+      "tiempo_estimado": "5 min",
+      "tags": ["escalado", "campañas"]
+    },
+    {
+      "id": "tpl-6",
+      "name": "Mi operación de hoy",
+      "icon": "📋",
+      "descripcion": "Vista personalizada: pedidos del día + novedades + campañas activas + saldo. Todo en una pantalla.",
+      "categoria": "Vista",
+      "nivel": "aprendiz",
+      "popularidad": 2103,
+      "tiempo_estimado": "1 min",
+      "tags": ["vista", "diaria"]
+    },
+    {
+      "id": "tpl-7",
+      "name": "Diagnóstico semanal con Claude",
+      "icon": "✦",
+      "descripcion": "Cada lunes, Claude analiza tus métricas y propone 3 acciones concretas para la semana.",
+      "categoria": "IA Avanzada",
+      "nivel": "estratega",
+      "popularidad": 287,
+      "tiempo_estimado": "5 min",
+      "tags": ["claude", "diagnóstico", "estrategia"]
+    },
+    {
+      "id": "tpl-8",
+      "name": "Vigilante anti-baneo",
+      "icon": "🛡",
+      "descripcion": "Analiza tus creatives antes de publicar contra políticas Meta/TikTok. Te avisa qué cambiar.",
+      "categoria": "Riesgo",
+      "nivel": "operador",
+      "popularidad": 1089,
+      "tiempo_estimado": "3 min",
+      "tags": ["baneos", "creatives", "riesgo"]
+    },
+    {
+      "id": "tpl-9",
+      "name": "Renueva creatives cada 14 días",
+      "icon": "🎨",
+      "descripcion": "Cuando un creative lleve 14 días activo, Gali genera 3 variaciones y te las muestra para aprobar.",
+      "categoria": "Automatización",
+      "nivel": "operador",
+      "popularidad": 654,
+      "tiempo_estimado": "5 min",
+      "tags": ["creatives", "fatiga", "automatización"]
+    },
+    {
+      "id": "tpl-10",
+      "name": "Reto: 50 ventas en 7 días",
+      "icon": "🎯",
+      "descripcion": "Misión gamificada con checkpoints diarios. Comparas tu progreso con tu cohorte.",
+      "categoria": "Gamificación",
+      "nivel": "operador",
+      "popularidad": 521,
+      "tiempo_estimado": "Continuo",
+      "tags": ["reto", "gamificación", "objetivo"]
+    },
+    {
+      "id": "tpl-11",
+      "name": "Importa producto desde URL",
+      "icon": "🔗",
+      "descripcion": "Pegas link de TikTok Shop / AliExpress / Shopify y Gali extrae producto + propone si vale la pena.",
+      "categoria": "Productos",
+      "nivel": "operador",
+      "popularidad": 1876,
+      "tiempo_estimado": "1 min",
+      "tags": ["productos", "import", "research"]
+    },
+    {
+      "id": "tpl-12",
+      "name": "Asistente WA 24/7",
+      "icon": "💬",
+      "descripcion": "Cliente te escribe por WA → agente responde con info del producto y procesa orden si confirma.",
+      "categoria": "Atención",
+      "nivel": "estratega",
+      "popularidad": 387,
+      "tiempo_estimado": "15 min",
+      "tags": ["whatsapp", "atención", "ventas"]
+    }
+  ]
+}

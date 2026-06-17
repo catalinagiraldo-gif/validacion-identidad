@@ -1,0 +1,334 @@
+@import 'styles/gali-v3-tokens';
+
+:host { display: block; max-width: 1280px; margin: 0 auto; }
+.mapa { display: flex; flex-direction: column; gap: $gv3-space-4; }
+
+.mapa__sparkle { color: $gv3-sparkle-color; filter: drop-shadow($gv3-sparkle-glow); }
+
+// --- Hero ---
+.mapa__hero {
+  @include gv3-artifact;
+  padding: $gv3-space-5 $gv3-space-6;
+  background:
+    radial-gradient(at 0% 0%, $gv3-orange-tint 0px, transparent 50%),
+    radial-gradient(at 100% 100%, $gv3-sage-tint 0px, transparent 50%),
+    $gv3-bg-surface;
+}
+.mapa__hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: $gv3-space-3;
+  flex-wrap: wrap;
+}
+.mapa__hero-tag {
+  @include gv3-mono-tag;
+  color: $gv3-text-secondary;
+  background: $gv3-bg-warm;
+  padding: 4px 10px;
+  border-radius: $gv3-radius-pill;
+}
+.mapa__hero-shortcut {
+  @include gv3-mono-tag;
+  color: $gv3-text-tertiary;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+.mapa__hero h1 {
+  @include gv3-display-tight;
+  font-size: 38px;
+  margin: 0 0 $gv3-space-2;
+}
+.mapa__intro {
+  margin: 0 0 $gv3-space-4;
+  font-size: $gv3-text-base;
+  color: $gv3-text-secondary;
+  line-height: 1.55;
+  max-width: 720px;
+}
+
+.mapa__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $gv3-space-3;
+  font-family: $gv3-font-mono;
+  font-size: 11px;
+  color: $gv3-text-tertiary;
+  letter-spacing: 0.04em;
+  span { display: inline-flex; align-items: center; gap: 6px; }
+}
+.mapa__legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  &--ready { background: $gv3-sage; }
+  &--legacy { background: $gv3-amber; }
+  &--available { background: $gv3-text-muted; }
+  &--soon { background: transparent; border: 1px dashed $gv3-border-default; }
+}
+
+// --- Estás aquí breadcrumb ---
+.mapa__here {
+  padding: $gv3-space-2 $gv3-space-4;
+  background: $gv3-orange-tint;
+  border-left: 3px solid $gv3-orange;
+  border-radius: $gv3-radius-md;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.mapa__here-tag {
+  @include gv3-mono-tag;
+  color: $gv3-rust;
+  letter-spacing: 0.04em;
+}
+.mapa__here strong {
+  font-family: $gv3-font-display;
+  font-size: $gv3-text-lg;
+  color: $gv3-text-primary;
+  font-weight: 500;
+}
+.mapa__here-sub {
+  font-size: 12.5px;
+  color: $gv3-text-secondary;
+  font-style: italic;
+}
+
+// --- Zona ---
+.mapa__zona {
+  @include gv3-artifact;
+  padding: $gv3-space-4 $gv3-space-5;
+  &[data-color="terracota"] { border-left: 4px solid $gv3-terracota; }
+  &[data-color="amber"]     { border-left: 4px solid $gv3-amber; }
+  &[data-color="sage"]      { border-left: 4px solid $gv3-sage; }
+  &[data-color="rust"]      { border-left: 4px solid $gv3-rust; }
+  &[data-color="orange"]    { border-left: 4px solid $gv3-orange; }
+}
+
+.mapa__zona-head {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: $gv3-space-3;
+  align-items: center;
+  margin-bottom: $gv3-space-3;
+  padding-bottom: $gv3-space-3;
+  border-bottom: 1px solid $gv3-border-whisper;
+  h3 {
+    margin: 0;
+    font-family: $gv3-font-display;
+    font-size: $gv3-text-xl;
+    color: $gv3-text-primary;
+    font-weight: 500;
+  }
+  p {
+    margin: 2px 0 0;
+    font-size: 12.5px;
+    color: $gv3-text-tertiary;
+  }
+}
+.mapa__zona-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: $gv3-radius-md;
+  background: $gv3-bg-warm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  [data-color="terracota"] & { background: $gv3-terracota-tint; }
+  [data-color="amber"] & { background: $gv3-amber-tint; }
+  [data-color="sage"] & { background: $gv3-sage-tint; }
+  [data-color="rust"] & { background: $gv3-rust-tint; }
+  [data-color="orange"] & { background: $gv3-orange-tint; }
+}
+
+// --- Nodos ---
+.mapa__nodos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $gv3-space-2;
+}
+
+.mapa__nodo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: $gv3-space-3;
+  background: $gv3-bg-surface;
+  border: 1px solid $gv3-border-whisper;
+  border-radius: $gv3-radius-md;
+  cursor: pointer;
+  text-align: left;
+  font-family: $gv3-font-body;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+  position: relative;
+  &:hover {
+    border-color: $gv3-border-warm;
+    background: $gv3-bg-warm;
+    transform: translateY(-2px);
+  }
+  &:focus-visible {
+    outline: 2px solid $gv3-orange;
+    outline-offset: 3px;
+  }
+  &.is-highlighted {
+    border-color: $gv3-border-warm;
+    box-shadow: $gv3-shadow-sm;
+  }
+  &.is-active {
+    border: 2px solid $gv3-orange;
+    background: $gv3-orange-tint;
+    animation: gv3-signal-pulse 2s infinite;
+    .mapa__nodo-state-dot {
+      background: $gv3-orange;
+      box-shadow: 0 0 0 3px $gv3-orange-tint;
+    }
+  }
+  &.is-legacy {
+    opacity: 0.75;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 6px,
+      rgba(184, 89, 58, 0.04) 6px,
+      rgba(184, 89, 58, 0.04) 7px
+    ), $gv3-bg-surface;
+    border-style: dashed;
+  }
+  &.is-soon {
+    opacity: 0.5;
+    cursor: default;
+    &:hover { transform: none; background: $gv3-bg-surface; }
+  }
+  &.is-available {
+    .mapa__nodo-state-dot { background: $gv3-text-muted; }
+  }
+
+  header {
+    display: grid;
+    grid-template-columns: 24px 1fr 8px;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+.mapa__nodo-icon { font-size: 18px; text-align: center; }
+.mapa__nodo strong {
+  display: block;
+  font-size: $gv3-text-sm;
+  color: $gv3-text-primary;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mapa__nodo-sub {
+  display: block;
+  font-size: 11px;
+  color: $gv3-text-tertiary;
+  font-style: italic;
+  margin-top: 1px;
+}
+.mapa__nodo-state-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $gv3-sage;
+}
+.is-legacy .mapa__nodo-state-dot { background: $gv3-amber; }
+.is-soon .mapa__nodo-state-dot {
+  background: transparent;
+  border: 1px dashed $gv3-border-default;
+}
+
+.mapa__nodo-kpi {
+  display: block;
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid $gv3-border-whisper;
+  font-family: $gv3-font-mono;
+  font-size: 10.5px;
+  color: $gv3-text-tertiary;
+  letter-spacing: 0.02em;
+}
+
+// --- Edit mode ---
+.mapa__edit-bar {
+  display: flex;
+  align-items: center;
+  gap: $gv3-space-3;
+  margin-top: $gv3-space-3;
+  padding-top: $gv3-space-3;
+  border-top: 1px solid $gv3-border-whisper;
+  flex-wrap: wrap;
+}
+.mapa__edit-toggle {
+  padding: 8px 16px;
+  background: $gv3-bg-warm;
+  border: 1px solid $gv3-border-warm;
+  border-radius: $gv3-radius-md;
+  font-family: $gv3-font-body;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: $gv3-text-primary;
+  cursor: pointer;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+  &:hover { background: $gv3-orange-tint; }
+  &.is-on {
+    background: $gv3-orange;
+    color: $gv3-text-onAccent;
+    border-color: $gv3-orange;
+  }
+}
+.mapa__reset {
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid $gv3-border-default;
+  border-radius: $gv3-radius-md;
+  font-family: $gv3-font-mono;
+  font-size: 11px;
+  color: $gv3-text-secondary;
+  cursor: pointer;
+  &:hover { background: $gv3-rust-tint; color: $gv3-rust; border-color: $gv3-rust; }
+}
+.mapa__edit-hint {
+  @include gv3-mono-tag;
+  color: $gv3-text-tertiary;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.mapa__zona.is-drop-target {
+  background: linear-gradient(135deg, $gv3-orange-tint, transparent 60%), $gv3-bg-surface;
+  outline: 2px dashed $gv3-orange;
+  outline-offset: -4px;
+}
+
+.mapa__nodo.is-edit-mode {
+  cursor: grab;
+  padding-left: 24px;
+  position: relative;
+  &:active { cursor: grabbing; }
+}
+.mapa__nodo.is-dragging {
+  opacity: 0.4;
+  transform: scale(0.95);
+}
+.mapa__nodo.is-drop-over {
+  border: 2px solid $gv3-orange;
+  background: $gv3-orange-tint;
+  transform: scale(1.02);
+}
+.mapa__nodo-handle {
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $gv3-text-muted;
+  font-size: 12px;
+  letter-spacing: -1px;
+  user-select: none;
+}

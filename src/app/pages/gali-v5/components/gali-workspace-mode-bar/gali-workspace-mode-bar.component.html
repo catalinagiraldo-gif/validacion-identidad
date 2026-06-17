@@ -1,0 +1,69 @@
+<div class="mode-bar">
+  <!-- Left: mode tabs -->
+  <nav class="mode-bar__modes" aria-label="Modos de workspace">
+    @for (mode of modes; track mode.id) {
+      <button
+        type="button"
+        class="mode-btn"
+        [class.mode-btn--active]="activeMode === mode.id"
+        (click)="setMode(mode.id)"
+        [title]="mode.description"
+        data-proto-skip>
+        <span class="mode-btn__icon" aria-hidden="true">{{ mode.icon }}</span>
+        <span class="mode-btn__label">{{ mode.label }}</span>
+      </button>
+    }
+  </nav>
+
+  <!-- Breadcrumb cuando estamos en sub-rutas -->
+  @if (currentSubRoute) {
+    <div class="mode-bar__subroute">
+      <span class="mode-bar__subroute-sep">/</span>
+      <span class="mode-bar__subroute-label">{{ currentSubRoute }}</span>
+    </div>
+  }
+
+  <!-- Center: objective progress -->
+  <div class="mode-bar__objetivo">
+    <span class="mode-bar__obj-label">🎯 {{ objetivoLabel }}</span>
+    <div class="mode-bar__obj-bar" role="progressbar"
+      [attr.aria-valuenow]="progress" aria-valuemin="0" aria-valuemax="100">
+      <div class="mode-bar__obj-fill" [style.width.%]="progress"></div>
+    </div>
+    <span class="mode-bar__obj-nums">{{ objetivoActual }}/{{ objetivoMeta }} · {{ objetivoPeriodo }}</span>
+  </div>
+
+  <!-- Right: live mode + Gali status -->
+  <div class="mode-bar__gali">
+
+    <!-- Autopilot toggle — OFF abre configurador, ON desactiva directamente -->
+    <button
+      type="button"
+      class="mode-bar__autopilot"
+      [class.mode-bar__autopilot--on]="ws.autopilot()"
+      (click)="onAutopilotClick()"
+      data-proto-skip
+      [title]="ws.autopilot() ? 'Autopilot activo — clic para desactivar' : 'Configurar y activar autopilot'">
+      <span class="mode-bar__autopilot-icon">✦</span>
+      <span>{{ ws.autopilot() ? 'Autopilot ON' : 'Autopilot' }}</span>
+    </button>
+    @if (ws.autopilot()) {
+      <span class="mode-bar__live-badge">● EN VIVO</span>
+    }
+
+    @if (showAutopilotConfig()) {
+      <gali-autopilot-config (closed)="showAutopilotConfig.set(false)" />
+    }
+
+    <!-- Gali status pill -->
+    <button
+      type="button"
+      class="mode-bar__gali-status"
+      [ngClass]="ws.galiStatusClass"
+      (click)="onGaliStatusClick()"
+      data-proto-skip>
+      <span class="mode-bar__gali-dot" aria-hidden="true"></span>
+      <span>{{ ws.galiStatusLabel }}</span>
+    </button>
+  </div>
+</div>

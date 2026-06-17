@@ -1,0 +1,132 @@
+@import 'styles/gali-tokens';
+
+.exec {
+  padding: 12px 14px;
+  background: rgba(15, 15, 18, 0.5);
+  border: 1px solid $gali-border-subtle;
+  border-radius: $gali-radius-input;
+  font-family: $gali-font-mono;
+  font-size: 12px;
+  margin: 8px 0;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed $gali-border-subtle;
+  }
+
+  &__label {
+    color: $gali-cyan;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+  }
+
+  &__time {
+    color: $gali-text-muted;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__step {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 4px 0;
+    color: $gali-text-muted;
+    opacity: 0;
+    transform: translateY(4px);
+    animation: exec-step-in 280ms $gali-ease-out forwards;
+
+    &[data-status='done'] {
+      color: $gali-text-secondary;
+    }
+
+    &[data-status='running'] {
+      color: $gali-text-primary;
+    }
+  }
+
+  &__step-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    font-size: 12px;
+
+    &[data-status='done'] {
+      color: $gali-success;
+      animation: exec-check-bounce 240ms $gali-ease-out;
+    }
+
+    &[data-status='pending'] {
+      color: $gali-text-muted;
+    }
+  }
+
+  &__spinner {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(78, 205, 196, 0.25);
+    border-top-color: $gali-cyan;
+    animation: exec-spin 800ms linear infinite;
+  }
+
+  &__step-label {
+    font-size: 12px;
+  }
+
+  &__step-time {
+    font-size: 10px;
+    color: $gali-text-muted;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@keyframes exec-step-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes exec-check-bounce {
+  0% {
+    transform: scale(0.4);
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes exec-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@include gali-reduced-motion {
+  .exec__step,
+  .exec__step-icon,
+  .exec__spinner {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

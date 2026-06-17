@@ -1,0 +1,126 @@
+<div class="kpi-dashboard">
+  <dropi-gali-bar
+    agent="Gali"
+    status="analizando reportes"
+    message="Gap detectado: ganancia real $18.9M vs Meta $27.9M declarado · ROAS real: 2.1x"
+    ctaLabel="Ver P&L completo →"
+    secondaryCta="Roax Informes"
+    (ctaClick)="goToMedir()"
+    (secondaryClick)="router.navigate(['/gali-v5/marketing/roax-informes'])"
+  />
+
+  <dropi-titulos title="Dashboard" [breadcrumbs]="breadcrumbs" />
+
+  <!-- ✦ GALI P&L INSIGHT BANNER -->
+  <div class="gali-pl-banner">
+    <div class="gali-pl-banner__left">
+      <span class="gali-pl-banner__icon">✦</span>
+      <div class="gali-pl-banner__content">
+        <span class="gali-pl-banner__title">Gali detectó un gap en tu ganancia real</span>
+        <p class="gali-pl-banner__desc">Tu ganancia neta real es <strong>{{ galiPl.gananciaReal }}</strong>, no {{ galiPl.gananciaDeclarada }} como reporta Meta. Gap del {{ galiPl.gapPct }}%. {{ galiPl.causa }}</p>
+      </div>
+    </div>
+    <div class="gali-pl-banner__right">
+      <div class="gali-pl-mini-compare">
+        <div class="gali-pl-mini-box">
+          <span class="gali-pl-mini-box__lbl">Meta reporta</span>
+          <span class="gali-pl-mini-box__val">{{ galiPl.gananciaDeclarada }}</span>
+        </div>
+        <span class="gali-pl-mini-arrow">→</span>
+        <div class="gali-pl-mini-box gali-pl-mini-box--real">
+          <span class="gali-pl-mini-box__lbl">Ganancia real</span>
+          <span class="gali-pl-mini-box__val">{{ galiPl.gananciaReal }}</span>
+        </div>
+      </div>
+      <a [routerLink]="galiPl.accionRoute" class="gali-pl-banner__cta">Ver diagnóstico →</a>
+    </div>
+  </div>
+
+  <div class="kpi-dashboard__grid">
+    <article class="profile-card">
+      <div class="profile-card__top">
+        <button type="button" class="profile-card__period">
+          <i class="pi pi-calendar"></i> Últimos 30 días <i class="pi pi-chevron-down"></i>
+        </button>
+        <button type="button" class="profile-card__download" aria-label="Descargar"><i class="pi pi-download"></i></button>
+      </div>
+
+      <div class="profile-card__user">
+        <span class="profile-card__avatar">MH</span>
+        <span class="profile-card__flag">🇨🇴</span>
+        <h2>{{ profile.name }}</h2>
+      </div>
+
+      <div class="profile-card__sales">
+        <h3>Tus ventas en Dropi</h3>
+        <p>{{ profile.period }}</p>
+        <div class="profile-card__hero-metrics">
+          <strong class="profile-card__revenue">{{ profile.revenue }}</strong>
+          <p><strong>{{ profile.orders }}</strong> órdenes</p>
+        </div>
+      </div>
+
+      <div class="profile-card__gauge">
+        <div class="profile-card__gauge-ring">
+          <strong>{{ profile.effectiveness }}</strong>
+          <span>de efectividad</span>
+        </div>
+      </div>
+
+      <div class="profile-card__logo">dropi</div>
+    </article>
+
+    <div class="kpi-dashboard__right">
+      <section class="orders-panel">
+        <header class="orders-panel__head">
+          <h3>Tus ordenes</h3>
+          <button type="button" class="orders-panel__info"><i class="pi pi-info-circle"></i> Más información</button>
+        </header>
+        <div class="orders-panel__grid">
+          @for (kpi of orderKpis; track kpi.label) {
+            <article class="kpi-tile">
+              <span class="kpi-tile__icon" [attr.data-kpi]="kpi.key"></span>
+              <span class="kpi-tile__label">{{ kpi.label }}</span>
+              <strong class="kpi-tile__value">{{ kpi.value }}</strong>
+            </article>
+          }
+        </div>
+      </section>
+
+      <section class="trend-panel">
+        <header class="trend-panel__head">
+          <h3>Tendencia de Ventas</h3>
+        </header>
+        <div class="trend-panel__chart">
+          <div class="trend-panel__legend">
+            <span><i class="trend-panel__dot trend-panel__dot--today"></i> Hoy</span>
+            <span><i class="trend-panel__dot trend-panel__dot--yesterday"></i> Ayer</span>
+          </div>
+          <div class="trend-chart">
+            @for (point of trendPoints; track $index) {
+              <div class="trend-chart__group">
+                <div class="trend-chart__bars">
+                  <div class="trend-chart__bar trend-chart__bar--yesterday" [style.height.%]="point.yesterday"></div>
+                  <div class="trend-chart__bar trend-chart__bar--today" [style.height.%]="point.today"></div>
+                </div>
+                <span>{{ point.label }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+
+      <section class="reports-panel">
+        <h3>Tus reportes</h3>
+        <div class="reports-panel__grid">
+          @for (r of quickReports; track r.label) {
+            <a [routerLink]="r.route" class="reports-panel__item">
+              <span>{{ r.label }}</span>
+              <i class="pi pi-arrow-right"></i>
+            </a>
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

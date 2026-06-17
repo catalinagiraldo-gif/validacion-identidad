@@ -1,0 +1,87 @@
+@import 'styles/gali-v3-tokens';
+
+:host {
+  display: block;
+  background:
+    linear-gradient(90deg, $gv3-orange-tint 0%, transparent 30%, transparent 70%, $gv3-sage-tint 100%),
+    $gv3-bg-warm;
+  border-bottom: 1px solid $gv3-border-whisper;
+}
+
+.bread {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 $gv3-space-5;
+  font-family: $gv3-font-mono;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: $gv3-text-tertiary;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.bread__sparkle {
+  color: $gv3-sparkle-color;
+  filter: drop-shadow($gv3-sparkle-glow);
+  font-size: 11px;
+}
+
+.bread__gali {
+  color: $gv3-orange-hover;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.bread__sep { color: $gv3-text-muted; }
+
+.bread__here, .bread__next {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.bread__here-icon { font-size: 12px; }
+.bread__here-label, .bread__next-label {
+  color: $gv3-text-tertiary;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 9.5px;
+}
+.bread__here strong {
+  color: $gv3-text-primary;
+  font-family: $gv3-font-body;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.bread__arrow {
+  color: $gv3-text-muted;
+  font-size: 11px;
+  margin: 0 4px;
+}
+
+.bread__next {
+  flex: 1;
+  min-width: 0;
+}
+.bread__next-text {
+  font-family: $gv3-font-body;
+  font-size: 12px;
+  letter-spacing: 0;
+  color: $gv3-text-secondary;
+  text-transform: none;
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 900px) {
+  .bread__here-label, .bread__next-label { display: none; }
+}

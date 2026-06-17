@@ -1,0 +1,153 @@
+<!-- Backdrop click to close -->
+<div class="ada-backdrop" (click)="closed.emit()"></div>
+
+@if (product; as p) {
+<aside class="ada-detail" role="dialog" aria-modal="true" [attr.aria-label]="'Análisis ADA Spy: ' + p.nombre">
+
+  <!-- Header -->
+  <div class="ada-detail__header">
+    <div class="ada-detail__product-info">
+      <span class="ada-detail__emoji">{{ p.imagenPlaceholder }}</span>
+      <div class="ada-detail__product-meta">
+        <span class="ada-detail__categoria">{{ p.categoria }}</span>
+        <h2 class="ada-detail__nombre">{{ p.nombre }}</h2>
+      </div>
+    </div>
+    <button type="button" class="ada-detail__close" (click)="closed.emit()" aria-label="Cerrar análisis">
+      <i class="pi pi-times" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <!-- ADA Score -->
+  <div class="ada-detail__score-row">
+    <div class="ada-score" [style.--score-color]="scoreColor">
+      <svg class="ada-score__gauge" viewBox="0 0 80 44" fill="none">
+        <path d="M4 40 A36 36 0 0 1 76 40" stroke="#e5e7eb" stroke-width="8" stroke-linecap="round"/>
+        <path
+          d="M4 40 A36 36 0 0 1 76 40"
+          stroke="var(--score-color)"
+          stroke-width="8"
+          stroke-linecap="round"
+          [attr.stroke-dasharray]="(p.adaScore / 100) * 113 + ' 113'"
+          stroke-dashoffset="0"/>
+      </svg>
+      <div class="ada-score__value">
+        <span class="ada-score__number">{{ p.adaScore }}</span>
+        <span class="ada-score__label">ADA Score</span>
+      </div>
+    </div>
+    <div class="ada-detail__score-meta">
+      <div class="ada-detail__ventana">
+        <span class="ada-detail__ventana-label">Ventana de oportunidad</span>
+        <strong class="ada-detail__ventana-val">{{ p.ventanaLabel }}</strong>
+      </div>
+      <div class="ada-detail__tendencia" [class.ada-detail__tendencia--up]="p.tendencia === 'up'">
+        {{ p.tendenciaLabel }}
+      </div>
+    </div>
+  </div>
+
+  <div class="ada-detail__body">
+
+    <!-- Análisis de mercado -->
+    <section class="ada-section">
+      <h3 class="ada-section__title">Análisis de mercado</h3>
+      <div class="ada-market-grid">
+        <div class="ada-market-item">
+          <span class="ada-market-item__label">Precio de mercado</span>
+          <strong class="ada-market-item__val">{{ p.precioMercado }}</strong>
+        </div>
+        <div class="ada-market-item">
+          <span class="ada-market-item__label">COGS estimado</span>
+          <strong class="ada-market-item__val">{{ p.cogsEstimado }}</strong>
+        </div>
+        <div class="ada-market-item ada-market-item--highlight">
+          <span class="ada-market-item__label">Margen bruto</span>
+          <strong class="ada-market-item__val">{{ p.margenBruto }}</strong>
+        </div>
+        <div class="ada-market-item">
+          <span class="ada-market-item__label">Proveedor</span>
+          <strong class="ada-market-item__val ada-market-item__val--sm">{{ p.proveedorSugerido }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ciudades top -->
+    <section class="ada-section">
+      <h3 class="ada-section__title">Ciudades con más demanda</h3>
+      <div class="ada-ciudades">
+        @for (c of p.ciudades; track c.nombre) {
+          <div class="ada-ciudad-row">
+            <span class="ada-ciudad-row__nombre">{{ c.nombre }}</span>
+            <div class="ada-ciudad-row__bar-wrap">
+              <div class="ada-ciudad-row__bar" [style.width.%]="c.pct"></div>
+            </div>
+            <span class="ada-ciudad-row__pct">{{ c.pct }}%</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- ROI Proyectado -->
+    <section class="ada-section">
+      <h3 class="ada-section__title">ROI proyectado por Gali</h3>
+      <table class="ada-roi-table">
+        <thead>
+          <tr>
+            <th>Inversión/día</th>
+            <th>Pedidos/sem</th>
+            <th>Ganancia neta</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of p.roiTable; track row.inversion) {
+            <tr>
+              <td>{{ row.inversion }}</td>
+              <td>{{ row.pedidosSem }}</td>
+              <td class="roi-ganancia">{{ row.gananciaNeta }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <p class="ada-roi-disclaimer">Proyecciones basadas en histórico de productos similares en Dropi. ROAS objetivo 2.5x.</p>
+    </section>
+
+    <!-- Competencia -->
+    <section class="ada-section">
+      <h3 class="ada-section__title">Competencia en Dropi</h3>
+      <div class="ada-competencia">
+        <div class="ada-competencia__badge" [style.background]="saturacionColor + '18'" [style.color]="saturacionColor" [style.border-color]="saturacionColor + '40'">
+          {{ saturacionLabel }}
+        </div>
+        <p class="ada-competencia__desc">
+          {{ p.dropshippersVendiendo }} dropshipper{{ p.dropshippersVendiendo !== 1 ? 's' : '' }} en Dropi ya vend{{ p.dropshippersVendiendo !== 1 ? 'en' : 'e' }} este producto.
+          @if (p.saturacion === 'baja') {
+            <span> Todavía hay espacio para diferenciarte.</span>
+          } @else if (p.saturacion === 'media') {
+            <span> Puedes competir con un ángulo de venta diferenciado.</span>
+          } @else {
+            <span> Considera un nicho o variante diferente.</span>
+          }
+        </p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- CTAs -->
+  <div class="ada-detail__footer">
+    <button type="button" class="ada-detail__cta-primary" (click)="launchWithGali()">
+      🚀 Lanzar con Gali
+    </button>
+    <button type="button" class="ada-detail__cta-secondary" (click)="save()">
+      📋 Guardar para después
+    </button>
+  </div>
+
+</aside>
+} @else {
+  <aside class="ada-detail ada-detail--empty">
+    <p>Producto no encontrado.</p>
+    <button type="button" (click)="closed.emit()">Cerrar</button>
+  </aside>
+}

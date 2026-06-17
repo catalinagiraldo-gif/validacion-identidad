@@ -2,6 +2,7 @@ export interface HubUser {
   uid: string;
   email: string;
   displayName: string;
+  name?: string;
   photoURL: string | null;
   createdAt: string;
 }

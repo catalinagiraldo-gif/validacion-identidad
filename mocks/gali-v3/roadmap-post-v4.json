@@ -1,0 +1,118 @@
+{
+  "version_actual": "V4.0 · Q2 2026",
+  "hito_actual": "Marketplace de bloques + recipes vivo",
+  "fases_post_v4": [
+    {
+      "id": "v4.1",
+      "label": "V4.1 — Engine real (backend)",
+      "estado": "en_planeacion",
+      "fecha_objetivo": "Q3 2026",
+      "items": [
+        "Claude API streaming reemplaza chat mock",
+        "OAuth real para Meta · TikTok · Google · Shopify · WhatsApp · Sheets",
+        "Recipes engine con triggers verificables (Temporal/Airflow)",
+        "Memoria backend en Postgres con thread IDs por proyecto",
+        "Engine de bloques custom — queries reales sobre datos del usuario"
+      ],
+      "depende_de": ["EngineRealV4.md aprobado por backend lead"],
+      "riesgos": [
+        "Costos Claude API sin prompt caching disciplinado",
+        "Rate limits de plataformas externas en OAuth real"
+      ]
+    },
+    {
+      "id": "v4.2",
+      "label": "V4.2 — Monetización del programa de builders",
+      "estado": "diseño",
+      "fecha_objetivo": "Q3-Q4 2026",
+      "items": [
+        "Revenue share 70/30 creator/Dropi · pagos automáticos a wallet",
+        "Tiers Bronce → Plata → Oro → Platino con beneficios escalonados",
+        "Featured slots en el home del marketplace",
+        "Audit log de instalaciones y rating por item",
+        "Mod-eración semi-automatizada del marketplace (ML classifier + revisión manual primeros 30 días)"
+      ],
+      "depende_de": ["Tier Plata implementado en backend", "Integración Wallet Dropi"],
+      "riesgos": [
+        "Fricción legal LATAM para pagos a creadores informales",
+        "Inflación spam del marketplace sin gating"
+      ]
+    },
+    {
+      "id": "v5.0",
+      "label": "V5.0 — App iOS nativa para path Escala/Power",
+      "estado": "exploración",
+      "fecha_objetivo": "Q4 2026 - Q1 2027",
+      "items": [
+        "App iOS Swift consume las mismas APIs del backend V4.1",
+        "Foco: dropshippers en path Escala (>500 pedidos/mes) y Power (>2K pedidos/mes)",
+        "Chat de Gali primary surface · notificaciones push de señales críticas",
+        "Modo offline para revisar pedidos sin conexión",
+        "Widget en home screen con saldo + ROAS + alertas"
+      ],
+      "depende_de": ["Backend V4.1 estable · 200 usuarios beta del marketplace"],
+      "riesgos": [
+        "Mantener feature-parity con web cuesta x1.5 esfuerzo",
+        "Approval de App Store (orientado a comercio)"
+      ]
+    },
+    {
+      "id": "v5.1",
+      "label": "V5.1 — Data flywheel comunidad → líder virtual",
+      "estado": "concepto",
+      "fecha_objetivo": "Q1-Q2 2027",
+      "items": [
+        "Recipes instaladas alimentan benchmarks anónimos del Líder Virtual (V3)",
+        "Bloques compartidos generan agregados K-anonymity ≥ 50",
+        "Líder Virtual recomienda recipes en tiempo real basado en lo que funciona",
+        "Bucle: usuario instala recipe → genera datos → mejora benchmark → mejora recomendación → más instalan",
+        "Loop completo de network effect — el sistema mejora con cada usuario nuevo"
+      ],
+      "depende_de": ["1.000+ recipes activas · 5.000+ instalaciones acumuladas"],
+      "riesgos": [
+        "Privacidad: cada nuevo dato agregado expande surface de leak",
+        "Calidad: garbage in / garbage out si recipes mediocres dominan"
+      ]
+    },
+    {
+      "id": "v6.0",
+      "label": "V6.0 — Ecosistema abierto · SDK + plugins",
+      "estado": "visión",
+      "fecha_objetivo": "2027+",
+      "items": [
+        "SDK público para que builders integren herramientas externas",
+        "Plugin marketplace con revenue share extendido (no solo bloques/recipes)",
+        "API documentada como bloques arrastrables en builder (V4 ya tiene base mock)",
+        "Programa partner con MercadoLibre · Shopify · TikTok como builders oficiales",
+        "Dropi se convierte en la capa AI-first de comercio de LATAM, no solo dropshipping"
+      ],
+      "depende_de": ["Marketplace V4.2 maduro · adoption iOS V5.0"],
+      "riesgos": [
+        "Visión grande: requiere alineación con board + capital adicional",
+        "Competencia: Shopify Magic / TikTok Smart+ apuntan a lo mismo"
+      ]
+    }
+  ],
+  "principios_no_negociables": [
+    {
+      "id": "p1",
+      "label": "Heurísticas Nielsen + AI-first sobre toda nueva vista",
+      "descripcion": "H#11 transparencia razonamiento · H#13 incertidumbre · H#5 prevención de errores · H#10 reconocimiento sobre recuerdo son obligatorias en cualquier vista futura"
+    },
+    {
+      "id": "p2",
+      "label": "Reutilizar V3 antes de construir desde cero",
+      "descripcion": "El refactor armonizado V4 prueba que evolucionar es más rápido que reescribir. Cada feature nueva audita primero qué V3 ya entrega"
+    },
+    {
+      "id": "p3",
+      "label": "Anonimización por default en datos de comunidad",
+      "descripcion": "K-anonymity ≥ 50 · perfiles anonimizados (ciudad + nicho + métrica destacada, nunca nombre)"
+    },
+    {
+      "id": "p4",
+      "label": "Control humano siempre disponible",
+      "descripcion": "Toda recipe en producción tiene botón Pausar visible · rollback últimas 10 acciones · confirmar antes de escribir en sistemas externos"
+    }
+  ]
+}

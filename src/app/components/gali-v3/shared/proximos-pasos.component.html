@@ -1,0 +1,22 @@
+<section class="pp" *ngIf="pasos().length">
+  <header class="pp__head">
+    <span class="pp__sparkle" aria-hidden="true">✦</span>
+    <h4>{{ titulo }}</h4>
+    <span class="pp__meta">sugerido por Gali según tu contexto</span>
+  </header>
+  <div class="pp__grid">
+    <button
+      *ngFor="let p of pasos(); let i = index"
+      class="pp__chip"
+      [style.animation-delay]="(i * 80) + 'ms'"
+      (click)="go(p.route, p.queryParams)"
+      [attr.aria-label]="p.label + '. ' + p.meta">
+      <span class="pp__chip-icon">{{ p.icon }}</span>
+      <div class="pp__chip-body">
+        <strong>{{ p.label }}</strong>
+        <span>{{ p.meta }}</span>
+      </div>
+      <span class="pp__chip-arrow">→</span>
+    </button>
+  </div>
+</section>

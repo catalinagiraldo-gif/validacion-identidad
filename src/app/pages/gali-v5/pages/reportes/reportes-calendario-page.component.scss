@@ -1,0 +1,153 @@
+@import '../shared/dropi-page-shell';
+
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.calendario-page {
+  @include dropi-page-shell;
+  overflow-y: auto;
+
+  &__filters {
+    display: flex;
+    align-items: flex-end;
+    gap: $size-3;
+  }
+
+  &__select {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 166px;
+
+    label {
+      font-size: 12px;
+      color: $gray-600;
+    }
+
+    select {
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid $gray-200;
+      border-radius: 12px;
+      font-family: $font-primary;
+      font-size: $font-sm;
+      color: $gray-500;
+      background: $white;
+    }
+  }
+}
+
+.calendario-grid {
+  border: 1px solid $gray-100;
+  border-radius: 12px;
+  overflow: hidden;
+  background: $white;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $size-3 $size-4;
+    border-bottom: 1px solid $gray-100;
+
+    h2 {
+      margin: 0;
+      font-family: $font-primary;
+      font-size: 20px;
+      font-weight: $font-bold;
+      color: $gray-700;
+    }
+  }
+
+  &__nav {
+    display: flex;
+    gap: $size-2;
+  }
+
+  &__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: $gray-50;
+    border-bottom: 1px solid $gray-100;
+
+    span {
+      height: 33px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: $font-primary;
+      font-size: 12px;
+      font-weight: $font-bold;
+      color: $gray-700;
+    }
+  }
+
+  &__cells {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
+.calendario-cell {
+  min-height: 123px;
+  padding: 4px 8px;
+  border-right: 1px solid $gray-100;
+  border-bottom: 1px solid $gray-100;
+  position: relative;
+
+  &--muted {
+    background: $gray-50;
+  }
+
+  &--event {
+    background: rgba($primary-500, 0.03);
+  }
+
+  &__num {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    font-family: $font-primary;
+    font-size: $font-base;
+    color: $gray-600;
+  }
+
+  &__events {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-family: $font-primary;
+    font-size: 10px;
+    color: $gray-600;
+    line-height: 1.35;
+
+    strong {
+      font-weight: $font-bold;
+    }
+  }
+
+  &__sold {
+    color: $info;
+  }
+
+  &__profit {
+    color: darken($success, 8%);
+  }
+
+  &__estimated {
+    color: $primary-600;
+  }
+
+  &__more {
+    color: $primary-600;
+    font-weight: $font-semibold;
+    margin-top: 2px;
+  }
+}

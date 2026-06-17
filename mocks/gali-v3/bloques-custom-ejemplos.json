@@ -1,0 +1,272 @@
+{
+  "ejemplos_iniciales": [
+    {
+      "id": "ej-ventas-ciudad",
+      "titulo": "Ventas por ciudad esta semana",
+      "descripcion_corta": "Compara tus ventas por ciudad vs la semana pasada",
+      "prompt_origen": "Quiero ver mis ventas por ciudad esta semana comparado con la semana pasada",
+      "categoria": "ventas",
+      "icono": "📍",
+      "nivel": "operador"
+    },
+    {
+      "id": "ej-margen-efectivo",
+      "titulo": "Margen efectivo por producto",
+      "descripcion_corta": "Margen real descontando fees, devoluciones y costo logístico",
+      "prompt_origen": "Muéstrame el margen efectivo de mis productos descontando devoluciones",
+      "categoria": "metricas",
+      "icono": "💰",
+      "nivel": "estratega"
+    },
+    {
+      "id": "ej-cohorts",
+      "titulo": "Cohorts de clientes recompradores",
+      "descripcion_corta": "% de clientes que vuelven a comprar segmentados por mes de adquisición",
+      "prompt_origen": "Hazme un análisis de cohorts de clientes que recompran",
+      "categoria": "analisis",
+      "icono": "👥",
+      "nivel": "estratega"
+    },
+    {
+      "id": "ej-fuga-pedidos",
+      "titulo": "Fuga de pedidos en el funnel",
+      "descripcion_corta": "Dónde se caen tus pedidos: confirmación, entrega o pago",
+      "prompt_origen": "Quiero ver dónde se caen mis pedidos en el funnel",
+      "categoria": "pedidos",
+      "icono": "🪣",
+      "nivel": "operador"
+    },
+    {
+      "id": "ej-proyeccion-gali",
+      "titulo": "Proyección Gali a 30 días",
+      "descripcion_corta": "Estimación de pedidos y revenue según tu ritmo actual",
+      "prompt_origen": "Proyéctame a 30 días mis pedidos y revenue al ritmo actual",
+      "categoria": "proyeccion",
+      "icono": "📈",
+      "nivel": "estratega"
+    }
+  ],
+  "fuentes_disponibles": [
+    {
+      "id": "pedidos",
+      "label": "Pedidos Dropi",
+      "descripcion": "Todos tus pedidos: estado, ciudad, transportadora, valor",
+      "campos": ["fecha", "ciudad", "estado", "valor", "producto", "transportadora", "novedades"],
+      "origen": "dropi-core",
+      "confianza_dato": 1.0
+    },
+    {
+      "id": "productos",
+      "label": "Catálogo de productos",
+      "descripcion": "Productos activos: costo, precio, margen, ventas",
+      "campos": ["id", "nombre", "costo", "precio_sugerido", "ventas_semana", "stock", "categoria"],
+      "origen": "dropi-core",
+      "confianza_dato": 1.0
+    },
+    {
+      "id": "cartera",
+      "label": "Movimientos de wallet",
+      "descripcion": "Saldo, retiros, fees, devoluciones",
+      "campos": ["fecha", "tipo", "monto", "estado", "referencia"],
+      "origen": "dropi-core",
+      "confianza_dato": 1.0
+    },
+    {
+      "id": "campanas",
+      "label": "Campañas (Stack Personal)",
+      "descripcion": "Meta Ads + TikTok + Google. Requiere Mi Stack conectado.",
+      "campos": ["plataforma", "campaña", "presupuesto", "roas", "ctr", "impresiones"],
+      "origen": "stack-personal",
+      "confianza_dato": 0.85,
+      "requiere_stack": ["meta-ads", "tiktok-ads", "google-ads"]
+    },
+    {
+      "id": "comunidad",
+      "label": "Datos comunidad LATAM",
+      "descripcion": "Benchmarks anonimizados de 1,247 dropshippers",
+      "campos": ["nicho", "ciudad", "ticket_promedio", "roas_promedio", "saturacion_dias"],
+      "origen": "comunidad",
+      "confianza_dato": 0.78,
+      "anonimizado": true
+    },
+    {
+      "id": "memoria",
+      "label": "Memoria de Gali",
+      "descripcion": "Tu perfil, decisiones, aprendizajes",
+      "campos": ["nicho_principal", "tono_preferido", "roas_objetivo", "ciudades_top"],
+      "origen": "local",
+      "confianza_dato": 1.0
+    }
+  ],
+  "tipos_visualizacion": [
+    { "id": "metrica", "label": "Métrica grande", "descripcion": "Número grande + variación + sparkline", "icono": "🔢" },
+    { "id": "barras", "label": "Gráfica de barras", "descripcion": "Comparación por categoría", "icono": "📊" },
+    { "id": "barras_agrupadas", "label": "Barras agrupadas", "descripcion": "Comparar 2 series (ej. esta semana vs pasada)", "icono": "📊" },
+    { "id": "lineas", "label": "Gráfica de líneas", "descripcion": "Tendencia en el tiempo", "icono": "📈" },
+    { "id": "tabla", "label": "Tabla ordenada", "descripcion": "Lista detallada con columnas", "icono": "🗂" },
+    { "id": "funnel", "label": "Funnel", "descripcion": "Pasos secuenciales con drop-off", "icono": "🪣" },
+    { "id": "heatmap_cohorts", "label": "Cohort heatmap", "descripcion": "Cohortes vs tiempo con intensidad", "icono": "🔥" },
+    { "id": "lista_top", "label": "Top N", "descripcion": "Los N mejores con ranking", "icono": "🏆" }
+  ],
+  "bloque_construccion_default": {
+    "id": "draft",
+    "titulo": "",
+    "descripcion": "",
+    "categoria": "ventas",
+    "icono": "✦",
+    "fuente_id": null,
+    "tipo_visualizacion": "metrica",
+    "filtros": [],
+    "ventana_temporal": "ultima_semana",
+    "ordenamiento": null,
+    "datos_simulados": true,
+    "confianza_gali": 0,
+    "razonamiento_gali": "",
+    "costo_computacional": {
+      "registros_a_procesar": 0,
+      "tiempo_estimado_ms": 0,
+      "advertencia": null
+    }
+  },
+  "previews_demo": {
+    "ej-ventas-ciudad": {
+      "tipo_visualizacion": "barras_agrupadas",
+      "fuente_id": "pedidos",
+      "ventana_temporal": "ultima_semana",
+      "datos_simulados": true,
+      "confianza_gali": 0.92,
+      "razonamiento_gali": "Detecté que quieres comparar contra la semana pasada. Estoy agrupando pedidos por ciudad y mostrando esta semana vs la anterior. Si quieres comparar contra el mismo período del mes pasado, dímelo.",
+      "filtros": [
+        { "campo": "estado", "operador": "in", "valor": ["confirmado", "entregado"] }
+      ],
+      "ordenamiento": { "por": "ventas_esta_semana", "direccion": "desc" },
+      "categorias": [
+        { "label": "Bogotá", "esta_semana": 4280000, "semana_pasada": 3950000, "delta": "+8.3%" },
+        { "label": "Medellín", "esta_semana": 2890000, "semana_pasada": 2110000, "delta": "+37%" },
+        { "label": "Cali", "esta_semana": 1640000, "semana_pasada": 1820000, "delta": "-9.9%" },
+        { "label": "Barranquilla", "esta_semana": 980000, "semana_pasada": 1140000, "delta": "-14%" },
+        { "label": "Bucaramanga", "esta_semana": 720000, "semana_pasada": 510000, "delta": "+41%" },
+        { "label": "Pereira", "esta_semana": 410000, "semana_pasada": 460000, "delta": "-11%" }
+      ],
+      "moneda": "COP",
+      "costo_computacional": {
+        "registros_a_procesar": 1820,
+        "tiempo_estimado_ms": 240,
+        "advertencia": null
+      }
+    },
+    "ej-margen-efectivo": {
+      "tipo_visualizacion": "tabla",
+      "fuente_id": "productos",
+      "ventana_temporal": "ultimo_mes",
+      "datos_simulados": true,
+      "confianza_gali": 0.78,
+      "razonamiento_gali": "Calculo el margen efectivo como: (precio_venta - costo - fee_dropi - costo_envio - costo_devolucion_promedio) / precio_venta. La tasa de devolución viene de tus pedidos reales del último mes. No tengo aún el fee exacto por transportadora, lo estoy estimando con el promedio Dropi.",
+      "filtros": [
+        { "campo": "ventas_semana", "operador": ">", "valor": 0 }
+      ],
+      "ordenamiento": { "por": "margen_efectivo", "direccion": "desc" },
+      "columnas": ["producto", "precio", "costo", "tasa_devolucion", "margen_efectivo"],
+      "filas": [
+        { "producto": "Collar GPS Mascota", "precio": 89000, "costo": 32000, "tasa_devolucion": "8%", "margen_efectivo": "42%" },
+        { "producto": "Aspiradora portátil", "precio": 129000, "costo": 58000, "tasa_devolucion": "12%", "margen_efectivo": "31%" },
+        { "producto": "Lámpara LED astronauta", "precio": 54000, "costo": 18000, "tasa_devolucion": "6%", "margen_efectivo": "48%" },
+        { "producto": "Reloj inteligente Pro", "precio": 145000, "costo": 78000, "tasa_devolucion": "18%", "margen_efectivo": "19%" },
+        { "producto": "Auriculares TWS", "precio": 72000, "costo": 28000, "tasa_devolucion": "9%", "margen_efectivo": "38%" }
+      ],
+      "costo_computacional": {
+        "registros_a_procesar": 14200,
+        "tiempo_estimado_ms": 1100,
+        "advertencia": "Procesa 14.2k pedidos del último mes — toma ~1.1s"
+      }
+    },
+    "ej-cohorts": {
+      "tipo_visualizacion": "heatmap_cohorts",
+      "fuente_id": "pedidos",
+      "ventana_temporal": "ultimos_6_meses",
+      "datos_simulados": true,
+      "confianza_gali": 0.71,
+      "razonamiento_gali": "Agrupé clientes por mes de primera compra. Cada fila es una cohorte. Cada columna es % que recompró N meses después. La cohorte Marzo 2026 muestra retención alta — vale la pena entender qué hiciste diferente.",
+      "filtros": [],
+      "cohortes": [
+        { "mes": "Dic 2025", "tamano": 142, "retencion": [100, 28, 18, 12, 9, 7] },
+        { "mes": "Ene 2026", "tamano": 188, "retencion": [100, 31, 22, 14, 11] },
+        { "mes": "Feb 2026", "tamano": 215, "retencion": [100, 24, 19, 16] },
+        { "mes": "Mar 2026", "tamano": 267, "retencion": [100, 42, 31] },
+        { "mes": "Abr 2026", "tamano": 198, "retencion": [100, 29] },
+        { "mes": "May 2026", "tamano": 174, "retencion": [100] }
+      ],
+      "costo_computacional": {
+        "registros_a_procesar": 6800,
+        "tiempo_estimado_ms": 680,
+        "advertencia": null
+      }
+    },
+    "ej-fuga-pedidos": {
+      "tipo_visualizacion": "funnel",
+      "fuente_id": "pedidos",
+      "ventana_temporal": "ultima_semana",
+      "datos_simulados": true,
+      "confianza_gali": 0.88,
+      "razonamiento_gali": "Mapeé el funnel completo: creado → confirmado → entregado → pagado. La mayor fuga está entre confirmación y entrega (15% se pierde). El 7% rechaza al recibirlo — vale la pena revisar tus creatives vs el producto físico.",
+      "filtros": [],
+      "pasos": [
+        { "etapa": "Pedidos creados", "valor": 540, "porcentaje": 100, "drop": 0 },
+        { "etapa": "Confirmados", "valor": 489, "porcentaje": 91, "drop": 9 },
+        { "etapa": "En entrega", "valor": 416, "porcentaje": 77, "drop": 15 },
+        { "etapa": "Entregados", "valor": 387, "porcentaje": 72, "drop": 7 },
+        { "etapa": "Pagados a wallet", "valor": 372, "porcentaje": 69, "drop": 4 }
+      ],
+      "costo_computacional": {
+        "registros_a_procesar": 540,
+        "tiempo_estimado_ms": 95,
+        "advertencia": null
+      }
+    },
+    "ej-proyeccion-gali": {
+      "tipo_visualizacion": "lineas",
+      "fuente_id": "pedidos",
+      "ventana_temporal": "ultimo_mes",
+      "datos_simulados": true,
+      "confianza_gali": 0.64,
+      "razonamiento_gali": "Tomé tu ritmo de pedidos del último mes y proyecté 30 días hacia adelante asumiendo estacionalidad similar. La línea punteada es proyección — confianza media porque hay variación por campañas activas. Si lanzas el creative nuevo, esto cambia.",
+      "filtros": [],
+      "series": [
+        {
+          "label": "Real",
+          "datos": [
+            { "fecha": "27 Abr", "valor": 47 },
+            { "fecha": "4 May", "valor": 52 },
+            { "fecha": "11 May", "valor": 61 },
+            { "fecha": "18 May", "valor": 58 },
+            { "fecha": "25 May", "valor": 67 }
+          ]
+        },
+        {
+          "label": "Proyección Gali",
+          "datos": [
+            { "fecha": "1 Jun", "valor": 72 },
+            { "fecha": "8 Jun", "valor": 78 },
+            { "fecha": "15 Jun", "valor": 83 },
+            { "fecha": "22 Jun", "valor": 89 }
+          ],
+          "es_proyeccion": true
+        }
+      ],
+      "revenue_proyectado": 8920000,
+      "moneda": "COP",
+      "costo_computacional": {
+        "registros_a_procesar": 2840,
+        "tiempo_estimado_ms": 420,
+        "advertencia": null
+      }
+    }
+  },
+  "respuestas_gali_iteracion": {
+    "ordenar_crecimiento": "Listo, ordené las ciudades por mayor crecimiento. Bucaramanga (+41%) sube al primer lugar — antes estaba en la posición 5 por volumen. ¿Quieres que también filtre las que cayeron más de 10%?",
+    "agregar_filtro_meta": "Agregué el filtro de pedidos que vinieron de Meta Ads. Como necesito tu Stack conectado para este dato, lo estoy estimando del catálogo de utm_source. Si conectas Meta Ads en /gali-v3/mi-stack te doy números exactos.",
+    "cambiar_visualizacion": "Cambié a gráfica de líneas para ver la tendencia. Conserva los mismos filtros y ventana temporal. Si prefieres ver semana a semana, dímelo.",
+    "comparar_mes_anterior": "Ahora compara contra el mismo período del mes pasado en vez de la semana pasada. Los deltas cambian — Cali aparece como ganador (-9.9% vs semana, pero +18% vs mes). El crecimiento real está en periodo más largo.",
+    "explicar_confianza": "La confianza de 92% viene de: (1) los datos de pedidos son tuyos directos, sin estimaciones, (2) la categorización por ciudad es exacta porque viene del campo de envío, (3) la comparación temporal usa la misma definición de 'semana' (lunes a domingo). El 8% restante de incertidumbre es por pedidos en tránsito que aún no se cierran."
+  }
+}

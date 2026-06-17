@@ -1,0 +1,143 @@
+// ============================================
+// Gali v2 — Tokens del prototipo disruptivo
+// Ámbito: solo /gali-v2/* — no toca DS Registry ni _gali-tokens.scss legacy
+// Dirección: "Cuaderno de operador editorial — brutalist depth + organic warmth"
+// ============================================
+
+// --- Tipografía editorial inesperada ---
+$gv2-font-display: 'Fraunces', 'IBM Plex Serif', Georgia, serif;
+$gv2-font-body:    'IBM Plex Sans', system-ui, sans-serif;
+$gv2-font-mono:    'JetBrains Mono', 'IBM Plex Mono', monospace;
+
+// Escala tipográfica (ratio 1.333 — perfect fourth, contraste dramático)
+$gv2-text-xs:   11px;
+$gv2-text-sm:   13px;
+$gv2-text-base: 16px;
+$gv2-text-lg:   21px;
+$gv2-text-xl:   28px;
+$gv2-text-2xl:  37px;
+$gv2-text-3xl:  49px;
+$gv2-text-4xl:  66px;
+$gv2-text-5xl:  88px;
+
+// --- Backgrounds — charcoal cálido con undertone marrón (papel quemado) ---
+$gv2-bg-deep:     #1A1612;   // base, lo más profundo
+$gv2-bg-base:     #221C16;   // canvas
+$gv2-bg-surface:  #2A211B;   // cards, paneles
+$gv2-bg-elevated: #3A3128;   // overlays, hover
+$gv2-bg-veil:     rgba(26, 22, 18, 0.78);  // backdrops modales
+
+// --- Acentos firma ---
+$gv2-orange:      #F49A3D;   // puente con Dropi DS
+$gv2-orange-soft: #D88A3A;
+$gv2-orange-dim:  rgba(244, 154, 61, 0.16);
+
+$gv2-terracota:   #C86E4B;   // acciones de Gali
+$gv2-terracota-soft: #A85A3D;
+$gv2-terracota-dim: rgba(200, 110, 75, 0.18);
+
+$gv2-sage:        #7A8B6E;   // memoria, confirmaciones
+$gv2-sage-soft:   #5F7058;
+$gv2-sage-dim:    rgba(122, 139, 110, 0.18);
+
+$gv2-amber:       #E8B547;   // alertas suaves
+$gv2-amber-dim:   rgba(232, 181, 71, 0.18);
+
+$gv2-rust:        #B04A2E;   // críticos
+$gv2-rust-dim:    rgba(176, 74, 46, 0.18);
+
+// --- Bordes finos cálidos ---
+$gv2-border-whisper: rgba(244, 154, 61, 0.06);
+$gv2-border-subtle:  rgba(244, 154, 61, 0.12);
+$gv2-border-warm:    rgba(244, 154, 61, 0.22);
+$gv2-border-strong:  rgba(244, 154, 61, 0.38);
+
+// --- Texto sobre fondo cálido ---
+$gv2-text-primary:    #F4EDE1;   // crema cálida, no blanco puro
+$gv2-text-secondary:  #C8B8A0;
+$gv2-text-tertiary:   #8A7B68;
+$gv2-text-muted:      #5C5044;
+$gv2-text-disabled:   #3A322A;
+
+// --- Sombras cálidas (no negras) ---
+$gv2-shadow-sm:  0 2px 6px rgba(60, 30, 10, 0.32);
+$gv2-shadow-md:  0 8px 20px rgba(60, 30, 10, 0.40);
+$gv2-shadow-lg:  0 18px 48px rgba(60, 30, 10, 0.52);
+$gv2-shadow-glow-warm: 0 0 32px rgba(244, 154, 61, 0.22);
+$gv2-shadow-glow-sage: 0 0 24px rgba(122, 139, 110, 0.28);
+
+// --- Espaciado (escala 4px) ---
+$gv2-space-1: 4px;
+$gv2-space-2: 8px;
+$gv2-space-3: 12px;
+$gv2-space-4: 16px;
+$gv2-space-5: 24px;
+$gv2-space-6: 32px;
+$gv2-space-7: 48px;
+$gv2-space-8: 64px;
+$gv2-space-9: 96px;
+
+// --- Radios ---
+$gv2-radius-sm: 4px;
+$gv2-radius-md: 8px;
+$gv2-radius-lg: 14px;
+$gv2-radius-xl: 22px;
+$gv2-radius-pill: 999px;
+
+// --- Motion ---
+$gv2-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+$gv2-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+$gv2-ease-organic: cubic-bezier(0.34, 1.36, 0.64, 1);
+
+$gv2-dur-fast:   140ms;
+$gv2-dur-base:   240ms;
+$gv2-dur-slow:   480ms;
+$gv2-dur-breath: 4200ms;
+
+// --- Mixins atmósfera ---
+@mixin gv2-grain($opacity: 0.04) {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: $opacity;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.7  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 200px 200px;
+  }
+}
+
+@mixin gv2-surface($elevation: 1) {
+  background: $gv2-bg-surface;
+  border: 1px solid $gv2-border-subtle;
+  border-radius: $gv2-radius-lg;
+  @if $elevation == 1 {
+    box-shadow: $gv2-shadow-sm;
+  } @else if $elevation == 2 {
+    box-shadow: $gv2-shadow-md;
+    background: linear-gradient(180deg, $gv2-bg-elevated 0%, $gv2-bg-surface 100%);
+  } @else if $elevation == 3 {
+    box-shadow: $gv2-shadow-lg;
+    background: linear-gradient(180deg, $gv2-bg-elevated 0%, $gv2-bg-surface 100%);
+    border-color: $gv2-border-warm;
+  }
+}
+
+@mixin gv2-mesh-bg {
+  background-color: $gv2-bg-base;
+  background-image:
+    radial-gradient(at 12% 8%, $gv2-terracota-dim 0px, transparent 50%),
+    radial-gradient(at 88% 12%, $gv2-orange-dim 0px, transparent 45%),
+    radial-gradient(at 72% 92%, $gv2-sage-dim 0px, transparent 55%),
+    radial-gradient(at 8% 88%, rgba(176, 74, 46, 0.10) 0px, transparent 50%);
+}
+
+@mixin gv2-display-tight {
+  font-family: $gv2-font-display;
+  font-weight: 500;
+  font-variation-settings: 'opsz' 96, 'SOFT' 30, 'WONK' 0;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+}

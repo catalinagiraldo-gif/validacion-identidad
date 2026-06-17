@@ -1,0 +1,183 @@
+@import 'styles/gali-v3-tokens';
+
+:host { display: contents; }
+
+.cmd-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.55);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+  z-index: 1000;
+  animation: gv3-artifact-enter $gv3-dur-fast $gv3-ease-out;
+}
+
+.cmd-panel {
+  width: min(640px, 92vw);
+  max-height: 70vh;
+  background: $gv3-bg-surface;
+  border-radius: $gv3-radius-xl;
+  border: 1px solid $gv3-border-subtle;
+  box-shadow: 0 32px 72px rgba(0, 0, 0, 0.30), $gv3-shadow-glow-warm;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: gv3-artifact-enter $gv3-dur-base $gv3-ease-out;
+}
+
+.cmd-head {
+  display: flex;
+  align-items: center;
+  gap: $gv3-space-3;
+  padding: $gv3-space-3 $gv3-space-4;
+  border-bottom: 1px solid $gv3-border-whisper;
+  background: $gv3-bg-warm;
+}
+
+.cmd-sparkle {
+  color: $gv3-sparkle-color;
+  filter: drop-shadow($gv3-sparkle-glow);
+  font-size: 20px;
+}
+
+.cmd-input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  font-family: $gv3-font-body;
+  font-size: $gv3-text-lg;
+  color: $gv3-text-primary;
+  outline: none;
+  &::placeholder { color: $gv3-text-tertiary; }
+}
+
+.cmd-kbd {
+  font-family: $gv3-font-mono;
+  font-size: 10px;
+  padding: 2px 8px;
+  background: $gv3-bg-surface;
+  border: 1px solid $gv3-border-default;
+  border-radius: $gv3-radius-sm;
+  color: $gv3-text-tertiary;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cmd-results {
+  overflow-y: auto;
+  padding: $gv3-space-2 0;
+  @include gv3-scrollbar-subtle;
+}
+
+.cmd-group {
+  display: block;
+  padding: $gv3-space-2 $gv3-space-4 4px;
+  @include gv3-mono-tag;
+  color: $gv3-text-tertiary;
+  font-size: 10px;
+}
+
+.cmd-results ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cmd-results li {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  gap: $gv3-space-3;
+  align-items: center;
+  padding: 8px $gv3-space-4;
+  cursor: pointer;
+  transition: background $gv3-dur-fast $gv3-ease-out;
+  &.is-selected {
+    background: $gv3-orange-tint;
+    .cmd-enter { color: $gv3-orange-hover; }
+  }
+}
+
+.cmd-icon {
+  font-size: 18px;
+  text-align: center;
+  line-height: 1;
+}
+
+.cmd-body {
+  min-width: 0;
+  strong {
+    display: block;
+    font-size: $gv3-text-sm;
+    color: $gv3-text-primary;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  span {
+    display: block;
+    margin-top: 2px;
+    font-size: 11.5px;
+    color: $gv3-text-tertiary;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.cmd-enter {
+  font-family: $gv3-font-mono;
+  font-size: 14px;
+  color: $gv3-text-muted;
+  padding: 0 6px;
+}
+
+.cmd-empty {
+  padding: $gv3-space-6 $gv3-space-4;
+  text-align: center;
+  p {
+    margin: 0;
+    color: $gv3-text-secondary;
+    font-size: $gv3-text-sm;
+    strong { color: $gv3-text-primary; font-weight: 600; }
+  }
+  .cmd-empty-hint {
+    margin-top: 6px;
+    font-size: 12px;
+    color: $gv3-text-tertiary;
+    em { color: $gv3-orange-hover; font-style: normal; font-family: $gv3-font-mono; }
+  }
+}
+
+.cmd-foot {
+  display: flex;
+  align-items: center;
+  gap: $gv3-space-3;
+  padding: 8px $gv3-space-4;
+  border-top: 1px solid $gv3-border-whisper;
+  background: $gv3-bg-warm;
+  font-family: $gv3-font-mono;
+  font-size: 10px;
+  color: $gv3-text-tertiary;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  span { display: inline-flex; align-items: center; gap: 4px; }
+  kbd {
+    display: inline-block;
+    padding: 1px 5px;
+    background: $gv3-bg-surface;
+    border: 1px solid $gv3-border-default;
+    border-radius: 3px;
+    font-family: $gv3-font-mono;
+    font-size: 9px;
+    color: $gv3-text-secondary;
+  }
+  .cmd-foot-tag {
+    margin-left: auto;
+    color: $gv3-orange-hover;
+    font-weight: 600;
+  }
+}

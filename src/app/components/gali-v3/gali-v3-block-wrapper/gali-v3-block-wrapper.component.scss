@@ -1,0 +1,181 @@
+@import 'styles/gali-v3-tokens';
+
+:host {
+  display: block;
+  font-family: $gv3-font-body;
+  height: 100%;
+  min-width: 0;
+}
+
+.bw {
+  @include gv3-card;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: all $gv3-dur-base $gv3-ease-out;
+
+  &:hover { @include gv3-card-hover; }
+}
+
+.bw.gali-active {
+  outline: 2px solid $gv3-terracota;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px $gv3-terracota-tint, $gv3-shadow-md;
+  animation: gv3-gali-pulse 2s ease-in-out infinite;
+}
+.bw.gali-done {
+  outline: 2px solid $gv3-sage;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px $gv3-sage-tint;
+}
+.bw__gali-badge {
+  font-family: $gv3-font-mono;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: $gv3-radius-sm;
+  background: $gv3-terracota-tint;
+  color: $gv3-terracota;
+  white-space: nowrap;
+  &--done { background: $gv3-sage-tint; color: $gv3-sage; }
+}
+@keyframes gv3-gali-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px $gv3-terracota-tint, $gv3-shadow-md; }
+  50% { box-shadow: 0 0 0 8px rgba(184, 89, 58, 0.08), $gv3-shadow-md; }
+}
+
+.bw[data-editing="true"] {
+  outline: 1px dashed $gv3-orange-tint;
+  outline-offset: 4px;
+  cursor: grab;
+  &:hover { border-color: $gv3-orange; box-shadow: $gv3-shadow-md; }
+}
+
+.bw__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $gv3-space-3;
+  padding: $gv3-space-4 $gv3-space-4 $gv3-space-3;
+  border-bottom: 1px solid $gv3-border-whisper;
+}
+
+.bw__title {
+  min-width: 0;
+  h3 {
+    font-family: $gv3-font-display;
+    font-variation-settings: 'opsz' 24, 'SOFT' 50;
+    font-size: $gv3-text-base;
+    font-weight: 600;
+    color: $gv3-text-primary;
+    margin: 0;
+    line-height: 1.2;
+  }
+}
+
+.bw__hint {
+  display: block;
+  margin-top: 2px;
+  font-size: $gv3-text-xs;
+  color: $gv3-text-tertiary;
+  line-height: 1.4;
+}
+
+.bw__actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $gv3-space-2;
+  flex-shrink: 0;
+}
+
+.bw__expand {
+  font-family: $gv3-font-mono;
+  font-size: $gv3-text-xs;
+  letter-spacing: 0.06em;
+  color: $gv3-orange-hover;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: $gv3-radius-sm;
+  &:hover { background: $gv3-orange-tint; color: $gv3-rust; }
+}
+
+.bw__menu-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid $gv3-border-subtle;
+  border-radius: $gv3-radius-sm;
+  color: $gv3-text-tertiary;
+  cursor: pointer;
+  svg { width: 16px; height: 16px; }
+  &:hover { color: $gv3-text-primary; border-color: $gv3-border-default; }
+}
+
+.bw__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  min-width: 200px;
+  padding: $gv3-space-3;
+  background: $gv3-bg-surface;
+  border: 1px solid $gv3-border-default;
+  border-radius: $gv3-radius-md;
+  box-shadow: $gv3-shadow-md;
+  display: flex;
+  flex-direction: column;
+  gap: $gv3-space-3;
+  animation: bw-menu-in $gv3-dur-base $gv3-ease-out;
+}
+.bw__menu-section { display: flex; flex-direction: column; gap: 6px; }
+.bw__menu-label {
+  font-family: $gv3-font-mono;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $gv3-text-tertiary;
+}
+.bw__menu-sizes { display: flex; gap: 4px; flex-wrap: wrap; }
+.bw__size-btn {
+  font-family: $gv3-font-mono;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: $gv3-radius-sm;
+  border: 1px solid $gv3-border-subtle;
+  background: $gv3-bg-cream;
+  color: $gv3-text-secondary;
+  cursor: pointer;
+  &:hover { border-color: $gv3-border-default; }
+  &--active { background: $gv3-orange; color: $gv3-text-onAccent; border-color: $gv3-orange; }
+}
+.bw__remove {
+  font-family: $gv3-font-mono;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 6px 10px;
+  border-radius: $gv3-radius-sm;
+  border: 1px solid $gv3-rust-soft;
+  background: transparent;
+  color: $gv3-rust;
+  cursor: pointer;
+  text-align: left;
+  &:hover { background: $gv3-rust-tint; }
+}
+
+.bw__body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: $gv3-space-4;
+}
+
+@keyframes bw-menu-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,295 @@
+<article class="objetivo">
+  <!-- ESTADO VACÍO: sin objetivo activo y sin onboarding abierto -->
+  <ng-container *ngIf="!objetivo() && !mostrandoOnboarding()">
+    <section class="objetivo__empty">
+      <div class="objetivo__empty-hero">
+        <span class="objetivo__sparkle">✦</span>
+        <span class="objetivo__empty-tag">Modo objetivos · Roadmap personalizado</span>
+        <h1>¿A dónde quieres llevar tu negocio?</h1>
+        <p class="objetivo__empty-sub">
+          Declara una meta concreta y yo te armo el camino. Voy a usar tu historial real,
+          benchmarks de la comunidad Dropi y lo que sé sobre tu nicho.
+        </p>
+        <button class="objetivo__cta" (click)="iniciarOnboarding()">
+          ✦ Declarar mi objetivo
+        </button>
+      </div>
+
+      <div class="objetivo__empty-pitches">
+        <div class="objetivo__pitch">
+          <span class="objetivo__pitch-icon">🎯</span>
+          <strong>Específico para ti</strong>
+          <p>No es un plan genérico. Uso tu ROAS histórico, tus productos top y tus ciudades fuertes.</p>
+        </div>
+        <div class="objetivo__pitch">
+          <span class="objetivo__pitch-icon">📊</span>
+          <strong>Probabilístico</strong>
+          <p>Te digo qué tan probable es lograrlo. Si no es realista, te lo digo y proponemos uno alcanzable.</p>
+        </div>
+        <div class="objetivo__pitch">
+          <span class="objetivo__pitch-icon">🧭</span>
+          <strong>Acciones, no consejos</strong>
+          <p>Cada paso del roadmap te lleva directo a un bloque de Dropi. No teoría — ejecución.</p>
+        </div>
+      </div>
+
+      <!-- Objetivos históricos completados -->
+      <section *ngIf="historicos().length > 0" class="objetivo__historicos">
+        <h2>Objetivos que ya cumpliste</h2>
+        <ul>
+          <li *ngFor="let h of historicos()" class="objetivo__historico">
+            <span class="objetivo__historico-check">✓</span>
+            <div>
+              <strong>{{ h.declaracion_usuario }}</strong>
+              <p>
+                Logrado en {{ h.duracion_real_semanas }} semanas
+                (planeado: {{ h.plazo_semanas }}).
+                <em>Aprendizaje: {{ h.aprendizaje_capturado }}</em>
+              </p>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </section>
+  </ng-container>
+
+  <!-- ONBOARDING: 3 preguntas -->
+  <ng-container *ngIf="mostrandoOnboarding()">
+    <section class="objetivo__onboarding">
+      <header class="objetivo__onboarding-head">
+        <span class="objetivo__sparkle">✦</span>
+        <span class="objetivo__onboarding-step">
+          Paso {{ pasoOnboarding() + 1 }} de {{ preguntas().length }}
+        </span>
+        <button class="objetivo__close" (click)="mostrandoOnboarding.set(false)" aria-label="Cancelar">
+          ×
+        </button>
+      </header>
+
+      <div class="objetivo__onboarding-body" *ngIf="preguntaActual() as q">
+        <h2>{{ q.pregunta }}</h2>
+        <p class="objetivo__gali-help">
+          <span class="objetivo__sparkle">✦</span> {{ q.ayuda_gali }}
+        </p>
+
+        <div class="objetivo__ejemplos">
+          <strong>Ejemplos:</strong>
+          <button
+            *ngFor="let ej of q.ejemplos"
+            class="objetivo__ejemplo"
+            (click)="responderPregunta(q.id, ej)"
+            [class.is-selected]="respuestaPreguntaActual() === ej"
+          >
+            {{ ej }}
+          </button>
+        </div>
+
+        <label class="objetivo__input-wrap">
+          <span>O escríbelo a tu manera</span>
+          <textarea
+            class="objetivo__input"
+            rows="3"
+            [value]="respuestaPreguntaActual()"
+            (input)="responderPregunta(q.id, $any($event.target).value)"
+            placeholder="Escribe aquí…"
+          ></textarea>
+        </label>
+
+        <footer class="objetivo__onboarding-foot">
+          <button
+            class="objetivo__btn-secondary"
+            (click)="pasoAnterior()"
+            [disabled]="pasoOnboarding() === 0"
+          >
+            Atrás
+          </button>
+          <button
+            class="objetivo__cta"
+            (click)="siguientePaso()"
+            [disabled]="!respuestaPreguntaActual()"
+          >
+            {{ pasoOnboarding() === preguntas().length - 1 ? 'Generar mi roadmap' : 'Siguiente' }}
+          </button>
+        </footer>
+      </div>
+    </section>
+  </ng-container>
+
+  <!-- OBJETIVO ACTIVO: roadmap completo -->
+  <ng-container *ngIf="objetivo() as o">
+    <!-- Hero del objetivo -->
+    <header class="objetivo__hero">
+      <div class="objetivo__hero-main">
+        <div class="objetivo__hero-meta">
+          <span class="objetivo__sparkle">✦</span>
+          <span class="objetivo__hero-tag">Mi objetivo activo</span>
+        </div>
+        <h1>{{ o.declaracion_usuario }}</h1>
+        <p class="objetivo__hero-sub">
+          Plazo: hasta el <strong>{{ o.deadline }}</strong>
+          · empezaste el {{ o.creado_at }}
+          · <em>{{ o.plazo_semanas }} semanas</em>
+        </p>
+      </div>
+
+      <div class="objetivo__hero-metric">
+        <div class="objetivo__metric-val">
+          {{ formatoMoneda(o.metrica.valor_actual) }}
+          <span class="objetivo__metric-unit">/ {{ formatoMoneda(o.metrica.valor_objetivo) }} {{ o.metrica.unidad }}</span>
+        </div>
+        <div class="objetivo__metric-label">Hoy / objetivo</div>
+        <div class="objetivo__progress">
+          <span class="objetivo__progress-fill" [style.width.%]="progreso()"></span>
+          <span class="objetivo__progress-projection" [style.left.%]="proyeccion()"
+            [attr.title]="'Proyección Gali: ' + proyeccion() + '%'"></span>
+        </div>
+        <div class="objetivo__progress-legend">
+          <span><strong>{{ progreso() }}%</strong> real</span>
+          <span class="objetivo__projection-tag">
+            <span class="objetivo__sparkle">✦</span>
+            Gali proyecta: {{ proyeccion() }}%
+            ({{ formatoMoneda(o.proyeccion_valor_final) }} {{ o.metrica.unidad }})
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Razonamiento de Gali (H#11: transparencia + H#13: confianza) -->
+    <section class="objetivo__razonamiento" [class.is-expanded]="mostrandoRazonamientoGali()">
+      <button class="objetivo__razonamiento-toggle" (click)="toggleRazonamiento()">
+        <span class="objetivo__sparkle">✦</span>
+        <strong>¿Por qué Gali cree que es alcanzable?</strong>
+        <span class="objetivo__razonamiento-confianza" [attr.data-color]="confianzaColor(o.confianza_gali)">
+          Confianza {{ confianzaTexto(o.confianza_gali) }}
+          · {{ (o.confianza_gali * 100).toFixed(0) }}%
+        </span>
+        <span class="objetivo__razonamiento-chevron">
+          {{ mostrandoRazonamientoGali() ? '▴' : '▾' }}
+        </span>
+      </button>
+
+      <div *ngIf="mostrandoRazonamientoGali()" class="objetivo__razonamiento-body">
+        <p class="objetivo__razonamiento-text">{{ o.razonamiento_gali }}</p>
+        <div class="objetivo__razonamiento-fuentes">
+          <strong>Basado en:</strong>
+          <ul>
+            <li *ngFor="let f of o.fuentes_confianza">{{ f }}</li>
+          </ul>
+        </div>
+        <div class="objetivo__razonamiento-snapshot">
+          <strong>Tu situación al iniciar:</strong>
+          <div class="objetivo__snapshot-grid">
+            <div>
+              <span>Pedidos/mes</span>
+              <strong>{{ o.snapshot_inicial.pedidos_actuales_mes }}</strong>
+            </div>
+            <div>
+              <span>ROAS histórico</span>
+              <strong>{{ o.snapshot_inicial.roas_historico }}x</strong>
+            </div>
+            <div>
+              <span>Inversión/semana</span>
+              <strong>${{ formatoMoneda(o.snapshot_inicial.inversion_actual_semana) }}</strong>
+            </div>
+            <div>
+              <span>Producto top</span>
+              <strong>{{ o.snapshot_inicial.productos_top[0] }}</strong>
+            </div>
+          </div>
+        </div>
+        <div class="objetivo__razonamiento-actions">
+          <button class="objetivo__btn-link" (click)="preguntarAjuste()">
+            Ajustar mi objetivo con Gali
+          </button>
+          <button class="objetivo__btn-link" (click)="consultarLider()">
+            ¿Qué hizo el top 5% con mi mismo objetivo?
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roadmap timeline -->
+    <section class="objetivo__roadmap">
+      <header class="objetivo__roadmap-head">
+        <h2>Tu roadmap, semana por semana</h2>
+        <span class="objetivo__roadmap-meta">
+          {{ pasosCompletados() }} de {{ pasosTotal() }} pasos completados
+        </span>
+      </header>
+
+      <div class="objetivo__semanas">
+        <article
+          *ngFor="let s of o.semanas"
+          class="objetivo__semana"
+          [class.is-completada]="s.estado === 'completada'"
+          [class.is-activa]="s.estado === 'activa'"
+          [class.is-futura]="s.estado === 'futura'"
+          [class.is-expanded]="semanaExpandida() === s.numero"
+        >
+          <button class="objetivo__semana-head" (click)="toggleSemana(s.numero)">
+            <span class="objetivo__semana-icon">{{ semanaIcono(s) }}</span>
+            <div class="objetivo__semana-meta">
+              <strong>Semana {{ s.numero }} · {{ s.titulo }}</strong>
+              <span class="objetivo__semana-fechas">
+                {{ s.fecha_inicio }} → {{ s.fecha_fin }} · meta {{ s.meta_parcial }} pedidos
+              </span>
+            </div>
+            <div class="objetivo__semana-progress">
+              <span class="objetivo__semana-pct">{{ s.porcentaje_real }}%</span>
+              <span class="objetivo__semana-bar">
+                <span [style.width.%]="s.porcentaje_real"></span>
+              </span>
+            </div>
+            <span class="objetivo__semana-chevron">
+              {{ semanaExpandida() === s.numero ? '▴' : '▾' }}
+            </span>
+          </button>
+
+          <div *ngIf="semanaExpandida() === s.numero" class="objetivo__pasos">
+            <article *ngFor="let p of s.pasos" class="objetivo__paso"
+              [class.is-completado]="p.estado === 'completado'"
+              [class.is-en-progreso]="p.estado === 'en_progreso'">
+              <button class="objetivo__paso-check" (click)="togglePaso(p)"
+                [attr.aria-label]="'Cambiar estado: ' + p.titulo">
+                {{ pasoIcono(p.estado) }}
+              </button>
+              <div class="objetivo__paso-body">
+                <strong>{{ p.titulo }}</strong>
+                <p>{{ p.descripcion }}</p>
+
+                <button class="objetivo__paso-razon" (click)="toggleConfianzaPaso(p.id)">
+                  <span class="objetivo__sparkle">✦</span>
+                  ¿Por qué este paso?
+                  <span class="objetivo__paso-confianza"
+                    [attr.data-color]="confianzaColor(p.confianza_gali)">
+                    {{ (p.confianza_gali * 100).toFixed(0) }}% confianza
+                  </span>
+                </button>
+
+                <div *ngIf="mostrandoConfianzaPaso() === p.id" class="objetivo__paso-detail">
+                  <em>{{ p.razon_gali }}</em>
+                </div>
+              </div>
+              <button class="objetivo__paso-cta" (click)="irAPaso(p)"
+                [disabled]="p.estado === 'completado'">
+                {{ p.estado === 'completado' ? 'Hecho' : 'Ir al bloque →' }}
+              </button>
+            </article>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Footer: chat con Gali -->
+    <section class="objetivo__chat-callout">
+      <span class="objetivo__sparkle">✦</span>
+      <p>
+        ¿Algo no encaja con tu situación? Pregúntale a Gali sobre tu objetivo —
+        recalcula el roadmap sin perder progreso.
+      </p>
+      <button class="objetivo__btn-secondary" (click)="preguntarAjuste()">
+        Hablar con Gali
+      </button>
+    </section>
+  </ng-container>
+</article>

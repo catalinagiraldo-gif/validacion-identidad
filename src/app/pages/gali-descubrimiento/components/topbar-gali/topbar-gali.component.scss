@@ -1,0 +1,139 @@
+@import 'styles/gali-tokens';
+
+.topbar {
+  height: $gali-topbar-height;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: rgba(15, 15, 18, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid $gali-border-subtle;
+  position: relative;
+  z-index: 30;
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: $gali-text-primary;
+    font-family: $gali-font-display;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    transition: opacity 160ms ease;
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &:focus-visible {
+      @include gali-focus;
+    }
+  }
+
+  &__logo-mark {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, $gali-orange 0%, #ff7547 100%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: $gali-font-display;
+    font-weight: 700;
+    font-size: 15px;
+    color: $gali-bg-base;
+    box-shadow: 0 4px 12px rgba(244, 154, 61, 0.25);
+  }
+
+  &__logo-text {
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  &__logo-divider {
+    color: $gali-text-muted;
+    font-weight: 300;
+  }
+
+  &__logo-ai {
+    font-family: $gali-font-mono;
+    font-size: 11px;
+    color: $gali-cyan;
+    letter-spacing: 0.06em;
+    background: rgba(78, 205, 196, 0.08);
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(78, 205, 196, 0.2);
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__btn {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: $gali-radius-input;
+    background: transparent;
+    border: none;
+    color: $gali-text-secondary;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 160ms ease, color 160ms ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: $gali-text-primary;
+    }
+
+    &:focus-visible {
+      @include gali-focus;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: $gali-orange;
+    color: $gali-bg-base;
+    font-family: $gali-font-mono;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 999px;
+    min-width: 14px;
+    text-align: center;
+  }
+
+  &__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $gali-violet 0%, $gali-blue 100%);
+    border: 2px solid $gali-border-default;
+    color: $gali-text-primary;
+    font-family: $gali-font-display;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 160ms ease;
+
+    &:hover {
+      transform: scale(1.05);
+      border-color: $gali-cyan;
+    }
+
+    &:focus-visible {
+      @include gali-focus;
+    }
+  }
+}

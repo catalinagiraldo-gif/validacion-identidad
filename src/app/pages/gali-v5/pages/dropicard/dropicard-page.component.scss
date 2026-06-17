@@ -1,0 +1,284 @@
+@import '../shared/dropi-page-shell';
+@import '../shared/dropi-page-host';
+
+:host {
+  @include dropi-page-host;
+}
+
+.dropicard-page {
+  @include dropi-page-shell;
+  min-height: 100%;
+  padding-bottom: $size-8;
+
+  &__toolbar {
+    @include dropi-toolbar-row;
+    justify-content: space-between;
+    margin-bottom: $size-5;
+  }
+
+  &__toolbar-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $size-3;
+  }
+
+  &__toolbar-search {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    min-width: 240px;
+  }
+
+  &__select {
+    height: 40px;
+    min-width: 200px;
+    padding: 0 $size-4;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    background: $white;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-600;
+  }
+
+  &__select-action {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: $size-4;
+  }
+
+  &__list-panel {
+    @include dropi-content-panel;
+    padding: $size-4;
+    min-height: 420px;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: $size-3;
+    min-height: 320px;
+    color: $gray-500;
+    font-family: $font-primary;
+    font-size: $font-sm;
+
+    .pi {
+      font-size: 40px;
+      color: $gray-300;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+}
+
+.dropicard-list {
+  display: flex;
+  flex-direction: column;
+  gap: $size-4;
+}
+
+.dropicard-row {
+  display: flex;
+  align-items: center;
+  gap: $size-6;
+  min-height: 103px;
+  padding: $size-4 $size-5;
+  border: 1px solid $gray-200;
+  border-radius: $radius-lg;
+  background: $white;
+
+  &__visual {
+    flex-shrink: 0;
+  }
+
+  &__thumb {
+    display: block;
+    width: 107px;
+    height: 71px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: linear-gradient(135deg, $gray-800 0%, $gray-600 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  &__identity {
+    flex: 1 1 180px;
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+    min-width: 160px;
+  }
+
+  &__type-chip {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    height: 24px;
+    padding: 0 $size-2;
+    border: 1px solid $gray-200;
+    border-radius: $radius-sm;
+    background: $gray-50;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-600;
+    white-space: nowrap;
+  }
+
+  &__holder {
+    font-family: $font-primary;
+    font-size: 20px;
+    font-weight: $font-bold;
+    color: $gray-800;
+    line-height: 1.1;
+  }
+
+  &__id-block {
+    flex: 0 0 148px;
+  }
+
+  &__status {
+    flex: 0 0 100px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__balance {
+    flex: 0 0 130px;
+  }
+
+  &__field-label {
+    display: block;
+    margin-bottom: $size-2;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $gray-700;
+  }
+
+  &__id-row,
+  &__balance-row {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+  }
+
+  &__id-row span {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-600;
+  }
+
+  &__balance-value {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $gray-700;
+    white-space: nowrap;
+  }
+
+  &__balance-hidden {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-600;
+  }
+
+  &__icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: $gray-500;
+    cursor: pointer;
+
+    i {
+      font-size: 14px;
+    }
+
+    &:hover {
+      color: $gray-700;
+    }
+  }
+
+  &__actions {
+    flex: 0 0 168px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: $size-4;
+    margin-left: auto;
+  }
+
+  &__action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: $primary-500;
+    cursor: pointer;
+
+    i {
+      font-size: 22px;
+    }
+
+    &:hover {
+      color: $primary-600;
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .dropicard-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: $size-4;
+
+    &__identity {
+      flex: 1 1 calc(100% - 140px);
+    }
+
+    &__id-block,
+    &__status,
+    &__balance {
+      flex: 0 0 auto;
+    }
+
+    &__actions {
+      flex: 1 1 100%;
+      justify-content: flex-start;
+      margin-left: 0;
+      padding-top: $size-2;
+      border-top: 1px solid $gray-100;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .dropicard-page__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dropicard-page__toolbar-search {
+    justify-content: stretch;
+
+    dropi-search-oficial {
+      width: 100%;
+    }
+  }
+}

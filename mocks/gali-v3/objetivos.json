@@ -1,0 +1,251 @@
+{
+  "objetivo_activo": {
+    "id": "obj-200-pedidos",
+    "declaracion_usuario": "Quiero llegar a 200 pedidos por mes",
+    "metrica": {
+      "tipo": "pedidos_mes",
+      "valor_objetivo": 200,
+      "valor_actual": 47,
+      "valor_inicial": 47,
+      "unidad": "pedidos"
+    },
+    "creado_at": "2026-05-15",
+    "deadline": "2026-06-30",
+    "plazo_semanas": 4,
+    "porcentaje_completado": 23.5,
+    "porcentaje_proyectado_gali": 97.5,
+    "proyeccion_valor_final": 195,
+    "confianza_gali": 0.72,
+    "fuentes_confianza": [
+      "23 dropshippers similares con tu nicho y margen alcanzaron meta parecida",
+      "Tu ROAS histórico 2.3x es replicable",
+      "Tienes 1 producto top y capacidad para 2 más sin saturar"
+    ],
+    "razonamiento_gali": "Basado en tu historial: ROAS promedio 2.3x, 1 producto top (Collar GPS = 60% volumen), inversión actual $180k/sem. Para llegar a 200 pedidos necesitas diversificar a 3 productos + escalar a $280k/sem + expandir Medellín. Es alcanzable en 4 semanas si mantienes ritmo actual de optimización.",
+    "snapshot_inicial": {
+      "pedidos_actuales_mes": 47,
+      "roas_historico": 2.3,
+      "productos_top": ["Collar GPS (60% volumen)"],
+      "ciudades_top": ["Bogotá 55%", "Medellín 25%"],
+      "inversion_actual_semana": 180000,
+      "moneda": "COP"
+    },
+    "semanas": [
+      {
+        "numero": 1,
+        "titulo": "Diversificación",
+        "meta_parcial": 60,
+        "fecha_inicio": "2026-05-15",
+        "fecha_fin": "2026-05-22",
+        "estado": "completada",
+        "porcentaje_real": 100,
+        "pasos": [
+          {
+            "id": "p-1-1",
+            "titulo": "Lanzar Tapete Acupresión",
+            "descripcion": "Producto complementario al Collar GPS. Margen 58%, ticket promedio $89k COP.",
+            "razon_gali": "Audiencia mascotas se traslapa con bienestar/salud. Bajo riesgo de canibalización.",
+            "ruta_dropi": "/gali-v3/dropi/caza-productos",
+            "tipo_bloque": "caza-productos",
+            "estado": "completado",
+            "confianza_gali": 0.85
+          },
+          {
+            "id": "p-1-2",
+            "titulo": "Crear landing para LED Facial",
+            "descripcion": "Segundo producto: dispositivo LED para skincare. Audiencia mujeres 28-45.",
+            "razon_gali": "Tu memoria muestra tono emocional efectivo en mascotas — replicable a skincare.",
+            "ruta_dropi": "/gali-v3/landings",
+            "tipo_bloque": "landings",
+            "estado": "completado",
+            "confianza_gali": 0.78
+          },
+          {
+            "id": "p-1-3",
+            "titulo": "Activar campaña Meta para Tapete",
+            "descripcion": "Presupuesto inicial $40k/día por 3 días para validar CTR.",
+            "razon_gali": "Validación rápida antes de escalar. Si CTR > 1.2% sigue; si no, ajusta creative.",
+            "ruta_dropi": "/gali-v3/dropi/campanas",
+            "tipo_bloque": "campanas",
+            "estado": "completado",
+            "confianza_gali": 0.80
+          }
+        ]
+      },
+      {
+        "numero": 2,
+        "titulo": "Escalar ads",
+        "meta_parcial": 100,
+        "fecha_inicio": "2026-05-23",
+        "fecha_fin": "2026-05-29",
+        "estado": "activa",
+        "porcentaje_real": 65,
+        "pasos": [
+          {
+            "id": "p-2-1",
+            "titulo": "Aumentar presupuesto Collar GPS a $280k/sem",
+            "descripcion": "Escalar gradualmente: día 1 +20%, día 3 +35%, día 5 +55%. Monitorear ROAS.",
+            "razon_gali": "Tu ROAS 2.8x sostenido 14 días permite escalar. Aumentar de golpe corrompe el algoritmo.",
+            "ruta_dropi": "/gali-v3/dropi/campanas",
+            "tipo_bloque": "campanas",
+            "estado": "completado",
+            "confianza_gali": 0.82
+          },
+          {
+            "id": "p-2-2",
+            "titulo": "Probar Cali con creative existente",
+            "descripcion": "Replica campaña de Bogotá ajustando localización. Presupuesto inicial $30k/día.",
+            "razon_gali": "Cali tiene perfil de compra similar a Bogotá según la comunidad Dropi. Bajo riesgo.",
+            "ruta_dropi": "/gali-v3/dropi/campanas",
+            "tipo_bloque": "campanas",
+            "estado": "en_progreso",
+            "confianza_gali": 0.68
+          },
+          {
+            "id": "p-2-3",
+            "titulo": "Optimizar landing del LED Facial",
+            "descripcion": "CTR landing bajo (2.1%). Probar headline alternativo + cambiar imagen hero.",
+            "razon_gali": "Tu landing tiene un CTR debajo del benchmark de tu nicho (4.5%). Hay margen claro.",
+            "ruta_dropi": "/gali-v3/landings",
+            "tipo_bloque": "landings",
+            "estado": "pendiente",
+            "confianza_gali": 0.75
+          }
+        ]
+      },
+      {
+        "numero": 3,
+        "titulo": "Nuevas ciudades",
+        "meta_parcial": 150,
+        "fecha_inicio": "2026-05-30",
+        "fecha_fin": "2026-06-05",
+        "estado": "futura",
+        "porcentaje_real": 0,
+        "pasos": [
+          {
+            "id": "p-3-1",
+            "titulo": "Activar Medellín con creative adaptado",
+            "descripcion": "Crear variante del creative ajustando dialecto paisa. Mantener ángulo emocional.",
+            "razon_gali": "Medellín es tu segunda ciudad (25%). Pero comportamiento de compra distinto a Bogotá.",
+            "ruta_dropi": "/gali-v3/dropi/campanas",
+            "tipo_bloque": "campanas",
+            "estado": "pendiente",
+            "confianza_gali": 0.70
+          },
+          {
+            "id": "p-3-2",
+            "titulo": "Lanzar tercer producto: Almohada Cervical",
+            "descripcion": "Producto complementario alineado con nicho bienestar.",
+            "razon_gali": "Tendencia comunidad: +47% interés en bienestar postural últimas 4 semanas.",
+            "ruta_dropi": "/gali-v3/dropi/caza-productos",
+            "tipo_bloque": "caza-productos",
+            "estado": "pendiente",
+            "confianza_gali": 0.63
+          },
+          {
+            "id": "p-3-3",
+            "titulo": "Configurar automatización para confirmaciones",
+            "descripcion": "Recipe: nuevo pedido → WhatsApp automático con detalles + tracking.",
+            "razon_gali": "Vas a tener 100+ pedidos/semana. Sin automatización pierdes 2h/día en confirmaciones.",
+            "ruta_dropi": "/gali-v3/builder",
+            "tipo_bloque": "recipe",
+            "estado": "pendiente",
+            "confianza_gali": 0.88
+          }
+        ]
+      },
+      {
+        "numero": 4,
+        "titulo": "Consolidar",
+        "meta_parcial": 200,
+        "fecha_inicio": "2026-06-06",
+        "fecha_fin": "2026-06-30",
+        "estado": "futura",
+        "porcentaje_real": 0,
+        "pasos": [
+          {
+            "id": "p-4-1",
+            "titulo": "Automatizar resolución de novedades simples",
+            "descripcion": "Recipe: novedad 'dirección incompleta' → WhatsApp pidiendo corrección.",
+            "razon_gali": "60% de tus novedades son dirección incompleta. Resolvibles automáticamente.",
+            "ruta_dropi": "/gali-v3/builder",
+            "tipo_bloque": "recipe",
+            "estado": "pendiente",
+            "confianza_gali": 0.85
+          },
+          {
+            "id": "p-4-2",
+            "titulo": "Instalar agente Vigilante anti-baneo",
+            "descripcion": "Revisa creatives antes de publicar para evitar bloqueos de Meta.",
+            "razon_gali": "Con 3 productos activos el riesgo de baneo sube. Prevención > recuperación.",
+            "ruta_dropi": "/gali-v3/mercado",
+            "tipo_bloque": "agente",
+            "estado": "pendiente",
+            "confianza_gali": 0.78
+          },
+          {
+            "id": "p-4-3",
+            "titulo": "Consolidar memoria del negocio",
+            "descripcion": "Revisar con Gali los aprendizajes del mes y guardarlos como decisiones clave.",
+            "razon_gali": "Próximo mes tu Gali sabrá más sobre ti. Memoria explícita acelera siguiente objetivo.",
+            "ruta_dropi": "/gali-v3/proyectos",
+            "tipo_bloque": "memoria",
+            "estado": "pendiente",
+            "confianza_gali": 0.80
+          }
+        ]
+      }
+    ]
+  },
+  "objetivos_historicos": [
+    {
+      "id": "obj-hist-1",
+      "declaracion_usuario": "Lograr mi primer ROAS 2x sostenido",
+      "metrica": {
+        "tipo": "roas",
+        "valor_objetivo": 2.0,
+        "valor_actual": 2.3,
+        "unidad": "x"
+      },
+      "estado": "completado",
+      "fecha_completado": "2026-04-28",
+      "plazo_semanas": 3,
+      "duracion_real_semanas": 3,
+      "aprendizaje_capturado": "El cambio decisivo fue probar tono emocional vs racional en el creative."
+    }
+  ],
+  "preguntas_onboarding": [
+    {
+      "id": "q1",
+      "pregunta": "¿Qué quieres lograr con Dropi en este momento?",
+      "ayuda_gali": "Sé específico — número de pedidos, ROAS, ingresos. Mientras más concreto, mejor el plan que te puedo armar.",
+      "ejemplos": [
+        "Llegar a 200 pedidos por mes",
+        "Subir mi ROAS de 1.8x a 3x",
+        "Facturar $5M COP/mes sostenido",
+        "Lanzar 3 productos nuevos este mes"
+      ]
+    },
+    {
+      "id": "q2",
+      "pregunta": "¿Para cuándo lo quieres lograr?",
+      "ayuda_gali": "Plazos cortos exigen más intensidad. Largos permiten experimentar. Yo te digo si es realista.",
+      "ejemplos": [
+        "En 2 semanas",
+        "En 1 mes",
+        "En 3 meses",
+        "Antes de fin de año"
+      ]
+    },
+    {
+      "id": "q3",
+      "pregunta": "¿Qué tienes hoy? Cuéntame brevemente tu situación.",
+      "ayuda_gali": "Tu memoria con Gali ya tiene muchos datos — pero si quieres aclarar algo (producto top, ciudad fuerte, bloqueo actual) escríbelo.",
+      "ejemplos": [
+        "47 pedidos/mes, 1 producto top (Collar GPS), ROAS 2.3x",
+        "Empezando — sin ventas todavía",
+        "Estancado en 100 pedidos hace 2 meses"
+      ]
+    }
+  ]
+}

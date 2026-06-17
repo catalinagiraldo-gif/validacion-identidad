@@ -1,0 +1,101 @@
+@import 'styles/gali-tokens';
+
+.mr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid $gali-border-subtle;
+  border-radius: $gali-radius-pill;
+  font-family: $gali-font-body;
+  font-size: 13px;
+  color: $gali-text-primary;
+  min-width: 380px;
+
+  &__icon {
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__row {
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+  }
+
+  &__label {
+    color: $gali-text-secondary;
+    font-size: 11px;
+  }
+
+  &__title {
+    color: $gali-text-primary;
+    font-weight: 500;
+    font-size: 13px;
+  }
+
+  &__bar {
+    height: 4px;
+    background: $gali-border-subtle;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, $gali-orange 0%, $gali-orange-hover 100%);
+    border-radius: 2px;
+    transition: width 500ms $gali-ease-out;
+    box-shadow: 0 0 8px $gali-orange-glow;
+  }
+
+  &__pct {
+    font-family: $gali-font-mono;
+    font-size: 11px;
+    color: $gali-orange;
+    font-variant-numeric: tabular-nums;
+    min-width: 32px;
+    text-align: right;
+  }
+
+  &__step {
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    color: $gali-text-muted;
+    padding: 2px 6px;
+    background: $gali-bg-base;
+    border-radius: 4px;
+  }
+}
+
+@include gali-reduced-motion {
+  .mr__bar-fill {
+    transition: none;
+  }
+}
+
+@media (max-width: 1280px) {
+  .mr {
+    min-width: 280px;
+
+    &__content {
+      flex: 1;
+    }
+
+    &__title {
+      font-size: 12px;
+    }
+
+    &__label {
+      display: none;
+    }
+  }
+}

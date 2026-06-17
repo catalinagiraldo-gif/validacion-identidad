@@ -1,0 +1,117 @@
+<div class="diag-overlay" (click)="cerrar()">
+  <div class="diag-modal" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="diag-modal__header">
+      <div class="diag-modal__title-group">
+        <span class="diag-modal__eyebrow">✦ Diagnóstico · {{ proyecto }}</span>
+        <h2 class="diag-modal__title">{{ titulo }}</h2>
+        <span class="diag-modal__meta">Análisis cruzado de {{ fuentes.length }} fuentes · {{ generadoHace }}</span>
+      </div>
+      <button type="button" class="diag-modal__close" (click)="cerrar()" data-proto-skip>
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+
+    <!-- Fuentes -->
+    <div class="diag-modal__sources">
+      <span
+        *ngFor="let f of fuentes"
+        class="source-chip"
+        [class.source-chip--ok]="f.estado === 'ok'"
+        [class.source-chip--loading]="f.estado === 'procesando'">
+        {{ f.icono }}
+        <span>{{ f.nombre }}</span>
+        <i *ngIf="f.estado === 'ok'" class="pi pi-check"></i>
+        <i *ngIf="f.estado === 'procesando'" class="pi pi-spin pi-spinner" style="font-size:10px"></i>
+      </span>
+    </div>
+
+    <!-- Body: 2 cols -->
+    <div class="diag-modal__body">
+
+      <!-- Hipótesis -->
+      <div class="diag-col diag-col--hipotesis">
+        <h3 class="diag-col__title">Hipótesis (por probabilidad)</h3>
+
+        <div
+          *ngFor="let h of hipotesis"
+          class="hipotesis-card"
+          [class]="getNivelClass(h.nivel)">
+
+          <div class="hipotesis-card__header" (click)="toggleHipotesis(h)" style="cursor: pointer;">
+            <div class="hipotesis-card__prob-group">
+              <div class="hipotesis-card__prob-track">
+                <div class="hipotesis-card__prob-fill" [style.width]="getProbBarWidth(h.probabilidad)"></div>
+              </div>
+              <span class="hipotesis-card__pct">{{ h.probabilidad }}%</span>
+            </div>
+            <span class="hipotesis-card__titulo">{{ h.titulo }}</span>
+            <i class="pi" [class.pi-chevron-down]="!h.expanded" [class.pi-chevron-up]="h.expanded"></i>
+          </div>
+
+          <div *ngIf="h.expanded" class="hipotesis-card__body">
+            <ul class="hipotesis-evidences">
+              <li *ngFor="let e of h.evidencias">{{ e }}</li>
+            </ul>
+            <span class="hipotesis-card__impacto">Impacto estimado: {{ h.impacto }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="diag-col diag-col--acciones">
+        <h3 class="diag-col__title">Acciones propuestas</h3>
+
+        <div
+          *ngFor="let a of acciones"
+          class="accion-card"
+          [class.accion-card--selected]="a.selected"
+          (click)="toggleAccion(a)"
+          style="cursor: pointer;">
+
+          <div class="accion-card__header">
+            <span class="accion-card__icon">{{ a.icono }}</span>
+            <div class="accion-card__info">
+              <span class="accion-card__titulo">{{ a.titulo }}</span>
+              <span class="accion-card__agente">
+                {{ a.agente }}
+                <span class="accion-card__auto" *ngIf="a.autonoma">· autónoma</span>
+                <span class="accion-card__auto accion-card__auto--manual" *ngIf="!a.autonoma">· requiere edición</span>
+              </span>
+            </div>
+            <div class="accion-card__check" [class.accion-card__check--on]="a.selected">
+              <i class="pi pi-check" *ngIf="a.selected"></i>
+            </div>
+          </div>
+
+          <p class="accion-card__desc">{{ a.descripcion }}</p>
+          <span class="accion-card__impacto">{{ a.impactoEstimado }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="diag-modal__footer">
+      <span class="diag-modal__selected-count">
+        {{ selectedActions.length }} acción{{ selectedActions.length !== 1 ? 'es' : '' }} seleccionada{{ selectedActions.length !== 1 ? 's' : '' }}
+      </span>
+      <div class="diag-modal__footer-actions">
+        <button type="button" class="btn-diag btn-diag--ghost" (click)="cerrar()" data-proto-skip>
+          Revisar después
+        </button>
+        <button
+          type="button"
+          class="btn-diag btn-diag--primary"
+          [disabled]="selectedActions.length === 0 || executing()"
+          (click)="ejecutarSeleccionadas()">
+          <i *ngIf="executing()" class="pi pi-spin pi-spinner"></i>
+          <span *ngIf="!executing()">Ejecutar {{ selectedActions.length > 0 ? '(' + selectedActions.length + ')' : '' }}</span>
+          <span *ngIf="executing()">Ejecutando...</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,640 @@
+@import 'styles/gali-v3-tokens';
+
+:host {
+  display: block;
+  height: 100%;
+  position: relative;
+}
+
+.rpanel {
+  height: 100%;
+  background: $gv3-bg-surface;
+  border-left: 1px solid $gv3-border-whisper;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  z-index: $gv3-rpanel-z;
+  transition: width $gv3-dur-base $gv3-ease-out;
+}
+
+.rpanel.is-open {
+  width: $gv3-rpanel-w;
+  display: flex;
+  flex-direction: column;
+}
+
+.rpanel.is-collapsed {
+  width: $gv3-rpanel-w-collapsed;
+  background: $gv3-bg-warm;
+  border-left: 1px solid $gv3-border-warm;
+}
+
+// ============================================
+// CHIP COLAPSADO
+// ============================================
+.rpanel__chip {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: $gv3-space-4 0;
+  gap: $gv3-space-3;
+  position: relative;
+  transition: background $gv3-dur-fast $gv3-ease-out;
+
+  &:hover {
+    background: $gv3-orange-tint;
+  }
+}
+
+.rpanel__chip-sparkle {
+  color: $gv3-orange;
+  font-size: 18px;
+  filter: drop-shadow($gv3-sparkle-glow);
+}
+
+.rpanel__chip-arrow {
+  color: $gv3-text-tertiary;
+  font-size: 18px;
+  font-family: $gv3-font-mono;
+  line-height: 1;
+}
+
+.rpanel__chip-badge {
+  position: absolute;
+  top: $gv3-space-3;
+  right: 6px;
+  background: $gv3-rust;
+  color: $gv3-text-onAccent;
+  font-family: $gv3-font-mono;
+  font-size: 9px;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  padding: 0 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+// ============================================
+// HEADER ABIERTO
+// ============================================
+.rpanel__head {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid $gv3-border-whisper;
+  height: $gv3-rpanel-tab-h;
+  flex-shrink: 0;
+}
+
+.rpanel__tabs {
+  flex: 1;
+  display: flex;
+  height: 100%;
+}
+
+.rpanel__tab {
+  flex: 1;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: $gv3-font-body;
+  font-weight: 500;
+  font-size: $gv3-text-sm;
+  color: $gv3-text-tertiary;
+  cursor: pointer;
+  position: relative;
+  transition: color $gv3-dur-fast $gv3-ease-out;
+  border-right: 1px solid $gv3-border-whisper;
+
+  &:last-of-type {
+    border-right: 0;
+  }
+
+  &:hover {
+    color: $gv3-text-primary;
+  }
+
+  &.is-active {
+    color: $gv3-orange;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      right: 20%;
+      height: 2px;
+      background: $gv3-orange;
+      border-radius: 2px 2px 0 0;
+    }
+  }
+}
+
+.rpanel__tab-icon {
+  font-size: 13px;
+}
+
+.rpanel__tab-count {
+  background: $gv3-orange-tint;
+  color: $gv3-orange-hover;
+  font-family: $gv3-font-mono;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: $gv3-radius-pill;
+  margin-left: 2px;
+}
+
+.rpanel__collapse {
+  border: 0;
+  background: transparent;
+  width: $gv3-rpanel-tab-h;
+  height: $gv3-rpanel-tab-h;
+  color: $gv3-text-tertiary;
+  font-family: $gv3-font-mono;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+  border-left: 1px solid $gv3-border-whisper;
+
+  &:hover {
+    color: $gv3-text-primary;
+    background: $gv3-bg-warm;
+  }
+}
+
+// ============================================
+// CONTENT
+// ============================================
+.rpanel__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ============================================
+// BUSINESS CONTEXT ACORDEÓN (dentro del tab Chat)
+// ============================================
+.rpanel__business {
+  border-bottom: 1px solid $gv3-border-whisper;
+  background: $gv3-bg-warm;
+  flex-shrink: 0;
+}
+
+.rpanel__business-toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px $gv3-space-4;
+  cursor: pointer;
+  font-family: $gv3-font-body;
+  font-size: $gv3-text-xs;
+  font-weight: 500;
+  color: $gv3-text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: background $gv3-dur-fast $gv3-ease-out;
+
+  &:hover {
+    background: $gv3-orange-tint;
+  }
+}
+
+.rpanel__business-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rpanel__business-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: $gv3-sage;
+  box-shadow: 0 0 0 3px rgba(95, 112, 88, 0.18);
+}
+
+.rpanel__business-arrow {
+  font-size: 11px;
+  color: $gv3-text-tertiary;
+}
+
+.rpanel__business-body {
+  max-height: 320px;
+  overflow-y: auto;
+  border-top: 1px solid $gv3-border-whisper;
+  background: $gv3-bg-surface;
+  animation: gv3-artifact-enter $gv3-dur-base $gv3-ease-out;
+  @include gv3-scrollbar-subtle;
+
+  // gali-business-context renders its own padded layout — let it own its frame
+  ::ng-deep > * {
+    display: block;
+  }
+}
+
+// ============================================
+// CHAT (reusa gali-chat existente — sus height fijos se sobreescriben)
+// ============================================
+.rpanel__chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 200px;
+  max-height: 45%;
+  flex-shrink: 0;
+  border-top: 1px solid $gv3-border-whisper;
+
+  // El gali-chat fue diseñado para vivir en el bottom del shell con height 220px fijo.
+  // Aquí lo forzamos a llenar todo el alto disponible del rpanel.
+  ::ng-deep > gali-chat {
+    height: 100%;
+    display: block;
+    border-top: 0;
+  }
+
+  // .chat es grid (auto 1fr auto auto) — sólo necesitamos que tenga el alto del padre
+  ::ng-deep .chat,
+  ::ng-deep .chat.is-expanded {
+    height: 100% !important;
+    min-height: 0;
+  }
+
+  // El grid row de messages (1fr) debe scrollear cuando se llena
+  ::ng-deep .chat__messages {
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
+// ============================================
+// TAB MIS BLOQUES
+// ============================================
+.rpanel__bloques {
+  flex: 1;
+  overflow-y: auto;
+  padding: $gv3-space-4;
+  @include gv3-scrollbar-subtle;
+}
+
+.rpanel__bloques-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $gv3-space-3;
+  margin-bottom: $gv3-space-4;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    strong {
+      font-family: $gv3-font-display;
+      font-weight: 500;
+      font-size: $gv3-text-lg;
+      color: $gv3-text-primary;
+      letter-spacing: -0.01em;
+    }
+
+    span {
+      font-family: $gv3-font-body;
+      font-size: $gv3-text-xs;
+      color: $gv3-text-tertiary;
+    }
+  }
+}
+
+.rpanel__bloques-new {
+  border: 0;
+  background: $gv3-orange;
+  color: $gv3-text-onAccent;
+  font-family: $gv3-font-body;
+  font-weight: 500;
+  font-size: $gv3-text-xs;
+  padding: 6px 12px;
+  border-radius: $gv3-radius-pill;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: $gv3-shadow-glow-warm;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+  flex-shrink: 0;
+
+  &:hover {
+    background: $gv3-orange-hover;
+    transform: translateY(-1px);
+  }
+}
+
+// Empty state
+.rpanel__bloques-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $gv3-space-3;
+  padding: $gv3-space-5 $gv3-space-4;
+  background: $gv3-bg-warm;
+  border: 1px dashed $gv3-border-warm;
+  border-radius: $gv3-radius-lg;
+
+  strong {
+    font-family: $gv3-font-display;
+    font-weight: 500;
+    font-size: $gv3-text-base;
+    color: $gv3-text-primary;
+  }
+
+  p {
+    font-family: $gv3-font-body;
+    font-size: $gv3-text-xs;
+    color: $gv3-text-secondary;
+    margin: 0;
+    line-height: 1.5;
+    max-width: 28ch;
+  }
+}
+
+.rpanel__bloques-empty-art {
+  width: 120px;
+  height: 90px;
+  filter: drop-shadow(0 2px 6px rgba(60, 30, 10, 0.06));
+}
+
+.rpanel__bloques-cta {
+  border: 1px solid $gv3-orange;
+  background: $gv3-bg-surface;
+  color: $gv3-orange-hover;
+  font-family: $gv3-font-body;
+  font-weight: 500;
+  font-size: $gv3-text-sm;
+  padding: 8px 16px;
+  border-radius: $gv3-radius-md;
+  cursor: pointer;
+  margin-top: $gv3-space-2;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+
+  &:hover {
+    background: $gv3-orange;
+    color: $gv3-text-onAccent;
+  }
+}
+
+// List
+.rpanel__bloques-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $gv3-space-2;
+}
+
+.rpanel__bloque {
+  opacity: 0;
+  animation: gv3-artifact-enter $gv3-dur-base $gv3-ease-out forwards;
+}
+
+.rpanel__bloque-btn {
+  width: 100%;
+  text-align: left;
+  border: 1px solid $gv3-border-whisper;
+  background: $gv3-bg-surface;
+  border-radius: $gv3-radius-md;
+  padding: $gv3-space-3;
+  cursor: pointer;
+  display: flex;
+  gap: $gv3-space-3;
+  align-items: flex-start;
+  transition: all $gv3-dur-fast $gv3-ease-out;
+
+  &:hover {
+    border-color: $gv3-orange-tint;
+    box-shadow: $gv3-shadow-sm;
+    transform: translateY(-1px);
+  }
+}
+
+.rpanel__bloque-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: $gv3-radius-md;
+  background: $gv3-orange-tint;
+  color: $gv3-orange;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.rpanel__bloque-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  > strong {
+    font-family: $gv3-font-body;
+    font-weight: 500;
+    font-size: $gv3-text-sm;
+    color: $gv3-text-primary;
+  }
+}
+
+.rpanel__bloque-desc {
+  font-family: $gv3-font-body;
+  font-size: $gv3-text-xs;
+  color: $gv3-text-secondary;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rpanel__bloque-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+
+  em {
+    @include gv3-pill($gv3-bg-warm, $gv3-text-tertiary);
+    border: 1px solid $gv3-border-whisper;
+    font-style: normal;
+    font-size: 9px;
+    padding: 1px 6px;
+
+    &[data-real='true'] {
+      background: $gv3-sage-tint;
+      color: $gv3-sage;
+      border-color: $gv3-sage-soft;
+    }
+  }
+}
+
+// ============================================
+// ORQUESTADOR V4.1 — agentes + señales loop
+// ============================================
+.rpanel__head-title {
+  display: flex;
+  align-items: center;
+  gap: $gv3-space-2;
+  flex: 1;
+  strong { font-size: $gv3-text-sm; color: $gv3-text-primary; }
+}
+.rpanel__head-sparkle { color: $gv3-terracota; }
+.rpanel__head-count {
+  font-family: $gv3-font-mono; font-size: 10px; color: $gv3-text-tertiary;
+  margin-left: auto;
+}
+
+.rpanel__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.rpanel__zone {
+  border-bottom: 1px solid $gv3-border-whisper;
+  &--backlinks { padding: $gv3-space-3 $gv3-space-4; background: $gv3-bg-warm; }
+}
+
+.rpanel__zone-toggle {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  padding: $gv3-space-3 $gv3-space-4; border: 0; background: transparent;
+  font-family: $gv3-font-mono; font-size: 11px; letter-spacing: 0.04em;
+  color: $gv3-text-secondary; cursor: pointer;
+  &:hover { background: $gv3-bg-cream; color: $gv3-text-primary; }
+}
+
+.rpanel__agents, .rpanel__signals {
+  list-style: none; margin: 0; padding: 0 $gv3-space-4 $gv3-space-3;
+  display: flex; flex-direction: column; gap: $gv3-space-2;
+}
+
+.rpanel__agent {
+  padding: $gv3-space-3; border-radius: $gv3-radius-md;
+  background: $gv3-bg-cream; border-left: 3px solid $gv3-border-default;
+  &[data-estado="activo"] { border-left-color: $gv3-terracota; background: $gv3-terracota-tint; }
+  &[data-estado="esperando"] { border-left-color: $gv3-amber; }
+  &[data-estado="pausa"] { opacity: 0.75; }
+}
+
+.rpanel__agent-head {
+  display: flex; align-items: center; gap: $gv3-space-2; flex-wrap: wrap;
+  strong { font-size: $gv3-text-sm; flex: 1; min-width: 0; }
+}
+.rpanel__agent-icon {
+  color: $gv3-terracota; font-size: 12px;
+  &.is-pulse { animation: gv3-pulse-terracota 2s ease-in-out infinite; }
+}
+.rpanel__agent-progress { font-size: $gv3-text-xs; color: $gv3-text-secondary; margin: 4px 0; line-height: 1.4; }
+.rpanel__agent-memory {
+  display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+  font-size: 10px; color: $gv3-text-tertiary;
+  em { @include gv3-pill($gv3-sage-tint, $gv3-sage); font-style: normal; padding: 1px 6px; }
+}
+.rpanel__agent-actions { display: flex; gap: $gv3-space-2; margin-top: $gv3-space-2; }
+.rpanel__agent-btn {
+  font-family: $gv3-font-mono; font-size: 10px; padding: 3px 8px;
+  border: 1px solid $gv3-border-subtle; border-radius: $gv3-radius-sm;
+  background: transparent; color: $gv3-text-tertiary; cursor: pointer;
+  &:hover { border-color: $gv3-terracota; color: $gv3-terracota; }
+}
+.rpanel__agent-time { font-family: $gv3-font-mono; font-size: 9px; color: $gv3-text-muted; }
+
+.rpanel__conf-badge {
+  font-family: $gv3-font-mono; font-size: 9px; padding: 1px 5px; border-radius: $gv3-radius-sm;
+  &[data-tone="sage"] { background: $gv3-sage-tint; color: $gv3-sage; }
+  &[data-tone="amber"] { background: $gv3-amber-tint; color: $gv3-amber; }
+  &[data-tone="rust"] { background: $gv3-rust-tint; color: $gv3-rust; }
+}
+
+.rpanel__signal {
+  padding: $gv3-space-3; border-radius: $gv3-radius-md;
+  background: $gv3-bg-surface; border: 1px solid $gv3-border-whisper;
+  &.is-alta { border-color: rgba(154, 63, 38, 0.25); background: $gv3-rust-tint; }
+}
+.rpanel__signal-head { display: flex; align-items: flex-start; gap: $gv3-space-2;
+  strong { flex: 1; font-size: $gv3-text-sm; line-height: 1.3; }
+}
+.rpanel__signal-ctx { font-size: $gv3-text-xs; color: $gv3-text-secondary; margin: 4px 0; line-height: 1.4; }
+.rpanel__why {
+  border: 0; background: transparent; font-family: $gv3-font-mono; font-size: 10px;
+  color: $gv3-terracota; cursor: pointer; padding: 0;
+  &:hover { text-decoration: underline; }
+}
+.rpanel__reasoning {
+  font-size: $gv3-text-xs; color: $gv3-text-secondary; line-height: 1.5;
+  padding: $gv3-space-2; background: $gv3-bg-warm; border-radius: $gv3-radius-sm; margin: 4px 0;
+  em { display: block; margin-top: 4px; color: $gv3-text-tertiary; font-style: normal; }
+}
+.rpanel__result {
+  margin-top: $gv3-space-2; padding: $gv3-space-3; border-radius: $gv3-radius-sm;
+  background: $gv3-sage-tint; border: 1px solid rgba(95, 112, 88, 0.2);
+}
+.rpanel__result-label { font-family: $gv3-font-mono; font-size: 10px; color: $gv3-sage; }
+.rpanel__result-metrics { display: flex; flex-direction: column; gap: 2px; margin: 4px 0;
+  span { font-family: $gv3-font-mono; font-size: $gv3-text-xs; color: $gv3-text-primary; }
+}
+.rpanel__result-delta { font-size: $gv3-text-xs; color: $gv3-sage; font-weight: 600; margin: 0; }
+.rpanel__result-actions, .rpanel__signal-actions { display: flex; gap: $gv3-space-2; align-items: center; margin-top: $gv3-space-2; }
+.rpanel__cta {
+  font-family: $gv3-font-mono; font-size: 11px; padding: 6px 10px;
+  border-radius: $gv3-radius-sm; border: 0; background: $gv3-orange; color: $gv3-text-onAccent;
+  cursor: pointer;
+  &--ghost { background: transparent; border: 1px solid $gv3-border-default; color: $gv3-text-secondary; }
+}
+.rpanel__dismiss {
+  margin-left: auto; width: 24px; height: 24px; border: 0; background: transparent;
+  color: $gv3-text-muted; cursor: pointer; font-size: 16px;
+  &:hover { color: $gv3-rust; }
+}
+
+.rpanel__backlinks-head { font-size: $gv3-text-xs; font-weight: 600; color: $gv3-text-secondary; margin-bottom: $gv3-space-2; }
+.rpanel__backlinks { list-style: none; margin: 0; padding: 0;
+  a {
+    display: block; font-size: $gv3-text-xs; color: $gv3-terracota; text-decoration: none;
+    padding: 4px 0; &:hover { text-decoration: underline; }
+    &[data-estado="atencion"] { color: $gv3-amber; }
+    &[data-estado="critico"] { color: $gv3-rust; }
+  }
+}
+
+.rpanel__tableros { padding: 0 $gv3-space-4 $gv3-space-3; }
+.rpanel__tableros-hint { font-size: $gv3-text-xs; color: $gv3-text-tertiary; margin: 0 0 $gv3-space-2; }
+.rpanel__tableros-new {
+  font-family: $gv3-font-mono; font-size: 11px; padding: 6px 10px;
+  border: 1px dashed $gv3-border-warm; border-radius: $gv3-radius-sm;
+  background: $gv3-orange-tint; color: $gv3-orange; cursor: pointer; width: 100%;
+  &:hover { border-color: $gv3-orange; }
+}
+
+@keyframes gv3-pulse-terracota {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}

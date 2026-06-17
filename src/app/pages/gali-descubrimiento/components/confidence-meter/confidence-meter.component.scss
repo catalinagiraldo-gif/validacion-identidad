@@ -1,0 +1,141 @@
+@import 'styles/gali-tokens';
+
+.meter {
+  font-family: $gali-font-mono;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+
+  &__bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    border-radius: $gali-radius-input;
+    color: $gali-text-secondary;
+    cursor: pointer;
+    transition: background 160ms ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    &:focus-visible {
+      @include gali-focus;
+    }
+  }
+
+  &__segments {
+    display: inline-flex;
+    gap: 2px;
+  }
+
+  &__seg {
+    width: 6px;
+    height: 4px;
+    background: $gali-border-default;
+    border-radius: 1px;
+
+    &--filled[data-color='high'] {
+      background: $gali-success;
+    }
+    &--filled[data-color='mid'] {
+      background: $gali-orange;
+    }
+    &--filled[data-color='low'] {
+      background: $gali-warning;
+    }
+  }
+
+  &__pct {
+    font-weight: 500;
+    font-size: 11px;
+    min-width: 32px;
+
+    &[data-color='high'] {
+      color: $gali-success;
+    }
+    &[data-color='mid'] {
+      color: $gali-orange;
+    }
+    &[data-color='low'] {
+      color: $gali-warning;
+    }
+  }
+
+  &__info {
+    font-size: 11px;
+    color: $gali-text-muted;
+    transition: color 160ms ease;
+  }
+
+  &__bar:hover &__info {
+    color: $gali-text-secondary;
+  }
+
+  &__panel {
+    margin-top: 8px;
+    padding: 12px;
+    background: $gali-bg-elevated;
+    border: 1px solid $gali-border-default;
+    border-radius: $gali-radius-input;
+    color: $gali-text-primary;
+    font-size: 11px;
+    line-height: 1.5;
+    animation: meter-panel-in 240ms $gali-ease-out;
+  }
+
+  &__panel-header {
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: $gali-cyan;
+    text-transform: uppercase;
+  }
+
+  &__panel-divider {
+    height: 1px;
+    background: $gali-border-default;
+    margin: 8px 0;
+  }
+
+  &__panel-label {
+    color: $gali-text-secondary;
+    margin-bottom: 4px;
+  }
+
+  &__panel-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding: 2px 0;
+      color: $gali-text-primary;
+
+      &::before {
+        content: '▸ ';
+        color: $gali-cyan;
+      }
+    }
+  }
+
+  &__panel-caveat {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed $gali-border-default;
+    color: $gali-warning;
+    font-style: italic;
+  }
+}
+
+@keyframes meter-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

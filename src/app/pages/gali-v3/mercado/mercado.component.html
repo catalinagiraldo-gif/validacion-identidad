@@ -1,0 +1,263 @@
+<article class="mercado">
+  <header class="mercado__head">
+    <div class="mercado__head-meta">
+      <span class="mercado__sparkle">✦</span>
+      <span class="mercado__head-tag">Mercado</span>
+    </div>
+    <h1>Plantillas, agentes y conexiones para tu ecosistema.</h1>
+    <p class="mercado__intro">
+      Lo que no quieras construir desde cero, instálalo. Lo que ya tengas, conéctalo. Gali aprende del todo.
+    </p>
+  </header>
+
+  <nav class="mercado__tabs">
+    <button [class.is-active]="activeTab() === 'plantillas'" (click)="setTab('plantillas')">
+      ⚡ Plantillas <span class="mercado__tab-count">{{ plantillas().length }}</span>
+    </button>
+    <button [class.is-active]="activeTab() === 'agentes'" (click)="setTab('agentes')">
+      🤖 Agentes <span class="mercado__tab-count">{{ agentes().length }}</span>
+    </button>
+    <button [class.is-active]="activeTab() === 'conexiones'" (click)="setTab('conexiones')">
+      🔌 Conexiones <span class="mercado__tab-count">{{ conexiones().length }}</span>
+    </button>
+    <button [class.is-active]="activeTab() === 'bloques'" (click)="setTab('bloques')">
+      <span class="mercado__sparkle">✦</span> Bloques de comunidad
+      <span class="mercado__tab-count">{{ bloquesComunidad().length }}</span>
+    </button>
+    <input
+      type="text"
+      class="mercado__search"
+      placeholder="Buscar en mercado..."
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+    />
+  </nav>
+
+  <!-- Plantillas -->
+  <section *ngIf="activeTab() === 'plantillas'" class="mercado__grid">
+    <article *ngFor="let p of plantillasFiltered()" class="mercado__card">
+      <header>
+        <span class="mercado__card-icon">{{ p.icon }}</span>
+        <div>
+          <strong>{{ p.name }}</strong>
+          <span class="mercado__card-cat">{{ p.categoria }} · {{ p.nivel }}</span>
+        </div>
+      </header>
+      <p>{{ p.descripcion }}</p>
+      <footer>
+        <div class="mercado__tags">
+          <span *ngFor="let t of p.tags">{{ t }}</span>
+        </div>
+        <div class="mercado__meta">
+          <span class="mercado__pop">★ {{ p.popularidad }}</span>
+          <span class="mercado__time">{{ p.tiempo_estimado }}</span>
+        </div>
+        <button class="mercado__cta">Usar plantilla →</button>
+      </footer>
+    </article>
+  </section>
+
+  <!-- Agentes -->
+  <section *ngIf="activeTab() === 'agentes'" class="mercado__grid">
+    <a routerLink="/gali-v3/mercado/agente/nuevo" class="mercado__card mercado__card--create">
+      <header>
+        <span class="mercado__card-icon mercado__card-icon--lg">✦</span>
+        <div>
+          <strong>Crear agente custom</strong>
+          <span class="mercado__card-cat">Define trigger, prompt, herramientas, salida</span>
+        </div>
+      </header>
+      <p>Constrúyelo desde cero en 4 pasos. Lo pruebas en dry-run y lo conectas a tu cuenta.</p>
+      <div class="mercado__create-cta">+ Empezar</div>
+    </a>
+    <article *ngFor="let a of agentesFiltered()" class="mercado__card mercado__card--agent" [attr.data-color]="a.color">
+      <header>
+        <span class="mercado__card-icon mercado__card-icon--lg">{{ a.icon }}</span>
+        <div>
+          <strong>{{ a.name }}</strong>
+          <span class="mercado__card-cat">{{ a.tagline }}</span>
+        </div>
+        <span class="mercado__installed" *ngIf="a.instalado">✓ Instalado</span>
+      </header>
+      <p>{{ a.descripcion }}</p>
+      <ul class="mercado__bullets">
+        <li *ngFor="let q of a.que_hace.slice(0, 3)">{{ q }}</li>
+      </ul>
+      <footer>
+        <div class="mercado__meta">
+          <span class="mercado__pop">★ {{ a.rating }}</span>
+          <span class="mercado__time">{{ a.instalaciones }} instal.</span>
+          <span class="mercado__by">por {{ a.creado_por }}</span>
+        </div>
+        <button class="mercado__cta" [class.is-installed]="a.instalado" (click)="toggleAgente(a.id)">
+          {{ a.instalado ? 'Desinstalar' : 'Instalar' }}
+        </button>
+      </footer>
+    </article>
+  </section>
+
+  <!-- Conexiones -->
+  <section *ngIf="activeTab() === 'conexiones'" class="mercado__connections">
+    <article *ngFor="let c of conexiones()" class="mercado__conn" [class.is-connected]="c.conectado">
+      <span class="mercado__conn-icon" [style.background]="c.color + '15'">{{ c.icon }}</span>
+      <div>
+        <header>
+          <strong>{{ c.name }}</strong>
+          <span class="mercado__conn-cat">{{ c.categoria }}</span>
+        </header>
+        <p>{{ c.descripcion }}</p>
+        <ul class="mercado__conn-perms">
+          <li *ngFor="let perm of c.permite">{{ perm }}</li>
+        </ul>
+      </div>
+      <aside>
+        <span class="mercado__conn-status" [class.is-on]="c.conectado">{{ c.estado }}</span>
+        <button class="mercado__conn-cta" [class.is-on]="c.conectado" (click)="toggleConexion(c.id)">
+          {{ c.conectado ? 'Desconectar' : 'Conectar' }}
+        </button>
+      </aside>
+    </article>
+  </section>
+
+  <!-- ✦ Bloques de comunidad (Fase 3 marketplace) -->
+  <section *ngIf="activeTab() === 'bloques'" class="mercado__bloques">
+    <header class="mercado__bloques-head">
+      <div>
+        <strong>Bloques compartidos por dropshippers LATAM</strong>
+        <span>
+          {{ comunidadMeta().vendedores_que_publican }} vendedores publicaron
+          {{ comunidadMeta().bloques_totales }} bloques · {{ comunidadMeta().actualizado_hace }}
+        </span>
+      </div>
+      <button type="button" class="mercado__bloques-build" (click)="irAlConstructor()">
+        <span aria-hidden="true">✦</span> Construir uno propio
+      </button>
+    </header>
+
+    <!-- Filtros por categoría -->
+    <nav class="mercado__bloques-filters" aria-label="Filtrar bloques por categoría">
+      <button
+        *ngFor="let c of comunidadCategorias()"
+        type="button"
+        [class.is-active]="bloqueFilter() === c.id"
+        (click)="setBloqueFilter(c.id)">
+        {{ c.label }} <em>{{ c.count }}</em>
+      </button>
+    </nav>
+
+    <!-- Destacados (banner especial) -->
+    <div *ngIf="bloquesDestacados().length > 0" class="mercado__bloques-section">
+      <header class="mercado__bloques-section-head">
+        <span class="mercado__sparkle">✦</span>
+        <strong>Destacados de la comunidad</strong>
+        <em>los más instalados esta semana</em>
+      </header>
+      <div class="mercado__bloques-grid mercado__bloques-grid--featured">
+        <article *ngFor="let b of bloquesDestacados(); let i = index"
+                 class="mercado__bloque mercado__bloque--featured"
+                 [class.is-installed]="estaInstalado(b.id)"
+                 [style.animation-delay.ms]="i * 60">
+          <header class="mercado__bloque-head">
+            <span class="mercado__bloque-icon">{{ b.icono }}</span>
+            <div>
+              <strong>{{ b.titulo }}</strong>
+              <span class="mercado__bloque-cat">{{ b.categoria }} · {{ b.tipo_visualizacion.replace('_', ' ') }}</span>
+            </div>
+            <span class="mercado__bloque-badge" *ngIf="b.destacado">★ Top</span>
+          </header>
+
+          <p class="mercado__bloque-desc">{{ b.descripcion }}</p>
+
+          <div class="mercado__bloque-tags">
+            <span *ngFor="let t of b.tags">{{ t }}</span>
+          </div>
+
+          <div class="mercado__bloque-stack" *ngIf="b.requiere_stack.length > 0">
+            <span aria-hidden="true">🔌</span>
+            <span>Mejor con: {{ b.requiere_stack.join(' · ') }}</span>
+          </div>
+
+          <footer class="mercado__bloque-foot">
+            <div class="mercado__bloque-meta">
+              <span class="mercado__bloque-rating" [attr.aria-label]="'Rating ' + b.rating">
+                {{ ratingStars(b.rating) }} <em>{{ b.rating }}</em>
+              </span>
+              <span class="mercado__bloque-installs">{{ b.instalaciones }} instalaciones</span>
+              <span class="mercado__bloque-author">{{ b.creado_por }}</span>
+              <span class="mercado__bloque-time">{{ b.publicado_hace }}</span>
+            </div>
+            <button type="button"
+                    class="mercado__bloque-cta"
+                    [class.is-installed]="estaInstalado(b.id)"
+                    (click)="instalarBloque(b)">
+              <span *ngIf="!estaInstalado(b.id)">
+                <span aria-hidden="true">✦</span> Instalar en mi lienzo
+              </span>
+              <span *ngIf="estaInstalado(b.id)">✓ Instalado · quitar</span>
+            </button>
+          </footer>
+        </article>
+      </div>
+    </div>
+
+    <!-- Resto de bloques -->
+    <div *ngIf="bloquesResto().length > 0" class="mercado__bloques-section">
+      <header class="mercado__bloques-section-head" *ngIf="bloquesDestacados().length > 0">
+        <strong>Todos los bloques</strong>
+        <em>{{ bloquesResto().length }} disponibles</em>
+      </header>
+      <div class="mercado__bloques-grid">
+        <article *ngFor="let b of bloquesResto(); let i = index"
+                 class="mercado__bloque"
+                 [class.is-installed]="estaInstalado(b.id)"
+                 [style.animation-delay.ms]="i * 50">
+          <header class="mercado__bloque-head">
+            <span class="mercado__bloque-icon">{{ b.icono }}</span>
+            <div>
+              <strong>{{ b.titulo }}</strong>
+              <span class="mercado__bloque-cat">{{ b.categoria }} · {{ b.tipo_visualizacion.replace('_', ' ') }}</span>
+            </div>
+          </header>
+
+          <p class="mercado__bloque-desc">{{ b.descripcion }}</p>
+
+          <div class="mercado__bloque-tags">
+            <span *ngFor="let t of b.tags.slice(0, 3)">{{ t }}</span>
+          </div>
+
+          <footer class="mercado__bloque-foot">
+            <div class="mercado__bloque-meta">
+              <span class="mercado__bloque-rating">{{ ratingStars(b.rating) }} <em>{{ b.rating }}</em></span>
+              <span class="mercado__bloque-installs">{{ b.instalaciones }} instal.</span>
+            </div>
+            <button type="button"
+                    class="mercado__bloque-cta"
+                    [class.is-installed]="estaInstalado(b.id)"
+                    (click)="instalarBloque(b)">
+              <span *ngIf="!estaInstalado(b.id)">Instalar</span>
+              <span *ngIf="estaInstalado(b.id)">✓ Quitar</span>
+            </button>
+          </footer>
+        </article>
+      </div>
+    </div>
+
+    <!-- Empty (filtro sin resultados) -->
+    <div *ngIf="bloquesFiltered().length === 0" class="mercado__bloques-empty">
+      <span class="mercado__sparkle">✦</span>
+      <strong>No hay bloques en esta categoría aún</strong>
+      <p>Sé el primero — construye uno y compártelo con la comunidad.</p>
+      <button type="button" (click)="irAlConstructor()">Abrir Constructor →</button>
+    </div>
+
+    <!-- Toast post-instalación -->
+    <div *ngIf="installToastId() as id" class="mercado__toast" role="status">
+      <span class="mercado__toast-icon">✓</span>
+      <div>
+        <strong>Bloque instalado en tu lienzo</strong>
+        <span>Lo verás en el Inicio y en el panel "Mis bloques" de la derecha.</span>
+      </div>
+      <a routerLink="/gali-v3" class="mercado__toast-cta">Ir al Inicio →</a>
+    </div>
+  </section>
+</article>

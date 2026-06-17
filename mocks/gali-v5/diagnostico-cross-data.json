@@ -1,0 +1,105 @@
+{
+  "diagnostico": {
+    "id": "diag-001",
+    "titulo": "¿Por qué cayó tu ROAS de 2.9x a 1.8x?",
+    "proyecto": "Collar GPS para mascotas",
+    "generado_hace": "hace 2 min",
+    "fuentes": [
+      { "nombre": "Meta Ads", "estado": "ok", "icono": "📊" },
+      { "nombre": "Dropi LATAM", "estado": "ok", "icono": "📦" },
+      { "nombre": "ADA Spy", "estado": "ok", "icono": "🔍" },
+      { "nombre": "Chatea Pro", "estado": "procesando", "icono": "💬" }
+    ],
+    "hipotesis": [
+      {
+        "id": "h1",
+        "titulo": "Presión competitiva de precio",
+        "probabilidad": 68,
+        "evidencias": [
+          "CPM subió 50% ($18k → $27k) — más anunciantes compitiendo",
+          "3 nuevos vendedores de Collar GPS esta semana en Colombia",
+          "ADA Spy detectó que el ángulo 'regalo mamá' se está saturando"
+        ],
+        "impacto": "ROAS -0.9x estimado",
+        "nivel": "alto"
+      },
+      {
+        "id": "h2",
+        "titulo": "Saturación de audiencia (Video A)",
+        "probabilidad": 57,
+        "evidencias": [
+          "Frecuencia de Video A: 3.4x (umbral de fatiga: 2.8x)",
+          "CTR Video A cayó de 1.8% a 0.9% en 48h",
+          "Audiencia Lookalike 1% agotada en Bogotá"
+        ],
+        "impacto": "CTR -50% en Video A",
+        "nivel": "alto"
+      },
+      {
+        "id": "h3",
+        "titulo": "Novedades logísticas en Cali (+10pts)",
+        "probabilidad": 43,
+        "evidencias": [
+          "Tasa de novedad Cali subió de 4% a 14% esta semana",
+          "Coordinadora Bogotá con 15% de incidencias hoy",
+          "3 de 47 pedidos devueltos = $85.500 descontados del margen"
+        ],
+        "impacto": "Margen -7% esta semana",
+        "nivel": "medio"
+      },
+      {
+        "id": "h4",
+        "titulo": "Caída en tasa de confirmación",
+        "probabilidad": 28,
+        "evidencias": [
+          "Confirmaciones por Chatea Pro: 91% → 68% (posible cambio en expectativas del cliente)",
+          "3 pedidos de zona rural sin anticipo pendientes"
+        ],
+        "impacto": "Pedidos perdidos estimados: 4",
+        "nivel": "bajo"
+      }
+    ],
+    "acciones_propuestas": [
+      {
+        "id": "a1",
+        "prioridad": 1,
+        "titulo": "Activar ángulo B (Seguridad nocturna)",
+        "descripcion": "Pausar Video A (saturado) y activar el creative con ángulo diferenciador para competir sin bajar precio.",
+        "agente": "Roax",
+        "autonoma": true,
+        "impacto_estimado": "CTR +40-60% estimado · ROAS +0.5x",
+        "icono": "⚡"
+      },
+      {
+        "id": "a2",
+        "prioridad": 2,
+        "titulo": "Excluir Cali de la campaña",
+        "descripcion": "Hasta que la tasa de novedad baje del 10%, excluir Cali de la segmentación geográfica.",
+        "agente": "Roax",
+        "autonoma": true,
+        "impacto_estimado": "Margen +4pts · Sin ventas Cali mientras dura",
+        "icono": "🗺️"
+      },
+      {
+        "id": "a3",
+        "prioridad": 3,
+        "titulo": "Actualizar guión Chatea Pro",
+        "descripcion": "Actualizar el script de confirmación para manejar la objeción de precio vs competencia.",
+        "agente": "Chatea Pro",
+        "autonoma": false,
+        "impacto_estimado": "Tasa confirmación +10-15pp estimado",
+        "icono": "💬"
+      },
+      {
+        "id": "a4",
+        "prioridad": 4,
+        "titulo": "Expandir a Lookalike 3-5%",
+        "descripcion": "La audiencia 1% está saturada. Expandir a 3-5% para llegar a más personas a menor CPM.",
+        "agente": "Roax",
+        "autonoma": false,
+        "impacto_estimado": "Alcance +300% · CPM posiblemente menor",
+        "icono": "🎯"
+      }
+    ]
+  }
+}

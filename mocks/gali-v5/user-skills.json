@@ -1,0 +1,155 @@
+[
+  {
+    "id": "s1",
+    "nombre": "Auto-pausa CTR < 0.8%",
+    "agente": "Roax",
+    "estado": "activa",
+    "proyectos": ["Collar GPS", "Skincare K-Beauty"],
+    "ultimaEjecucion": "hace 2 días",
+    "resultado": "Video A pausado — CTR subió a 1.8%",
+    "connectors": [{ "tipo": "app", "nombre": "Meta Ads" }],
+    "ejecuciones": 12,
+    "ahorroEstimado": "$48k"
+  },
+  {
+    "id": "s2",
+    "nombre": "Escala si ROAS > 2.5x por 72h",
+    "agente": "Roax",
+    "estado": "activa",
+    "proyectos": ["Collar GPS"],
+    "ultimaEjecucion": "hace 7 días",
+    "resultado": "Presupuesto +15% ($57k → $66k)",
+    "connectors": [{ "tipo": "app", "nombre": "Meta Ads" }],
+    "ejecuciones": 3,
+    "ahorroEstimado": null
+  },
+  {
+    "id": "s3",
+    "nombre": "Confirmación WhatsApp — Tono informal",
+    "agente": "Chatea Pro",
+    "estado": "activa",
+    "proyectos": ["Collar GPS", "Skincare K-Beauty", "Proyector"],
+    "ultimaEjecucion": "hace 2 horas",
+    "resultado": "12 pedidos confirmados",
+    "connectors": [
+      { "tipo": "app", "nombre": "WhatsApp Business" },
+      { "tipo": "archivo", "nombre": "tono-voz-tienda.pdf" }
+    ],
+    "ejecuciones": 847,
+    "ahorroEstimado": null
+  },
+  {
+    "id": "s4",
+    "nombre": "Prepago zona rural automático",
+    "agente": "Chatea Pro",
+    "estado": "activa",
+    "proyectos": ["Todos"],
+    "ultimaEjecucion": "hace 3 días",
+    "resultado": "2 pedidos bloqueados — ahorro $60k est.",
+    "connectors": [{ "tipo": "app", "nombre": "WhatsApp Business" }],
+    "ejecuciones": 18,
+    "ahorroEstimado": "$60k"
+  },
+  {
+    "id": "s5",
+    "nombre": "P&L semanal automático",
+    "agente": "Agente Financiero",
+    "estado": "activa",
+    "proyectos": ["Todos"],
+    "ultimaEjecucion": "hace 1 día",
+    "resultado": "Reporte generado — $411k ganancia neta",
+    "connectors": [
+      { "tipo": "app", "nombre": "Siigo" },
+      { "tipo": "nube", "nombre": "Google Sheets" }
+    ],
+    "ejecuciones": 8,
+    "ahorroEstimado": null
+  },
+  {
+    "id": "s6",
+    "nombre": "Alerta saturación nicho",
+    "agente": "ADA Spy",
+    "estado": "activa",
+    "proyectos": ["Todos"],
+    "ultimaEjecucion": "hace 5 días",
+    "resultado": "Proyector portátil — alerta enviada",
+    "connectors": [],
+    "ejecuciones": 4,
+    "ahorroEstimado": null
+  },
+  {
+    "id": "s7",
+    "nombre": "Novedad > 5 días → escalar a mí",
+    "agente": "Vigilante",
+    "estado": "activa",
+    "proyectos": ["Todos"],
+    "ultimaEjecucion": "hace 12 horas",
+    "resultado": "Pedido #4821 escalado — resuelto",
+    "connectors": [{ "tipo": "app", "nombre": "WhatsApp Business" }],
+    "ejecuciones": 23,
+    "ahorroEstimado": null
+  },
+  {
+    "id": "s8",
+    "nombre": "Recompra a 30 días",
+    "agente": "Chatea Pro",
+    "estado": "en_prueba",
+    "proyectos": ["Skincare K-Beauty"],
+    "ultimaEjecucion": "hace 1 día",
+    "resultado": "3/10 compradores respondieron",
+    "connectors": [{ "tipo": "app", "nombre": "WhatsApp Business" }],
+    "ejecuciones": 10,
+    "ahorroEstimado": null
+  },
+  {
+    "id": "s9",
+    "nombre": "Diagnóstico semanal de campañas",
+    "agente": "Roax",
+    "estado": "en_prueba",
+    "proyectos": ["Collar GPS"],
+    "ultimaEjecucion": "hace 3 días",
+    "resultado": "Diagnóstico generado — pendiente revisión",
+    "connectors": [{ "tipo": "app", "nombre": "Meta Ads" }],
+    "ejecuciones": 2,
+    "ahorroEstimado": null
+  },
+  {
+    "id": "s10",
+    "nombre": "Exportar reporte fiscal mensual",
+    "agente": "Agente Financiero",
+    "estado": "pausada",
+    "proyectos": ["Todos"],
+    "ultimaEjecucion": "hace 32 días",
+    "resultado": "Reporte abril exportado",
+    "connectors": [
+      { "tipo": "nube", "nombre": "Google Drive" },
+      { "tipo": "app", "nombre": "Siigo" }
+    ],
+    "ejecuciones": 3,
+    "ahorroEstimado": null
+  },
+  {
+    "id": "s11",
+    "nombre": "Script novedad logística v2",
+    "agente": "Chatea Pro",
+    "estado": "pausada",
+    "proyectos": ["Proyector Portátil"],
+    "ultimaEjecucion": "hace 10 días",
+    "resultado": "Pausado con el proyecto",
+    "connectors": [{ "tipo": "archivo", "nombre": "script-novedad-v2.txt" }],
+    "ejecuciones": 7,
+    "ahorroEstimado": null
+  },
+  {
+    "id": "s12",
+    "nombre": "Alerta anti-baneo Meta Ads",
+    "agente": "Roax",
+    "estado": "activa",
+    "proyectos": ["Todos"],
+    "ultimaEjecucion": "Sin activación aún",
+    "resultado": null,
+    "connectors": [{ "tipo": "app", "nombre": "Meta Ads" }],
+    "ejecuciones": 0,
+    "ahorroEstimado": null
+  }
+]

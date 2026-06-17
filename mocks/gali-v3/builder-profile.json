@@ -1,0 +1,116 @@
+{
+  "perfil": {
+    "nombre_anonimo": "Operador Medellín",
+    "perfil_creador": "operador",
+    "ciudad_base": "Medellín · Colombia",
+    "miembro_desde": "Marzo 2025",
+    "destacado_en": "Top 10 builders del nicho mascotas",
+    "rep_score": 4.82,
+    "rep_score_max": 5,
+    "tier": "Builder Plata",
+    "tier_progress_to_next": 67,
+    "earnings_lifetime_cop": 1840000,
+    "earnings_pendientes_cop": 280000,
+    "currency": "COP",
+    "split_revenue_share": "70/30 creator/Dropi"
+  },
+  "stats": {
+    "items_publicados": 7,
+    "instalaciones_acumuladas": 2148,
+    "rating_promedio": 4.76,
+    "ranking_global": 23,
+    "ranking_nicho": 4,
+    "instalaciones_ultima_semana": 187,
+    "trending_score": 8.4
+  },
+  "badges": [
+    { "id": "first-publish", "label": "Primera publicación", "icon": "🎯", "fecha": "Mar 2025", "tier": "bronze" },
+    { "id": "100-installs", "label": "100 instalaciones", "icon": "💯", "fecha": "Abr 2025", "tier": "bronze" },
+    { "id": "1k-installs", "label": "1.000 instalaciones", "icon": "🏆", "fecha": "May 2026", "tier": "silver" },
+    { "id": "rating-48", "label": "Rating ★4.8+", "icon": "⭐", "fecha": "May 2026", "tier": "silver" },
+    { "id": "top-10-nicho", "label": "Top 10 del nicho", "icon": "🥉", "fecha": "May 2026", "tier": "bronze" },
+    { "id": "earning-1m", "label": "Primer $1M ganado", "icon": "💰", "fecha": "Abr 2026", "tier": "silver" }
+  ],
+  "items_publicados": [
+    {
+      "id": "com-roas-ciudad",
+      "tipo": "bloque",
+      "titulo": "ROAS real por ciudad",
+      "instalaciones": 387,
+      "rating": 4.8,
+      "ganancias_lifetime_cop": 480000,
+      "publicado_hace": "hace 5 días"
+    },
+    {
+      "id": "com-ventas-creative",
+      "tipo": "bloque",
+      "titulo": "Ventas atribuidas por creative activo",
+      "instalaciones": 412,
+      "rating": 4.8,
+      "ganancias_lifetime_cop": 520000,
+      "publicado_hace": "hace 2 días"
+    },
+    {
+      "id": "com-funnel-confirmacion",
+      "tipo": "bloque",
+      "titulo": "Funnel de confirmación por hora",
+      "instalaciones": 213,
+      "rating": 4.6,
+      "ganancias_lifetime_cop": 280000,
+      "publicado_hace": "hace 1 mes"
+    },
+    {
+      "id": "rec-auto-pausa",
+      "tipo": "recipe",
+      "titulo": "Auto-pausa CTR bajo (operador Medellín v2)",
+      "instalaciones": 892,
+      "rating": 4.9,
+      "ganancias_lifetime_cop": 380000,
+      "publicado_hace": "hace 6 meses"
+    },
+    {
+      "id": "rec-wa-resumen",
+      "tipo": "recipe",
+      "titulo": "Resumen diario por WhatsApp",
+      "instalaciones": 156,
+      "rating": 4.5,
+      "ganancias_lifetime_cop": 120000,
+      "publicado_hace": "hace 3 meses"
+    },
+    {
+      "id": "com-top-productos-dia",
+      "tipo": "bloque",
+      "titulo": "Top productos vendidos hoy",
+      "instalaciones": 247,
+      "rating": 4.6,
+      "ganancias_lifetime_cop": 0,
+      "publicado_hace": "hace 1 semana"
+    },
+    {
+      "id": "rec-renueva-creatives",
+      "tipo": "recipe",
+      "titulo": "Renueva creatives cada 14 días",
+      "instalaciones": 89,
+      "rating": 4.4,
+      "ganancias_lifetime_cop": 60000,
+      "publicado_hace": "hace 2 semanas"
+    }
+  ],
+  "recent_installs": [
+    { "user": "Aprendiz Bucaramanga", "item_titulo": "ROAS real por ciudad", "hace": "hace 3 horas", "fee_cop": 1200 },
+    { "user": "Operador Cali", "item_titulo": "Ventas atribuidas por creative", "hace": "hace 5 horas", "fee_cop": 1200 },
+    { "user": "Estratega Bogotá", "item_titulo": "Auto-pausa CTR bajo", "hace": "hace 8 horas", "fee_cop": 800 },
+    { "user": "Operador Pereira", "item_titulo": "ROAS real por ciudad", "hace": "ayer", "fee_cop": 1200 },
+    { "user": "Aprendiz Cartagena", "item_titulo": "Top productos vendidos hoy", "hace": "ayer", "fee_cop": 0 }
+  ],
+  "next_tier_requirements": {
+    "tier_destino": "Builder Oro",
+    "requisitos": [
+      { "label": "5.000 instalaciones acumuladas", "actual": 2148, "objetivo": 5000, "completado": false },
+      { "label": "Rating promedio ≥ 4.8", "actual": 4.76, "objetivo": 4.8, "completado": false, "casi": true },
+      { "label": "≥ 10 items publicados", "actual": 7, "objetivo": 10, "completado": false },
+      { "label": "Mantenido por 6 meses", "actual": 2, "objetivo": 6, "completado": false }
+    ],
+    "benefit_oro": "Revenue share sube a 75% creator / 25% Dropi · Featured en home del marketplace · Acceso anticipado a APIs nuevas"
+  }
+}

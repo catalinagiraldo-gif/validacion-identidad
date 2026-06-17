@@ -1,0 +1,30 @@
+{
+  "tickets": [
+    {"id": "TK-8821", "subject": "Guía rechazada en destino", "client": "María Vergara", "order": "#160604", "status": "Abierto", "priority": "Alta", "agent": "Laura CAS", "updated": "27/05/2026 14:32", "preview": "La transportadora reportó dirección incorrecta…", "galiStatus": "human"},
+    {"id": "TK-8822", "subject": "Reembolso pendiente", "client": "Carlos Mendoza", "order": "#160605", "status": "En proceso", "priority": "Media", "agent": "Michael CAS", "updated": "27/05/2026 12:10", "preview": "Cliente solicita reembolso por producto dañado…", "galiStatus": "managing"},
+    {"id": "TK-8823", "subject": "Producto incorrecto enviado", "client": "Laura Torres", "order": "#160610", "status": "Escalado", "priority": "Alta", "agent": "Diana CAS", "updated": "26/05/2026 18:40", "preview": "Se envió talla M en lugar de L…", "galiStatus": "human"},
+    {"id": "TK-8824", "subject": "Demora en entrega", "client": "Andrea Gutiérrez", "order": "#160607", "status": "Resuelto", "priority": "Baja", "agent": "Laura CAS", "updated": "26/05/2026 09:15", "preview": "Guía lleva 5 días sin movimiento…", "galiStatus": "resolved"},
+    {"id": "TK-8825", "subject": "Cobro doble en wallet", "client": "Juan Pablo Ruiz", "order": "#160608", "status": "Abierto", "priority": "Alta", "agent": "Sin asignar", "updated": "25/05/2026 16:22", "preview": "Se descontó dos veces la comisión…", "galiStatus": "human"},
+    {"id": "TK-8826", "subject": "Etiqueta con error PDF", "client": "Diego Herrera", "order": "#160609", "status": "En proceso", "priority": "Media", "agent": "Michael CAS", "updated": "25/05/2026 11:05", "preview": "No puedo imprimir la guía…", "galiStatus": "managing"},
+    {"id": "TK-8827", "subject": "Garantía no procesada", "client": "Valentina Ruiz", "order": "#160611", "status": "Pendiente", "priority": "Media", "agent": "Diana CAS", "updated": "24/05/2026 20:18", "preview": "Solicitud GAR-301 sin respuesta…", "galiStatus": "managing"},
+    {"id": "TK-8828", "subject": "Integración Shopify caída", "client": "Dropi Tienda", "order": "—", "status": "Escalado", "priority": "Alta", "agent": "Laura CAS", "updated": "24/05/2026 08:44", "preview": "Pedidos no sincronizan desde ayer…", "galiStatus": "human"},
+    {"id": "TK-8829", "subject": "Retiro bancario rechazado", "client": "Sebastián Moreno", "order": "—", "status": "Abierto", "priority": "Alta", "agent": "Michael CAS", "updated": "23/05/2026 15:30", "preview": "RET-903 rechazado sin motivo…", "galiStatus": "managing"},
+    {"id": "TK-8830", "subject": "Cambio de transportadora", "client": "Camila Ortiz", "order": "#160613", "status": "Resuelto", "priority": "Baja", "agent": "Diana CAS", "updated": "23/05/2026 10:12", "preview": "Necesito cambiar de ENVIA a Coordinadora…", "galiStatus": "resolved"},
+    {"id": "TK-8831", "subject": "Factura pendiente mayo", "client": "Fernando López", "order": "—", "status": "Cerrado", "priority": "Baja", "agent": "Laura CAS", "updated": "22/05/2026 19:55", "preview": "Solicitud de factura FAC-2026-05…", "galiStatus": "resolved"},
+    {"id": "TK-8832", "subject": "Novedad sin resolver", "client": "Isabel Navarro", "order": "#160615", "status": "En proceso", "priority": "Media", "agent": "Michael CAS", "updated": "22/05/2026 07:20", "preview": "Novedad reportada hace 3 días…", "galiStatus": "managing"},
+    {"id": "TK-8833", "subject": "Plan Pro no activado", "client": "Olga Camacho", "order": "—", "status": "Abierto", "priority": "Media", "agent": "Sin asignar", "updated": "21/05/2026 14:08", "preview": "Pagó plan Pro pero sigue en Starter…", "galiStatus": "pending"},
+    {"id": "TK-8834", "subject": "Guía duplicada", "client": "Pedro Sánchez", "order": "#160617", "status": "Resuelto", "priority": "Baja", "agent": "Diana CAS", "updated": "21/05/2026 09:33", "preview": "Se generaron dos guías para mismo pedido…", "galiStatus": "resolved"},
+    {"id": "TK-8835", "subject": "Producto agotado post-venta", "client": "Lucía Ramírez", "order": "#160618", "status": "Pendiente", "priority": "Media", "agent": "Laura CAS", "updated": "20/05/2026 17:45", "preview": "Proveedor reportó agotado después de venta…", "galiStatus": "managing"},
+    {"id": "TK-8836", "subject": "Datos bancarios incorrectos", "client": "Roberto Vega", "order": "—", "status": "En proceso", "priority": "Alta", "agent": "Michael CAS", "updated": "20/05/2026 11:22", "preview": "Retiro devuelto por cuenta inválida…", "galiStatus": "pending"},
+    {"id": "TK-8837", "subject": "Campaña WhatsApp bloqueada", "client": "Patricia Morales", "order": "—", "status": "Escalado", "priority": "Alta", "agent": "Diana CAS", "updated": "19/05/2026 16:10", "preview": "Meta bloqueó número de remitente…", "galiStatus": "human"},
+    {"id": "TK-8838", "subject": "Recolección garantía", "client": "Andrés Castillo", "order": "GAR-303", "status": "Abierto", "priority": "Media", "agent": "Laura CAS", "updated": "19/05/2026 08:55", "preview": "Transportadora no pasó a recoger…", "galiStatus": "managing"},
+    {"id": "TK-8839", "subject": "Error validador dirección", "client": "Sandra Mejía", "order": "#160622", "status": "Resuelto", "priority": "Baja", "agent": "Michael CAS", "updated": "18/05/2026 13:40", "preview": "Dirección válida marcada como errónea…", "galiStatus": "resolved"},
+    {"id": "TK-8840", "subject": "Depósito manual en revisión", "client": "Miguel Ángel Díaz", "order": "DEP-1203", "status": "Pendiente", "priority": "Media", "agent": "Sin asignar", "updated": "18/05/2026 06:18", "preview": "Depósito lleva 48h en revisión…", "galiStatus": "pending"}
+  ],
+  "messages": [
+    {"from": "agent", "text": "Hola María, revisamos tu caso de guía rechazada. ¿Puedes confirmar la dirección correcta?", "time": "14:30"},
+    {"from": "client", "text": "Sí, la dirección es Manzana A Casa 17, el número de apto es 501.", "time": "14:32"},
+    {"from": "agent", "text": "Perfecto, vamos a gestionar la reprogramación con ENVIA.", "time": "14:33"},
+    {"from": "agent", "text": "También activé la alerta de Gali para que el Vigilante monitoree esta guía cada 4 horas.", "time": "14:35"}
+  ]
+}

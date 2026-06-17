@@ -1,0 +1,79 @@
+<aside class="gd" aria-label="Navegación Gali v2">
+  <a class="gd__brand" routerLink="/gali-v2" aria-label="Gali v2 — al inicio">
+    <gali-mark state="reposo" size="md"></gali-mark>
+  </a>
+
+  <nav class="gd__nav">
+    <ul>
+      <li *ngFor="let it of items; trackBy: trackByRuta">
+        <a
+          class="gd__item"
+          [routerLink]="it.ruta"
+          [routerLinkActive]="'gd__item--active'"
+          [routerLinkActiveOptions]="{ exact: it.ruta === '/gali-v2' }">
+
+          <span class="gd__item-icon" [attr.data-glyph]="it.glyph">
+            <!-- Glifos minimal SVG, sin emojis -->
+            <ng-container [ngSwitch]="it.glyph">
+              <svg *ngSwitchCase="'lienzo'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
+              </svg>
+              <svg *ngSwitchCase="'proyectos'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 7l9-4 9 4-9 4-9-4z"/>
+                <path d="M3 12l9 4 9-4"/>
+                <path d="M3 17l9 4 9-4"/>
+              </svg>
+              <svg *ngSwitchCase="'novedades'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+                <path d="M10 21a2 2 0 0 0 4 0"/>
+              </svg>
+              <svg *ngSwitchCase="'playground'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 18V6m8 12V10m8 8V4"/>
+              </svg>
+              <svg *ngSwitchCase="'onboarding'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 4v8"/>
+                <path d="M8 8l4-4 4 4"/>
+                <circle cx="12" cy="17" r="3"/>
+              </svg>
+            </ng-container>
+          </span>
+
+          <span class="gd__item-label">{{ it.label }}</span>
+
+          <span class="gd__item-badge" *ngIf="badge(it.glyph) as n">{{ n }}</span>
+
+          <span class="gd__tooltip" role="tooltip">
+            <strong>{{ it.label }}</strong>
+            <span>{{ it.hint }}</span>
+            <kbd *ngIf="it.kbd">{{ it.kbd }}</kbd>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="gd__foot">
+    <div class="gd__nivel-wrap">
+      <span class="gd__nivel-label">nivel</span>
+      <div class="gd__nivel-toggles" role="group" aria-label="Nivel de maestría">
+        <button
+          *ngFor="let n of niveles"
+          type="button"
+          class="gd__nivel-btn"
+          [class.gd__nivel-btn--active]="nivel() === n"
+          [title]="n"
+          [attr.aria-label]="'Cambiar a ' + n"
+          (click)="setNivel(n)">
+          {{ n.charAt(0).toUpperCase() }}
+        </button>
+      </div>
+    </div>
+    <a class="gd__back" routerLink="/home" title="Volver a la galería de prototipos">
+      <span aria-hidden="true">←</span>
+      <span class="gd__back-label">salir de Gali v2</span>
+    </a>
+  </div>
+</aside>

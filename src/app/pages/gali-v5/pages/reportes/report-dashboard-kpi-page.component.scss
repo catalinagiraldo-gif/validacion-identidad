@@ -1,0 +1,499 @@
+@import '../shared/dropi-page-shell';
+
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.kpi-dashboard {
+  @include dropi-page-shell;
+  overflow-y: auto;
+
+  &__grid {
+    display: flex;
+    gap: $size-5;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  &__right {
+    flex: 1;
+    min-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: $size-5;
+  }
+}
+
+.profile-card {
+  width: 388px;
+  min-height: 690px;
+  padding: $size-5;
+  border-radius: 24px;
+  background: linear-gradient(165deg, #1a2236 0%, #2d3a5c 45%, $primary-600 100%);
+  color: $white;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: $shadow-medium;
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $size-5;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__period {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: $white;
+    font-family: $font-primary;
+    font-size: 12px;
+    font-weight: $font-bold;
+    cursor: pointer;
+  }
+
+  &__download {
+    width: 40px;
+    height: 40px;
+    border: 1px solid $white;
+    border-radius: 12px;
+    background: transparent;
+    color: $white;
+    cursor: pointer;
+  }
+
+  &__user {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    margin-bottom: $size-5;
+
+    h2 {
+      margin: $size-3 0 0;
+      font-family: $font-primary;
+      font-size: 18px;
+      font-weight: $font-bold;
+      line-height: 1.2;
+    }
+  }
+
+  &__avatar {
+    width: 61px;
+    height: 61px;
+    border-radius: 50%;
+    background: rgba($white, 0.15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: $font-primary;
+    font-weight: $font-bold;
+    font-size: $font-lg;
+  }
+
+  &__flag {
+    position: absolute;
+    top: 0;
+    right: calc(50% - 42px);
+    font-size: 20px;
+  }
+
+  &__sales {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+
+    h3 {
+      margin: 0 0 4px;
+      font-size: $font-base;
+      font-weight: $font-bold;
+    }
+
+    p {
+      margin: 0 0 $size-4;
+      font-size: $font-sm;
+      opacity: 0.9;
+    }
+  }
+
+  &__hero-metrics {
+    padding: $size-4;
+    border-radius: 20px;
+    background: rgba($white, 0.12);
+    backdrop-filter: blur(8px);
+    margin-bottom: $size-6;
+  }
+
+  &__revenue {
+    display: block;
+    font-family: $font-primary;
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  &__gauge {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    padding-bottom: $size-6;
+  }
+
+  &__gauge-ring {
+    text-align: center;
+
+    strong {
+      display: block;
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    span {
+      font-size: $font-base;
+      font-weight: $font-bold;
+    }
+  }
+
+  &__logo {
+    position: absolute;
+    bottom: $size-5;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $primary-500;
+    opacity: 0.85;
+    text-transform: lowercase;
+    z-index: 2;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba($primary-500, 0.35), transparent 50%);
+    pointer-events: none;
+  }
+}
+
+.orders-panel {
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $size-3;
+  }
+
+  h3 {
+    margin: 0;
+    font-family: $font-primary;
+    font-size: 18px;
+    font-weight: $font-bold;
+    color: $gray-700;
+  }
+
+  &__info {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    background: transparent;
+    color: $primary-500;
+    font-family: $font-primary;
+    font-size: 12px;
+    font-weight: $font-bold;
+    cursor: pointer;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+}
+
+.kpi-tile {
+  padding: 8px 16px;
+  border: 1px solid $gray-100;
+  border-radius: 12px;
+  background: $white;
+  min-height: 86px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, rgba($primary-500, 0.15), rgba($primary-500, 0.25));
+
+    &[data-kpi='delivered'] {
+      background: linear-gradient(135deg, rgba($success, 0.15), rgba($success, 0.25));
+    }
+
+    &[data-kpi='issues'] {
+      background: linear-gradient(135deg, rgba($warning, 0.15), rgba($warning, 0.25));
+    }
+  }
+
+  &__label {
+    font-size: 12px;
+    color: $gray-400;
+  }
+
+  &__value {
+    font-family: $font-primary;
+    font-size: 18px;
+    font-weight: $font-bold;
+    color: $gray-700;
+  }
+}
+
+.trend-panel {
+  h3 {
+    margin: 0 0 $size-3;
+    font-family: $font-primary;
+    font-size: 18px;
+    font-weight: $font-bold;
+    color: $gray-700;
+  }
+
+  &__chart {
+    padding: $size-4;
+    border-radius: 20px;
+    background: $white;
+  }
+
+  &__legend {
+    display: flex;
+    gap: $size-4;
+    margin-bottom: $size-3;
+    font-size: 12px;
+    color: $gray-600;
+  }
+
+  &__dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
+
+    &--today {
+      background: $primary-500;
+    }
+
+    &--yesterday {
+      background: $gray-300;
+    }
+  }
+}
+
+.trend-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: $size-3;
+  height: 200px;
+
+  &__group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    justify-content: flex-end;
+
+    span {
+      font-size: 11px;
+      color: $gray-500;
+    }
+  }
+
+  &__bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 160px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  &__bar {
+    width: 12px;
+    border-radius: 4px 4px 0 0;
+    min-height: 8px;
+
+    &--today {
+      background: $primary-500;
+    }
+
+    &--yesterday {
+      background: $gray-200;
+    }
+  }
+}
+
+.reports-panel {
+  h3 {
+    margin: 0 0 $size-3;
+    font-family: $font-primary;
+    font-size: 18px;
+    font-weight: $font-bold;
+    color: $gray-700;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $size-3;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $size-3 $size-4;
+    border: 1px solid $gray-100;
+    border-radius: 12px;
+    background: $white;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-700;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+
+    &:hover {
+      border-color: $primary-500;
+      color: $primary-600;
+    }
+
+    .pi {
+      font-size: $font-xs;
+      color: $gray-400;
+    }
+  }
+}
+
+// ── Gali Dashboard Intelligence Layer ────────────────────────────
+.gali-pl-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $size-5;
+  padding: $size-4 $size-5;
+  margin-bottom: $size-5;
+  background: linear-gradient(135deg, #1c1c1e 0%, #2d2d30 100%);
+  border-radius: $radius-xl;
+  flex-wrap: wrap;
+
+  &__left {
+    display: flex;
+    align-items: flex-start;
+    gap: $size-3;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  &__icon { font-size: 16px; color: $primary-500; flex-shrink: 0; margin-top: 2px; }
+
+  &__content { display: flex; flex-direction: column; gap: 4px; }
+
+  &__title {
+    font-family: $font-secondary;
+    font-size: 11px;
+    font-weight: $font-medium;
+    color: $primary-500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__desc {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: rgba(#fff, 0.7);
+    line-height: 1.4;
+    margin: 0;
+
+    strong { color: #fff; }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: $size-4;
+    flex-shrink: 0;
+  }
+
+  &__cta {
+    padding: 7px $size-4;
+    background: $primary-500;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    color: $white;
+    text-decoration: none;
+    transition: background 0.15s;
+    flex-shrink: 0;
+
+    &:hover { background: $primary-600; }
+  }
+}
+
+.gali-pl-mini-compare {
+  display: flex;
+  align-items: center;
+  gap: $size-2;
+}
+
+.gali-pl-mini-box {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: $size-2 $size-3;
+  background: rgba(#fff, 0.05);
+  border-radius: $radius-md;
+
+  &--real { background: rgba($primary-500, 0.1); border: 1px solid rgba($primary-500, 0.3); }
+}
+
+.gali-pl-mini-box__lbl {
+  font-family: $font-primary;
+  font-size: 10px;
+  color: rgba(#fff, 0.4);
+}
+
+.gali-pl-mini-box__val {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-bold;
+  color: #fff;
+
+  .gali-pl-mini-box--real & { color: $primary-500; }
+}
+
+.gali-pl-mini-arrow {
+  font-size: 16px;
+  color: rgba(#fff, 0.3);
+}

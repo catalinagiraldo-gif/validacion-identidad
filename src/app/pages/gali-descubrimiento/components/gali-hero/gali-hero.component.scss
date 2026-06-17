@@ -1,0 +1,125 @@
+@import 'styles/gali-tokens';
+
+.hero {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+
+  &__halo {
+    position: absolute;
+    width: 720px;
+    height: 720px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at center,
+      rgba(78, 205, 196, 0.10) 0%,
+      rgba(85, 112, 241, 0.06) 35%,
+      transparent 70%
+    );
+    pointer-events: none;
+    animation: hero-halo-breathe 12s ease-in-out infinite;
+    z-index: 0;
+  }
+
+  &__card {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    width: 100%;
+    padding: 48px 40px;
+    background: rgba(22, 22, 26, 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid $gali-border-default;
+    border-radius: 24px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    animation: hero-card-in 600ms $gali-ease-spring;
+  }
+
+  &__avatar {
+    margin: 0 auto 32px;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__greeting {
+    font-family: $gali-font-display;
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 400;
+    line-height: 1.4;
+    color: $gali-text-primary;
+    margin: 0 0 32px;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  &__suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  &__input {
+    margin-bottom: 14px;
+  }
+
+  &__hint {
+    font-family: $gali-font-mono;
+    font-size: 11px;
+    color: $gali-text-muted;
+    letter-spacing: 0.04em;
+  }
+
+  &__hint-key {
+    display: inline-block;
+    padding: 2px 6px;
+    background: $gali-bg-elevated;
+    border: 1px solid $gali-border-default;
+    border-radius: 4px;
+    color: $gali-text-secondary;
+    margin-right: 4px;
+  }
+}
+
+@keyframes hero-halo-breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@include gali-reduced-motion {
+  .hero__halo,
+  .hero__card {
+    animation: none;
+  }
+}
+
+@media (max-width: 1280px) {
+  .hero__card {
+    max-width: 80%;
+    padding: 32px 24px;
+  }
+}

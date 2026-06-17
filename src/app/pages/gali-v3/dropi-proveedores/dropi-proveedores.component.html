@@ -1,0 +1,64 @@
+<article class="prov">
+  <header class="prov__head">
+    <div class="prov__head-meta">
+      <span class="prov__sparkle">✦</span>
+      <span class="prov__head-tag">Proveedores despertados</span>
+    </div>
+    <h1>Cada proveedor con score Gali según tu nicho.</h1>
+    <p class="prov__intro">
+      No es solo un listado: Gali cruza entrega, devoluciones y fit con tu perfil para decirte cuáles te sirven.
+    </p>
+  </header>
+
+  <section class="prov__grid">
+    <article *ngFor="let p of proveedores()" class="prov__card" [class.is-awake]="awakeId() === p.id" [attr.data-fit]="fitColor(p.fit_perfil)">
+      <div class="prov__card-front">
+        <div class="prov__logo"><span>{{ p.nombre.charAt(0) }}</span></div>
+        <div class="prov__body">
+          <strong class="prov__name">{{ p.nombre }}</strong>
+          <span class="prov__cat">{{ p.categoria }} · {{ p.ciudad }} · {{ p.productos }} productos</span>
+          <div class="prov__metrics">
+            <span class="prov__metric">
+              <span class="prov__metric-label">score</span>
+              <span class="prov__metric-val">{{ p.score_gali }}/10</span>
+            </span>
+            <span class="prov__metric">
+              <span class="prov__metric-label">entrega</span>
+              <span class="prov__metric-val">{{ p.entrega }}</span>
+            </span>
+            <span class="prov__metric">
+              <span class="prov__metric-label">fit perfil</span>
+              <span class="prov__metric-val">{{ p.fit_perfil }}%</span>
+            </span>
+          </div>
+          <div class="prov__alerta" *ngIf="p.alerta">⚠️ {{ p.alerta }}</div>
+        </div>
+        <button class="prov__awake-btn" [class.is-active]="awakeId() === p.id" (click)="toggleAwake(p.id)" title="Análisis Gali">
+          <span class="prov__sparkle">✦</span>
+        </button>
+      </div>
+
+      <div class="prov__awake" *ngIf="awakeId() === p.id">
+        <header>
+          <span class="prov__sparkle">✦</span>
+          <span class="prov__awake-tag">Gali analizó este proveedor</span>
+        </header>
+        <p class="prov__awake-resumen">
+          Fit con tu perfil: <strong>{{ p.fit_perfil }}%</strong> · Devoluciones: {{ p.devoluciones_pct }}% · Score: {{ p.score_gali }}/10
+        </p>
+        <div class="prov__destacados">
+          <span class="prov__destacados-label">Productos destacados:</span>
+          <div>
+            <span *ngFor="let d of p.destacados" class="prov__destacados-chip">{{ d }}</span>
+          </div>
+        </div>
+        <div class="prov__awake-actions">
+          <button (click)="verCatalogo(p)">📦 Ver productos top</button>
+          <button (click)="analizar(p)">✦ Analizar con Gali</button>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <proximos-pasos contexto="proveedores"></proximos-pasos>
+</article>

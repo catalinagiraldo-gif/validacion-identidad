@@ -1,144 +1,263 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
-interface ChatMessage {
-  from: 'user' | 'bot';
-  text: string;
-  time: string;
+interface CarouselSlide {
+  icon: string;
+  title: string;
+  description: string;
+  tag?: string;
 }
 
-interface AutomationFlow {
-  id: number;
-  name: string;
-  trigger: string;
-  status: 'Activo' | 'Inactivo';
-  responses: number;
+interface StatCard {
+  value: string;
+  label: string;
+  desc: string;
 }
 
 @Component({
   selector: 'app-chatea-pro-new',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   styleUrls: ['./chatea-pro.component.scss'],
   template: `
     <div class="page-wrapper">
-      <!-- Breadcrumb -->
-      <nav class="breadcrumb">
-        <span class="breadcrumb-item"><i class="pi pi-home"></i></span>
-        <i class="pi pi-chevron-right breadcrumb-chevron"></i>
-        <span class="breadcrumb-item">Marketing</span>
-        <i class="pi pi-chevron-right breadcrumb-chevron"></i>
-        <span class="breadcrumb-item active">Chatea Pro</span>
+
+      <!-- ── Breadcrumb ── -->
+      <nav class="breadcrumb" aria-label="breadcrumb">
+        <span class="bc-item">Marketing</span>
+        <span class="bc-sep">›</span>
+        <span class="bc-item bc-item--active">SMS y Correo - Chatea Pro</span>
       </nav>
 
-      <!-- Page title -->
-      <h1 class="page-title">Chatea Pro</h1>
+      <!-- ── Page header ── -->
+      <div class="page-header">
+        <h1 class="page-title">Chatea Pro</h1>
+      </div>
 
-      <div class="chatea-layout">
-        <!-- Left: Automation Flows -->
-        <div class="flows-panel">
-          <div class="panel-header">
-            <h2 class="panel-title">Flujos de automatizacion</h2>
-            <button class="btn-add-flow">
-              <i class="pi pi-plus"></i>
+      <!-- ── Hero Banner ── -->
+      <section class="banner" (mouseenter)="pauseCarousel()" (mouseleave)="resumeCarousel()">
+
+        <!-- dark gradient overlay (left) -->
+        <div class="banner__overlay"></div>
+
+        <!-- Copy: title + subtitle + CTAs -->
+        <div class="banner__copy">
+          <h2 class="banner__heading">
+            Automatiza tu operación con expertos virtuales y vuélvete más rentable con Chatea Pro.
+          </h2>
+          <p class="banner__subtitle">
+            Confirma órdenes, recupera carritos y vende 24/7 por WhatsApp. Aumenta tu rentabilidad con el único sistema automatizado diseñado para la logística de tu e-commerce.
+          </p>
+          <div class="banner__ctas">
+            <a href="https://chateapro.com/" target="_blank" rel="noopener noreferrer" class="btn-start">
+              Comienza ahora
+              <img src="assets/images/chatea-pro/icons/external-link.svg" alt="" class="btn-icon" />
+            </a>
+            <a href="https://www.youtube.com/watch?v=0g3GvH9rf-8" target="_blank" rel="noopener noreferrer" class="btn-watch">
+              Ver como funciona
+              <img src="assets/images/chatea-pro/icons/play.svg" alt="" class="btn-icon" />
+            </a>
+          </div>
+        </div>
+
+        <!-- Carousel: benefit cards (absolute, bottom-left of banner) -->
+        <div class="carousel">
+          <div class="carousel__track">
+            <div
+              *ngFor="let slide of slides; let i = index"
+              class="carousel__slide"
+              [class.carousel__slide--active]="i === currentSlide"
+              [class.carousel__slide--prev]="i === prevIndex"
+            >
+              <div class="carousel__icon-wrap">
+                <img [src]="'assets/images/chatea-pro/icons/' + slide.icon + '.svg'" alt="" class="carousel__icon" />
+              </div>
+              <div class="carousel__text">
+                <div class="carousel__title-row">
+                  <span class="carousel__title">{{ slide.title }}</span>
+                  <span *ngIf="slide.tag" class="carousel__tag">{{ slide.tag }}</span>
+                </div>
+                <p class="carousel__desc">{{ slide.description }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dots -->
+          <div class="carousel__dots">
+            <button
+              *ngFor="let slide of slides; let i = index"
+              class="carousel__dot"
+              [class.carousel__dot--active]="i === currentSlide"
+              (click)="goTo(i)"
+              [attr.aria-label]="'Ir a ' + slide.title"
+            ></button>
+          </div>
+
+          <!-- Navigation arrows -->
+          <div class="carousel__nav">
+            <button class="carousel__arrow" (click)="prevSlide()" aria-label="Anterior">
+              <img src="assets/images/chatea-pro/icons/arrow-left.svg" alt="" />
+            </button>
+            <button class="carousel__arrow" (click)="nextSlide()" aria-label="Siguiente">
+              <img src="assets/images/chatea-pro/icons/arrow-right.svg" alt="" />
             </button>
           </div>
-
-          <div class="flows-list">
-            <div
-              *ngFor="let flow of flows; let i = index"
-              class="flow-card"
-              [class.flow-card--active]="selectedFlowId === flow.id"
-              (click)="selectedFlowId = flow.id"
-              [style.animation-delay]="i * 60 + 'ms'"
-            >
-              <div class="flow-card__header">
-                <span class="flow-card__name">{{ flow.name }}</span>
-                <span class="flow-status" [ngClass]="flow.status === 'Activo' ? 'flow-status--active' : 'flow-status--inactive'">
-                  {{ flow.status }}
-                </span>
-              </div>
-              <div class="flow-card__meta">
-                <span class="flow-card__trigger">
-                  <i class="pi pi-bolt"></i>
-                  {{ flow.trigger }}
-                </span>
-                <span class="flow-card__responses">{{ flow.responses }} respuestas</span>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <!-- Right: WhatsApp Preview -->
-        <div class="preview-panel">
-          <div class="wa-phone-frame">
-            <div class="wa-header">
-              <div class="wa-header__back">
-                <i class="pi pi-arrow-left"></i>
-              </div>
-              <div class="wa-header__avatar">
-                <i class="pi pi-user"></i>
-              </div>
-              <div class="wa-header__info">
-                <span class="wa-header__name">Mi Tienda Dropi</span>
-                <span class="wa-header__status">en linea</span>
-              </div>
-              <div class="wa-header__actions">
-                <i class="pi pi-video"></i>
-                <i class="pi pi-phone"></i>
-                <i class="pi pi-ellipsis-v"></i>
-              </div>
-            </div>
+        <!-- Phone mockup (right side) -->
+        <div class="banner__phone">
+          <div class="phone-screen">
+            <img
+              src="assets/images/chatea-pro/chat-bg.png"
+              alt=""
+              class="phone-chat-bg"
+            />
+          </div>
+          <img
+            src="assets/images/chatea-pro/phone-mockup.png"
+            alt="Chatea Pro en acción"
+            class="phone-frame"
+          />
+          <img
+            src="assets/images/chatea-pro/coin.png"
+            alt=""
+            class="coin"
+          />
+        </div>
 
-            <div class="wa-chat-area">
-              <div class="wa-date-divider">
-                <span>Hoy</span>
-              </div>
-              <div
-                *ngFor="let msg of previewMessages"
-                class="wa-message"
-                [ngClass]="msg.from === 'bot' ? 'wa-message--bot' : 'wa-message--user'"
-              >
-                <p class="wa-message__text">{{ msg.text }}</p>
-                <span class="wa-message__time">{{ msg.time }}</span>
-              </div>
-            </div>
+      </section>
 
-            <div class="wa-input-bar">
-              <button class="wa-input-btn">
-                <i class="pi pi-face-smile"></i>
-              </button>
-              <input type="text" placeholder="Escribe un mensaje..." readonly />
-              <button class="wa-input-btn">
-                <i class="pi pi-paperclip"></i>
-              </button>
-              <button class="wa-send-btn">
-                <i class="pi pi-microphone"></i>
-              </button>
-            </div>
+      <!-- ── Stats cards ── -->
+      <section class="stats-section">
+        <h3 class="stats-title">¡Lleva tu ecosistema a otro nivel con Chatea Pro!</h3>
+        <div class="stats-grid">
+          <div
+            class="stat-card"
+            *ngFor="let stat of stats; let i = index"
+            [style.animation-delay]="(i * 80) + 'ms'"
+          >
+            <span class="stat-value">{{ stat.value }}</span>
+            <span class="stat-label">{{ stat.label }}</span>
+            <p class="stat-desc">{{ stat.desc }}</p>
           </div>
         </div>
-      </div>
+      </section>
+
     </div>
   `,
 })
-export class ChateaProNewComponent {
-  selectedFlowId = 1;
+export class ChateaProNewComponent implements OnInit, OnDestroy {
+  currentSlide = 0;
+  prevIndex = -1;
+  private autoTimer: ReturnType<typeof setInterval> | null = null;
+  private paused = false;
 
-  flows: AutomationFlow[] = [
-    { id: 1, name: 'Bienvenida automatica', trigger: 'Primer mensaje', status: 'Activo', responses: 342 },
-    { id: 2, name: 'Consulta de precio', trigger: 'Palabra clave: precio', status: 'Activo', responses: 1205 },
-    { id: 3, name: 'Estado del pedido', trigger: 'Palabra clave: pedido', status: 'Activo', responses: 876 },
-    { id: 4, name: 'Horario de atencion', trigger: 'Fuera de horario', status: 'Inactivo', responses: 154 },
-    { id: 5, name: 'Promociones del mes', trigger: 'Palabra clave: promo', status: 'Activo', responses: 432 },
+  slides: CarouselSlide[] = [
+    {
+      icon: 'callcenter',
+      title: 'Asistente Logístico',
+      description:
+        'Aumenta tus entregas confirmando pedidos de alta probabilidad, rastrea envíos, avisa al cliente sobre el estado del pedido y soluciona novedades fácilmente.',
+    },
+    {
+      icon: 'cart-check',
+      title: 'Recuperador de Carritos',
+      description:
+        'Rescata todas esas ventas que estaban a punto de perderse porque el cliente inició la compra pero no la completó.',
+    },
+    {
+      icon: 'comments',
+      title: 'Gestor de Comentarios',
+      description:
+        'Mantiene un ecosistema sano: elimina los malos comentarios que encarecen tu pauta publicitaria y vende respondiendo automáticamente a los clientes interesados en tus redes sociales.',
+    },
+    {
+      icon: 'whatsapp',
+      title: 'Vendedor por WhatsApp',
+      description:
+        'Lanza campañas más económicas y fáciles de configurar que una landing page. Aumenta la confianza del cliente y logra tasas de conversión de hasta un 10% con embudos optimizados.',
+    },
+    {
+      icon: 'target',
+      title: 'Remarketing',
+      description:
+        'Contacta a tu base de datos de compradores para ofrecerles nuevos productos. Sé rentable sin depender de invertir constantemente en pauta publicitaria.',
+      tag: 'Próximamente',
+    },
   ];
 
-  previewMessages: ChatMessage[] = [
-    { from: 'user', text: 'Hola, quiero saber el precio del reloj inteligente', time: '10:30 a.m.' },
-    { from: 'bot', text: 'Hola! Gracias por escribirnos. El reloj inteligente Y68 tiene un precio de $120.000 COP con envio gratis.', time: '10:30 a.m.' },
-    { from: 'bot', text: 'Deseas realizar tu pedido? Responde SI para continuar.', time: '10:30 a.m.' },
-    { from: 'user', text: 'SI', time: '10:31 a.m.' },
-    { from: 'bot', text: 'Excelente! Por favor enviame tu nombre completo y direccion de envio.', time: '10:31 a.m.' },
+  stats: StatCard[] = [
+    {
+      value: '+2,000',
+      label: 'tiendas activas',
+      desc: 'Automatiza tus ventas por WhatsApp. Recupera carritos y vende 24/7 con agentes virtuales.',
+    },
+    {
+      value: '+80%',
+      label: 'pedidos confirmados',
+      desc: 'Confirma pedidos automáticamente con mensajes personalizados y aumenta tu tasa de éxito.',
+    },
+    {
+      value: '+30%',
+      label: 'carritos recuperados',
+      desc: 'Recupera carritos abandonados con recordatorios automáticos y convierte más ventas perdidas.',
+    },
+    {
+      value: '+10%',
+      label: 'conversión',
+      desc: 'Aumenta tu rentabilidad con embudos de venta optimizados y campañas de WhatsApp.',
+    },
   ];
+
+  ngOnInit(): void {
+    this.startAutoPlay();
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoPlay();
+  }
+
+  private startAutoPlay(): void {
+    this.autoTimer = setInterval(() => {
+      if (!this.paused) {
+        this.advance();
+      }
+    }, 2000);
+  }
+
+  private stopAutoPlay(): void {
+    if (this.autoTimer !== null) {
+      clearInterval(this.autoTimer);
+      this.autoTimer = null;
+    }
+  }
+
+  private advance(): void {
+    this.prevIndex = this.currentSlide;
+    this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+  }
+
+  nextSlide(): void {
+    this.prevIndex = this.currentSlide;
+    this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+  }
+
+  prevSlide(): void {
+    this.prevIndex = this.currentSlide;
+    this.currentSlide =
+      (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+  }
+
+  goTo(index: number): void {
+    this.prevIndex = this.currentSlide;
+    this.currentSlide = index;
+  }
+
+  pauseCarousel(): void {
+    this.paused = true;
+  }
+
+  resumeCarousel(): void {
+    this.paused = false;
+  }
 }

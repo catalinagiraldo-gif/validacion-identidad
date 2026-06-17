@@ -1,0 +1,139 @@
+@import 'styles/gali-v3-tokens';
+
+:host { display: block; max-width: 1280px; margin: 0 auto; }
+.prov { display: flex; flex-direction: column; gap: $gv3-space-4; }
+
+.prov__sparkle { color: $gv3-sparkle-color; filter: drop-shadow($gv3-sparkle-glow); }
+
+.prov__head {
+  @include gv3-artifact;
+  padding: $gv3-space-5 $gv3-space-6;
+}
+.prov__head-meta {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; background: $gv3-bg-warm; border-radius: $gv3-radius-pill;
+  margin-bottom: $gv3-space-3;
+}
+.prov__head-tag { @include gv3-mono-tag; color: $gv3-text-secondary; }
+.prov__head h1 { @include gv3-display-tight; font-size: 32px; margin: 0 0 $gv3-space-2; }
+.prov__intro { margin: 0; font-size: $gv3-text-base; color: $gv3-text-secondary; line-height: 1.55; max-width: 720px; }
+
+.prov__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: $gv3-space-3;
+}
+
+.prov__card {
+  @include gv3-artifact;
+  padding: 0;
+  overflow: hidden;
+  &[data-fit="high"] { border-left: 3px solid $gv3-sage; }
+  &[data-fit="mid"]  { border-left: 3px solid $gv3-amber; }
+  &[data-fit="low"]  { border-left: 3px solid $gv3-text-muted; }
+  &.is-awake { box-shadow: $gv3-shadow-glow-warm, $gv3-artifact-shadow; }
+}
+
+.prov__card-front {
+  display: grid;
+  grid-template-columns: 56px 1fr 36px;
+  gap: $gv3-space-3;
+  padding: $gv3-space-3;
+}
+
+.prov__logo {
+  width: 56px; height: 56px;
+  border-radius: $gv3-radius-md;
+  background: $gv3-bg-warm;
+  display: flex; align-items: center; justify-content: center;
+  span { font-family: $gv3-font-display; font-weight: 600; font-size: 28px; color: $gv3-text-tertiary; }
+}
+
+.prov__body { min-width: 0; }
+.prov__name { display: block; font-family: $gv3-font-display; font-size: $gv3-text-base; color: $gv3-text-primary; margin-bottom: 2px; }
+.prov__cat { @include gv3-mono-tag; color: $gv3-text-tertiary; display: block; margin-bottom: 6px; }
+
+.prov__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.prov__metric {
+  display: inline-flex; flex-direction: column;
+  padding: 4px 8px;
+  background: $gv3-bg-warm;
+  border-radius: $gv3-radius-sm;
+}
+.prov__metric-label { @include gv3-mono-tag; color: $gv3-text-tertiary; font-size: 9px; letter-spacing: 0.06em; }
+.prov__metric-val { font-size: 11.5px; color: $gv3-text-primary; font-weight: 500; }
+
+.prov__alerta {
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: $gv3-amber-tint;
+  border-radius: $gv3-radius-sm;
+  font-size: 11px;
+  color: $gv3-text-primary;
+  font-style: italic;
+}
+
+.prov__awake-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid $gv3-border-warm;
+  background: $gv3-bg-warm;
+  font-size: 16px;
+  cursor: pointer;
+  align-self: start;
+  transition: all $gv3-dur-base $gv3-ease-out;
+  &:hover { background: $gv3-orange-tint; transform: rotate(45deg); }
+  &.is-active {
+    background: $gv3-orange;
+    border-color: $gv3-orange;
+    .prov__sparkle { color: $gv3-text-onAccent; filter: none; }
+  }
+}
+
+.prov__awake {
+  padding: $gv3-space-3 $gv3-space-4;
+  background: $gv3-bg-warm;
+  border-top: 1px solid $gv3-border-warm;
+  animation: gv3-artifact-enter $gv3-dur-base $gv3-ease-out;
+  header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+}
+.prov__awake-tag { @include gv3-mono-tag; color: $gv3-orange-hover; }
+
+.prov__awake-resumen {
+  margin: 0 0 $gv3-space-2;
+  font-size: 12.5px;
+  color: $gv3-text-secondary;
+  strong { color: $gv3-text-primary; font-weight: 600; }
+}
+
+.prov__destacados {
+  margin-bottom: $gv3-space-2;
+  > div { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+}
+.prov__destacados-label { @include gv3-mono-tag; color: $gv3-text-tertiary; }
+.prov__destacados-chip {
+  @include gv3-pill($gv3-bg-surface, $gv3-text-primary);
+  border: 1px solid $gv3-border-whisper;
+  font-size: 11px;
+}
+
+.prov__awake-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  button {
+    padding: 6px 10px;
+    background: $gv3-bg-surface;
+    border: 1px solid $gv3-border-warm;
+    border-radius: $gv3-radius-md;
+    font-family: $gv3-font-body;
+    font-size: 11.5px;
+    color: $gv3-text-primary;
+    cursor: pointer;
+    &:hover { background: $gv3-orange-tint; }
+  }
+}

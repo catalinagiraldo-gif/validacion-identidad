@@ -1,0 +1,89 @@
+<article class="agd" *ngIf="agente() as a" [attr.data-color]="a.color">
+  <button class="agd__back" (click)="back()">← Volver al mercado</button>
+
+  <header class="agd__hero">
+    <div class="agd__icon">{{ a.icon }}</div>
+    <div class="agd__hero-body">
+      <span class="agd__hero-tag">Agente · {{ a.color }}</span>
+      <h1>{{ a.name }}</h1>
+      <p class="agd__tagline">{{ a.tagline }}</p>
+      <div class="agd__meta">
+        <span class="agd__rating">★ {{ a.rating }}</span>
+        <span class="agd__instal">{{ a.instalaciones }} instalaciones</span>
+        <span class="agd__by">por {{ a.creado_por }}</span>
+        <span class="agd__installed" *ngIf="a.instalado">✓ Instalado en tu cuenta</span>
+      </div>
+    </div>
+    <div class="agd__hero-cta">
+      <button class="agd__cta-primary" (click)="install()" [class.is-installed]="a.instalado">
+        {{ a.instalado ? 'Desinstalar' : 'Instalar agente' }}
+      </button>
+      <button class="agd__cta-secondary" (click)="invocar()" *ngIf="a.instalado">✦ Invocar ahora</button>
+    </div>
+  </header>
+
+  <section class="agd__grid">
+    <article class="agd__card">
+      <header><span class="agd__sparkle">✦</span><h3>Qué hace</h3></header>
+      <p>{{ a.descripcion }}</p>
+      <ul class="agd__bullets">
+        <li *ngFor="let q of a.que_hace">{{ q }}</li>
+      </ul>
+    </article>
+
+    <article class="agd__card">
+      <header><span class="agd__sparkle">⚙</span><h3>Requisitos</h3></header>
+      <ul class="agd__reqs" *ngIf="a.prerequisites.length">
+        <li *ngFor="let r of a.prerequisites">
+          <span class="agd__req-dot"></span>
+          {{ r }}
+        </li>
+      </ul>
+      <p class="agd__empty" *ngIf="!a.prerequisites.length">
+        Sin requisitos · funciona out-of-the-box.
+      </p>
+    </article>
+
+    <article class="agd__card agd__card--wide">
+      <header><span class="agd__sparkle">▸</span><h3>Cómo trabaja con tu negocio</h3></header>
+      <div class="agd__flow">
+        <div class="agd__flow-step">
+          <span class="agd__flow-num">1</span>
+          <strong>Lee tu contexto</strong>
+          <span>Memoria de negocio + proyecto activo + ruta actual.</span>
+        </div>
+        <div class="agd__flow-arrow">→</div>
+        <div class="agd__flow-step">
+          <span class="agd__flow-num">2</span>
+          <strong>Ejecuta su función</strong>
+          <span>Usa data LATAM de Dropi para decisiones contextuales.</span>
+        </div>
+        <div class="agd__flow-arrow">→</div>
+        <div class="agd__flow-step">
+          <span class="agd__flow-num">3</span>
+          <strong>Te muestra resultado</strong>
+          <span>Streaming en chat + artifact en canvas + acción en 1 click.</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="agd__card agd__card--wide" *ngIf="relacionados().length">
+      <header><span class="agd__sparkle">●</span><h3>Otros agentes que te pueden servir</h3></header>
+      <div class="agd__related">
+        <a *ngFor="let r of relacionados()" [routerLink]="['/gali-v3/mercado/agente', r.id]" class="agd__related-card">
+          <span class="agd__related-icon">{{ r.icon }}</span>
+          <div>
+            <strong>{{ r.name }}</strong>
+            <span>{{ r.tagline }}</span>
+          </div>
+          <span class="agd__related-arrow">→</span>
+        </a>
+      </div>
+    </article>
+  </section>
+</article>
+
+<div class="agd__notfound" *ngIf="!agente()">
+  <h2>Agente no encontrado</h2>
+  <a routerLink="/gali-v3/mercado">← Volver al mercado</a>
+</div>

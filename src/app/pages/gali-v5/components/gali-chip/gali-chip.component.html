@@ -1,0 +1,17 @@
+<div class="gali-chip" [class]="'gali-chip--' + status">
+  <span class="gali-chip__agent" [attr.aria-label]="agentName">{{ agentInitial() }}</span>
+  <span class="gali-chip__text">
+    <strong>{{ agentName }}</strong>
+    <span class="gali-chip__sep">·</span>
+    {{ message }}
+  </span>
+  @if (count !== undefined && count > 0) {
+    <span class="gali-chip__badge">{{ count }}</span>
+  }
+  @if (status === 'running' || status === 'critical') {
+    <span class="gali-chip__pulse" aria-hidden="true"></span>
+  }
+  @if (ctaLabel) {
+    <button type="button" class="gali-chip__cta" (click)="onCta()">{{ ctaLabel }}</button>
+  }
+</div>

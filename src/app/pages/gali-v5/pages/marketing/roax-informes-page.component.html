@@ -1,0 +1,249 @@
+<div class="roax-informes-page">
+  <dropi-titulos title="Informes ROAX" [breadcrumbs]="breadcrumbs" />
+
+  <!-- Header -->
+  <div class="ri-header">
+    <div class="ri-header__left">
+      <img class="ri-header__logo" [src]="dropiLogo" alt="roax" />
+      <div>
+        <span class="ri-header__period">{{ dateRange }}</span>
+        <span class="ri-header__agent">⚡ Gestionado por Roax · 2 skills activas</span>
+      </div>
+    </div>
+    <div class="ri-header__actions">
+      <button type="button" class="ri-btn ri-btn--ghost" (click)="goToMedir()">Ver P&L completo →</button>
+      <dropi-button-new label="Exportar" icon="pi-download" hierarchy="outline" [width]="110" />
+    </div>
+  </div>
+
+  <!-- ✦ GALI: ROAS Real vs Declarado — banner principal -->
+  <div class="gali-roas-insight">
+    <div class="gali-roas-insight__header">
+      <span class="gali-roas-insight__label">✦ Gali · Análisis ROAS Real vs ROAS Declarado</span>
+      <span class="gali-roas-insight__cause">{{ galiRoasInsight.causa }}</span>
+    </div>
+    <div class="gali-roas-insight__boxes">
+      <div class="roas-cmp-box roas-cmp-box--declared">
+        <span class="roas-cmp-box__lbl">Meta reporta</span>
+        <span class="roas-cmp-box__val">{{ galiRoasInsight.roasDeclarado }}</span>
+        <span class="roas-cmp-box__note">Atribuye ingresos de usuarios que habrían comprado igual</span>
+      </div>
+      <div class="roas-cmp-box roas-cmp-box--real">
+        <span class="roas-cmp-box__lbl">Gali calcula</span>
+        <span class="roas-cmp-box__val roas-cmp-box__val--accent">{{ galiRoasInsight.roasReal }}</span>
+        <span class="roas-cmp-box__note">Revenue confirmado en Dropi / inversión en pauta</span>
+      </div>
+      <div class="roas-cmp-box roas-cmp-box--gap">
+        <span class="roas-cmp-box__lbl">Diferencia</span>
+        <span class="roas-cmp-box__val roas-cmp-box__val--danger">{{ galiRoasInsight.gap }}</span>
+        <span class="roas-cmp-box__note">Sobreatribución de Meta</span>
+      </div>
+      <div class="roas-cmp-box roas-cmp-box--neto">
+        <span class="roas-cmp-box__lbl">Ganancia neta real</span>
+        <span class="roas-cmp-box__val roas-cmp-box__val--success">{{ galiRoasInsight.gananciaReal }}</span>
+        <span class="roas-cmp-box__note">vs {{ galiRoasInsight.presupuesto }} invertido</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI grid (8 métricas) -->
+  <div class="ri-kpi-grid">
+    @for (kpi of kpis; track kpi.label) {
+      <div class="ri-kpi">
+        <span class="ri-kpi__label">{{ kpi.label }}</span>
+        <strong class="ri-kpi__val" [class.ri-kpi__val--accent]="kpi.label.includes('Ganancia')">{{ kpi.value }}</strong>
+        <span class="ri-kpi__delta" [class.ri-kpi__delta--up]="kpi.trend === 'up'" [class.ri-kpi__delta--down]="kpi.trend === 'down'">
+          {{ kpi.trend === 'up' ? '↑' : '↓' }} {{ kpi.delta }}
+        </span>
+      </div>
+    }
+  </div>
+
+  <!-- Tendencia semanal — ROAS por día -->
+  <div class="ri-section">
+    <div class="ri-section__header">
+      <h3 class="ri-section__title">Tendencia semanal · ROAS Meta vs ROAS Real</h3>
+      <span class="ri-section__sub">Los dos números divergen — el real es el que importa para decisiones de escala</span>
+    </div>
+    <div class="ri-weekly-table">
+      <div class="ri-weekly-header">
+        <span>Día</span>
+        <span>Inversión</span>
+        <span>Conv.</span>
+        <span>ROAS Meta</span>
+        <span>ROAS Real</span>
+        <span>CTR</span>
+        <span>Barra</span>
+      </div>
+      @for (d of weeklyTrend; track d.dia) {
+        <div class="ri-weekly-row">
+          <span class="ri-weekly-row__dia">{{ d.dia }}</span>
+          <span class="ri-weekly-row__num">${{ d.inversion }}k</span>
+          <span class="ri-weekly-row__num">{{ d.conversiones }}</span>
+          <span class="ri-weekly-row__roas ri-weekly-row__roas--meta">{{ d.roas_meta }}x</span>
+          <span class="ri-weekly-row__roas ri-weekly-row__roas--real">{{ d.roas_real }}x</span>
+          <span class="ri-weekly-row__ctr" [class.ri-weekly-row__ctr--ok]="d.ctr >= 1.5">{{ d.ctr }}%</span>
+          <div class="ri-weekly-row__bars">
+            <div class="ri-bar ri-bar--meta" [style.width.%]="roas_bar_pct(d.roas_meta)"></div>
+            <div class="ri-bar ri-bar--real" [style.width.%]="roas_bar_pct(d.roas_real)"></div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Por creativo -->
+  <div class="ri-section">
+    <div class="ri-section__header">
+      <h3 class="ri-section__title">Rendimiento por creativo</h3>
+      <button type="button" class="ri-btn ri-btn--ghost" (click)="goToSkillEditor()">+ Nueva skill para creativo</button>
+    </div>
+    @for (c of creativos; track c.id) {
+      <div class="ri-creativo" [class.ri-creativo--pausado]="c.estado === 'pausado'">
+        <div class="ri-creativo__header">
+          <span class="ri-creativo__dot"
+            [class.ri-creativo__dot--on]="c.estado === 'activo'"
+            [class.ri-creativo__dot--off]="c.estado === 'pausado'">
+          </span>
+          <strong class="ri-creativo__nombre">{{ c.nombre }}</strong>
+          @if (c.estado === 'pausado') {
+            <span class="ri-creativo__badge ri-creativo__badge--pausa">Pausado por skill</span>
+          }
+          @if (c.roas >= 3.0) {
+            <span class="ri-creativo__badge ri-creativo__badge--escala">↑ Escalando</span>
+          }
+        </div>
+        <div class="ri-creativo__metrics">
+          <div class="ri-cm">
+            <span class="ri-cm__label">Inversión</span>
+            <span class="ri-cm__val">${{ c.inversion }}k</span>
+          </div>
+          <div class="ri-cm">
+            <span class="ri-cm__label">CTR</span>
+            <span class="ri-cm__val" [class.ri-cm__val--ok]="c.ctr >= 1.5" [class.ri-cm__val--warn]="c.ctr > 0 && c.ctr < 1.0">{{ c.ctr > 0 ? c.ctr + '%' : '—' }}</span>
+          </div>
+          <div class="ri-cm">
+            <span class="ri-cm__label">ROAS</span>
+            <span class="ri-cm__val" [class.ri-cm__val--ok]="c.roas >= 2.5">{{ c.roas > 0 ? c.roas + 'x' : '—' }}</span>
+          </div>
+          <div class="ri-cm">
+            <span class="ri-cm__label">Conv.</span>
+            <span class="ri-cm__val">{{ c.conversiones }}</span>
+          </div>
+          <div class="ri-cm">
+            <span class="ri-cm__label">Skill</span>
+            <span class="ri-cm__val ri-cm__val--skill">{{ c.skill ?? 'Sin skill' }}</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Costo waterfall -->
+  <div class="ri-section">
+    <div class="ri-section__header">
+      <h3 class="ri-section__title">Desglose de costos — Waterfall</h3>
+      <span class="ri-section__sub">De revenue bruto a ganancia neta, costo por costo</span>
+    </div>
+    <div class="ri-waterfall">
+      <div class="ri-wf-row ri-wf-row--revenue">
+        <span class="ri-wf-label">Revenue bruto</span>
+        <div class="ri-wf-bar"><div class="ri-wf-fill" style="width:100%"></div></div>
+        <span class="ri-wf-val">{{ costoWaterfall.revenue }}</span>
+      </div>
+      <div class="ri-wf-row ri-wf-row--cost">
+        <span class="ri-wf-label">Costo producto</span>
+        <div class="ri-wf-bar"><div class="ri-wf-fill" style="width:40%"></div></div>
+        <span class="ri-wf-val">{{ costoWaterfall.cogs }}</span>
+      </div>
+      <div class="ri-wf-row ri-wf-row--cost">
+        <span class="ri-wf-label">Pauta (Roax)</span>
+        <div class="ri-wf-bar"><div class="ri-wf-fill" style="width:20%"></div></div>
+        <span class="ri-wf-val">{{ costoWaterfall.inversion_pauta }}</span>
+      </div>
+      <div class="ri-wf-row ri-wf-row--cost">
+        <span class="ri-wf-label">Flete</span>
+        <div class="ri-wf-bar"><div class="ri-wf-fill" style="width:8%"></div></div>
+        <span class="ri-wf-val">{{ costoWaterfall.flete }}</span>
+      </div>
+      <div class="ri-wf-row ri-wf-row--risk">
+        <span class="ri-wf-label">Novedades</span>
+        <div class="ri-wf-bar"><div class="ri-wf-fill" style="width:3%"></div></div>
+        <span class="ri-wf-val">{{ costoWaterfall.novedades }}</span>
+      </div>
+      <div class="ri-wf-row ri-wf-row--risk">
+        <span class="ri-wf-label">Garantías</span>
+        <div class="ri-wf-bar"><div class="ri-wf-fill" style="width:1%"></div></div>
+        <span class="ri-wf-val">{{ costoWaterfall.garantias }}</span>
+      </div>
+      <div class="ri-wf-row ri-wf-row--net">
+        <span class="ri-wf-label">Ganancia neta</span>
+        <div class="ri-wf-bar"><div class="ri-wf-fill ri-wf-fill--net" style="width:27.8%"></div></div>
+        <strong class="ri-wf-val ri-wf-val--net">{{ costoWaterfall.ganancia_neta }} ({{ costoWaterfall.margen }})</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Impacto de Skills -->
+  <div class="ri-section">
+    <div class="ri-section__header">
+      <h3 class="ri-section__title">⚙ Impacto de Skills esta semana</h3>
+      <button type="button" class="ri-btn ri-btn--ghost" (click)="goToSkillEditor()">+ Nueva skill</button>
+    </div>
+    @for (s of skillImpact; track s.skill) {
+      <div class="ri-skill-impact" [class.ri-skill-impact--ok]="s.tipo === 'ok'" [class.ri-skill-impact--info]="s.tipo === 'info'">
+        <span class="ri-skill-impact__icon">{{ s.tipo === 'ok' ? '✓' : 'ℹ' }}</span>
+        <div class="ri-skill-impact__body">
+          <strong class="ri-skill-impact__nombre">{{ s.skill }}</strong>
+          <span class="ri-skill-impact__evento">{{ s.evento }}</span>
+        </div>
+        <span class="ri-skill-impact__resultado">{{ s.impacto }}</span>
+      </div>
+    }
+  </div>
+
+  <!-- Estado de campañas + Reglas -->
+  <div class="ri-two-col">
+    <div class="ri-section">
+      <h3 class="ri-section__title">Estado de campañas</h3>
+      <div class="health-list">
+        @for (h of healthIndicators; track h.label) {
+          <div class="health-row" [class]="getHealthClass(h.status)">
+            <div class="health-row__indicator"></div>
+            <span class="health-row__name">{{ h.label }}</span>
+            @if (h.status !== 'paused') {
+              <span class="health-row__stat">{{ h.roas }}x</span>
+              <span class="health-row__stat">CTR {{ h.ctr }}%</span>
+            }
+            @if (h.status === 'paused') {
+              <span class="health-row__paused">Pausada · skill activa</span>
+            }
+            <span class="health-row__status-badge" [class]="getHealthClass(h.status)">
+              {{ h.status === 'ok' ? '✓' : h.status === 'warning' ? '⚠ Revisar' : '— Pausa' }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="ri-section">
+      <h3 class="ri-section__title">Skills activas de Roax</h3>
+      <div class="rule-status-list">
+        @for (r of reglaActivas; track r.nombre) {
+          <div class="rule-status-row">
+            <span class="rule-status-row__icon">{{ r.icono }}</span>
+            <div class="rule-status-row__info">
+              <span class="rule-status-row__name">{{ r.nombre }}</span>
+              <span class="rule-status-row__meta">{{ r.ultimaEjecucion }} · {{ r.ejecuciones }} ejec.</span>
+            </div>
+            <span class="rule-status-dot"
+              [class.rule-status-dot--active]="r.estado === 'activa'"
+              [class.rule-status-dot--waiting]="r.estado === 'en_espera'">
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,79 @@
+<article class="cat" signalHighlight>
+  <header class="cat__head">
+    <div class="cat__head-meta">
+      <span class="cat__sparkle">✦</span>
+      <span class="cat__head-tag">Catálogo despertado</span>
+    </div>
+    <h1>Cada producto puede activar a Gali. Solo toca el <span class="cat__sparkle">✦</span>.</h1>
+    <p class="cat__intro">
+      Los datos LATAM de Dropi entran al cuadro: ventas reales, tendencia, ventana antes de saturación, ángulos que están funcionando. Sin salir de la tarjeta.
+    </p>
+  </header>
+
+  <section class="cat__grid">
+    <article *ngFor="let p of products()" class="cat__card" [class.is-awake]="awakenedId() === p.id" [attr.data-signal]="p.id === 'p2' ? 'sig-3' : null">
+      <div class="cat__card-front">
+        <div class="cat__card-image" [attr.data-cat]="p.categoria">
+          <span>{{ p.name.charAt(0) }}</span>
+        </div>
+        <div class="cat__card-body">
+          <span class="cat__card-cat">{{ p.categoria }} · {{ p.ciudad }}</span>
+          <strong class="cat__card-name">{{ p.name }}</strong>
+          <div class="cat__card-price">
+            <span class="cat__card-precio">{{ format(p.precio) }}</span>
+            <span class="cat__card-margen">{{ p.margen }}% margen</span>
+          </div>
+          <div class="cat__card-badges">
+            <span *ngFor="let b of p.badges">{{ b }}</span>
+          </div>
+        </div>
+        <button class="cat__awake-btn" (click)="toggleAwake(p.id)" [class.is-active]="awakenedId() === p.id" title="Despertar análisis Gali">
+          <span class="cat__sparkle">✦</span>
+        </button>
+      </div>
+
+      <div class="cat__card-awake" *ngIf="awakenedId() === p.id">
+        <header>
+          <span class="cat__sparkle">✦</span>
+          <span class="cat__awake-tag">Gali analizó este producto</span>
+          <button class="cat__awake-close" (click)="closeAwake()">×</button>
+        </header>
+
+        <div class="cat__awake-stats">
+          <div>
+            <span class="cat__awake-stat-val">{{ p.ventas_semana }}</span>
+            <span class="cat__awake-stat-key">ventas/sem en {{ p.ciudad }}</span>
+          </div>
+          <div>
+            <span class="cat__awake-stat-val cat__awake-up">+{{ p.tendencia_pct }}%</span>
+            <span class="cat__awake-stat-key">vs sem. anterior</span>
+          </div>
+          <div>
+            <span class="cat__awake-stat-val">{{ p.ventana_dias }}d</span>
+            <span class="cat__awake-stat-key">antes saturación</span>
+          </div>
+        </div>
+
+        <div class="cat__awake-angulos">
+          <h5>Ángulos que están vendiendo</h5>
+          <ol>
+            <li *ngFor="let a of p.angulos">
+              <span class="cat__angulo-rank">{{ a.porcentaje }}%</span>
+              <div>
+                <strong>{{ a.titulo }}</strong>
+                <span class="cat__angulo-tono">tono {{ a.tono }}</span>
+                <p *ngIf="a.hook" class="cat__angulo-hook">"{{ a.hook }}"</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="cat__awake-actions">
+          <button (click)="crearLanding(p)">📄 Crear landing con ángulo top</button>
+          <button (click)="generarAngulos(p)">🎨 Generar 3 creatives</button>
+          <button (click)="analizar(p)">✦ Analizar con Gali</button>
+        </div>
+      </div>
+    </article>
+  </section>
+</article>

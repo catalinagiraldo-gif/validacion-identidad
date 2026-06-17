@@ -1,0 +1,26 @@
+{
+  "clients": [
+    { "id": "12356", "firstName": "Kevin", "lastName": "Paternina", "phone": "3205123636", "email": "kevin@gmail.com", "marketing": true, "hasTag": true },
+    { "id": "12357", "firstName": "Diana", "lastName": "Aldaba", "phone": "3152034141", "email": "diana@gmail.com", "marketing": true, "hasTag": true },
+    { "id": "12358", "firstName": "Paola", "lastName": "Méndez", "phone": "3108845621", "email": "paola@gmail.com", "marketing": false, "hasTag": false },
+    { "id": "12359", "firstName": "Carlos", "lastName": "Ruiz", "phone": "3187654321", "email": "carlos.ruiz@gmail.com", "marketing": true, "hasTag": true },
+    { "id": "12360", "firstName": "Laura", "lastName": "Gómez", "phone": "3001234567", "email": "laura.gomez@hotmail.com", "marketing": true, "hasTag": false },
+    { "id": "12361", "firstName": "Andrés", "lastName": "Vega", "phone": "3129988776", "email": "andres.vega@gmail.com", "marketing": false, "hasTag": false },
+    { "id": "12362", "firstName": "María", "lastName": "Torres", "phone": "3145567890", "email": "maria.torres@gmail.com", "marketing": true, "hasTag": true },
+    { "id": "12363", "firstName": "Juan", "lastName": "Herrera", "phone": "3174455667", "email": "juan.herrera@gmail.com", "marketing": true, "hasTag": false },
+    { "id": "12364", "firstName": "Sandra", "lastName": "López", "phone": "3198876543", "email": "sandra.lopez@gmail.com", "marketing": false, "hasTag": true },
+    { "id": "12365", "firstName": "Felipe", "lastName": "Castro", "phone": "3112233445", "email": "felipe.castro@gmail.com", "marketing": true, "hasTag": true },
+    { "id": "12366", "firstName": "Camila", "lastName": "Restrepo", "phone": "3167788990", "email": "camila.restrepo@gmail.com", "marketing": true, "hasTag": false },
+    { "id": "12367", "firstName": "Diego", "lastName": "Salazar", "phone": "3134455667", "email": "diego.salazar@gmail.com", "marketing": false, "hasTag": false },
+    { "id": "12368", "firstName": "Valentina", "lastName": "Ospina", "phone": "3209988776", "email": "valentina.ospina@gmail.com", "marketing": true, "hasTag": true },
+    { "id": "12369", "firstName": "Sebastián", "lastName": "Muñoz", "phone": "3156677889", "email": "sebastian.munoz@gmail.com", "marketing": true, "hasTag": false },
+    { "id": "12370", "firstName": "Isabella", "lastName": "Ríos", "phone": "3183344556", "email": "isabella.rios@gmail.com", "marketing": false, "hasTag": true },
+    { "id": "12371", "firstName": "Mateo", "lastName": "Giraldo", "phone": "3125566778", "email": "mateo.giraldo@gmail.com", "marketing": true, "hasTag": true },
+    { "id": "12372", "firstName": "Daniela", "lastName": "Quintero", "phone": "3178899001", "email": "daniela.quintero@gmail.com", "marketing": true, "hasTag": false },
+    { "id": "12373", "firstName": "Nicolás", "lastName": "Cardona", "phone": "3141122334", "email": "nicolas.cardona@gmail.com", "marketing": false, "hasTag": false },
+    { "id": "12374", "firstName": "Alejandra", "lastName": "Montoya", "phone": "3105566778", "email": "alejandra.montoya@gmail.com", "marketing": true, "hasTag": true },
+    { "id": "12375", "firstName": "Santiago", "lastName": "Mejía", "phone": "3192233445", "email": "santiago.mejia@gmail.com", "marketing": true, "hasTag": false },
+    { "id": "12376", "firstName": "Juliana", "lastName": "Arango", "phone": "3164455667", "email": "juliana.arango@gmail.com", "marketing": false, "hasTag": true },
+    { "id": "12377", "firstName": "David", "lastName": "Peláez", "phone": "3137788990", "email": "david.pelaez@gmail.com", "marketing": true, "hasTag": true }
+  ]
+}

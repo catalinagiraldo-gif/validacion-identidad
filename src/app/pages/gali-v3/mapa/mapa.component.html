@@ -1,0 +1,86 @@
+<article class="mapa">
+  <header class="mapa__hero">
+    <div class="mapa__hero-meta">
+      <span class="mapa__sparkle">✦</span>
+      <span class="mapa__hero-tag">Mapa del negocio</span>
+      <span class="mapa__hero-shortcut">⌘M para abrir desde cualquier sitio</span>
+    </div>
+    <h1>Cómo se conecta tu Dropi.</h1>
+    <p class="mapa__intro">
+      Cada nodo es una sección. Las flechas son caminos comunes. El que pulsa es donde estuviste por última vez.
+      Toca cualquier nodo para entrar — Gali te lleva ahí con su contexto.
+    </p>
+    <div class="mapa__legend">
+      <span><span class="mapa__legend-dot mapa__legend-dot--ready"></span> Despertado por Gali</span>
+      <span><span class="mapa__legend-dot mapa__legend-dot--legacy"></span> Legacy con chip ✦</span>
+      <span><span class="mapa__legend-dot mapa__legend-dot--available"></span> Disponible</span>
+      <span><span class="mapa__legend-dot mapa__legend-dot--soon"></span> Próximamente</span>
+    </div>
+
+    <div class="mapa__edit-bar">
+      <button class="mapa__edit-toggle" [class.is-on]="editMode()" (click)="toggleEdit()" [attr.aria-pressed]="editMode()">
+        {{ editMode() ? '✓ Salir de edición' : '✎ Editar mapa' }}
+      </button>
+      <button *ngIf="editMode()" class="mapa__reset" (click)="resetOrder()">↺ Restaurar orden</button>
+      <span *ngIf="editMode()" class="mapa__edit-hint">💡 Arrastra nodos para reordenarlos o moverlos entre zonas</span>
+    </div>
+  </header>
+
+  <div class="mapa__here" *ngIf="activeNode() as n">
+    <span class="mapa__here-tag">Estuviste por última vez en</span>
+    <strong>{{ n.icon }} {{ n.label }}</strong>
+    <span class="mapa__here-sub">{{ n.subtitle }}</span>
+  </div>
+
+  <section *ngFor="let z of zonas()" class="mapa__zona" [attr.data-color]="z.color"
+           [class.is-drop-target]="editMode() && dragOverZone() === z.id"
+           (dragover)="onZoneDragOver($event, z.id)"
+           (drop)="onZoneDrop($event, z.id)">
+    <header class="mapa__zona-head">
+      <span class="mapa__zona-icon">{{ z.icon }}</span>
+      <div>
+        <h3>{{ z.label }}</h3>
+        <p>{{ z.descripcion }}</p>
+      </div>
+    </header>
+
+    <div class="mapa__nodos">
+      <button
+        *ngFor="let n of nodosFor(z.id); let i = index"
+        class="mapa__nodo"
+        [class.is-active]="isActive(n.id) && !editMode()"
+        [class.is-highlighted]="isHighlighted(n.id)"
+        [class.is-legacy]="n.estado === 'legacy'"
+        [class.is-soon]="n.estado === 'soon'"
+        [class.is-available]="n.estado === 'available'"
+        [class.is-edit-mode]="editMode()"
+        [class.is-dragging]="draggingNodeId() === n.id"
+        [class.is-drop-over]="dragOverZone() === z.id && dragOverIdx() === i"
+        [attr.data-color]="z.color"
+        [attr.draggable]="editMode() ? 'true' : null"
+        (click)="go(n.route, n.id, n.label)"
+        (mouseenter)="onHover(n.id)"
+        (mouseleave)="onHover(null)"
+        (focus)="onHover(n.id)"
+        (blur)="onHover(null)"
+        (dragstart)="onNodeDragStart($event, n.id, z.id, i)"
+        (dragover)="onNodeDragOver($event, z.id, i)"
+        (drop)="onDrop($event, z.id, i)"
+        (dragend)="onDragEnd()"
+      >
+        <span class="mapa__nodo-handle" *ngIf="editMode()" title="Arrastra para mover">⋮⋮</span>
+        <header>
+          <span class="mapa__nodo-icon">{{ n.icon }}</span>
+          <div>
+            <strong>{{ n.label }}</strong>
+            <span class="mapa__nodo-sub">{{ n.subtitle }}</span>
+          </div>
+          <span class="mapa__nodo-state-dot"></span>
+        </header>
+        <span class="mapa__nodo-kpi" *ngIf="n.kpi">{{ n.kpi }}</span>
+      </button>
+    </div>
+  </section>
+
+  <proximos-pasos contexto="mapa" titulo="Atajos del mapa"></proximos-pasos>
+</article>

@@ -1,0 +1,75 @@
+@import 'styles/gali-tokens';
+
+.pmr {
+  width: 64px;
+  height: 100%;
+  background: $gali-bg-surface;
+  border-right: 1px solid $gali-border-subtle;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 8px;
+  position: relative;
+  z-index: 5;
+  animation: pmr-in 400ms $gali-ease-out;
+
+  &__image {
+    width: 48px;
+    height: 48px;
+    border-radius: $gali-radius-input;
+    overflow: hidden;
+    background: $gali-bg-base;
+    border: 1px solid $gali-border-default;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    font-family: $gali-font-mono;
+    font-size: 9px;
+    letter-spacing: 0;
+    color: $gali-cyan;
+
+    &-letter {
+      line-height: 1.1;
+    }
+  }
+
+  &__name {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    color: $gali-text-muted;
+    letter-spacing: 0.04em;
+    max-height: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-top: 8px;
+  }
+
+  &__lock {
+    margin-top: auto;
+    font-size: 12px;
+    color: $gali-text-muted;
+  }
+}
+
+@keyframes pmr-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@include gali-reduced-motion {
+  .pmr { animation: none; }
+}

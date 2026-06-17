@@ -1,0 +1,35 @@
+@import 'styles/gali-v5-tokens';
+
+// Figma Menu-1 — gray-700 #32394D default; primary-500 active; white on rail active
+$nav-icon-gray: #32394d;
+
+@mixin nav-icon-shell {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  mask-image: var(--icon-url);
+  -webkit-mask-image: var(--icon-url);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  mask-mode: alpha; // Force alpha channel masking — fixes SVGs with overflow="visible"
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+@mixin nav-icon-default {
+  background-color: $nav-icon-gray;
+  filter: none;
+}
+
+@mixin nav-icon-active-white {
+  background-color: $white;
+  filter: none;
+}
+
+@mixin nav-icon-active-primary {
+  background-color: $primary-500;
+  filter: none;
+}

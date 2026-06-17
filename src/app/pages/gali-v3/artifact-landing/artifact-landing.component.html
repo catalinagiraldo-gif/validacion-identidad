@@ -1,0 +1,227 @@
+<article class="art">
+  <!-- Toolbar arriba -->
+  <header class="art__toolbar">
+    <div class="art__crumb">
+      <a routerLink="/gali-v3">Inicio</a>
+      <span>/</span>
+      <a *ngIf="project() as p" [routerLink]="['/gali-v3/proyecto', p.id]">{{ p.name }}</a>
+      <span>/</span>
+      <strong>{{ landingId() }}</strong>
+    </div>
+
+    <div class="art__versions">
+      <span class="art__version-tag">v{{ state().version }}</span>
+      <button *ngFor="let v of history().slice(0, 3); let i = index"
+              class="art__version-btn"
+              (click)="restoreVersion(v)"
+              [title]="'Restaurar v' + v.version">
+        v{{ v.version }}
+      </button>
+    </div>
+
+    <div class="art__actions">
+      <button class="art__action" (click)="togglePreview()">
+        {{ preview() === 'desktop' ? '📱 Mobile' : '🖥 Desktop' }}
+      </button>
+      <button class="art__action" (click)="saveVersion()">💾 Guardar versión</button>
+      <button class="art__action" (click)="generateVariation()">✦ Variación con Gali</button>
+      <button class="art__action art__action--primary" (click)="publish()">🚀 Publicar</button>
+    </div>
+  </header>
+
+  <!-- Paleta selector -->
+  <div class="art__paleta">
+    <span class="art__paleta-label">Ángulo · paleta</span>
+    <button [class.is-active]="state().paleta === 'mama'" (click)="setPaleta('mama')">🌸 Mamá / seguridad</button>
+    <button [class.is-active]="state().paleta === 'aspiracional'" (click)="setPaleta('aspiracional')">✨ Aspiracional / regalo</button>
+    <button [class.is-active]="state().paleta === 'racional'" (click)="setPaleta('racional')">⚙ Racional / control</button>
+    <span class="art__paleta-hint">✦ Click en cualquier texto de la landing para editarlo</span>
+  </div>
+
+  <!-- Landing preview -->
+  <div class="art__viewport" [class.is-mobile]="preview() === 'mobile'">
+    <div class="art__landing" [attr.data-paleta]="state().paleta">
+
+      <span class="art__badge"
+            [class.is-editing]="editing() === 'badge'"
+            (click)="startEdit('badge', state().badge)"
+            *ngIf="editing() !== 'badge'">
+        {{ state().badge }}
+      </span>
+      <input *ngIf="editing() === 'badge'"
+             class="art__edit art__edit--badge"
+             [value]="draft()"
+             (input)="draft.set($any($event.target).value)"
+             (keydown.enter)="commitEdit()"
+             (keydown.escape)="cancelEdit()"
+             (blur)="commitEdit()"
+             autofocus />
+
+      <h1 *ngIf="editing() !== 'headline'"
+          class="art__h1"
+          (click)="startEdit('headline', state().headline)">
+        {{ state().headline }}
+      </h1>
+      <textarea *ngIf="editing() === 'headline'"
+                class="art__edit art__edit--h1"
+                [value]="draft()"
+                (input)="draft.set($any($event.target).value)"
+                (keydown.enter)="$event.preventDefault(); commitEdit()"
+                (keydown.escape)="cancelEdit()"
+                (blur)="commitEdit()"
+                rows="2"
+                autofocus></textarea>
+
+      <p *ngIf="editing() !== 'subheadline'"
+         class="art__sub"
+         (click)="startEdit('subheadline', state().subheadline)">
+        {{ state().subheadline }}
+      </p>
+      <textarea *ngIf="editing() === 'subheadline'"
+                class="art__edit art__edit--sub"
+                [value]="draft()"
+                (input)="draft.set($any($event.target).value)"
+                (keydown.escape)="cancelEdit()"
+                (blur)="commitEdit()"
+                rows="2"
+                autofocus></textarea>
+
+      <div class="art__hero-img">
+        <span class="art__hero-emoji">🐕</span>
+        <span class="art__hero-tag">imagen producto · click para reemplazar</span>
+      </div>
+
+      <div class="art__hook"
+           [class.is-editing]="editing() === 'hook'"
+           (click)="editing() !== 'hook' && startEdit('hook', state().hook)"
+           *ngIf="editing() !== 'hook'">
+        <span class="art__hook-icon">✓</span>
+        {{ state().hook }}
+      </div>
+      <input *ngIf="editing() === 'hook'"
+             class="art__edit art__edit--hook"
+             [value]="draft()"
+             (input)="draft.set($any($event.target).value)"
+             (keydown.enter)="commitEdit()"
+             (keydown.escape)="cancelEdit()"
+             (blur)="commitEdit()"
+             autofocus />
+
+      <ul class="art__bullets">
+        <li (click)="startEdit('bullet1', state().bullet1)">
+          <span class="art__bullet-check">✓</span>
+          <span *ngIf="editing() !== 'bullet1'">{{ state().bullet1 }}</span>
+          <input *ngIf="editing() === 'bullet1'"
+                 class="art__edit art__edit--bullet"
+                 [value]="draft()"
+                 (input)="draft.set($any($event.target).value)"
+                 (keydown.enter)="commitEdit()"
+                 (keydown.escape)="cancelEdit()"
+                 (blur)="commitEdit()"
+                 autofocus />
+        </li>
+        <li (click)="startEdit('bullet2', state().bullet2)">
+          <span class="art__bullet-check">✓</span>
+          <span *ngIf="editing() !== 'bullet2'">{{ state().bullet2 }}</span>
+          <input *ngIf="editing() === 'bullet2'"
+                 class="art__edit art__edit--bullet"
+                 [value]="draft()"
+                 (input)="draft.set($any($event.target).value)"
+                 (keydown.enter)="commitEdit()"
+                 (keydown.escape)="cancelEdit()"
+                 (blur)="commitEdit()"
+                 autofocus />
+        </li>
+        <li (click)="startEdit('bullet3', state().bullet3)">
+          <span class="art__bullet-check">✓</span>
+          <span *ngIf="editing() !== 'bullet3'">{{ state().bullet3 }}</span>
+          <input *ngIf="editing() === 'bullet3'"
+                 class="art__edit art__edit--bullet"
+                 [value]="draft()"
+                 (input)="draft.set($any($event.target).value)"
+                 (keydown.enter)="commitEdit()"
+                 (keydown.escape)="cancelEdit()"
+                 (blur)="commitEdit()"
+                 autofocus />
+        </li>
+      </ul>
+
+      <div class="art__pricing">
+        <span class="art__precio-antes" (click)="startEdit('precioAntes', state().precioAntes)"
+              *ngIf="editing() !== 'precioAntes'">{{ state().precioAntes }}</span>
+        <input *ngIf="editing() === 'precioAntes'"
+               class="art__edit art__edit--inline"
+               [value]="draft()"
+               (input)="draft.set($any($event.target).value)"
+               (keydown.enter)="commitEdit()"
+               (keydown.escape)="cancelEdit()"
+               (blur)="commitEdit()"
+               autofocus />
+        <span class="art__precio" (click)="startEdit('precio', state().precio)"
+              *ngIf="editing() !== 'precio'">{{ state().precio }}</span>
+        <input *ngIf="editing() === 'precio'"
+               class="art__edit art__edit--inline"
+               [value]="draft()"
+               (input)="draft.set($any($event.target).value)"
+               (keydown.enter)="commitEdit()"
+               (keydown.escape)="cancelEdit()"
+               (blur)="commitEdit()"
+               autofocus />
+      </div>
+
+      <button class="art__cta-btn">
+        <span *ngIf="editing() !== 'cta'" (click)="$event.stopPropagation(); startEdit('cta', state().cta)">{{ state().cta }}</span>
+        <input *ngIf="editing() === 'cta'"
+               class="art__edit art__edit--inline-cta"
+               [value]="draft()"
+               (input)="draft.set($any($event.target).value)"
+               (keydown.enter)="commitEdit()"
+               (keydown.escape)="cancelEdit()"
+               (blur)="commitEdit()"
+               (click)="$event.stopPropagation()"
+               autofocus />
+      </button>
+      <span class="art__cta-sub" *ngIf="editing() !== 'ctaSub'"
+            (click)="startEdit('ctaSub', state().ctaSub)">{{ state().ctaSub }}</span>
+      <input *ngIf="editing() === 'ctaSub'"
+             class="art__edit art__edit--inline"
+             [value]="draft()"
+             (input)="draft.set($any($event.target).value)"
+             (keydown.enter)="commitEdit()"
+             (keydown.escape)="cancelEdit()"
+             (blur)="commitEdit()"
+             autofocus />
+
+      <blockquote class="art__testimonio">
+        <p *ngIf="editing() !== 'testimonio'" (click)="startEdit('testimonio', state().testimonio)">
+          {{ state().testimonio }}
+        </p>
+        <textarea *ngIf="editing() === 'testimonio'"
+                  class="art__edit art__edit--sub"
+                  [value]="draft()"
+                  (input)="draft.set($any($event.target).value)"
+                  (keydown.escape)="cancelEdit()"
+                  (blur)="commitEdit()"
+                  rows="2"
+                  autofocus></textarea>
+        <cite *ngIf="editing() !== 'autor'" (click)="startEdit('autor', state().autor)">— {{ state().autor }}</cite>
+        <input *ngIf="editing() === 'autor'"
+               class="art__edit art__edit--inline"
+               [value]="draft()"
+               (input)="draft.set($any($event.target).value)"
+               (keydown.enter)="commitEdit()"
+               (keydown.escape)="cancelEdit()"
+               (blur)="commitEdit()"
+               autofocus />
+      </blockquote>
+
+    </div>
+  </div>
+
+  <footer class="art__foot">
+    <span class="art__sparkle">✦</span>
+    Gali sigue conectado. Pídele en el chat de abajo que regenere cualquier bloque, o aplica una variación completa.
+  </footer>
+
+  <proximos-pasos contexto="landing-artifact"></proximos-pasos>
+</article>

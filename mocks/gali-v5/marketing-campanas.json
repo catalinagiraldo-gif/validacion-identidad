@@ -1,0 +1,10 @@
+{
+  "campaigns": [
+    { "id": "59300", "nombre": "Prueba", "estado": "Error", "fecha": "06/04/2026", "canal": "sms" },
+    { "id": "59298", "nombre": "Recuperación carrito Mayo", "estado": "Activa", "fecha": "12/05/2026", "canal": "sms" },
+    { "id": "59295", "nombre": "Promo Collar GPS", "estado": "Programada", "fecha": "20/05/2026", "canal": "email" },
+    { "id": "59290", "nombre": "Reactivación clientes", "estado": "Finalizada", "fecha": "01/05/2026", "canal": "email" },
+    { "id": "59288", "nombre": "Flash sale skincare", "estado": "Activa", "fecha": "18/05/2026", "canal": "sms" },
+    { "id": "59285", "nombre": "Bienvenida nuevos", "estado": "Pausada", "fecha": "10/05/2026", "canal": "email" }
+  ]
+}

@@ -1,0 +1,286 @@
+<!-- Mode bar — coherencia con el OS -->
+<gali-workspace-mode-bar
+  [objetivoActual]="38"
+  [objetivoMeta]="50"
+  [objetivoLabel]="'50 ventas/semana'"
+  [objetivoPeriodo]="'Sem 3 de 4'"
+/>
+
+<!-- Saved success overlay -->
+@if (saved()) {
+  <div class="se-saved">
+    <div class="se-saved__card">
+      <span class="se-saved__icon">✓</span>
+      <p class="se-saved__text">Skill activada. Gali empezará a monitorear inmediatamente.</p>
+    </div>
+  </div>
+}
+
+<div class="se">
+
+  <!-- Header -->
+  <div class="se__header">
+    <div class="se__header-left">
+      <button type="button" class="se__back" (click)="cancel()">← Mis skills</button>
+      <div class="se__title-block">
+        <span class="se__eyebrow">NUEVA SKILL</span>
+        <h1 class="se__title">{{ draft().nombre || 'Sin nombre' }}</h1>
+      </div>
+    </div>
+    <div class="se__header-actions">
+      <button type="button" class="se__btn se__btn--ghost" (click)="cancel()">Cancelar</button>
+      <button type="button" class="se__btn se__btn--primary" (click)="activateSkill()">
+        ✓ Activar skill
+      </button>
+    </div>
+  </div>
+
+  <!-- Body: 2 columns -->
+  <div class="se__body">
+
+    <!-- LEFT: Configurator -->
+    <div class="se__left">
+
+      <!-- Nombre -->
+      <div class="se__section">
+        <label class="se__label">Nombre de la skill</label>
+        <input
+          type="text"
+          class="se__input"
+          placeholder="Ej: Auto-pausa si CTR cae en campaña principal"
+          [value]="draft().nombre"
+          (input)="onNombreInput($event)" />
+      </div>
+
+      <!-- Agente -->
+      <div class="se__section">
+        <label class="se__label">Agente responsable</label>
+        <div class="se__agent-grid">
+          @for (ag of agentOptions; track ag.id) {
+            <button
+              type="button"
+              class="se__agent-btn"
+              [class.se__agent-btn--selected]="draft().agente === ag.id"
+              [style.--agent-color]="ag.color"
+              (click)="updateField('agente', ag.id)">
+              <span class="se__agent-dot" [style.background]="ag.color"></span>
+              <span class="se__agent-name">{{ ag.label }}</span>
+              <span class="se__agent-sub">{{ ag.sublabel }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- TRIGGER -->
+      <div class="se__section se__block se__block--trigger">
+        <span class="se__block-tag">TRIGGER</span>
+        <p class="se__block-title">¿Cuándo se activa?</p>
+
+        <!-- Trigger type tabs -->
+        <div class="se__trigger-tabs">
+          <button type="button"
+            class="se__trigger-tab"
+            [class.se__trigger-tab--active]="draft().triggerType === 'tiempo'"
+            (click)="onTriggerTypeChange('tiempo')">⏱ Por tiempo</button>
+          <button type="button"
+            class="se__trigger-tab"
+            [class.se__trigger-tab--active]="draft().triggerType === 'evento'"
+            (click)="onTriggerTypeChange('evento')">⚡ Por evento</button>
+          <button type="button"
+            class="se__trigger-tab"
+            [class.se__trigger-tab--active]="draft().triggerType === 'umbral'"
+            (click)="onTriggerTypeChange('umbral')">📊 Por umbral</button>
+        </div>
+
+        @if (draft().triggerType === 'tiempo') {
+          <div class="se__row">
+            <label class="se__sublabel">Verificar</label>
+            <select class="se__select" [value]="draft().triggerInterval" (change)="onIntervalChange($event)">
+              @for (iv of timeIntervals; track iv) {
+                <option [value]="iv">{{ iv }}</option>
+              }
+            </select>
+          </div>
+        }
+
+        @if (draft().triggerType === 'evento') {
+          <div class="se__row">
+            <label class="se__sublabel">Cuando ocurra</label>
+            <select class="se__select" [value]="draft().triggerEvent" (change)="onEventChange($event)">
+              @for (ev of eventOptions(); track ev) {
+                <option [value]="ev">{{ ev }}</option>
+              }
+            </select>
+          </div>
+        }
+
+        @if (draft().triggerType === 'umbral') {
+          <div class="se__row">
+            <label class="se__sublabel">Primera vez que</label>
+            <select class="se__select" [value]="draft().conditions[0]?.metric" (change)="onCondMetricChange(0, $event)">
+              @for (m of metrics(); track m) {
+                <option [value]="m">{{ m }}</option>
+              }
+            </select>
+            <span class="se__sublabel">supera el valor definido en la condición</span>
+          </div>
+        }
+      </div>
+
+      <!-- CONDITIONS -->
+      <div class="se__section se__block se__block--condition">
+        <div class="se__block-header">
+          <div>
+            <span class="se__block-tag">CONDICIÓN</span>
+            <p class="se__block-title">¿Cuándo es verdad?</p>
+          </div>
+          <button type="button" class="se__add-btn" (click)="addCondition()">+ Añadir condición</button>
+        </div>
+
+        @for (cond of draft().conditions; track cond; let i = $index) {
+          @if (i > 0) {
+            <div class="se__conjunction-row">
+              <select class="se__select se__select--sm" [value]="cond.conjunction ?? 'AND'" (change)="onCondConjChange(i, $event)">
+                <option value="AND">Y también (AND)</option>
+                <option value="OR">O bien (OR)</option>
+              </select>
+            </div>
+          }
+          <div class="se__cond-row">
+            <select class="se__select" [value]="cond.metric" (change)="onCondMetricChange(i, $event)">
+              @for (m of metrics(); track m) {
+                <option [value]="m">{{ m }}</option>
+              }
+            </select>
+            <select class="se__select se__select--xs" [value]="cond.operator" (change)="onCondOperatorChange(i, $event)">
+              <option value="<">&lt;</option>
+              <option value=">">&gt;</option>
+              <option value="≥">≥</option>
+              <option value="≤">≤</option>
+              <option value="=">=</option>
+            </select>
+            <input type="text" class="se__input se__input--sm" placeholder="valor"
+              [value]="cond.value" (input)="onCondValueInput(i, $event)" />
+            <input type="text" class="se__input se__input--sm" placeholder="por ej: 48h"
+              [value]="cond.duration" (input)="onCondDurationInput(i, $event)" />
+            @if (i > 0) {
+              <button type="button" class="se__remove-btn" (click)="removeCondition(i)">✕</button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- ACTION -->
+      <div class="se__section se__block se__block--action">
+        <span class="se__block-tag">ACCIÓN</span>
+        <p class="se__block-title">¿Qué hace Gali?</p>
+        <select class="se__select se__select--full" [value]="draft().action" (change)="onActionChange($event)">
+          @for (ac of actions(); track ac.id) {
+            <option [value]="ac.id">{{ ac.label }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- NOTIFICATION -->
+      <div class="se__section se__block se__block--notif">
+        <span class="se__block-tag">NOTIFICACIÓN</span>
+        <p class="se__block-title">¿Qué aviso recibes?</p>
+        <input type="text" class="se__input"
+          placeholder="Mensaje que verás cuando la skill se ejecute"
+          [value]="draft().notification"
+          (input)="onNotificationInput($event)" />
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Live preview -->
+    <div class="se__right">
+      <div class="se__preview">
+        <div class="se__preview-header">
+          <span class="se__preview-eyebrow">PREVIEW EN VIVO</span>
+          <span class="se__preview-agent" [style.color]="agentColor()">{{ agentLabel() }}</span>
+        </div>
+
+        <!-- Pipeline visual -->
+        <div class="se__pipeline">
+          <!-- Trigger -->
+          <div class="se__pipe-step">
+            <div class="se__pipe-label">TRIGGER</div>
+            <div class="se__pipe-block se__pipe-block--trigger">
+              <span class="se__pipe-icon">⏱</span>
+              <span class="se__pipe-text">{{ pipelineSummary().trigger }}</span>
+            </div>
+          </div>
+          <div class="se__pipe-arrow">→</div>
+
+          <!-- Condition -->
+          <div class="se__pipe-step">
+            <div class="se__pipe-label">CONDICIÓN</div>
+            <div class="se__pipe-block se__pipe-block--cond">
+              <span class="se__pipe-icon">📊</span>
+              <span class="se__pipe-text">{{ pipelineSummary().condition }}</span>
+            </div>
+          </div>
+          <div class="se__pipe-arrow">→</div>
+
+          <!-- Action -->
+          <div class="se__pipe-step">
+            <div class="se__pipe-label">ACCIÓN</div>
+            <div class="se__pipe-block se__pipe-block--action">
+              <span class="se__pipe-icon">⚡</span>
+              <span class="se__pipe-text">{{ pipelineSummary().action }}</span>
+            </div>
+          </div>
+          <div class="se__pipe-arrow">→</div>
+
+          <!-- Notification -->
+          <div class="se__pipe-step">
+            <div class="se__pipe-label">NOTIFICACIÓN</div>
+            <div class="se__pipe-block se__pipe-block--notif">
+              <span class="se__pipe-icon">🔔</span>
+              <span class="se__pipe-text">{{ pipelineSummary().notification }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info boxes -->
+        <div class="se__preview-info">
+          <div class="se__info-row">
+            <span class="se__info-label">Agente</span>
+            <span class="se__info-val" [style.color]="agentColor()">{{ draft().agente | uppercase }}</span>
+          </div>
+          <div class="se__info-row">
+            <span class="se__info-label">Tipo de trigger</span>
+            <span class="se__info-val">{{ draft().triggerType }}</span>
+          </div>
+          <div class="se__info-row">
+            <span class="se__info-label">Condiciones</span>
+            <span class="se__info-val">{{ draft().conditions.length }}</span>
+          </div>
+          <div class="se__info-row">
+            <span class="se__info-label">Estado inicial</span>
+            <span class="se__info-val se__info-val--ok">● Activa al guardar</span>
+          </div>
+        </div>
+
+        <!-- Marketplace templates -->
+        <div class="se__preview-mkt">
+          <p class="se__preview-mkt-title">Plantillas similares del marketplace</p>
+          <div class="se__mkt-card">
+            <strong>Auto-pausa CTR bajo</strong>
+            <span>7.2k usos · Roax</span>
+          </div>
+          <div class="se__mkt-card">
+            <strong>Escalado ROAS automático</strong>
+            <span>4.5k usos · Roax</span>
+          </div>
+          <div class="se__mkt-card">
+            <strong>Smart routing novedad</strong>
+            <span>3.1k usos · Vigilante</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

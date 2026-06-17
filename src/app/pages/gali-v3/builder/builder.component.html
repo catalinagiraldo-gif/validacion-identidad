@@ -1,0 +1,227 @@
+<article class="builder">
+  <!-- WF-8: entrada chat-first -->
+  <section class="builder__chat-entry">
+    <header class="builder__head builder__head--compact">
+      <div class="builder__head-meta">
+        <span class="builder__sparkle">✦</span>
+        <span class="builder__head-tag">Recetas</span>
+      </div>
+      <h1>Cuéntame qué quieres que pase solo</h1>
+      <p class="builder__intro">
+        Gali arma la receta. Tú la revisas antes de activar. El canvas de nodos es modo revisión — no el punto de entrada.
+      </p>
+    </header>
+    <div class="builder__chat-box">
+      <textarea rows="3" placeholder="Cuando llegue un pedido de Bogotá, confírmalo automáticamente si tengo más de $50.000 en mi wallet…"></textarea>
+      <div class="builder__chat-examples">
+        <span>Ejemplos:</span>
+        <button type="button">Si novedad &gt; 8%, alertar WhatsApp</button>
+        <button type="button">Auto-pausa CTR bajo 1%</button>
+        <button type="button">Reporte semanal a WhatsApp</button>
+      </div>
+      <div class="builder__chat-actions">
+        <button type="button" class="builder__chat-cta">✦ Armar receta con Gali</button>
+        <button type="button" class="builder__chat-toggle" (click)="showNodeCanvas.set(!showNodeCanvas())">
+          {{ showNodeCanvas() ? 'Ocultar nodos' : 'Ver como nodos →' }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="builder__layout" *ngIf="showNodeCanvas()">
+    <header class="builder__head builder__head--review">
+      <span class="builder__mono-tag">Modo revisión · receta armada</span>
+      <p>Confirma triggers y acciones antes de activar. Paleta abajo para ajustes finos.</p>
+    </header>
+    <!-- Sidebar: tus flows + paleta -->
+    <aside class="builder__sidebar">
+      <header class="builder__sidebar-head">
+        <span class="builder__mono-tag">Tus flujos</span>
+        <button class="builder__add" (click)="createBlank()">+ Nuevo</button>
+      </header>
+      <ul class="builder__flows">
+        <li *ngFor="let f of flows()"
+            (click)="selectFlow(f.id)"
+            [class.is-active]="activeFlowId() === f.id">
+          <span class="builder__flow-dot"></span>
+          <div>
+            <strong>{{ f.name }}</strong>
+            <span>{{ f.nodes.length }} bloques</span>
+          </div>
+        </li>
+      </ul>
+
+      <header class="builder__sidebar-head builder__palette-head">
+        <span class="builder__mono-tag">Paleta de bloques</span>
+      </header>
+      <nav class="builder__palette-tabs">
+        <button [class.is-active]="selectedCategory() === 'triggers'" (click)="selectedCategory.set('triggers')">Triggers</button>
+        <button [class.is-active]="selectedCategory() === 'actions'" (click)="selectedCategory.set('actions')">Acciones</button>
+        <button [class.is-active]="selectedCategory() === 'conditions'" (click)="selectedCategory.set('conditions')">Lógica</button>
+        <button [class.is-active]="selectedCategory() === 'api'" (click)="selectedCategory.set('api')">
+          <span aria-hidden="true">⛁</span> API
+        </button>
+      </nav>
+      <ul class="builder__palette" *ngIf="selectedCategory() !== 'api'">
+        <li *ngFor="let b of (selectedCategory() === 'triggers' ? catalog.triggers : selectedCategory() === 'actions' ? catalog.actions : catalog.conditions)"
+            (click)="addBlock(b.id)"
+            draggable="true"
+            (dragstart)="onPaletteDragStart($event, b.id)"
+            (dragend)="onDragEnd()"
+            class="builder__palette-item"
+            [attr.data-color]="b.color">
+          <span class="builder__palette-icon">{{ b.icon }}</span>
+          <span class="builder__palette-label">{{ b.label }}</span>
+          <span class="builder__palette-add" title="Click o arrastra al canvas">⋮⋮</span>
+        </li>
+      </ul>
+
+      <!-- API blocks: endpoints documentados como bloques arrastrables (Fase 3) -->
+      <ul class="builder__palette builder__palette--api" *ngIf="selectedCategory() === 'api'">
+        <li *ngFor="let api of catalog.api_blocks || []"
+            (click)="addApiBlock(api.id)"
+            draggable="true"
+            (dragstart)="onPaletteDragStart($event, api.id)"
+            (dragend)="onDragEnd()"
+            class="builder__palette-item builder__palette-item--api"
+            [attr.data-color]="api.color">
+          <span class="builder__palette-icon">{{ api.icon }}</span>
+          <div class="builder__palette-body">
+            <span class="builder__palette-label">{{ api.label }}</span>
+            <code class="builder__palette-endpoint">{{ api.endpoint }}</code>
+            <span class="builder__palette-meta">
+              <em>{{ api.auth }}</em>
+              <em>{{ api.rate_limit }}</em>
+              <em *ngIf="api.anonymity_threshold">K≥{{ api.anonymity_threshold }}</em>
+            </span>
+          </div>
+        </li>
+      </ul>
+
+      <p class="builder__palette-hint" *ngIf="selectedCategory() !== 'api'">
+        💡 Arrastra al canvas para insertar entre bloques
+      </p>
+      <p class="builder__palette-hint" *ngIf="selectedCategory() === 'api'">
+        ⛁ APIs de Dropi expuestas como bloques. Rate limit por usuario · K-anonymity en datos comunidad.
+      </p>
+    </aside>
+
+    <!-- Canvas del flow -->
+    <section class="builder__canvas">
+      <header class="builder__canvas-head" *ngIf="activeFlow()">
+        <div>
+          <h2>{{ activeFlow()?.name }}</h2>
+          <p>{{ activeFlow()?.description || 'Sin descripción' }}</p>
+        </div>
+        <div class="builder__canvas-actions">
+          <button
+            type="button"
+            class="builder__share-recipe"
+            (click)="compartirRecipe()"
+            [disabled]="!activeFlow()?.nodes?.length"
+            title="Publicar recipe al marketplace de la comunidad">
+            <span aria-hidden="true">✦</span> Compartir recipe
+          </button>
+          <button
+            class="builder__run"
+            (click)="execute()"
+            [disabled]="isExecuting() || !activeFlow()?.nodes?.length"
+          >
+            <span *ngIf="!isExecuting()">▶ Ejecutar</span>
+            <span *ngIf="isExecuting()">● Ejecutando...</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Toast post-compartir recipe -->
+      <div *ngIf="recipeCompartidaToast()" class="builder__toast" role="status">
+        <span class="builder__toast-icon">✦</span>
+        <div class="builder__toast-body">
+          <strong>Recipe enviada al marketplace</strong>
+          <span>Aparecerá en /mercado tab "Plantillas" como "{{ activeFlow()?.name }}". Otros dropshippers podrán instalarla.</span>
+        </div>
+        <a routerLink="/gali-v3/mercado" [queryParams]="{ tab: 'plantillas' }" class="builder__toast-cta">Ver en mercado →</a>
+      </div>
+
+      <div class="builder__graph" *ngIf="activeFlow() as flow"
+           (dragover)="onCanvasDragOver($event)"
+           (drop)="onCanvasDrop($event)">
+        <div class="builder__empty" *ngIf="flow.nodes.length === 0"
+             (dragover)="onSlotDragOver($event, 0)"
+             (drop)="onSlotDrop($event, 0)"
+             [class.is-drop-target]="dragOverIndex() === 0">
+          <span class="builder__sparkle">✦</span>
+          <p>Arrastra un trigger aquí, o click en la paleta.</p>
+        </div>
+
+        <ol class="builder__nodes" *ngIf="flow.nodes.length">
+          <!-- Drop slot inicial -->
+          <li class="builder__drop-slot"
+              [class.is-active]="dragOverIndex() === 0"
+              (dragover)="onSlotDragOver($event, 0)"
+              (dragleave)="onSlotDragLeave()"
+              (drop)="onSlotDrop($event, 0)">
+            <span class="builder__drop-hint">+ insertar aquí</span>
+          </li>
+
+          <ng-container *ngFor="let n of flow.nodes; let i = index; let last = last">
+            <li class="builder__node"
+                draggable="true"
+                (dragstart)="onNodeDragStart($event, n.id, i, n.type, n.blockId)"
+                (dragend)="onDragEnd()"
+                [class.is-dragging]="draggingId() === n.id"
+                [attr.data-type]="n.type"
+                [attr.data-color]="n.color">
+              <header>
+                <span class="builder__node-handle" title="Arrastra para reordenar">⋮⋮</span>
+                <span class="builder__node-icon">{{ n.icon }}</span>
+                <div>
+                  <span class="builder__node-type">{{ n.type === 'trigger' ? 'CUANDO' : n.type === 'action' ? 'ENTONCES' : 'SI' }}</span>
+                  <strong>{{ n.label }}</strong>
+                </div>
+                <button class="builder__node-x" (click)="removeBlock(n.id)" aria-label="Quitar">×</button>
+              </header>
+              <svg *ngIf="!last" class="builder__connector-svg" viewBox="0 0 80 56" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M 40 0 C 40 24, 40 32, 40 56" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <circle cx="40" cy="56" r="3" fill="currentColor"/>
+              </svg>
+            </li>
+
+            <!-- Drop slot entre nodos / al final -->
+            <li class="builder__drop-slot"
+                [class.is-active]="dragOverIndex() === (i + 1)"
+                (dragover)="onSlotDragOver($event, i + 1)"
+                (dragleave)="onSlotDragLeave()"
+                (drop)="onSlotDrop($event, i + 1)">
+              <span class="builder__drop-hint">+ insertar aquí</span>
+            </li>
+          </ng-container>
+        </ol>
+
+        <div class="builder__execution" *ngIf="executionLog().length">
+          <header>
+            <span class="builder__sparkle">✦</span>
+            <span class="builder__mono-tag">Ejecución en vivo</span>
+          </header>
+          <pre class="builder__execution-log">
+            <span *ngFor="let line of executionLog()">{{ line }}
+</span>
+          </pre>
+
+          <!-- ✦ Cross-view: el output de la recipe se puede guardar como bloque custom -->
+          <footer class="builder__output-bloque">
+            <div>
+              <strong>¿Quieres ver el resultado de esta recipe como un bloque en tu lienzo?</strong>
+              <span>Gali convierte la salida en un bloque custom que vive en el Inicio y se actualiza con cada ejecución.</span>
+            </div>
+            <button type="button" class="builder__output-cta" (click)="guardarOutputComoBloque()">
+              <span aria-hidden="true">✦</span> Guardar como bloque custom →
+            </button>
+          </footer>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <proximos-pasos contexto="builder"></proximos-pasos>
+</article>

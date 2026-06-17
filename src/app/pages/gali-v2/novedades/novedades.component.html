@@ -1,0 +1,123 @@
+<div class="nv">
+  <header class="nv__pulso">
+    <div class="nv__crumbs" aria-label="Dónde estás">
+      <a class="nv__crumbs-link" [routerLink]="['/gali-v2']">Lienzo</a>
+      <span class="nv__crumbs-sep">/</span>
+      <span class="nv__crumbs-here">Novedades</span>
+    </div>
+    <div class="nv__input">
+      <gali-header-input contextoVista="novedades"></gali-header-input>
+    </div>
+    <span class="nv__health" *ngIf="enProceso().length > 0">
+      <gali-mark state="memoria" size="xs"></gali-mark>
+      <span>{{ enProceso().length }} en proceso</span>
+    </span>
+  </header>
+
+  <main class="nv__main">
+    <header class="nv__head">
+      <span class="nv__head-mono">triage de novedades</span>
+      <h1 class="nv__title">
+        Hoy tienes <em>{{ criticas().length }}</em> cosas<br/>que sólo tú puedes decidir.
+      </h1>
+      <p class="nv__sub" *ngIf="perdidaPotencial() > 0">
+        Lo demás — {{ enProceso().length }} en proceso — lo estoy manejando.
+        Ya resolví {{ resueltas().length }} hoy.
+      </p>
+    </header>
+
+    <!-- ZONA 1 — Críticas -->
+    <section class="nv__zona nv__zona--critica" *ngIf="criticas().length > 0">
+      <header class="nv__zona-head">
+        <gali-mark state="alerta" size="sm"></gali-mark>
+        <span class="nv__zona-mono">Críticas — necesitan tu decisión</span>
+        <span class="nv__zona-count">{{ criticas().length }}</span>
+        <span class="nv__zona-rule"></span>
+      </header>
+
+      <ul class="nv__list">
+        <li
+          *ngFor="let n of criticas()"
+          class="nv__item nv__item--critica"
+          [class.nv__item--open]="expandida() === n.id">
+          <button class="nv__item-row" type="button" (click)="expandir(n.id)">
+            <span class="nv__item-tipo">{{ n.tipo.replace('_', ' ') }}</span>
+            <div class="nv__item-body">
+              <strong class="nv__item-cliente">{{ n.cliente }} · {{ n.ciudad }}</strong>
+              <span class="nv__item-pedido">{{ n.pedido_id }}</span>
+            </div>
+            <span class="nv__item-monto" *ngIf="n.monto_riesgo_cop">
+              ${{ n.monto_riesgo_cop | number:'1.0-0' }}
+            </span>
+            <span class="nv__item-caret">{{ expandida() === n.id ? '−' : '+' }}</span>
+          </button>
+
+          <div class="nv__item-detalle" *ngIf="expandida() === n.id">
+            <p class="nv__item-detalle-gali">
+              <gali-mark state="propuesta" size="xs"></gali-mark>
+              <span>{{ n.accion_gali }}</span>
+            </p>
+            <div class="nv__item-actions">
+              <button class="nv__btn nv__btn--primary" (click)="aprobarAccionGali(n)">
+                Aprobar acción de Gali
+              </button>
+              <button class="nv__btn" (click)="manejarYo(n)">Manejar yo</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ZONA 2 — En proceso -->
+    <section class="nv__zona nv__zona--proceso" *ngIf="enProceso().length > 0">
+      <header class="nv__zona-head">
+        <gali-mark state="actuando" size="sm"></gali-mark>
+        <span class="nv__zona-mono">Gali las está manejando</span>
+        <span class="nv__zona-count">{{ enProceso().length }}</span>
+        <span class="nv__zona-rule"></span>
+      </header>
+
+      <ul class="nv__proceso-list">
+        <li *ngFor="let n of enProceso()" class="nv__proceso-item">
+          <span class="nv__proceso-dot"></span>
+          <div class="nv__proceso-body">
+            <span class="nv__proceso-meta">
+              {{ n.tipo.replace('_', ' ') }} · {{ n.pedido_id }} · {{ n.ciudad }}
+            </span>
+            <p class="nv__proceso-accion">{{ n.accion_gali }}</p>
+          </div>
+          <span class="nv__proceso-eta">{{ n.eta }}</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ZONA 3 — Resueltas (background, ticker style) -->
+    <section class="nv__zona nv__zona--resueltas" *ngIf="resueltas().length > 0">
+      <header class="nv__zona-head nv__zona-head--collapsible" (click)="toggleResueltas()">
+        <gali-mark state="memoria" size="xs"></gali-mark>
+        <span class="nv__zona-mono">Ya resueltas hoy</span>
+        <span class="nv__zona-count nv__zona-count--soft">{{ resueltas().length }}</span>
+        <span class="nv__zona-rule"></span>
+        <span class="nv__zona-toggle">{{ resueltasExpandidas() ? '−' : '+' }}</span>
+      </header>
+
+      <ul class="nv__resueltas-list" *ngIf="resueltasExpandidas()">
+        <li *ngFor="let n of resueltas()" class="nv__resuelta-item">
+          <span class="nv__resuelta-check">✓</span>
+          <span class="nv__resuelta-meta">{{ n.pedido_id }} · {{ n.cliente }} · {{ n.ciudad }}</span>
+          <span class="nv__resuelta-accion">{{ n.accion_gali }}</span>
+        </li>
+      </ul>
+
+      <p class="nv__resueltas-ticker" *ngIf="!resueltasExpandidas()">
+        <span *ngFor="let n of resueltas(); let i = index" class="nv__resueltas-ticker-item">
+          ✓ {{ n.pedido_id }}<span *ngIf="i < resueltas().length - 1"> · </span>
+        </span>
+      </p>
+    </section>
+
+    <p *ngIf="novedades().length === 0" class="nv__loading">cargando novedades…</p>
+  </main>
+
+  <gali-response-overlay></gali-response-overlay>
+</div>

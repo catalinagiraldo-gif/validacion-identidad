@@ -1,0 +1,373 @@
+@import 'styles/gali-tokens';
+
+.lc {
+  background: $gali-bg-surface;
+  border: 1px solid $gali-border-default;
+  border-radius: $gali-radius-card;
+  overflow: hidden;
+  box-shadow: $gali-shadow-card-hover;
+  animation: lc-in 500ms $gali-ease-spring;
+
+  &__chrome {
+    display: grid;
+    grid-template-columns: 80px 1fr 100px;
+    align-items: center;
+    padding: 10px 14px;
+    background: rgba(15, 15, 18, 0.6);
+    border-bottom: 1px solid $gali-border-subtle;
+  }
+
+  &__chrome-dots {
+    display: flex;
+    gap: 6px;
+
+    span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: $gali-border-default;
+
+      &:nth-child(1) { background: #E85D5D; }
+      &:nth-child(2) { background: #f4d03d; }
+      &:nth-child(3) { background: $gali-success; }
+    }
+  }
+
+  &__chrome-url {
+    font-family: $gali-font-mono;
+    font-size: 11px;
+    color: $gali-text-secondary;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 4px 12px;
+    border-radius: $gali-radius-pill;
+    border: 1px solid $gali-border-subtle;
+  }
+
+  &__chrome-meta {
+    text-align: right;
+  }
+
+  &__chrome-tag {
+    font-family: $gali-font-mono;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: $gali-cyan;
+    padding: 3px 8px;
+    background: rgba(78, 205, 196, 0.12);
+    border: 1px solid rgba(78, 205, 196, 0.24);
+    border-radius: 4px;
+  }
+
+  &__page {
+    background: linear-gradient(180deg, #FAF7F0 0%, #ffffff 30%, #ffffff 100%);
+    color: #1A1A1F;
+    padding: 0;
+  }
+
+  &__hero {
+    padding: 40px 32px 32px;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at top, rgba(244, 154, 61, 0.10) 0%, transparent 60%),
+      linear-gradient(180deg, #FFF4E0 0%, #FAF7F0 100%);
+  }
+
+  &__urgency {
+    display: inline-block;
+    background: #f49a3d;
+    color: white;
+    font-family: $gali-font-mono;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  &__headline {
+    font-family: $gali-font-display;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #1A1A1F;
+    margin: 0 0 12px;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    cursor: text;
+    position: relative;
+    transition: all 200ms ease;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-left: -8px;
+    margin-right: -8px;
+
+    &:hover {
+      background: rgba(244, 154, 61, 0.08);
+      outline: 1px dashed rgba(244, 154, 61, 0.5);
+    }
+  }
+
+  &__subheadline {
+    font-family: $gali-font-body;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #555;
+    margin: 0 0 28px;
+    cursor: text;
+    padding: 2px 8px;
+    margin-left: -8px;
+    margin-right: -8px;
+    border-radius: 6px;
+    transition: all 200ms ease;
+
+    &:hover {
+      background: rgba(244, 154, 61, 0.06);
+      outline: 1px dashed rgba(244, 154, 61, 0.4);
+    }
+  }
+
+  &__hero-product {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__cta {
+    background: #1A1A1F;
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 999px;
+    font-family: $gali-font-body;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 200ms ease;
+    letter-spacing: -0.005em;
+
+    &:hover {
+      background: #f49a3d;
+      transform: scale(1.04);
+    }
+
+    &--final {
+      background: #f49a3d;
+      font-size: 18px;
+      padding: 18px 40px;
+      box-shadow: 0 8px 24px rgba(244, 154, 61, 0.4);
+
+      &:hover {
+        background: #ffae54;
+      }
+    }
+  }
+
+  &__editing {
+    outline: 2px dashed $gali-cyan !important;
+    background: rgba(78, 205, 196, 0.1) !important;
+  }
+
+  &__inline-input {
+    font: inherit;
+    color: inherit;
+    background: white;
+    border: 1px solid $gali-cyan;
+    border-radius: 4px;
+    padding: 2px 6px;
+    width: 100%;
+    text-align: inherit;
+    box-shadow: 0 0 0 4px rgba(78, 205, 196, 0.18);
+    outline: none;
+
+    &--display {
+      font-family: $gali-font-display;
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    &--sub {
+      font-size: 17px;
+    }
+
+    &--cta {
+      background: white;
+      color: #1A1A1F;
+      font-weight: 700;
+    }
+  }
+
+  &__benefits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 32px 32px 28px;
+    background: white;
+  }
+
+  &__benefit {
+    text-align: center;
+
+    &-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    &-title {
+      font-family: $gali-font-display;
+      font-weight: 600;
+      font-size: 16px;
+      color: #1A1A1F;
+      margin-bottom: 4px;
+    }
+
+    &-desc {
+      font-size: 13px;
+      line-height: 1.4;
+      color: #6B6B70;
+    }
+  }
+
+  &__testimonials {
+    padding: 28px 32px;
+    background: #FAF7F0;
+    border-top: 1px solid #EEE7D5;
+    border-bottom: 1px solid #EEE7D5;
+  }
+
+  &__section-title {
+    font-family: $gali-font-display;
+    font-size: 20px;
+    font-weight: 600;
+    color: #1A1A1F;
+    margin: 0 0 16px;
+    text-align: center;
+    letter-spacing: -0.01em;
+  }
+
+  &__testi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  &__testi {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #EEE7D5;
+
+    &-stars {
+      color: #f49a3d;
+      font-size: 14px;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    &-text {
+      margin: 0 0 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #444;
+      font-style: italic;
+    }
+
+    &-author {
+      font-family: $gali-font-mono;
+      font-size: 11px;
+      color: #888;
+    }
+  }
+
+  &__cta-final {
+    padding: 36px 32px;
+    text-align: center;
+    background: linear-gradient(180deg, #FFF4E0 0%, #FAF7F0 100%);
+  }
+
+  &__urgency-final {
+    font-family: $gali-font-mono;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: #f49a3d;
+    margin-bottom: 14px;
+    cursor: text;
+    padding: 4px 12px;
+    border-radius: 4px;
+    display: inline-block;
+    transition: all 200ms ease;
+
+    &:hover {
+      background: rgba(244, 154, 61, 0.1);
+      outline: 1px dashed rgba(244, 154, 61, 0.5);
+    }
+  }
+
+  &__price {
+    margin-bottom: 18px;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  &__price-old {
+    color: #999;
+    font-family: $gali-font-mono;
+    font-size: 16px;
+    text-decoration: line-through;
+  }
+
+  &__price-new {
+    font-family: $gali-font-display;
+    font-size: 32px;
+    font-weight: 700;
+    color: #f49a3d;
+    letter-spacing: -0.02em;
+  }
+
+  &__footer {
+    background: rgba(15, 15, 18, 0.04);
+    padding: 12px 16px;
+    text-align: center;
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    color: #888;
+    letter-spacing: 0.04em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+
+    strong {
+      color: #444;
+      font-weight: 600;
+    }
+  }
+}
+
+@keyframes lc-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@include gali-reduced-motion {
+  .lc { animation: none; }
+  .lc__headline, .lc__subheadline, .lc__cta { transition: none; }
+}

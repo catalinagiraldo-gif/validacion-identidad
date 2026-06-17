@@ -1,0 +1,103 @@
+<div class="sold-products-page">
+  <dropi-titulos title="Productos vendidos" [breadcrumbs]="breadcrumbs" />
+
+  <!-- Gali Financial Agent summary -->
+  <div class="sold-gali-summary">
+    <div class="sold-gali-summary__header">
+      <span class="sold-gali-summary__icon">✦</span>
+      <div>
+        <strong>Agente Financiero Gali</strong>
+        <span>Semana 22 · Análisis automático basado en pedidos entregados + pauta + logística</span>
+      </div>
+      <button type="button" class="sold-gali-summary__full-btn" routerLink="/gali-v5/reportes/dashboard-financiero">
+        Ver P&L completo →
+      </button>
+    </div>
+    <div class="sold-gali-summary__metrics">
+      <div class="sold-gali-metric">
+        <span class="sold-gali-metric__label">Ventas semana</span>
+        <strong class="sold-gali-metric__val">47</strong>
+      </div>
+      <div class="sold-gali-metric sold-gali-metric--highlight">
+        <span class="sold-gali-metric__label">Ganancia neta</span>
+        <strong class="sold-gali-metric__val">$411k</strong>
+      </div>
+      <div class="sold-gali-metric">
+        <span class="sold-gali-metric__label">ROAS real</span>
+        <strong class="sold-gali-metric__val sold-gali-metric__val--warn">1.93x</strong>
+      </div>
+      <div class="sold-gali-metric">
+        <span class="sold-gali-metric__label">ROAS Meta declarado</span>
+        <strong class="sold-gali-metric__val">2.9x</strong>
+      </div>
+      <div class="sold-gali-metric">
+        <span class="sold-gali-metric__label">Diferencia</span>
+        <strong class="sold-gali-metric__val sold-gali-metric__val--warn">-0.97x</strong>
+      </div>
+      <div class="sold-gali-metric">
+        <span class="sold-gali-metric__label">Causa principal</span>
+        <strong class="sold-gali-metric__val sold-gali-metric__val--info">Novedades Cali 12%</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="sold-products-page__filters">
+    <div class="sold-products-page__filter-row">
+      <div class="sold-products-page__field">
+        <label>Fecha inicio</label>
+        <input type="date" value="2026-01-01" />
+      </div>
+      <div class="sold-products-page__field">
+        <label>Fecha fin</label>
+        <input type="date" value="2026-01-31" />
+      </div>
+      <div class="sold-products-page__field">
+        <label>Categoría</label>
+        <select><option>Todas</option></select>
+      </div>
+      <div class="sold-products-page__field">
+        <label>Proveedor</label>
+        <select><option>Todos</option></select>
+      </div>
+      <dropi-button-new icon="pi-arrow-right" [iconOnly]="true" hierarchy="primary" />
+    </div>
+    <dropi-search-oficial placeholder="Buscar producto" [(ngModel)]="searchQuery" />
+  </div>
+
+  <div class="sold-products-table">
+    <header class="sold-products-table__head">
+      <span class="sold-products-table__col sold-products-table__col--product">Producto</span>
+      <span class="sold-products-table__col">Vendidos</span>
+      <span class="sold-products-table__col">En transito</span>
+      <span class="sold-products-table__col">Devoluciones</span>
+      <span class="sold-products-table__col">Entregados</span>
+      <span class="sold-products-table__col">Ganancias</span>
+    </header>
+
+    @for (p of products; track p.id) {
+      <article class="sold-product-row">
+        <div class="sold-product-row__info">
+          <img [src]="p.image" [alt]="p.title" class="sold-product-row__image" />
+          <div class="sold-product-row__details">
+            <div class="sold-product-row__chips">
+              <span class="sold-product-row__chip">{{ p.category }}</span>
+              <span class="sold-product-row__stock" [class.sold-product-row__stock--low]="p.stockLevel === 'low'">{{ p.stock }}</span>
+            </div>
+            <h3>{{ p.title }}</h3>
+            <p><span>Proveedor:</span> {{ p.provider }}</p>
+            <p><span>Bodega:</span> {{ p.warehouses }}</p>
+          </div>
+        </div>
+        <div class="sold-product-row__metrics">
+          <div class="metric-cell"><span>Unidades</span><strong>{{ p.sold }}</strong></div>
+          <div class="metric-cell"><span>Unidades</span><strong>{{ p.inTransit }}</strong></div>
+          <div class="metric-cell"><span>Unidades</span><strong>{{ p.returns }}</strong></div>
+          <div class="metric-cell"><span>Unidades</span><strong>{{ p.delivered }}</strong></div>
+          <div class="metric-cell metric-cell--earnings"><span>Ganancias</span><strong>{{ p.earnings }}</strong></div>
+        </div>
+      </article>
+    }
+  </div>
+
+  <dropi-paginator />
+</div>

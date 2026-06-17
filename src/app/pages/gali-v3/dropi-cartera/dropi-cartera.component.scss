@@ -1,0 +1,140 @@
+@import 'styles/gali-v3-tokens';
+
+:host { display: block; max-width: 1200px; margin: 0 auto; }
+.cart { display: flex; flex-direction: column; gap: $gv3-space-4; }
+
+.cart__sparkle { color: $gv3-sparkle-color; filter: drop-shadow($gv3-sparkle-glow); }
+
+.cart__head {
+  @include gv3-artifact;
+  padding: $gv3-space-5 $gv3-space-6;
+}
+.cart__head-meta {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; background: $gv3-bg-warm; border-radius: $gv3-radius-pill;
+  margin-bottom: $gv3-space-3;
+}
+.cart__head-tag { @include gv3-mono-tag; color: $gv3-text-secondary; }
+.cart__head h1 { @include gv3-display-tight; font-size: 32px; margin: 0 0 $gv3-space-2; }
+.cart__intro { margin: 0; font-size: $gv3-text-base; color: $gv3-text-secondary; line-height: 1.55; max-width: 720px; }
+
+.cart__resumen {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: $gv3-space-2;
+}
+.cart__metric {
+  @include gv3-artifact;
+  padding: $gv3-space-3 $gv3-space-4;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.cart__metric-label { @include gv3-mono-tag; color: $gv3-text-tertiary; }
+.cart__metric-val {
+  @include gv3-display-tight;
+  font-size: 24px;
+  color: $gv3-text-primary;
+  font-weight: 500;
+  &.cart__small { font-size: $gv3-text-base; }
+}
+.cart__up { color: $gv3-sage; }
+.cart__down { color: $gv3-rust; }
+
+.cart__chart {
+  @include gv3-artifact;
+  padding: $gv3-space-4;
+  header {
+    display: flex; align-items: baseline; gap: 8px;
+    margin-bottom: $gv3-space-3;
+    strong { font-family: $gv3-font-display; font-size: $gv3-text-lg; color: $gv3-text-primary; font-weight: 500; }
+  }
+}
+.cart__chart-meta { @include gv3-mono-tag; color: $gv3-text-tertiary; margin-left: auto; }
+.cart__svg {
+  width: 100%;
+  height: 120px;
+  background: $gv3-bg-warm;
+  border-radius: $gv3-radius-md;
+}
+
+.cart__sugerencias {
+  @include gv3-artifact;
+  padding: $gv3-space-4 $gv3-space-5;
+  header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: $gv3-space-3;
+    strong { font-family: $gv3-font-display; font-size: $gv3-text-lg; color: $gv3-text-primary; font-weight: 500; }
+  }
+}
+.cart__sug-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: $gv3-space-3;
+}
+.cart__sug {
+  padding: $gv3-space-3;
+  background: $gv3-orange-tint;
+  border-left: 3px solid $gv3-orange;
+  border-radius: $gv3-radius-md;
+  h4 { margin: 0 0 6px; font-family: $gv3-font-display; font-size: $gv3-text-base; color: $gv3-text-primary; font-weight: 500; }
+  p { margin: 0 0 8px; font-size: 12.5px; color: $gv3-text-secondary; line-height: 1.5; }
+  button {
+    padding: 6px 12px;
+    background: $gv3-orange;
+    color: $gv3-text-onAccent;
+    border: 0;
+    border-radius: $gv3-radius-sm;
+    font-family: $gv3-font-body;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    &:hover { background: $gv3-orange-hover; }
+  }
+}
+
+.cart__movs {
+  @include gv3-artifact;
+  padding: $gv3-space-3 $gv3-space-4 $gv3-space-4;
+  overflow-x: auto;
+  header { margin-bottom: $gv3-space-2; strong { font-family: $gv3-font-display; font-size: $gv3-text-lg; color: $gv3-text-primary; font-weight: 500; } }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    th {
+      text-align: left;
+      padding: 8px 10px;
+      @include gv3-mono-tag;
+      color: $gv3-text-tertiary;
+      border-bottom: 1px solid $gv3-border-subtle;
+    }
+    td {
+      padding: 8px 10px;
+      font-size: 12.5px;
+      color: $gv3-text-primary;
+      border-bottom: 1px solid $gv3-border-whisper;
+    }
+    tr:hover td { background: $gv3-bg-warm; }
+  }
+}
+.cart__movs-fecha {
+  font-family: $gv3-font-mono;
+  font-size: 11px;
+  color: $gv3-text-tertiary;
+  white-space: nowrap;
+}
+.cart__movs-cat {
+  @include gv3-pill($gv3-bg-warm, $gv3-text-secondary);
+  font-size: 10.5px;
+}
+.cart__movs-monto {
+  font-family: $gv3-font-mono;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+  .is-ingreso & { color: $gv3-sage; }
+  .is-gasto & { color: $gv3-rust; }
+  .is-retiro & { color: $gv3-amber; }
+}
+
+@media (max-width: 900px) {
+  .cart__resumen { grid-template-columns: repeat(2, 1fr); }
+}

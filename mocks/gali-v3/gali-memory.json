@@ -1,0 +1,54 @@
+{
+  "perfil": {
+    "nombre": "Alejandra",
+    "ciudad_base": "Bogotá",
+    "tiempo_en_dropi": "8 meses",
+    "nivel": "operador",
+    "ultima_sesion": "2026-05-26T08:42:00",
+    "ultima_actividad": "hace 2 horas"
+  },
+  "negocio": {
+    "nicho_principal": "Mascotas",
+    "nichos_explorados": ["Mascotas", "Hogar", "Fitness"],
+    "tono_preferido": "emocional",
+    "roas_objetivo": "3.0x",
+    "presupuesto_mensual": "$2.500.000 COP",
+    "plataformas_activas": ["Meta Ads", "TikTok Ads"],
+    "productos_activos": 3,
+    "ventas_totales_lifetime": 487
+  },
+  "decisiones": [
+    {
+      "fecha": "2026-05-12",
+      "que": "Elegí ángulo 'Mamá / seguridad emocional' para Collar GPS",
+      "por_que": "38% de ventas de productos similares en Colombia usaron este ángulo"
+    },
+    {
+      "fecha": "2026-05-15",
+      "que": "Pausé Creative A del Collar GPS",
+      "por_que": "Video B tenía 2x más CTR (3.4% vs 1.7%)"
+    },
+    {
+      "fecha": "2026-05-20",
+      "que": "Escalé presupuesto a $80k/día",
+      "por_que": "ROAS 3.1x sostenido en 72h; modelo Gali sugirió ventana de oportunidad de 14 días"
+    },
+    {
+      "fecha": "2026-05-24",
+      "que": "Rechacé sugerencia de expandir a Quito",
+      "por_que": "Logística internacional aún no resuelta — postergado"
+    }
+  ],
+  "aprendizajes": [
+    "Mis audiencias responden mejor a creatives con voz en off femenina (44% más CTR)",
+    "Los miércoles y jueves son mis mejores días de conversión",
+    "Productos sobre $80k COP en mi nicho requieren ángulo emocional, no racional",
+    "Bogotá responde 18% mejor que Medellín a mi tono"
+  ],
+  "preferencias_esteticas": {
+    "paleta_landings": ["#FF7A45", "#1A1612", "#FAF7F2"],
+    "estilo": "Editorial cálido, fotografía real",
+    "evitar": ["bullet points largos", "stock photos genéricos"]
+  },
+  "siguiente_accion_sugerida": "Renovar creatives del Collar GPS — llevan 14 días activos"
+}

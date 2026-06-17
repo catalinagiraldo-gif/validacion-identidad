@@ -1,0 +1,378 @@
+@import 'styles/gali-v5-tokens';
+
+:host {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.gali-v5-shell {
+  --primary-50: #{$primary-50};
+  --primary-100: #{$primary-100};
+  --primary-200: #{$primary-200};
+  --primary-300: #{$primary-300};
+  --primary-400: #{$primary-400};
+  --primary-500: #{$primary-500};
+  --primary-600: #{$primary-600};
+  --primary-700: #{$primary-700};
+  --primary-800: #{$primary-800};
+  --primary-900: #{$primary-900};
+
+  --dropi-header-height: 53px;
+  --dropi-rail-width: 72px;
+  --dropi-section-width: 200px;
+  --dropi-section-col: var(--dropi-section-width);
+  --gali-panel-width: 520px;
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: $white;
+
+  // Permite que el dropdown del header salga fuera del contenedor
+  dropi-header-ia2 {
+    position: relative;
+    z-index: 20;
+  }
+
+  &__body {
+    display: grid;
+    // Col 1: unified rail (72px) | Col 2: section-nav | Col 3: splitter 8px | Col 4: content
+    grid-template-columns: var(--dropi-rail-width) var(--dropi-section-col) 8px minmax(0, 1fr);
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    height: calc(100vh - var(--dropi-header-height));
+    transition: var(--section-transition, grid-template-columns 0.25s ease);
+
+  }
+
+  &__content {
+    grid-column: 4;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: $white;
+    transition: padding-right 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+
+    &--os {
+      background: #f4f4f7;
+    }
+  }
+
+  // En --no-section el grid pasa a 5 columnas pero col 3 y 4 son 0px,
+  // así que grid-column: 5 sigue siendo válido y el content ocupa el 1fr.
+  // Forzamos para evitar colapso visual cuando cambia el estado.
+  &--no-section &__content,
+  &--nav-collapsed &__content {
+    grid-column: 4;
+    min-width: 0;
+  }
+
+  &__outlet {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: $gray-50;
+
+    // router-outlet no debe expandirse — solo el componente enrutado (insertado como hermano)
+    > router-outlet {
+      flex: 0 0 0;
+      height: 0;
+      overflow: hidden;
+    }
+
+    // El componente enrutado ocupa todo el espacio y scrollea internamente
+    > :not(router-outlet) {
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  }
+
+  // Cuando el panel Gali está abierto, desplazar el contenido
+  &--panel-open {
+    .gali-v5-shell__content {
+      padding-right: var(--gali-panel-width);
+    }
+  }
+
+  // En mobile el panel ocupa 100vw — no necesita padding al content
+  @media (max-width: 767px) {
+    &--panel-open .gali-v5-shell__content {
+      padding-right: 0;
+    }
+  }
+
+  &__nav-expand {
+    position: sticky;
+    top: $size-3;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: $size-2;
+    margin: $size-3 0 0 $size-2;
+    padding: $size-2 $size-3;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    background: $white;
+    color: $gray-600;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    cursor: pointer;
+    box-shadow: $shadow-small;
+
+    &:hover {
+      background: $white;
+      color: $primary-500;
+      border-color: $primary-500;
+    }
+
+    .pi {
+      font-size: 12px;
+      color: $primary-500;
+    }
+  }
+
+  &--no-section {
+    --dropi-section-col: 0px;
+
+    dropi-section-nav {
+      display: none;
+    }
+
+    .gali-v5-shell__body {
+      grid-template-columns: var(--dropi-rail-width) 0 0 minmax(0, 1fr);
+    }
+  }
+
+  &--nav-collapsed {
+    --dropi-section-col: 48px;
+    --dropi-section-width: 48px;
+
+    .gali-v5-shell__body {
+      grid-template-columns: var(--dropi-rail-width) var(--dropi-section-col) 0 minmax(0, 1fr);
+    }
+  }
+
+  &--compact {
+    --dropi-section-width: 180px;
+  }
+
+  // ── Mobile (≤ 767px): solo rail unificado, sin section nav ──
+  @media (max-width: 767px) {
+    --dropi-section-width: 160px;
+    --gali-panel-width: 100vw;
+
+    .gali-v5-shell__body {
+      grid-template-columns: var(--dropi-rail-width) 0px 0px minmax(0, 1fr) !important;
+    }
+
+    dropi-section-nav {
+      display: none !important;
+    }
+
+    dropi-panel-splitter {
+      display: none !important;
+    }
+
+    .gali-v5-shell__content {
+      grid-column: 4 !important;
+    }
+  }
+
+  // ── Tablet estrecho (768px–899px): sección nav colapsada por defecto ──
+  @media (min-width: 768px) and (max-width: 899px) {
+    --dropi-section-width: 48px;
+    --dropi-section-col: 48px;
+
+    .gali-v5-shell__body {
+      grid-template-columns: var(--dropi-rail-width) 48px 0px minmax(0, 1fr);
+    }
+  }
+
+  // ── Panel overlay (Gali right panel) ────────────────────────
+  &__panel-overlay {
+    position: fixed;
+    top: var(--dropi-header-height, 53px);
+    right: 0;
+    width: var(--gali-panel-width, 520px);
+    height: calc(100vh - var(--dropi-header-height, 53px));
+    z-index: 300;
+    display: flex;
+    flex-direction: row;
+
+    // Slide in desde la derecha
+    animation: panelSlideIn 0.22s ease-out forwards;
+
+    // Exit animation: slide-out a la derecha antes de que Angular remueva el DOM
+    &--closing {
+      animation: panelSlideOut 0.2s ease-in forwards;
+    }
+  }
+
+  &__panel-resize {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    z-index: 2;
+    transform: translateX(-50%);
+  }
+
+  &__toast {
+    position: fixed;
+    bottom: $size-6;
+    left: 50%;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    max-width: min(420px, calc(100vw - #{$size-8}));
+    padding: $size-3 $size-4;
+    border-radius: $radius-md;
+    background: $gray-700;
+    color: $white;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    line-height: 1.4;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    transform: translateX(-50%);
+    animation: gali-v5-toast-in 0.22s ease;
+
+    .pi {
+      color: $primary-500;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Gali cross-module toast
+.gali-v5-shell__gali-toast {
+  position: fixed;
+  bottom: $size-6 + 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  gap: $size-3;
+  padding: $size-3 $size-4;
+  border-radius: $radius-lg;
+  background: #1a1a22;
+  color: white;
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-medium;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: gali-toast-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: min(520px, calc(100vw - #{$size-8}));
+
+  &--warn { background: #92400e; }
+}
+
+.gali-toast__agent-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.gali-toast__content {
+  display: flex;
+  align-items: center;
+  gap: $size-2;
+  flex: 1;
+  min-width: 0;
+}
+
+.gali-toast__agent {
+  font-weight: 700;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.gali-toast__msg {
+  opacity: 0.9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gali-toast__memory-link {
+  flex-shrink: 0;
+  border: none;
+  background: rgba(255, 97, 2, 0.18);
+  color: #ff8033;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: $font-primary;
+  transition: background 0.12s;
+
+  &:hover {
+    background: rgba(255, 97, 2, 0.28);
+  }
+}
+
+.gali-toast__dismiss {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  color: rgba(255,255,255,0.4);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 2px;
+  font-family: $font-primary;
+  line-height: 1;
+
+  &:hover {
+    color: rgba(255,255,255,0.7);
+  }
+}
+
+@keyframes gali-toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px) scale(0.95); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+@keyframes panelSlideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes panelSlideOut {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes gali-v5-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

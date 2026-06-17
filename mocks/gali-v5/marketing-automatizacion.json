@@ -1,0 +1,9 @@
+{
+  "flows": [
+    { "id": "59300", "nombre": "En reparto", "activo": true },
+    { "id": "59296", "nombre": "Confirmacion de datos", "activo": true },
+    { "id": "59291", "nombre": "Carrito abandonado 2h", "activo": true },
+    { "id": "59287", "nombre": "Post-compra WhatsApp", "activo": false },
+    { "id": "59284", "nombre": "Review request 7d", "activo": true }
+  ]
+}

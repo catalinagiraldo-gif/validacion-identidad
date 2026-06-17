@@ -1,0 +1,102 @@
+<div class="project-panel" [class.project-panel--alerta]="project.alertaActiva">
+
+  <!-- Header -->
+  <div class="project-panel__header">
+    <div class="project-panel__title-row">
+      <span class="project-panel__badge" [ngClass]="estadoClass">{{ estadoLabel }}</span>
+      <h4 class="project-panel__name">{{ project.nombre }}</h4>
+    </div>
+    <button type="button" class="project-panel__view-btn" data-proto-skip
+      (click)="viewProject.emit(project.id)" aria-label="Ver proyecto">
+      →
+    </button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="project-panel__kpis">
+    <div class="project-panel__kpi">
+      <span class="project-panel__kpi-label">ROAS</span>
+      <strong class="project-panel__kpi-val">{{ project.roas }}</strong>
+    </div>
+    <div class="project-panel__kpi">
+      <span class="project-panel__kpi-label">Pedidos</span>
+      <strong class="project-panel__kpi-val">{{ project.pedidos }}</strong>
+    </div>
+    <div class="project-panel__kpi">
+      <span class="project-panel__kpi-label">Ganancia</span>
+      <strong class="project-panel__kpi-val">{{ project.ganancia }}</strong>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="project-panel__divider"></div>
+
+  <!-- Agentes -->
+  <div class="project-panel__agents-row">
+    @for (agent of project.agentes; track agent.id) {
+      <span
+        class="project-panel__agent-dot"
+        [class.project-panel__agent-dot--off]="!agent.activo"
+        [style.background]="agentColors[agent.id] ?? '#9b9ba8'"
+        [title]="agent.nombre + ' · ' + (agent.activo ? 'Activo' : 'Esperando')">
+      </span>
+    }
+    <span class="project-panel__agents-label">
+      @for (agent of project.agentes; track agent.id; let last = $last) {
+        {{ agent.nombre }}{{ !last ? ' · ' : '' }}
+      }
+    </span>
+  </div>
+
+  <!-- Gali message -->
+  <div class="project-panel__gali-msg" [class.project-panel__gali-msg--warn]="project.alertaActiva">
+    <span class="project-panel__gali-icon">✦</span>
+    <span class="project-panel__gali-text">{{ project.galiMensaje }}</span>
+  </div>
+
+  <!-- Actions -->
+  @if (project.alertaActiva) {
+    <div class="project-panel__actions">
+      <button type="button" class="project-panel__action project-panel__action--primary"
+        data-proto-skip (click)="openIntervention('novedad')">
+        Ver la novedad
+      </button>
+      <button type="button" class="project-panel__action"
+        data-proto-skip (click)="openIntervention('novedad')">
+        Cambiar transportadora
+      </button>
+    </div>
+  }
+
+  @if (project.estado === 'pausado') {
+    <div class="project-panel__actions">
+      <button type="button" class="project-panel__action project-panel__action--info"
+        data-proto-skip (click)="openIntervention('pausar')">
+        ¿Reanudamos?
+      </button>
+    </div>
+  }
+
+  <!-- Skills -->
+  @if (project.skills?.length) {
+    <div class="project-panel__divider"></div>
+    <div class="project-panel__skills">
+      <span class="project-panel__skills-label">Skills activas: {{ project.skills.length }}</span>
+      @for (skill of project.skills; track skill.nombre) {
+        <span class="project-panel__skill-tag" [class.project-panel__skill-tag--off]="!skill.activa">
+          {{ skill.nombre }}
+        </span>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- Intervention overlay -->
+@if (interventionCtx()) {
+  <gali-intervention-overlay
+    [context]="interventionCtx()!"
+    (closed)="closeIntervention()"
+    (decided)="closeIntervention()"
+  />
+}

@@ -369,6 +369,14 @@
           "type": "page",
           "roles": ["admin"],
           "description": "Gestión de banners promocionales de la plataforma."
+        },
+        "chatea-pro": {
+          "route": "/new/marketing/chatea-pro",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "prototype": "WORKING",
+          "figmaSource": "https://www.figma.com/design/Ub7Up7f5K0WGuDC6g2jdCu/Re-arquitectura---UI-Oficial?node-id=9341-44321",
+          "description": "Landing page de Chatea Pro en el módulo Marketing nueva arquitectura. Banner hero con gradiente oscuro, carrusel de 5 beneficios con auto-rotate cada 2s, phone mockup con animación de moneda, y 4 stat cards. Dos CTAs: Comienza ahora (chateapro.com) y Ver como funciona (YouTube)."
         }
       }
     },

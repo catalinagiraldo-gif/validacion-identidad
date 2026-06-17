@@ -1,0 +1,120 @@
+<div class="skill-builder">
+
+  <!-- ── HEADER ────────────────────────────────────────────────────────── -->
+  <div class="skill-builder__header">
+    <div class="skill-builder__title-row">
+      <span class="skill-builder__status-dot"
+        [class.skill-builder__status-dot--on]="skill.status === 'active'"
+        [class.skill-builder__status-dot--off]="skill.status === 'paused'"
+        [class.skill-builder__status-dot--exec]="skill.status === 'executing'">
+      </span>
+      <h3 class="skill-builder__name">{{ skill.nombre }}</h3>
+    </div>
+    <div class="skill-builder__header-actions">
+      <button type="button" class="skill-builder__btn" (click)="startEdit()">Editar pipeline →</button>
+      <button type="button" class="skill-builder__btn" (click)="toggleStatus()">
+        {{ currentStatus === 'active' ? 'Pausar skill' : 'Reactivar' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ── PIPELINE VISUAL: TRIGGER → CONDICIÓN → ACCIÓN → NOTIF ──── -->
+  <div class="skill-pipeline">
+
+    <div class="skill-pipeline__step">
+      <span class="skill-pipeline__label">TRIGGER</span>
+      <div class="skill-pipeline__block skill-pipeline__block--trigger">
+        <span class="skill-pipeline__agent">{{ agentLabel }} activo</span>
+        <span class="skill-pipeline__sub">{{ skill.trigger.interval }}</span>
+      </div>
+    </div>
+
+    <div class="skill-pipeline__arrow">→</div>
+
+    <div class="skill-pipeline__step">
+      <span class="skill-pipeline__label">CONDICIÓN</span>
+      <div class="skill-pipeline__block skill-pipeline__block--condition">
+        <span class="skill-pipeline__metric">
+          {{ skill.condition.metric }}
+          {{ skill.condition.operator }}
+          {{ skill.condition.value }}{{ skill.condition.unit ?? '' }}
+        </span>
+        @if (skill.condition.duration) {
+          <span class="skill-pipeline__sub">por {{ skill.condition.duration }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="skill-pipeline__arrow">→</div>
+
+    <div class="skill-pipeline__step">
+      <span class="skill-pipeline__label">ACCIÓN</span>
+      <div class="skill-pipeline__block skill-pipeline__block--action">
+        <span class="skill-pipeline__action-label">{{ actionLabel }}</span>
+      </div>
+    </div>
+
+    <div class="skill-pipeline__arrow">→</div>
+
+    <div class="skill-pipeline__step">
+      <span class="skill-pipeline__label">NOTIFICACIÓN</span>
+      <div class="skill-pipeline__block skill-pipeline__block--notif">
+        <span class="skill-pipeline__sub">{{ skill.notification.message }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── STATUS BAR ──────────────────────────────────────────────────── -->
+  <div class="skill-statusbar">
+    <span class="skill-statusbar__item">
+      <span class="skill-statusbar__dot"
+        [class.skill-statusbar__dot--on]="currentStatus === 'active'"
+        [class.skill-statusbar__dot--off]="currentStatus === 'paused'">
+      </span>
+      {{ currentStatus === 'active' ? 'Activo' : (currentStatus === 'paused' ? 'Pausado' : 'Ejecutando…') }}
+    </span>
+    <span class="skill-statusbar__sep">|</span>
+    <span class="skill-statusbar__item">Última vez: {{ skill.ultima_ejecucion }}</span>
+    <span class="skill-statusbar__sep">|</span>
+    <span class="skill-statusbar__item">Ejecutado: {{ skill.ejecuciones_total }} veces</span>
+  </div>
+
+  <!-- ── RUN HISTORY ─────────────────────────────────────────────────── -->
+  <div class="skill-history">
+    <h4 class="skill-history__title">Historial de ejecuciones</h4>
+
+    <div class="skill-history__table">
+      <div class="skill-history__row skill-history__row--header">
+        <span>Fecha</span>
+        <span>Estado</span>
+        <span>Detalle</span>
+        <span>Impacto</span>
+      </div>
+
+      @for (run of skill.runHistory; track run.fecha) {
+        <div class="skill-history__row"
+          [class.skill-history__row--ok]="run.resultado === 'ejecutado'"
+          [class.skill-history__row--skip]="run.resultado === 'no_activado'">
+          <span class="skill-history__fecha">{{ run.fecha }}</span>
+          <span class="skill-history__status">
+            {{ run.resultado === 'ejecutado' ? '✓ Ejecutado' : '— No activado' }}
+          </span>
+          <span class="skill-history__detalle">{{ run.detalle }}</span>
+          <span class="skill-history__impacto">{{ run.impacto }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ── FOOTER ACTIONS ─────────────────────────────────────────────── -->
+  <div class="skill-builder__footer">
+    <button type="button" class="skill-builder__btn skill-builder__btn--ghost" (click)="goToProyectos()">
+      Ver en Proyectos →
+    </button>
+    <button type="button" class="skill-builder__btn skill-builder__btn--accent" (click)="newFromHistory()">
+      + Nueva skill desde este historial
+    </button>
+  </div>
+
+</div>

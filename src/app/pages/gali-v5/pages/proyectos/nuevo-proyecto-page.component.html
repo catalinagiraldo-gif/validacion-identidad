@@ -1,0 +1,492 @@
+<div class="np-page">
+
+  <!-- Header con progreso -->
+  <div class="np-header">
+    <button type="button" class="np-header__back" (click)="goBack()" data-proto-skip>
+      <i class="pi pi-arrow-left"></i>
+    </button>
+    <div class="np-header__title-group">
+      <h1 class="np-header__title">Nuevo proyecto</h1>
+      <span class="np-header__subtitle">Gali + ADA Spy te guían en cada paso</span>
+    </div>
+    <div class="np-steps np-steps--6">
+      <span class="np-step" [class.np-step--active]="step() === 'discovery'"
+        [class.np-step--done]="['select','estrategia','landing','campana','launch'].includes(step())">
+        1 · Descubrir
+      </span>
+      <span class="np-step-line"></span>
+      <span class="np-step" [class.np-step--active]="step() === 'select'"
+        [class.np-step--done]="['estrategia','landing','campana','launch'].includes(step())">
+        2 · Elegir
+      </span>
+      <span class="np-step-line"></span>
+      <span class="np-step" [class.np-step--active]="step() === 'estrategia'"
+        [class.np-step--done]="['landing','campana','launch'].includes(step())">
+        3 · Estrategia
+      </span>
+      <span class="np-step-line"></span>
+      <span class="np-step" [class.np-step--active]="step() === 'landing'"
+        [class.np-step--done]="['campana','launch'].includes(step())">
+        4 · Landing
+      </span>
+      <span class="np-step-line"></span>
+      <span class="np-step" [class.np-step--active]="step() === 'campana'"
+        [class.np-step--done]="step() === 'launch'">
+        5 · Campaña
+      </span>
+      <span class="np-step-line"></span>
+      <span class="np-step" [class.np-step--active]="step() === 'launch'">
+        6 · Lanzar
+      </span>
+    </div>
+  </div>
+
+  <!-- ── ETAPA 1: DESCUBRIMIENTO ── -->
+  @if (step() === 'discovery') {
+    <div class="np-discovery">
+
+      <div class="np-discovery__search-section">
+        <div class="np-discovery__ada-label">
+          <span class="np-discovery__ada-dot"></span>
+          <strong>ADA Spy</strong> · analizando el mercado ahora
+        </div>
+        <h2 class="np-discovery__question">¿Qué quieres vender?</h2>
+        <div class="np-discovery__search-row">
+          <input
+            type="text"
+            class="np-discovery__search-input"
+            placeholder="Ej: collar GPS para mascotas, crema anti-edad..."
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+            (keydown.enter)="searchWithADA()" />
+          <button type="button" class="np-discovery__search-btn" (click)="searchWithADA()">
+            Buscar con ADA →
+          </button>
+        </div>
+        <p class="np-discovery__search-hint">ADA buscará productos con alto margen, baja competencia y stock disponible en Colombia</p>
+      </div>
+
+      <div class="np-discovery__divider">
+        <span>— o explora por categoría —</span>
+      </div>
+
+      <div class="np-discovery__categories">
+        @for (cat of trendingCategories; track cat.id) {
+          <button
+            type="button"
+            class="np-cat-card"
+            [class.np-cat-card--selected]="selectedCategory() === cat.id"
+            (click)="selectCategory(cat.id)">
+            <span class="np-cat-card__emoji">{{ cat.emoji }}</span>
+            <span class="np-cat-card__label">{{ cat.label }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="np-discovery__ada-recs">
+        <div class="np-discovery__ada-recs-header">
+          <span class="np-discovery__ada-dot"></span>
+          <strong>ADA recomienda para ti</strong>
+          <span class="np-discovery__ada-meta">Basado en tendencias del mercado colombiano · Actualizado hace 2h</span>
+        </div>
+        <div class="np-discovery__ada-cards">
+          @for (p of products().slice(0, 3); track p.id) {
+            <button type="button" class="np-ada-rec-card" (click)="selectProduct(p); step.set('select')">
+              <div class="np-ada-rec-card__score" [attr.data-level]="getScoreClass(p.adaScore)">{{ p.adaScore }}</div>
+              <div class="np-ada-rec-card__content">
+                <strong>{{ p.name }}</strong>
+                <span>{{ p.margin }} margen · {{ p.trendLabel }}</span>
+              </div>
+              <i class="pi pi-arrow-right"></i>
+            </button>
+          }
+        </div>
+      </div>
+
+    </div>
+  }
+
+  <!-- ── ETAPA 2: SELECCIONAR PRODUCTO ── -->
+  @if (step() === 'select') {
+    <div class="np-select">
+
+      @if (isSearching()) {
+        <div class="np-loading">
+          <span class="np-loading__dot"></span>
+          <span>ADA Spy analizando...</span>
+        </div>
+      } @else {
+
+        <div class="np-select__header">
+          <div>
+            <h2 class="np-select__title">ADA encontró {{ products().length }} opciones</h2>
+            <p class="np-select__subtitle">Ordenados por score ADA — mayor puntaje = mejor oportunidad</p>
+          </div>
+          <button type="button" class="np-select__back-btn" (click)="step.set('discovery')">
+            ← Nueva búsqueda
+          </button>
+        </div>
+
+        <div class="np-products-grid">
+          @for (product of products(); track product.id) {
+            <button
+              type="button"
+              class="np-product-card"
+              [class.np-product-card--selected]="selectedProduct()?.id === product.id"
+              (click)="selectProduct(product)">
+
+              <div class="np-product-card__score" [attr.data-level]="getScoreClass(product.adaScore)">
+                <span class="np-product-card__score-num">{{ product.adaScore }}</span>
+                <span class="np-product-card__score-label">ADA</span>
+              </div>
+
+              <div class="np-product-card__main">
+                <strong class="np-product-card__name">{{ product.name }}</strong>
+                <span class="np-product-card__cat">{{ product.category }}</span>
+              </div>
+
+              <div class="np-product-card__stats">
+                <div class="np-product-stat">
+                  <span class="np-product-stat__label">Margen</span>
+                  <strong class="np-product-stat__val">{{ product.margin }}</strong>
+                </div>
+                <div class="np-product-stat">
+                  <span class="np-product-stat__label">Stock</span>
+                  <strong class="np-product-stat__val">{{ product.stock }}</strong>
+                </div>
+                <div class="np-product-stat">
+                  <span class="np-product-stat__label">Tendencia</span>
+                  <strong class="np-product-stat__val">{{ product.trendLabel }}</strong>
+                </div>
+              </div>
+
+              <div class="np-product-card__provider">
+                <i class="pi pi-building"></i>
+                {{ product.provider }}
+              </div>
+
+              @if (selectedProduct()?.id === product.id) {
+                <div class="np-product-card__selected-badge">✓ Seleccionado</div>
+              }
+            </button>
+          }
+        </div>
+
+        <div class="np-select__footer">
+          <button
+            type="button"
+            class="np-select__cta"
+            [disabled]="!selectedProduct()"
+            (click)="goToEstrategia()">
+            Continuar con {{ selectedProduct()?.name ?? 'un producto' }} →
+          </button>
+        </div>
+
+      }
+    </div>
+  }
+
+  <!-- ── ETAPA 3: ESTRATEGIA CREATIVA ── -->
+  @if (step() === 'estrategia') {
+    <div class="np-estrategia">
+      <div class="np-section-header">
+        <div class="np-gali-label">
+          <span class="np-gali-label__dot" style="background:#818cf8"></span>
+          <strong>Gali</strong> · generando ángulos de venta para {{ selectedProduct()?.name }}
+        </div>
+        <h2 class="np-section-header__title">Elige tu estrategia de venta</h2>
+        <p class="np-section-header__sub">Cada ángulo apunta a un estado emocional distinto del cliente. Elige el que más conecta con tu audiencia.</p>
+      </div>
+
+      <div class="np-angulos">
+        @for (a of angulos; track a.id) {
+          <div class="np-angulo" [class.np-angulo--selected]="selectedAngulo()?.id === a.id"
+               (click)="selectedAngulo.set(a)" role="button" tabindex="0">
+            <div class="np-angulo__header">
+              <strong class="np-angulo__titulo">{{ a.titulo }}</strong>
+              @if (selectedAngulo()?.id === a.id) {
+                <span class="np-angulo__check">✓</span>
+              }
+            </div>
+            <p class="np-angulo__hook">"{{ a.hook }}"</p>
+            <div class="np-angulo__guion">
+              <span class="np-angulo__guion-label">Estructura del guión</span>
+              <p class="np-angulo__guion-text">{{ a.guion }}</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="np-section-footer">
+        <button type="button" class="np-btn np-btn--secondary" (click)="step.set('select')" data-proto-skip>← Atrás</button>
+        <button type="button" class="np-btn np-btn--primary" [disabled]="!selectedAngulo()" (click)="goToLanding()">
+          Continuar con este ángulo →
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ── ETAPA 4: LANDING PAGE ── -->
+  @if (step() === 'landing') {
+    <div class="np-landing">
+      <div class="np-section-header">
+        <div class="np-gali-label">
+          <span class="np-gali-label__dot" style="background:#f97316"></span>
+          <strong>Roax</strong> · generando estructura de landing page
+        </div>
+        <h2 class="np-section-header__title">Vista previa de tu landing page</h2>
+        <p class="np-section-header__sub">Gali estructuró esta página con base en el ángulo "{{ selectedAngulo()?.titulo }}".</p>
+      </div>
+
+      <div class="np-landing-preview">
+        <div class="np-landing-preview__frame">
+          <div class="np-lp-hero">
+            <div class="np-lp-hero__emoji">{{ selectedProduct()?.category === 'Mascotas' ? '🐾' : selectedProduct()?.category === 'Salud' ? '🌿' : '✨' }}</div>
+            <h3 class="np-lp-hero__headline">{{ selectedAngulo()?.hook }}</h3>
+            <p class="np-lp-hero__sub">{{ selectedProduct()?.name }} — envío en 24h a todo Colombia</p>
+            <div class="np-lp-hero__cta">¡Lo quiero ahora!</div>
+          </div>
+          <div class="np-lp-benefits">
+            <div class="np-lp-benefit"><span>✓</span> Envío gratis en Bogotá, Medellín y Cali</div>
+            <div class="np-lp-benefit"><span>✓</span> Pago contra entrega</div>
+            <div class="np-lp-benefit"><span>✓</span> Garantía de satisfacción</div>
+          </div>
+          <div class="np-lp-badge">Estructura generada por Gali</div>
+        </div>
+
+        <div class="np-landing-options">
+          <button type="button" class="np-landing-opt np-landing-opt--selected" data-proto-skip>
+            <span class="np-landing-opt__icon">✓</span>
+            <div>
+              <strong>Usar esta estructura</strong>
+              <span>Gali activa esta landing al lanzar la campaña</span>
+            </div>
+          </button>
+          <button type="button" class="np-landing-opt" data-proto-skip>
+            <span class="np-landing-opt__icon">🌐</span>
+            <div>
+              <strong>Ver en Page Pilot</strong>
+              <span>Abre el editor completo de landing pages</span>
+            </div>
+          </button>
+          <button type="button" class="np-landing-opt" data-proto-skip>
+            <span class="np-landing-opt__icon">📁</span>
+            <div>
+              <strong>Subir mis propias imágenes</strong>
+              <span>Personaliza con creativos desde Google Drive</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div class="np-section-footer">
+        <button type="button" class="np-btn np-btn--secondary" (click)="step.set('estrategia')" data-proto-skip>← Atrás</button>
+        <button type="button" class="np-btn np-btn--primary" (click)="goToCampana()">
+          Continuar con esta landing →
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ── ETAPA 5: CONFIGURACIÓN DE CAMPAÑA ── -->
+  @if (step() === 'campana') {
+    <div class="np-campana">
+      <div class="np-section-header">
+        <div class="np-gali-label">
+          <span class="np-gali-label__dot" style="background:#f97316"></span>
+          <strong>Roax</strong> · pre-configurando campaña en Meta Ads
+        </div>
+        <h2 class="np-section-header__title">Configura tu campaña</h2>
+        <p class="np-section-header__sub">Roax usará estos parámetros para lanzar y optimizar automáticamente.</p>
+      </div>
+
+      <div class="np-campana-form">
+        <div class="np-campana-field">
+          <label class="np-campana-label">Presupuesto diario inicial</label>
+          <div class="np-budget-row">
+            <input type="range" min="50000" max="500000" step="25000"
+              [ngModel]="budget()" (ngModelChange)="budget.set(+$event)"
+              class="np-budget-slider" />
+            <span class="np-budget-val">{{ budgetFormatted }}</span>
+          </div>
+          <p class="np-campana-hint">Roax sugiere este monto basado en tu objetivo. ROAS estimado: <strong>{{ roasCalculated }}</strong></p>
+        </div>
+
+        <div class="np-breakeven">
+          <h3 class="np-breakeven__title">Brújula: break-even ROAS</h3>
+          <p class="np-breakeven__sub">Si tu ROAS en Meta cae por debajo de este número, pierdes plata en cada venta.</p>
+          <div class="np-breakeven__grid">
+            <label class="np-breakeven__field">
+              <span>Precio de venta</span>
+              <input type="number" [ngModel]="precioVenta()" (ngModelChange)="precioVenta.set(+$event)" />
+            </label>
+            <label class="np-breakeven__field">
+              <span>COGS (producto)</span>
+              <input type="number" [ngModel]="cogs()" (ngModelChange)="cogs.set(+$event)" />
+            </label>
+            <label class="np-breakeven__field">
+              <span>Flete promedio</span>
+              <input type="number" [ngModel]="fleteUnit()" (ngModelChange)="fleteUnit.set(+$event)" />
+            </label>
+          </div>
+          <p class="np-breakeven__result">
+            Tu ROAS mínimo para no perder: <strong>{{ breakEvenRoas }}x</strong>
+            <span class="np-breakeven__hint">— Roax pausará si el ROAS real cae bajo {{ breakEvenRoas - 0.2 }}x (margen de seguridad).</span>
+          </p>
+        </div>
+
+        <div class="np-campana-field">
+          <label class="np-campana-label">Objetivo de pedidos por semana</label>
+          <div class="np-pedidos-row">
+            <input type="range" min="5" max="100" step="5"
+              [ngModel]="pedidosTarget()" (ngModelChange)="pedidosTarget.set(+$event)"
+              class="np-budget-slider" />
+            <span class="np-budget-val">{{ pedidosTarget() }} pedidos/sem</span>
+          </div>
+        </div>
+
+        <div class="np-campana-skills">
+          <h3 class="np-campana-skills__title">Skills que se activarán automáticamente</h3>
+          <p class="np-campana-skills__sub">Roax configuró estas automatizaciones para proteger tu campaña desde el inicio.</p>
+
+          <div class="np-skill-card" [class.np-skill-card--active]="campanaSkill1Active()">
+            <div class="np-skill-card__header">
+              <div class="np-skill-card__info">
+                <span class="np-skill-card__dot" [style.background]="campanaSkill1Active() ? '#22c55e' : '#9ca3af'"></span>
+                <strong class="np-skill-card__name">Auto-pausa si CTR cae bajo 0.8%</strong>
+                <span class="np-skill-card__agent">Roax</span>
+              </div>
+              <label class="np-toggle">
+                <input type="checkbox" [ngModel]="campanaSkill1Active()" (ngModelChange)="campanaSkill1Active.set($event)" />
+                <span class="np-toggle__knob"></span>
+              </label>
+            </div>
+            <p class="np-skill-card__desc">Si el CTR cae durante 48h continuas, Roax pausa y activa el video de respaldo.</p>
+          </div>
+
+          <div class="np-skill-card" [class.np-skill-card--active]="campanaSkill2Active()">
+            <div class="np-skill-card__header">
+              <div class="np-skill-card__info">
+                <span class="np-skill-card__dot" [style.background]="campanaSkill2Active() ? '#22c55e' : '#9ca3af'"></span>
+                <strong class="np-skill-card__name">Escalado ROAS automático +15%</strong>
+                <span class="np-skill-card__agent">Roax</span>
+              </div>
+              <label class="np-toggle">
+                <input type="checkbox" [ngModel]="campanaSkill2Active()" (ngModelChange)="campanaSkill2Active.set($event)" />
+                <span class="np-toggle__knob"></span>
+              </label>
+            </div>
+            <p class="np-skill-card__desc">Si ROAS ≥ 2.8x por 48h, Roax escala el presupuesto automáticamente.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="np-section-footer">
+        <button type="button" class="np-btn np-btn--secondary" (click)="step.set('landing')" data-proto-skip>← Atrás</button>
+        <button type="button" class="np-btn np-btn--launch" [class.np-btn--loading]="isLaunching()" (click)="launchProject()">
+          @if (isLaunching()) {
+            <span class="np-loading-dots"><span></span><span></span><span></span></span>
+            Gali está activando tu proyecto...
+          } @else {
+            🚀 Activar proyecto
+          }
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ── ETAPA 6 (antes 3): LANZADO ── -->
+  @if (step() === 'launch') {
+    <div class="np-launch">
+
+      <div class="np-launch__config">
+        <h2 class="np-launch__title">Configura tu proyecto</h2>
+
+        <div class="np-launch__field">
+          <label class="np-launch__label">Nombre del proyecto</label>
+          <input
+            type="text"
+            class="np-launch__input"
+            [ngModel]="projectName()"
+            (ngModelChange)="projectName.set($event)" />
+        </div>
+
+        <div class="np-launch__field">
+          <label class="np-launch__label">Presupuesto inicial de pauta</label>
+          <div class="np-launch__budget-row">
+            <input
+              type="range"
+              class="np-launch__range"
+              min="50000"
+              max="2000000"
+              step="50000"
+              [ngModel]="budget()"
+              (ngModelChange)="budget.set(+$event)" />
+            <span class="np-launch__budget-val">{{ budgetFormatted }}</span>
+          </div>
+        </div>
+
+        <div class="np-launch__field">
+          <label class="np-launch__label">Objetivo</label>
+          <div class="np-launch__options">
+            <button type="button" class="np-launch__option np-launch__option--active">🎯 Probar rápido</button>
+            <button type="button" class="np-launch__option" data-proto-skip>📈 Escalar</button>
+            <button type="button" class="np-launch__option" data-proto-skip>🔬 Investigar</button>
+          </div>
+        </div>
+
+        <button type="button" class="np-launch__back" (click)="step.set('select')">
+          ← Cambiar producto
+        </button>
+      </div>
+
+      <!-- Panel de estrategia de Gali -->
+      <div class="np-launch__gali-panel">
+        <div class="np-launch__gali-header">
+          <span class="np-launch__gali-dot"></span>
+          <strong class="np-launch__gali-title">✦ Gali · Tu estrategia</strong>
+        </div>
+
+        <div class="np-launch__gali-body">
+          <p class="np-launch__gali-intro">
+            Para <strong>{{ selectedProduct()?.name }}</strong> con {{ budgetFormatted }} de presupuesto:
+          </p>
+
+          <ul class="np-launch__gali-points">
+            <li>
+              <span class="np-launch__gali-check">●</span>
+              Target ROAS: <strong>{{ roasCalculated }}</strong> (basado en tu histórico y el margen del {{ selectedProduct()?.margin }})
+            </li>
+            <li>
+              <span class="np-launch__gali-check">●</span>
+              Roax lanzará <strong>3 creativos en A/B</strong> para encontrar el mejor ángulo
+            </li>
+            <li>
+              <span class="np-launch__gali-check">●</span>
+              Vigilante monitoreará novedades en tiempo real en todas las ciudades
+            </li>
+            <li>
+              <span class="np-launch__gali-check">●</span>
+              ADA Spy te alertará si aparece competencia directa en el mercado
+            </li>
+            <li>
+              <span class="np-launch__gali-check">●</span>
+              Chatea Pro gestionará confirmaciones de WhatsApp automáticamente
+            </li>
+          </ul>
+        </div>
+
+        <div class="np-launch__gali-actions">
+          <button type="button" class="np-launch__btn-primary" (click)="launchProject()">
+            🚀 Lanzar proyecto
+          </button>
+          <button type="button" class="np-launch__btn-secondary" (click)="saveDraft()" data-proto-skip>
+            Guardar como borrador
+          </button>
+        </div>
+      </div>
+
+    </div>
+  }
+
+</div>

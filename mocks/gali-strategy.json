@@ -1,0 +1,278 @@
+{
+  "personasByCategory": {
+    "mascotas": [
+      {
+        "id": "bp-m-001",
+        "title": "Mamá preocupada por la seguridad de su mascota",
+        "age": "28-42",
+        "location": "Colombia, ciudades principales",
+        "pain": "Mi perro se me escapa y no sé dónde está",
+        "tone": "Emocional",
+        "channel": "Instagram",
+        "copyAngle": "¿Sabes dónde está tu perro en este momento?",
+        "salesShare": 38,
+        "confidence": 88,
+        "reasoning": "Este perfil generó el 38% de ventas en productos similares (LATAM últimos 90 días)"
+      },
+      {
+        "id": "bp-m-002",
+        "title": "Dueño joven de mascota — soltero urbano",
+        "age": "24-32",
+        "location": "Bogotá, Medellín, Cali",
+        "pain": "Trabajo todo el día y no sé qué hace mi perro",
+        "tone": "Racional",
+        "channel": "TikTok",
+        "copyAngle": "Sigue lo que tu perro hace mientras trabajas. En vivo.",
+        "salesShare": 27,
+        "confidence": 76,
+        "reasoning": "Audiencia con engagement alto en TikTok pero menor conversión final"
+      },
+      {
+        "id": "bp-m-003",
+        "title": "Regalo perfecto para amante de mascotas",
+        "age": "30-55",
+        "location": "Colombia, regalos premium",
+        "pain": "No sé qué regalarle a alguien que ama a su perro",
+        "tone": "Aspiracional",
+        "channel": "Instagram",
+        "copyAngle": "El regalo que demuestra cuánto te importa su mejor amigo.",
+        "salesShare": 21,
+        "confidence": 71,
+        "reasoning": "Espigas en cumpleaños y temporadas (Día del Padre, Navidad)"
+      }
+    ],
+    "skincare": [
+      {
+        "id": "bp-s-001",
+        "title": "Mujer 30+ buscando resultados visibles",
+        "age": "30-45",
+        "location": "Colombia, ciudades principales",
+        "pain": "Pruebo cremas y no veo resultado real",
+        "tone": "Racional",
+        "channel": "Instagram",
+        "copyAngle": "Resultado clínico visible en 14 días — sin trucos.",
+        "salesShare": 42,
+        "confidence": 86,
+        "reasoning": "Conversión consistente en últimos 6 meses LATAM"
+      },
+      {
+        "id": "bp-s-002",
+        "title": "Generación Z descubriendo skincare",
+        "age": "16-24",
+        "location": "Colombia y México",
+        "pain": "Quiero la piel de las influencers de TikTok",
+        "tone": "Emocional",
+        "channel": "TikTok",
+        "copyAngle": "La rutina que está cambiando el TikTok de skincare en LATAM.",
+        "salesShare": 31,
+        "confidence": 79,
+        "reasoning": "Crecimiento +41% últimas 4 semanas"
+      },
+      {
+        "id": "bp-s-003",
+        "title": "Profesional buscando eficiencia",
+        "age": "28-40",
+        "location": "Colombia urbano",
+        "pain": "No tengo tiempo para rutinas largas",
+        "tone": "Urgente",
+        "channel": "Instagram",
+        "copyAngle": "1 minuto. 1 producto. Cero excusas.",
+        "salesShare": 18,
+        "confidence": 68,
+        "reasoning": "Segmento de nicho, menor volumen pero alto ticket promedio"
+      }
+    ],
+    "hogar": [
+      {
+        "id": "bp-h-001",
+        "title": "Mamá organizadora de hogar",
+        "age": "30-50",
+        "location": "Colombia, hogares con niños",
+        "pain": "Nada está en su lugar y me agota recoger",
+        "tone": "Racional",
+        "channel": "Facebook",
+        "copyAngle": "El truco que las mamás colombianas están usando para organizar TODO.",
+        "salesShare": 45,
+        "confidence": 83,
+        "reasoning": "Audiencia estable, conversión histórica alta"
+      },
+      {
+        "id": "bp-h-002",
+        "title": "Renta joven amueblando primer apartamento",
+        "age": "22-30",
+        "location": "Bogotá, Medellín",
+        "pain": "Quiero que mi casa se vea pro sin gastar millones",
+        "tone": "Aspiracional",
+        "channel": "Instagram",
+        "copyAngle": "Tu primer apartamento merece verse así.",
+        "salesShare": 28,
+        "confidence": 74,
+        "reasoning": "Crecimiento en últimos 3 meses pero conversión variable"
+      },
+      {
+        "id": "bp-h-003",
+        "title": "Pareja remodelando — proyecto ahorro",
+        "age": "30-45",
+        "location": "Colombia, segunda vivienda",
+        "pain": "Reformar es caro y no sé por dónde empezar",
+        "tone": "Educativo",
+        "channel": "Facebook",
+        "copyAngle": "Reforma tu casa por menos de $200 mil — paso a paso.",
+        "salesShare": 18,
+        "confidence": 66,
+        "reasoning": "Segmento menor pero ticket promedio más alto"
+      }
+    ],
+    "fitness": [
+      {
+        "id": "bp-f-001",
+        "title": "Mamá post-parto recuperando figura",
+        "age": "26-38",
+        "location": "Colombia, ciudades principales",
+        "pain": "No recupero mi cuerpo desde que tuve a mi bebé",
+        "tone": "Emocional",
+        "channel": "Instagram",
+        "copyAngle": "El método que están usando las mamás colombianas (sin gimnasio).",
+        "salesShare": 41,
+        "confidence": 82,
+        "reasoning": "Conversión consistente, alto engagement"
+      },
+      {
+        "id": "bp-f-002",
+        "title": "Profesional sedentario consciente",
+        "age": "28-42",
+        "location": "Colombia urbano",
+        "pain": "Sé que necesito moverme pero no tengo tiempo ni gimnasio",
+        "tone": "Racional",
+        "channel": "Instagram",
+        "copyAngle": "15 minutos al día. En tu sala. Resultados en 30 días.",
+        "salesShare": 32,
+        "confidence": 75,
+        "reasoning": "Audiencia de oficina LinkedIn-Instagram"
+      },
+      {
+        "id": "bp-f-003",
+        "title": "Atleta amateur — fitness lifestyle",
+        "age": "20-35",
+        "location": "Colombia, comunidad fitness",
+        "pain": "Quiero llevar mi entrenamiento al siguiente nivel",
+        "tone": "Aspiracional",
+        "channel": "TikTok",
+        "copyAngle": "El secreto de los atletas amateur que están rompiendo PRs.",
+        "salesShare": 22,
+        "confidence": 68,
+        "reasoning": "Segmento nicho pero muy fiel"
+      }
+    ],
+    "tech": [
+      {
+        "id": "bp-t-001",
+        "title": "Profesional remoto upgradeando setup",
+        "age": "26-40",
+        "location": "Colombia urbano",
+        "pain": "Trabajo desde casa y mi setup es lamentable",
+        "tone": "Racional",
+        "channel": "Instagram",
+        "copyAngle": "El upgrade que tu setup necesita — y no te va a quebrar.",
+        "salesShare": 39,
+        "confidence": 80,
+        "reasoning": "Crecimiento sostenido por trabajo remoto LATAM"
+      },
+      {
+        "id": "bp-t-002",
+        "title": "Gen Z tech enthusiast",
+        "age": "18-26",
+        "location": "Colombia, capitales",
+        "pain": "Quiero los gadgets que están viendo en YouTube",
+        "tone": "Aspiracional",
+        "channel": "TikTok",
+        "copyAngle": "El gadget que está rompiendo TikTok Colombia esta semana.",
+        "salesShare": 35,
+        "confidence": 77,
+        "reasoning": "Audiencia viral con conversión rápida pero menor ticket"
+      },
+      {
+        "id": "bp-t-003",
+        "title": "Comprador práctico — regalos tech",
+        "age": "30-50",
+        "location": "Colombia",
+        "pain": "Necesito un regalo tech sin equivocarme",
+        "tone": "Educativo",
+        "channel": "Facebook",
+        "copyAngle": "El regalo tech que SÍ se va a usar.",
+        "salesShare": 18,
+        "confidence": 66,
+        "reasoning": "Pico en fechas especiales, baseline bajo"
+      }
+    ],
+    "default": [
+      {
+        "id": "bp-d-001",
+        "title": "Comprador general — mejor relación calidad/precio",
+        "age": "25-45",
+        "location": "Colombia",
+        "pain": "No quiero gastar mucho y arrepentirme",
+        "tone": "Racional",
+        "channel": "Facebook",
+        "copyAngle": "Lo que están comprando los colombianos esta semana.",
+        "salesShare": 36,
+        "confidence": 72,
+        "reasoning": "Audiencia amplia, conversión moderada"
+      },
+      {
+        "id": "bp-d-002",
+        "title": "Comprador impulsivo — tendencia",
+        "age": "20-35",
+        "location": "Colombia urbano",
+        "pain": "Quiero lo que está de moda ahora",
+        "tone": "Urgente",
+        "channel": "TikTok",
+        "copyAngle": "Esto se está agotando esta semana. ¿Lo dejas pasar?",
+        "salesShare": 33,
+        "confidence": 70,
+        "reasoning": "Funciona en outliers virales"
+      },
+      {
+        "id": "bp-d-003",
+        "title": "Buscador de regalos",
+        "age": "28-55",
+        "location": "Colombia",
+        "pain": "Necesito un regalo y no se me ocurre nada",
+        "tone": "Aspiracional",
+        "channel": "Instagram",
+        "copyAngle": "El regalo que cualquiera querría — y nadie espera.",
+        "salesShare": 19,
+        "confidence": 65,
+        "reasoning": "Picos estacionales claros"
+      }
+    ]
+  },
+  "executionSteps": {
+    "strategy": [
+      { "label": "Analizando ventas históricas de la categoría", "duration": 1200 },
+      { "label": "Clusterizando perfiles compradores LATAM", "duration": 1500 },
+      { "label": "Validando copies exitosos en redes", "duration": 1100 },
+      { "label": "Generando 3 ángulos diferenciados", "duration": 800 }
+    ],
+    "approval": [
+      { "label": "Simulando conversión con casos similares", "duration": 900 },
+      { "label": "Cruzando ángulo + audiencia + canal", "duration": 700 },
+      { "label": "Generando rango de predicción", "duration": 600 }
+    ]
+  },
+  "approvalCopy": "Con esta estrategia, estimo que tu landing debería convertir entre {minPct}% y {maxPct}% basada en {n} casos similares en los últimos 90 días.",
+  "approvalConfidenceRanges": {
+    "Emocional": { "min": 2.8, "max": 4.1, "cases": 34, "confidence": 86 },
+    "Racional": { "min": 2.4, "max": 3.6, "cases": 41, "confidence": 84 },
+    "Urgente": { "min": 3.1, "max": 4.8, "cases": 22, "confidence": 78 },
+    "Aspiracional": { "min": 2.2, "max": 3.4, "cases": 28, "confidence": 75 },
+    "Educativo": { "min": 1.9, "max": 3.0, "cases": 19, "confidence": 70 }
+  },
+  "messages": {
+    "intro": "Analicé {cases} ventas de productos similares en LATAM. Encontré 3 perfiles de comprador que funcionan. ¿Cuál resuena más con tu idea?",
+    "personaSelected": "Buena elección. Ese perfil generó el {salesShare}% de ventas en productos similares.",
+    "personaModified": "Cambiaste algo en la persona. Recalculé la predicción.",
+    "approvalReady": "Con esta estrategia, tu landing debería convertir entre {min}% y {max}% basada en {n} casos similares.",
+    "confirmed": "Listo. Voy a generar tu landing y los creatives basados en esta estrategia."
+  }
+}

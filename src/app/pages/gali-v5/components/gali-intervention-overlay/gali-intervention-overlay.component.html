@@ -1,0 +1,66 @@
+<div class="intv-backdrop" (click)="close()"></div>
+
+<div class="intv" role="dialog" [attr.aria-label]="context.titulo">
+
+  <!-- Header -->
+  <div class="intv__header">
+    <div class="intv__title-block">
+      <span class="intv__eyebrow">
+        DECISIÓN REQUERIDA
+        @if (context.proyecto) { · {{ context.proyecto }} }
+        @if (context.modulo) { · {{ context.modulo }} }
+      </span>
+      <h3 class="intv__title">{{ context.titulo }}</h3>
+    </div>
+    <button type="button" class="intv__close" data-proto-skip (click)="close()" aria-label="Cerrar">✕</button>
+  </div>
+
+  <!-- Body -->
+  <div class="intv__body">
+
+    @if (state() === 'deciding') {
+      <p class="intv__desc">{{ context.descripcion }}</p>
+      @if (context.detalle) {
+        <p class="intv__detalle">{{ context.detalle }}</p>
+      }
+
+      <div class="intv__opciones">
+        @for (op of context.opciones; track op.id) {
+          <button
+            type="button"
+            class="intv__opcion"
+            [class.intv__opcion--primary]="op.isPrimary"
+            data-proto-skip
+            (click)="select(op)">
+            <span class="intv__opcion-letter">{{ op.id | uppercase }}</span>
+            <span class="intv__opcion-content">
+              <span class="intv__opcion-label">{{ op.label }}</span>
+              @if (op.sublabel) {
+                <span class="intv__opcion-sub">{{ op.sublabel }}</span>
+              }
+            </span>
+          </button>
+        }
+      </div>
+    }
+
+    @if (state() === 'executing') {
+      <div class="intv__executing">
+        <div class="intv__exec-spinner"></div>
+        <p class="intv__exec-label">Gali está aplicando: <strong>{{ selectedOpcion()?.label }}</strong></p>
+        <p class="intv__exec-sub">Los cambios se reflejan en tiempo real…</p>
+      </div>
+    }
+
+    @if (state() === 'result') {
+      <div class="intv__result">
+        <div class="intv__result-icon">✓</div>
+        <p class="intv__result-text">{{ resultText() }}</p>
+        <button type="button" class="intv__result-close" data-proto-skip (click)="close()">
+          Cerrar
+        </button>
+      </div>
+    }
+
+  </div>
+</div>

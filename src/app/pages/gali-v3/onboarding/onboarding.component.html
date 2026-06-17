@@ -1,0 +1,161 @@
+<div class="ob3">
+  <div class="ob3__atmos" aria-hidden="true"></div>
+
+  <nav class="ob3__pasos" *ngIf="paso() > 0 && paso() < 4">
+    <ol>
+      <li *ngFor="let n of [1,2,3]; let i = index"
+          [class.ob3__paso--current]="paso() === n"
+          [class.ob3__paso--done]="paso() > n">
+        <span>0{{ n }}</span>
+      </li>
+    </ol>
+  </nav>
+
+  <main class="ob3__main" (click)="saltarStream()">
+    <!-- Paso 0: Saludo -->
+    <ng-container *ngIf="paso() === 0">
+      <gali-mark [state]="streamingActivo() ? 'actuando' : 'reposo'" size="xl"></gali-mark>
+      <p class="ob3__stream">
+        {{ textoStreaming() }}<span class="ob3__caret" *ngIf="streamingActivo()">▍</span>
+      </p>
+      <div class="ob3__nombre-wrap" *ngIf="!streamingActivo()">
+        <label class="ob3__field">
+          <span class="ob3__field-label">Tu nombre <em>(opcional)</em></span>
+          <input
+            type="text"
+            class="ob3__input-text"
+            [value]="nombre()"
+            (input)="nombre.set($any($event.target).value)"
+            placeholder="Alejandra"
+            autocomplete="given-name"/>
+        </label>
+        <button type="button" class="ob3__cta ob3__cta--primary" (click)="avanzar(); $event.stopPropagation()">
+          empezar →
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="paso() === 1">
+      <gali-mark [state]="streamingActivo() ? 'actuando' : 'propuesta'" size="lg"></gali-mark>
+      <h2 class="ob3__pregunta">
+        {{ textoStreaming() }}<span class="ob3__caret" *ngIf="streamingActivo()">▍</span>
+      </h2>
+      <ul class="ob3__opciones" *ngIf="!streamingActivo()">
+        <li *ngFor="let op of opcionesEstado">
+          <button
+            type="button"
+            class="ob3__opcion"
+            [class.ob3__opcion--active]="estado() === op.value"
+            (click)="estado.set(op.value); $event.stopPropagation()">
+            <strong>{{ op.label }}</strong>
+            <span *ngIf="op.hint">{{ op.hint }}</span>
+          </button>
+        </li>
+      </ul>
+    </ng-container>
+
+    <ng-container *ngIf="paso() === 2">
+      <gali-mark [state]="streamingActivo() ? 'actuando' : 'propuesta'" size="lg"></gali-mark>
+      <h2 class="ob3__pregunta">
+        {{ textoStreaming() }}<span class="ob3__caret" *ngIf="streamingActivo()">▍</span>
+      </h2>
+      <ul class="ob3__opciones" *ngIf="!streamingActivo()">
+        <li *ngFor="let op of opcionesAntiguedad">
+          <button
+            type="button"
+            class="ob3__opcion"
+            [class.ob3__opcion--active]="antiguedad() === op.value"
+            (click)="antiguedad.set(op.value); $event.stopPropagation()">
+            <strong>{{ op.label }}</strong>
+            <span *ngIf="op.hint">{{ op.hint }}</span>
+          </button>
+        </li>
+      </ul>
+    </ng-container>
+
+    <ng-container *ngIf="paso() === 3">
+      <gali-mark [state]="streamingActivo() ? 'actuando' : 'propuesta'" size="lg"></gali-mark>
+      <h2 class="ob3__pregunta">
+        {{ textoStreaming() }}<span class="ob3__caret" *ngIf="streamingActivo()">▍</span>
+      </h2>
+      <ul class="ob3__opciones" *ngIf="!streamingActivo()">
+        <li *ngFor="let op of opcionesDolor">
+          <button
+            type="button"
+            class="ob3__opcion"
+            [class.ob3__opcion--active]="dolor() === op.value"
+            (click)="dolor.set(op.value); $event.stopPropagation()">
+            <strong>{{ op.label }}</strong>
+            <span *ngIf="op.hint">{{ op.hint }}</span>
+          </button>
+        </li>
+        <li *ngIf="dolor() === 'otro'">
+          <input
+            type="text"
+            class="ob3__input-text"
+            [value]="dolorOtro()"
+            (input)="dolorOtro.set($any($event.target).value)"
+            placeholder="Escríbelo libre…"
+            (click)="$event.stopPropagation()"/>
+        </li>
+      </ul>
+    </ng-container>
+
+    <!-- Paso 4: Gali ya está trabajando (WF-2) -->
+    <ng-container *ngIf="paso() === 4">
+      <gali-mark [state]="'actuando'" size="xl"></gali-mark>
+      <h2 class="ob3__pregunta ob3__pregunta--center">
+        Gali es tu socio de operación.<br/>
+        <em>Esto lo hace mientras trabajas:</em>
+      </h2>
+
+      <ul class="ob3__checklist">
+        <li *ngFor="let item of checklist; let i = index" class="ob3__check-item" [style.animation-delay.ms]="i * 200">
+          <span class="ob3__check-icon" aria-hidden="true">✓</span>
+          <span>{{ item }}</span>
+          <em class="ob3__check-now">AHORA</em>
+        </li>
+      </ul>
+
+      <p class="ob3__check-sub">
+        No tienes que ir a buscarla. Ella te encuentra cuando importa.
+      </p>
+
+      <div class="ob3__hallazgos" *ngIf="showHallazgos()">
+        <span class="ob3__hallazgos-tag">Lo que encontró de tu negocio (Collar GPS)</span>
+        <ul>
+          <li *ngFor="let h of hallazgos">
+            <span>{{ h.icono }}</span>
+            <div>
+              <strong>{{ h.titulo }}</strong>
+              <p>{{ h.descripcion }}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="ob3__mision-actions ob3__mision-actions--center">
+        <button type="button" class="ob3__cta ob3__cta--primary" (click)="verHallazgos()">
+          Ver qué encontró Gali de tu negocio →
+        </button>
+        <button type="button" class="ob3__cta ob3__cta--ghost" (click)="skipOnboarding()">
+          Ir al lienzo
+        </button>
+      </div>
+    </ng-container>
+  </main>
+
+  <footer class="ob3__foot" *ngIf="paso() > 0 && paso() < 4 && !streamingActivo()">
+    <button type="button" class="ob3__nav ob3__nav--ghost" (click)="retroceder()" *ngIf="paso() > 1">
+      ← atrás
+    </button>
+    <span class="ob3__foot-spacer"></span>
+    <button
+      type="button"
+      class="ob3__nav ob3__nav--primary"
+      (click)="avanzar()"
+      [disabled]="(paso() === 1 && !estado()) || (paso() === 2 && !antiguedad()) || (paso() === 3 && !dolor()) || (paso() === 3 && dolor() === 'otro' && !dolorOtro().trim())">
+      {{ paso() === 3 ? 'completar' : 'siguiente' }} →
+    </button>
+  </footer>
+</div>

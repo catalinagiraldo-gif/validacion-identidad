@@ -1,0 +1,243 @@
+<!-- Crear vista nueva -->
+<article class="vista" *ngIf="isCreating()">
+  <header class="vista__hero">
+    <span class="vista__sparkle">✦</span>
+    <h1>Compón una vista en lenguaje natural</h1>
+    <p>Dime qué quieres ver en una pantalla, y Gali la arma. La encuentras después en tu sidebar.</p>
+  </header>
+
+  <div class="vista__compose">
+    <label>
+      <span class="vista__compose-tag">¿Qué quieres ver?</span>
+      <textarea
+        rows="3"
+        placeholder="Ej: pedidos del día, novedades pendientes, mis campañas con ROAS y el saldo proyectado"
+        [value]="newPrompt()"
+        (input)="newPrompt.set($any($event.target).value)"
+      ></textarea>
+    </label>
+    <button class="vista__compose-cta" (click)="generateFromPrompt()" [disabled]="generating() || !newPrompt().trim()">
+      <span *ngIf="!generating()">✦ Componer vista</span>
+      <span *ngIf="generating()" class="vista__compose-loading">
+        <span class="vista__compose-dots"><span></span><span></span><span></span></span>
+        Gali está componiendo...
+      </span>
+    </button>
+  </div>
+
+  <div class="vista__composed" *ngIf="composedWidgets().length">
+    <header>
+      <span class="vista__sparkle">✦</span>
+      <strong>Vista compuesta · {{ composedWidgets().length }} widgets</strong>
+    </header>
+    <div class="vista__composed-grid">
+      <div *ngFor="let w of composedWidgets()" class="vista__composed-chip">
+        <span>{{ widgetMeta(w)?.icon }}</span>
+        {{ widgetMeta(w)?.label }}
+      </div>
+    </div>
+    <button class="vista__save" (click)="saveComposed()" *ngIf="!generating()">💾 Guardar y abrir vista</button>
+  </div>
+
+  <div class="vista__suggestions">
+    <span class="vista__suggestions-tag">O parte de una plantilla</span>
+    <div>
+      <a routerLink="/gali-v3/vista/operacion-hoy">📋 Mi operación de hoy</a>
+      <a routerLink="/gali-v3/vista/productos-ganadores">⚡ Mis productos ganadores</a>
+      <a routerLink="/gali-v3/vista/centro-mando">🎯 Centro de mando (denso)</a>
+    </div>
+  </div>
+
+  <!-- ✦ Bloques custom como widgets componibles (output del Constructor V8) -->
+  <div class="vista__custom-blocks" *ngIf="bloquesCustom().length > 0">
+    <header class="vista__suggestions-tag">
+      <span class="vista__sparkle">✦</span> Tus bloques custom para esta vista
+    </header>
+    <p class="vista__custom-desc">
+      Los bloques que construiste con Gali también funcionan como widgets en esta vista.
+      Aparecerán mezclados con los widgets default cuando uses el prompt.
+    </p>
+    <div class="vista__custom-grid">
+      <div *ngFor="let b of bloquesCustom()" class="vista__custom-chip">
+        <span class="vista__custom-chip-icon">{{ b.icono }}</span>
+        <div>
+          <strong>{{ b.titulo }}</strong>
+          <em>{{ b.categoria }}</em>
+        </div>
+      </div>
+    </div>
+    <a routerLink="/gali-v3/bloque-builder" class="vista__custom-cta">
+      <span aria-hidden="true">✦</span> Construir un bloque nuevo para esta vista →
+    </a>
+  </div>
+  <div class="vista__custom-blocks vista__custom-blocks--empty" *ngIf="bloquesCustom().length === 0">
+    <span class="vista__sparkle">✦</span>
+    <strong>¿Necesitas un dato que no está en los widgets default?</strong>
+    <p>Construye un bloque custom con Gali y aparecerá automáticamente disponible para esta vista.</p>
+    <a routerLink="/gali-v3/bloque-builder" class="vista__custom-cta">Abrir Constructor →</a>
+  </div>
+</article>
+
+<!-- Vista en uso -->
+<article class="vista" *ngIf="!isCreating() && vista() as v">
+  <header class="vista__head">
+    <div>
+      <span class="vista__head-tag">
+        <span class="vista__sparkle">✦</span>
+        Vista personalizada · actualizada en vivo
+      </span>
+      <h1>{{ v.name }}</h1>
+      <p>{{ v.description }}</p>
+    </div>
+    <div class="vista__head-actions">
+      <button (click)="toggleEdit()" [class.is-on]="editing()">
+        {{ editing() ? '✓ Listo' : '✎ Editar widgets' }}
+      </button>
+      <a routerLink="/gali-v3/vista/nueva" class="vista__head-new">+ Nueva vista</a>
+    </div>
+  </header>
+
+  <div class="vista__widget-picker" *ngIf="editing()">
+    <span class="vista__widget-picker-tag">Toca para añadir o quitar</span>
+    <div>
+      <button *ngFor="let w of allWidgets"
+              [class.is-on]="v.widgets.includes(w.id)"
+              (click)="toggleWidget(w.id)">
+        <span>{{ w.icon }}</span> {{ w.label }}
+      </button>
+    </div>
+  </div>
+
+  <div class="vista__grid">
+    <!-- Pedidos -->
+    <article *ngIf="v.widgets.includes('pedidos-dia')" class="vista__widget vista__widget--pedidos">
+      <header><span>🛒</span> Pedidos del día</header>
+      <div class="vista__widget-body">
+        <div class="vista__big">{{ snapshot().pedidos.hoy }}</div>
+        <ul class="vista__split">
+          <li>{{ snapshot().pedidos.nuevos }} nuevos</li>
+          <li>{{ snapshot().pedidos.en_transito }} en tránsito</li>
+          <li>{{ snapshot().pedidos.entregados }} entregados</li>
+        </ul>
+        <a routerLink="/gali-v3/dropi/pedidos" class="vista__widget-link">Ir a pedidos →</a>
+      </div>
+    </article>
+
+    <!-- Novedades -->
+    <article *ngIf="v.widgets.includes('novedades-pendientes')" class="vista__widget vista__widget--novedades">
+      <header><span>📦</span> Novedades</header>
+      <div class="vista__widget-body">
+        <div class="vista__big vista__big--alert">{{ snapshot().pedidos.novedades_criticas }}</div>
+        <p>requieren tu decisión hoy</p>
+        <a routerLink="/gali-v3/dropi/pedidos" class="vista__widget-link">Revisar triage →</a>
+      </div>
+    </article>
+
+    <!-- Campañas -->
+    <article *ngIf="v.widgets.includes('campanas-activas')" class="vista__widget vista__widget--campanas">
+      <header><span>📣</span> Campañas activas</header>
+      <div class="vista__widget-body">
+        <div class="vista__big">{{ snapshot().campanas.roas_promedio }}x</div>
+        <p>ROAS promedio · {{ snapshot().campanas.activas }} campañas</p>
+        <span class="vista__widget-sub">{{ format(snapshot().campanas.presupuesto_diario_total) }}/día total</span>
+        <a routerLink="/gali-v3/dropi/campanas" class="vista__widget-link">Ver health-indicators →</a>
+      </div>
+    </article>
+
+    <!-- Vigilante Logístico (WF-3) -->
+    <article *ngIf="v.widgets.includes('vigilante-logistico')" class="vista__widget vista__widget--wide">
+      <header><span>🚛</span> Vigilante Logístico</header>
+      <div class="vista__widget-body vista__widget-body--block">
+        <block-vigilante-logistico></block-vigilante-logistico>
+      </div>
+    </article>
+
+    <!-- Rentabilidad Real (WF-4) -->
+    <article *ngIf="v.widgets.includes('rentabilidad-real')" class="vista__widget vista__widget--wide">
+      <header><span>💰</span> Rentabilidad Real</header>
+      <div class="vista__widget-body vista__widget-body--block">
+        <block-rentabilidad></block-rentabilidad>
+      </div>
+    </article>
+
+    <!-- Wallet -->
+    <article *ngIf="v.widgets.includes('wallet-proyeccion')" class="vista__widget vista__widget--wallet">
+      <header><span>💰</span> Wallet · proyección</header>
+      <div class="vista__widget-body">
+        <div class="vista__big">{{ format(snapshot().wallet.saldo_actual) }}</div>
+        <p>saldo hoy</p>
+        <span class="vista__widget-sub vista__widget-up">↑ {{ format(snapshot().wallet.proyeccion_7d) }} en 7d</span>
+        <span class="vista__widget-mini">Mejor día retiro: {{ snapshot().wallet.fecha_optima_retiro }}</span>
+      </div>
+    </article>
+
+    <!-- Productos top -->
+    <article *ngIf="v.widgets.includes('productos-top')" class="vista__widget">
+      <header><span>⚡</span> Productos top</header>
+      <ul class="vista__list">
+        <li *ngFor="let p of proyectosActivos()">
+          <span>{{ p.icon }}</span>
+          <div>
+            <strong>{{ p.product.name }}</strong>
+            <small>ROAS {{ p.metrics.roas_actual }}x · {{ p.metrics.ventas_totales }} ventas</small>
+          </div>
+        </li>
+      </ul>
+    </article>
+
+    <!-- Flows -->
+    <article *ngIf="v.widgets.includes('flows-activos')" class="vista__widget">
+      <header><span>🔧</span> Flows automatizando</header>
+      <div class="vista__widget-body">
+        <div class="vista__big">{{ snapshot().automatizaciones.activas }}</div>
+        <p>flows activos · {{ snapshot().automatizaciones.ejecuciones_hoy }} ejec. hoy</p>
+        <a routerLink="/gali-v3/builder" class="vista__widget-link">Ir al Builder →</a>
+      </div>
+    </article>
+
+    <!-- Agentes -->
+    <article *ngIf="v.widgets.includes('agentes-trabajando')" class="vista__widget">
+      <header><span>🤖</span> Agentes trabajando</header>
+      <ul class="vista__list" *ngIf="agentesInstalados().length">
+        <li *ngFor="let a of agentesInstalados()">
+          <span>{{ a.icon }}</span>
+          <div>
+            <strong>{{ a.name }}</strong>
+            <small>{{ a.tagline }}</small>
+          </div>
+        </li>
+      </ul>
+      <p *ngIf="!agentesInstalados().length" class="vista__empty">
+        Aún no tienes agentes instalados. <a routerLink="/gali-v3/mercado">Explorar →</a>
+      </p>
+    </article>
+
+    <!-- Memoria -->
+    <article *ngIf="v.widgets.includes('memoria-snapshot')" class="vista__widget">
+      <header><span>🧠</span> Lo que sabe Gali</header>
+      <p class="vista__widget-quote">Ver panel derecho · memoria editable.</p>
+    </article>
+
+    <!-- Señales -->
+    <article *ngIf="v.widgets.includes('senales-criticas')" class="vista__widget vista__widget--signals">
+      <header><span>⚠️</span> Señales activas</header>
+      <ul class="vista__list">
+        <li *ngFor="let s of signals().slice(0, 3)">
+          <span>{{ s.icon }}</span>
+          <div>
+            <strong>{{ s.titulo }}</strong>
+            <small>{{ s.fuente }}</small>
+          </div>
+        </li>
+      </ul>
+    </article>
+  </div>
+
+  <proximos-pasos contexto="vista"></proximos-pasos>
+</article>
+
+<!-- Not found -->
+<div class="vista__notfound" *ngIf="!isCreating() && !vista()">
+  <h2>Vista no encontrada</h2>
+  <a routerLink="/gali-v3/vista/nueva">+ Crear vista nueva</a>
+</div>

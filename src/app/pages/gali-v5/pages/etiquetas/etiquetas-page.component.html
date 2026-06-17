@@ -1,0 +1,49 @@
+<div class="etiquetas-page">
+  <dropi-titulos title="Etiquetas" [breadcrumbs]="breadcrumbs">
+    <dropi-button-new titulosActions label="Generar etiquetas" icon="pi-tag" hierarchy="primary" />
+  </dropi-titulos>
+
+  <div class="etiquetas-page__toolbar">
+    <dropi-search-oficial
+      placeholder="Buscar pedido o guía…"
+      guiaLabel="Guía"
+      [(ngModel)]="searchQuery"
+    />
+  </div>
+
+  <div class="etiquetas-table-wrap">
+    <table class="etiquetas-table">
+      <thead>
+        <tr>
+          <th style="width:100px">Pedido</th>
+          <th>Cliente</th>
+          <th style="width:160px">Guía</th>
+          <th style="width:140px">Transportadora</th>
+          <th>Destino</th>
+          <th style="width:140px">Estado etiqueta</th>
+          <th style="width:120px">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows; track row.pedido) {
+          <tr>
+            <td>{{ row.pedido }}</td>
+            <td>{{ row.cliente }}</td>
+            <td>{{ row.guia }}</td>
+            <td><dropi-tag [label]="row.transportadora" variant="carrier" /></td>
+            <td>{{ row.destino }}</td>
+            <td><dropi-tag [label]="row.estado" [variant]="tagVariant(row.estado)" /></td>
+            <td>
+              <div class="etiquetas-table__actions">
+                <button type="button" title="Descargar"><i class="pi pi-download"></i></button>
+                <button type="button" title="Imprimir"><i class="pi pi-print"></i></button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <dropi-paginator />
+</div>

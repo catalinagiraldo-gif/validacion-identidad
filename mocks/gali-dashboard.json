@@ -1,0 +1,138 @@
+{
+  "user": {
+    "id": "u-sebas-001",
+    "name": "Sebas",
+    "level": "descubridor",
+    "joinedDays": 14,
+    "salesCount": 1
+  },
+  "onboarding": {
+    "questions": [
+      {
+        "id": "q-time",
+        "label": "¿Cuánto tiempo llevas en dropshipping?",
+        "options": [
+          { "value": "new", "label": "Soy nuevo, nunca he vendido" },
+          { "value": "0-3", "label": "Menos de 3 meses" },
+          { "value": "3-12", "label": "3-12 meses, tengo algunas ventas" },
+          { "value": "1y+", "label": "Más de 1 año, vendo regularmente" }
+        ]
+      },
+      {
+        "id": "q-niche",
+        "label": "¿Tienes algún nicho en mente?",
+        "options": [
+          { "value": "no", "label": "No, necesito ayuda para encontrarlo" },
+          { "value": "yes-mascotas", "label": "Sí — mascotas" },
+          { "value": "yes-skincare", "label": "Sí — skincare" },
+          { "value": "explore", "label": "Quiero explorar varias opciones" }
+        ]
+      },
+      {
+        "id": "q-goal",
+        "label": "¿Cuál es tu objetivo más urgente?",
+        "options": [
+          { "value": "first-sale", "label": "Hacer mi primera venta" },
+          { "value": "consistent", "label": "Llegar a ventas consistentes" },
+          { "value": "scale", "label": "Escalar lo que ya funciona" },
+          { "value": "explore-new", "label": "Explorar productos nuevos" }
+        ]
+      }
+    ],
+    "recommendation": {
+      "missionId": "m-001",
+      "title": "Lanza tu primer producto ganador",
+      "subtitle": "en 72 horas",
+      "stats": {
+        "completedBy": 247,
+        "avgDays": 2.4,
+        "successRate": 68
+      },
+      "rationale": "Basado en tu perfil — perfecto para activar tu primera venta con foco y datos."
+    },
+    "messages": {
+      "welcome": "Hola, Sebas. Soy Gali, tu copiloto de ventas. Para recomendarte la mejor misión, te hago 3 preguntas rápidas.",
+      "thinking": "Calibrando recomendación con tu perfil...",
+      "recommendationReady": "Perfecto, Sebas. Basado en tu perfil, te propongo empezar con esta misión:"
+    },
+    "executionSteps": [
+      { "label": "Analizando tus respuestas", "duration": 900 },
+      { "label": "Cruzando con 12.000 perfiles similares LATAM", "duration": 1200 },
+      { "label": "Seleccionando misión óptima", "duration": 700 }
+    ]
+  },
+  "dashboard": {
+    "greeting": "Buenos días, Sebas",
+    "subtitle": "Esto es lo que necesitas atender hoy",
+    "activeMission": {
+      "id": "m-001",
+      "title": "Lanza tu primer producto ganador",
+      "progressPct": 0,
+      "currentStep": 1,
+      "currentStepName": "Buscar producto",
+      "totalSteps": 4,
+      "completedBy": 247,
+      "avgDays": 2.4,
+      "nextActionLabel": "Continuar misión",
+      "nextActionRoute": "/gali/descubrimiento"
+    },
+    "alerts": [
+      {
+        "id": "a-001",
+        "type": "warning",
+        "icon": "⚠️",
+        "title": "Aún no has lanzado tu primer producto",
+        "body": "Llevas 14 días en Dropi. 247 dropshippers con tu perfil ya lanzaron — promedio 2.4 días.",
+        "ctas": [
+          { "label": "Empezar ahora", "primary": true, "route": "/gali/descubrimiento" }
+        ]
+      },
+      {
+        "id": "a-002",
+        "type": "info",
+        "icon": "💡",
+        "title": "Nuevo en tendencia esta semana",
+        "body": "Skincare está creciendo +41% en Colombia. ¿Quieres explorar la categoría?",
+        "ctas": [
+          { "label": "Ver productos skincare", "primary": false, "route": "/gali/descubrimiento" }
+        ]
+      }
+    ],
+    "availableMissions": [
+      {
+        "id": "m-002",
+        "title": "Renueva tus creatives",
+        "subtitle": "Si llevas >15 días con la misma pieza, baja la conversión",
+        "priority": "alta",
+        "completedBy": 134,
+        "avgDays": 1.2,
+        "status": "available",
+        "icon": "🎨"
+      },
+      {
+        "id": "m-003",
+        "title": "Lleva tu producto a 50 ventas/semana",
+        "subtitle": "Escala lo que ya está funcionando",
+        "completedBy": 89,
+        "avgDays": 14,
+        "status": "locked-plus",
+        "icon": "📈"
+      },
+      {
+        "id": "m-004",
+        "title": "Configura tu primera campaña <$200k",
+        "subtitle": "Para presupuestos pequeños y conservadores",
+        "completedBy": 312,
+        "avgDays": 3.1,
+        "status": "completed",
+        "icon": "✓"
+      }
+    ],
+    "quickActions": [
+      { "label": "Buscar un nuevo producto", "icon": "🔍", "route": "/gali/descubrimiento" },
+      { "label": "Revisar rendimiento", "icon": "📊", "route": null },
+      { "label": "Generar creatives nuevos", "icon": "✨", "route": null },
+      { "label": "Escribir a Gali libre", "icon": "💬", "route": null }
+    ]
+  }
+}

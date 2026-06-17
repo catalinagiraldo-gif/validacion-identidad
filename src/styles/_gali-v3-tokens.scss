@@ -1,0 +1,294 @@
+// ============================================
+// Gali v3 — Light operativo alineado con Figma oficial Dropi
+// Re-arquitectura node 7797:113243
+// Ámbito: /gali-v3/* — coexiste con v2 dark legacy
+// ============================================
+
+// --- Tipografía ---
+$gv3-font-display: 'Fraunces', 'IBM Plex Serif', Georgia, serif;
+$gv3-font-body:    'IBM Plex Sans', system-ui, sans-serif;
+$gv3-font-mono:    'JetBrains Mono', 'IBM Plex Mono', monospace;
+
+// Escala (ratio 1.25 — moderada para superficie densa)
+$gv3-text-xs:    11px;
+$gv3-text-sm:    13px;
+$gv3-text-base:  15px;
+$gv3-text-lg:    18px;
+$gv3-text-xl:    22px;
+$gv3-text-2xl:   28px;
+$gv3-text-3xl:   36px;
+$gv3-text-4xl:   48px;
+$gv3-text-5xl:   64px;
+
+// --- Backgrounds (light cálido) ---
+$gv3-bg-cream:    #FAF7F2;   // canvas, fondo de página
+$gv3-bg-surface:  #FFFFFF;   // cards, paneles
+$gv3-bg-warm:     #FFF9F0;   // surface-raised, zonas Gali (suave warm tint)
+$gv3-bg-tint:     #FCF1E0;   // banner promo, info
+$gv3-bg-veil:     rgba(26, 22, 18, 0.42);  // backdrops modales
+
+// --- Texto (todos pasan WCAG AAA sobre cream/white) ---
+$gv3-text-primary:    #1A1612;   // 17.5:1 sobre cream
+$gv3-text-secondary:  #5C4F44;   // 9.0:1 sobre cream
+$gv3-text-tertiary:   #8A7B68;   // 4.5:1 sobre cream
+$gv3-text-muted:      #B4A492;   // 3.1:1 large only — para chrome decorativo
+$gv3-text-onAccent:   #FFFFFF;   // texto sobre botón naranja
+
+// --- Acentos firma ---
+$gv3-orange:        #F49A3D;   // Dropi primario, alineado al sidebar oficial
+$gv3-orange-hover:  #E08A2D;
+$gv3-orange-soft:   #FCE4C7;
+$gv3-orange-tint:   rgba(244, 154, 61, 0.10);
+
+$gv3-terracota:     #B8593A;   // Gali only (oscurecido vs v2 para light)
+$gv3-terracota-soft:#F1D8CB;
+$gv3-terracota-tint:rgba(184, 89, 58, 0.10);
+
+$gv3-sage:          #5F7058;   // memoria/confirmaciones (oscurecido para light)
+$gv3-sage-soft:     #D8DECF;
+$gv3-sage-tint:     rgba(95, 112, 88, 0.10);
+
+$gv3-rust:          #9A3F26;   // críticos
+$gv3-rust-soft:     #F1C9BC;
+$gv3-rust-tint:     rgba(154, 63, 38, 0.10);
+
+$gv3-amber:         #C88A1C;
+$gv3-amber-soft:    #F3E1B8;
+$gv3-amber-tint:    rgba(200, 138, 28, 0.10);
+
+// --- Bordes ---
+$gv3-border-whisper: rgba(26, 22, 18, 0.05);
+$gv3-border-subtle:  rgba(26, 22, 18, 0.08);
+$gv3-border-default: rgba(26, 22, 18, 0.14);
+$gv3-border-warm:    rgba(244, 154, 61, 0.30);
+$gv3-border-strong:  rgba(26, 22, 18, 0.22);
+
+// --- Sombras cálidas (suaves para light) ---
+$gv3-shadow-xs:  0 1px 2px rgba(60, 30, 10, 0.04);
+$gv3-shadow-sm:  0 2px 8px rgba(60, 30, 10, 0.06);
+$gv3-shadow-md:  0 8px 20px rgba(60, 30, 10, 0.08);
+$gv3-shadow-lg:  0 16px 36px rgba(60, 30, 10, 0.12);
+$gv3-shadow-glow-warm: 0 0 20px rgba(244, 154, 61, 0.22);
+
+// --- Espaciado (escala 4px) ---
+$gv3-space-1: 4px;
+$gv3-space-2: 8px;
+$gv3-space-3: 12px;
+$gv3-space-4: 16px;
+$gv3-space-5: 24px;
+$gv3-space-6: 32px;
+$gv3-space-7: 48px;
+$gv3-space-8: 64px;
+$gv3-space-9: 96px;
+
+// --- Radios (alineados con DS Dropi) ---
+$gv3-radius-sm: 4px;
+$gv3-radius-md: 8px;
+$gv3-radius-lg: 12px;
+$gv3-radius-xl: 18px;
+$gv3-radius-pill: 999px;
+
+// --- Motion ---
+$gv3-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+$gv3-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+$gv3-ease-organic: cubic-bezier(0.34, 1.36, 0.64, 1);
+
+$gv3-dur-fast:   140ms;
+$gv3-dur-base:   240ms;
+$gv3-dur-slow:   480ms;
+$gv3-dur-breath: 4200ms;
+
+// --- Chrome del Figma oficial ---
+$gv3-header-h: 53px;
+$gv3-sidebar-w: 56px;
+
+// ============================================
+// AI-First tri-pane — Builder + Orquestador
+// ============================================
+
+// --- Tri-pane layout (legacy chat-bottom — se conserva como fallback de tokens) ---
+$gv3-topbar-h: 56px;
+$gv3-navigator-w: 248px;
+$gv3-navigator-w-collapsed: 60px;
+$gv3-business-w: 320px;
+$gv3-business-w-collapsed: 0px;
+$gv3-chat-h: 220px;
+$gv3-chat-h-expanded: 360px;
+
+// --- Right panel (Cursor-style) ---
+// Reemplaza el chat-bottom + business-context derecho independiente.
+// Tabs internos: Chat (con business-context como acordeón) | Mis Bloques.
+$gv3-rpanel-w: 380px;
+$gv3-rpanel-w-collapsed: 40px;   // chip flotante con toggle + badge
+$gv3-rpanel-w-expanded: 480px;   // si el usuario quiere ampliarlo
+$gv3-rpanel-tab-h: 44px;
+$gv3-rpanel-z: 25;
+$gv3-rpanel-chip-z: 28;
+
+// --- Artifact surfaces ---
+$gv3-artifact-radius: 14px;
+$gv3-artifact-shadow: 0 4px 24px rgba(60, 30, 10, 0.06);
+$gv3-artifact-shadow-hover: 0 12px 36px rgba(60, 30, 10, 0.10);
+$gv3-artifact-border: rgba(26, 22, 18, 0.06);
+
+// --- Signal chips ---
+$gv3-signal-oportunidad: $gv3-sage;
+$gv3-signal-oportunidad-bg: $gv3-sage-tint;
+$gv3-signal-riesgo: $gv3-rust;
+$gv3-signal-riesgo-bg: $gv3-rust-tint;
+$gv3-signal-optimizacion: $gv3-amber;
+$gv3-signal-optimizacion-bg: $gv3-amber-tint;
+
+// --- Streaming dots animation ---
+@keyframes gv3-streaming-pulse {
+  0%, 80%, 100% { opacity: 0.25; transform: scale(0.92); }
+  40% { opacity: 1; transform: scale(1); }
+}
+@keyframes gv3-cursor-blink {
+  50% { opacity: 0; }
+}
+@keyframes gv3-artifact-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes gv3-signal-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; }
+  50% { box-shadow: 0 0 0 6px transparent; }
+}
+
+// --- Signal highlight (cuando llegas a una página vía signal click) ---
+@keyframes gv3-signal-highlight {
+  0% { background: transparent; box-shadow: 0 0 0 0 rgba(244, 154, 61, 0.6); }
+  15% { background: rgba(244, 154, 61, 0.2); box-shadow: 0 0 0 8px rgba(244, 154, 61, 0.3); }
+  100% { background: transparent; box-shadow: 0 0 0 0 transparent; }
+}
+.is-highlighted-signal {
+  animation: gv3-signal-highlight 1.5s ease-out 0s 3;
+  position: relative;
+  z-index: 5;
+  border-radius: $gv3-radius-md;
+}
+
+// --- Status dots ---
+$gv3-status-activo: $gv3-sage;
+$gv3-status-pausado: $gv3-amber;
+$gv3-status-completado: $gv3-text-tertiary;
+
+// --- Sparkle (✦) ---
+$gv3-sparkle-color: $gv3-orange;
+$gv3-sparkle-glow: 0 0 8px rgba(244, 154, 61, 0.4);
+
+@mixin gv3-artifact {
+  background: $gv3-bg-surface;
+  border: 1px solid $gv3-artifact-border;
+  border-radius: $gv3-artifact-radius;
+  box-shadow: $gv3-artifact-shadow;
+  transition: box-shadow $gv3-dur-base $gv3-ease-out, transform $gv3-dur-base $gv3-ease-out;
+  animation: gv3-artifact-enter $gv3-dur-base $gv3-ease-out;
+}
+
+@mixin gv3-pill($bg, $fg) {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: $bg;
+  color: $fg;
+  border-radius: $gv3-radius-pill;
+  font-family: $gv3-font-mono;
+  font-size: $gv3-text-xs;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+@mixin gv3-streaming-dots {
+  display: inline-flex;
+  gap: 3px;
+  > span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: $gv3-orange;
+    animation: gv3-streaming-pulse 1.2s $gv3-ease-in-out infinite;
+    &:nth-child(2) { animation-delay: 0.15s; }
+    &:nth-child(3) { animation-delay: 0.30s; }
+  }
+}
+
+@mixin gv3-scrollbar-subtle {
+  scrollbar-width: thin;
+  scrollbar-color: $gv3-border-subtle transparent;
+  &::-webkit-scrollbar { width: 8px; height: 8px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: $gv3-border-subtle;
+    border-radius: 4px;
+    &:hover { background: $gv3-border-default; }
+  }
+}
+
+// --- Mixins ---
+@mixin gv3-grain($opacity: 0.02) {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: $opacity;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.40  0 0 0 0 0.28  0 0 0 0 0.18  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 200px 200px;
+  }
+}
+
+@mixin gv3-card {
+  background: $gv3-bg-surface;
+  border: 1px solid $gv3-border-whisper;
+  border-radius: $gv3-radius-lg;
+  box-shadow: $gv3-shadow-xs;
+  transition: box-shadow $gv3-dur-base $gv3-ease-out, border-color $gv3-dur-base ease;
+}
+
+@mixin gv3-card-hover {
+  border-color: $gv3-border-subtle;
+  box-shadow: $gv3-shadow-sm;
+}
+
+@mixin gv3-gali-surface {
+  background: $gv3-bg-warm;
+  border: 1px solid $gv3-orange-tint;
+  border-radius: $gv3-radius-lg;
+  box-shadow: $gv3-shadow-xs;
+}
+
+@mixin gv3-display-tight {
+  font-family: $gv3-font-display;
+  font-weight: 500;
+  font-variation-settings: 'opsz' 96, 'SOFT' 30, 'WONK' 0;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+}
+
+@mixin gv3-display-editorial {
+  font-family: $gv3-font-display;
+  font-weight: 400;
+  font-style: italic;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+  letter-spacing: -0.02em;
+}
+
+@mixin gv3-mono-tag {
+  font-family: $gv3-font-mono;
+  font-size: $gv3-text-xs;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $gv3-text-tertiary;
+}
+
+@mixin gv3-bg-cream-radial {
+  background:
+    radial-gradient(at 20% 0%, $gv3-orange-tint 0px, transparent 50%),
+    radial-gradient(at 80% 100%, $gv3-sage-tint 0px, transparent 60%),
+    $gv3-bg-cream;
+}

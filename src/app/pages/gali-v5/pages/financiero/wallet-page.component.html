@@ -1,0 +1,84 @@
+<div class="wallet-page">
+
+  <dropi-gali-bar
+    agent="Agente Financiero"
+    status="activo"
+    message="📅 Fecha óptima de retiro: jueves · 47 entregas confirmadas · P&amp;L esta semana: $411k neto · Novedades: 40% del costo operativo"
+    ctaLabel="Ver análisis completo"
+  />
+
+  <dropi-titulos title="Historial de wallet" [breadcrumbs]="breadcrumbs">
+    <dropi-button-new titulosActions label="Transferir entre wallets" icon="pi-arrows-h" hierarchy="outline" [width]="220" />
+    <dropi-button-new titulosActions label="Retirar" icon="pi-arrow-up" hierarchy="outline" [width]="110" />
+    <dropi-button-new titulosActions label="Recargar" icon="pi-wallet" hierarchy="primary" [width]="130" />
+  </dropi-titulos>
+
+  <div class="wallet-page__alert">
+    <i class="pi pi-info-circle"></i>
+    <span>{{ alertMessage }}</span>
+  </div>
+
+  <div class="wallet-page__filters">
+    <div class="wallet-page__date">
+      <label>Fecha de inicio</label>
+      <input type="text" value="30/4/2025" readonly />
+    </div>
+    <div class="wallet-page__date">
+      <label>Fecha de fin</label>
+      <input type="text" value="30/4/2025" readonly />
+    </div>
+    <div class="wallet-page__select">
+      <label>Filtrar por tipo</label>
+      <select><option>Seleccionar tipo</option><option>ENTRADA</option><option>SALIDA</option></select>
+    </div>
+    <div class="wallet-page__select">
+      <label>Filtrar por código</label>
+      <select><option>Filtrar por código</option></select>
+    </div>
+    <dropi-button-new icon="pi-arrow-right" [iconOnly]="true" hierarchy="primary" />
+    <dropi-search-oficial placeholder="Buscar por ID de transacción" [(ngModel)]="searchQuery" />
+    <dropi-button-new label="Exportar" icon="pi-file" hierarchy="outline" [width]="120" />
+  </div>
+
+  <div class="wallet-page__tabs">
+    <button type="button" [class.active]="activeTab() === 'transacciones'" (click)="activeTab.set('transacciones')">
+      Transacciones en wallet
+    </button>
+    <button type="button" [class.active]="activeTab() === 'depositos'" (click)="activeTab.set('depositos')">
+      Depósitos manuales
+    </button>
+  </div>
+
+  @if (activeTab() === 'transacciones') {
+    <div class="wallet-table-wrap">
+      <table class="wallet-table">
+        <thead>
+          <tr>
+            <th style="width:80px">#</th>
+            <th style="width:200px">Fecha</th>
+            <th style="width:120px">Tipo</th>
+            <th style="width:140px">Monto</th>
+            <th style="width:180px">Monto previo</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (tx of filteredTransactions(); track tx.num) {
+            <tr>
+              <td>{{ tx.num }}</td>
+              <td>{{ tx.fecha }}</td>
+              <td>{{ tx.tipo }}</td>
+              <td [class.positive]="tx.tipo === 'ENTRADA'" [class.negative]="tx.tipo === 'SALIDA'">{{ tx.monto }}</td>
+              <td>{{ tx.montoPrevio }}</td>
+              <td class="wallet-table__desc">{{ tx.descripcion }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="wallet-page__empty">No hay depósitos manuales en el periodo seleccionado.</div>
+  }
+
+  <dropi-paginator />
+</div>

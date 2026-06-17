@@ -1,0 +1,15 @@
+<nav class="bread" aria-label="Ubicación actual y siguiente paso sugerido">
+  <span class="bread__sparkle" aria-hidden="true">✦</span>
+  <span class="bread__gali">Gali</span>
+  <span class="bread__sep">·</span>
+  <span class="bread__here">
+    <span class="bread__here-icon">{{ icon() }}</span>
+    <span class="bread__here-label">Estás en:</span>
+    <strong>{{ bread().aqui }}</strong>
+  </span>
+  <span class="bread__arrow" aria-hidden="true">→</span>
+  <span class="bread__next">
+    <span class="bread__next-label">Próximo:</span>
+    <span class="bread__next-text">{{ bread().proximo }}</span>
+  </span>
+</nav>

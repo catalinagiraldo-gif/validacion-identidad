@@ -1,0 +1,67 @@
+[
+  {
+    "id": "pqr1",
+    "producto": "Collar GPS para mascotas",
+    "tipo": "queja-calidad",
+    "motivo": "Producto llegó dañado",
+    "count": 4,
+    "pct": "4.2%",
+    "tendencia": "subiendo",
+    "umbral": "2%",
+    "galiInsight": "Supera el umbral normal (2%). PetStore CO tiene 3 tickets similares este mes.",
+    "accionSugerida": "Alertar al proveedor",
+    "impacto": "Score ADA Spy penalizado -8pts"
+  },
+  {
+    "id": "pqr2",
+    "producto": "Skincare K-Beauty",
+    "tipo": "expectativa",
+    "motivo": "No es lo que esperaba — diferente al video",
+    "count": 7,
+    "pct": "8.1%",
+    "tendencia": "estable",
+    "umbral": "5%",
+    "galiInsight": "Diferencia entre video y producto real. Chatea Pro puede ajustar el script de confirmación.",
+    "accionSugerida": "Actualizar script confirmación",
+    "impacto": "Tasa de garantías puede bajar ~40%"
+  },
+  {
+    "id": "pqr3",
+    "producto": "Proyector Portátil",
+    "tipo": "logistica",
+    "motivo": "No llegó en el tiempo prometido",
+    "count": 3,
+    "pct": "12.5%",
+    "tendencia": "bajando",
+    "umbral": "8%",
+    "galiInsight": "80% de tickets son de Cali con Coordinadora. Vigilante ya cambió a Servientrega.",
+    "accionSugerida": "Ninguna — Vigilante ya actuó",
+    "impacto": "Verificar en 3 días"
+  },
+  {
+    "id": "pqr4",
+    "producto": "Collar GPS para mascotas",
+    "tipo": "fraude-sospechoso",
+    "motivo": "Múltiples garantías del mismo número",
+    "count": 2,
+    "pct": "2.1%",
+    "tendencia": "nueva",
+    "umbral": null,
+    "galiInsight": "+57 310 445 xxxx — 3 solicitudes en 30 días. Patrón de fraude.",
+    "accionSugerida": "Bloquear número",
+    "impacto": "Ahorro $180k en reposiciones"
+  },
+  {
+    "id": "pqr5",
+    "producto": "Reloj Smartwatch Pro",
+    "tipo": "precio",
+    "motivo": "Muy caro para lo que es",
+    "count": 5,
+    "pct": "6.3%",
+    "tendencia": "subiendo",
+    "umbral": "3%",
+    "galiInsight": "ROAS 1.4x sugiere precio por encima del valor percibido.",
+    "accionSugerida": "Revisar ángulo de venta",
+    "impacto": "Potencial +0.5x ROAS"
+  }
+]

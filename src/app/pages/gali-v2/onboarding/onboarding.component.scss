@@ -1,0 +1,313 @@
+@import 'styles/gali-v2-tokens';
+
+:host { display: block; height: 100%; overflow: hidden; font-family: $gv2-font-body; color: $gv2-text-primary; }
+
+.ob {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  @include gv2-mesh-bg;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.ob__atmos {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.7  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 240px 240px;
+}
+
+// --- Pasos ---
+.ob__pasos {
+  position: relative;
+  z-index: 1;
+  padding: $gv2-space-5 $gv2-space-6 0;
+  display: flex;
+  justify-content: center;
+
+  ol { display: inline-flex; gap: $gv2-space-3; list-style: none; margin: 0; padding: 0; }
+  li {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid $gv2-border-subtle;
+    background: $gv2-bg-deep;
+    color: $gv2-text-muted;
+    font-family: $gv2-font-mono;
+    font-size: $gv2-text-xs;
+    letter-spacing: 0.08em;
+    transition: all $gv2-dur-base $gv2-ease-out;
+  }
+  .ob__paso--done { background: $gv2-sage-dim; color: $gv2-sage; border-color: $gv2-sage; }
+  .ob__paso--current {
+    background: $gv2-terracota;
+    color: $gv2-text-primary;
+    border-color: $gv2-terracota;
+    box-shadow: $gv2-shadow-glow-warm;
+    transform: scale(1.08);
+  }
+}
+
+// --- Main ---
+.ob__main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $gv2-space-5;
+  padding: $gv2-space-7 $gv2-space-6;
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.ob__stream {
+  font-family: $gv2-font-display;
+  font-variation-settings: 'opsz' 32, 'SOFT' 50, 'WONK' 0;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  color: $gv2-text-primary;
+  margin: 0;
+  max-width: 30ch;
+  min-height: 1.4em;
+}
+
+.ob__pregunta {
+  font-family: $gv2-font-display;
+  font-variation-settings: 'opsz' 96, 'SOFT' 80, 'WONK' 1;
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: $gv2-text-primary;
+  margin: 0;
+  max-width: 18ch;
+}
+
+.ob__caret {
+  display: inline-block;
+  margin-left: 4px;
+  color: $gv2-terracota;
+  animation: ob-caret 880ms steps(2, end) infinite;
+}
+@keyframes ob-caret { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+// --- Nombre ---
+.ob__nombre-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: $gv2-space-4;
+  align-items: center;
+  width: 100%;
+  max-width: 360px;
+  animation: ob-rise $gv2-dur-slow $gv2-ease-organic;
+}
+.ob__field { width: 100%; display: flex; flex-direction: column; gap: $gv2-space-2; text-align: left; }
+.ob__field-label {
+  font-family: $gv2-font-mono;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $gv2-text-tertiary;
+  em { font-style: italic; color: $gv2-text-muted; }
+}
+
+.ob__input-text {
+  width: 100%;
+  padding: $gv2-space-3 $gv2-space-4;
+  background: $gv2-bg-deep;
+  border: 1px solid $gv2-border-subtle;
+  border-radius: $gv2-radius-md;
+  color: $gv2-text-primary;
+  font-family: $gv2-font-display;
+  font-variation-settings: 'opsz' 18, 'SOFT' 50;
+  font-size: $gv2-text-lg;
+  outline: 0;
+  text-align: center;
+  transition: all $gv2-dur-base $gv2-ease-out;
+  &:focus { border-color: $gv2-terracota; box-shadow: $gv2-shadow-glow-warm; }
+}
+
+// --- Opciones ---
+.ob__opciones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $gv2-space-2;
+  width: 100%;
+  max-width: 480px;
+  animation: ob-rise $gv2-dur-slow $gv2-ease-organic;
+}
+.ob__opcion {
+  width: 100%;
+  text-align: left;
+  appearance: none;
+  background: $gv2-bg-surface;
+  border: 1px solid $gv2-border-subtle;
+  border-radius: $gv2-radius-md;
+  padding: $gv2-space-4;
+  color: $gv2-text-primary;
+  font-family: $gv2-font-body;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all $gv2-dur-fast $gv2-ease-out;
+
+  strong {
+    font-family: $gv2-font-display;
+    font-variation-settings: 'opsz' 20, 'SOFT' 50;
+    font-size: $gv2-text-base;
+    font-weight: 500;
+    color: $gv2-text-primary;
+  }
+  span {
+    font-size: $gv2-text-sm;
+    color: $gv2-text-secondary;
+  }
+  &:hover { border-color: $gv2-border-warm; transform: translateY(-1px); }
+}
+.ob__opcion--active {
+  border-color: $gv2-terracota;
+  background: linear-gradient(180deg, $gv2-terracota-dim 0%, $gv2-bg-surface 100%);
+  box-shadow: $gv2-shadow-glow-warm;
+}
+
+// --- Wow ---
+.ob__wow-stream {
+  width: 100%;
+  max-width: 680px;
+}
+.ob__wow-texto {
+  white-space: pre-wrap;
+  font-family: $gv2-font-display;
+  font-variation-settings: 'opsz' 48, 'SOFT' 50, 'WONK' 0;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  color: $gv2-text-primary;
+  margin: 0;
+  text-align: left;
+}
+.ob__wow-texto--final::first-line {
+  font-style: italic;
+  font-variation-settings: 'opsz' 96, 'SOFT' 80, 'WONK' 1;
+  font-size: clamp(28px, 4vw, 42px);
+  color: $gv2-terracota;
+}
+
+.ob__mision {
+  margin-top: $gv2-space-6;
+  padding: $gv2-space-5;
+  @include gv2-surface(3);
+  border-left: 3px solid $gv2-sage;
+  width: 100%;
+  max-width: 600px;
+  text-align: left;
+  animation: ob-rise $gv2-dur-slow $gv2-ease-organic;
+  animation-delay: 400ms;
+  animation-fill-mode: backwards;
+}
+.ob__mision-mono {
+  font-family: $gv2-font-mono;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $gv2-sage;
+}
+.ob__mision-titulo {
+  @include gv2-display-tight;
+  font-size: $gv2-text-2xl;
+  margin: $gv2-space-2 0 $gv2-space-3;
+  font-weight: 500;
+}
+.ob__mision-desc {
+  font-size: $gv2-text-base;
+  color: $gv2-text-secondary;
+  line-height: 1.55;
+  margin: 0 0 $gv2-space-5;
+}
+.ob__mision-actions { display: flex; gap: $gv2-space-3; flex-wrap: wrap; }
+
+// --- CTA ---
+.ob__cta {
+  appearance: none;
+  padding: 12px 24px;
+  background: $gv2-bg-base;
+  border: 1px solid $gv2-border-subtle;
+  border-radius: $gv2-radius-pill;
+  color: $gv2-text-primary;
+  font-family: $gv2-font-mono;
+  font-size: $gv2-text-sm;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all $gv2-dur-fast $gv2-ease-out;
+  &:hover { border-color: $gv2-border-warm; }
+}
+.ob__cta--primary {
+  background: $gv2-terracota;
+  border-color: $gv2-terracota;
+  &:hover { background: $gv2-orange; border-color: $gv2-orange; transform: translateY(-1px); box-shadow: $gv2-shadow-md; }
+}
+.ob__cta--ghost { color: $gv2-text-tertiary; border-color: $gv2-border-whisper; }
+
+// --- Footer ---
+.ob__foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: $gv2-space-3;
+  padding: $gv2-space-4 $gv2-space-6;
+  border-top: 1px solid $gv2-border-whisper;
+  background: rgba(26, 22, 18, 0.92);
+  backdrop-filter: blur(8px);
+}
+.ob__foot-spacer { flex: 1; }
+
+.ob__nav {
+  appearance: none;
+  padding: 10px 18px;
+  border-radius: $gv2-radius-pill;
+  font-family: $gv2-font-mono;
+  font-size: $gv2-text-xs;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid $gv2-border-subtle;
+  background: transparent;
+  color: $gv2-text-secondary;
+  transition: all $gv2-dur-fast $gv2-ease-out;
+  &:hover:not(:disabled) { color: $gv2-text-primary; border-color: $gv2-border-warm; }
+  &:disabled { opacity: 0.35; cursor: not-allowed; }
+}
+.ob__nav--primary {
+  background: $gv2-terracota;
+  border-color: $gv2-terracota;
+  color: $gv2-text-primary;
+  &:hover:not(:disabled) { background: $gv2-orange; border-color: $gv2-orange; transform: translateY(-1px); }
+}
+
+@keyframes ob-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

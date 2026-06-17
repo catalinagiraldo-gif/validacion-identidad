@@ -1,0 +1,147 @@
+{
+  "skills": [
+    {
+      "id": "sk-001", "nombre": "Anti-Baneo Meta", "agente": "Roax",
+      "icono": "🛡️", "tipo": "gratuita",
+      "rating": 4.8, "usos": 1200, "creador": "Dropi Team", "verificado": true,
+      "descripcion": "Detecta señales de restricción (CTR < 0.8%, frecuencia > 3x) y pausa automáticamente antes de que Meta restrinja la cuenta.",
+      "instalada": true, "categoria": "Protección"
+    },
+    {
+      "id": "sk-002", "nombre": "Escalador ROAS 20%", "agente": "Roax",
+      "icono": "🚀", "tipo": "experto",
+      "rating": 4.6, "usos": 847, "creador": "@MarinaDrops", "verificado": true,
+      "descripcion": "Si el ROAS supera el objetivo por 48h, sube el presupuesto 20% automáticamente. Basado en la estrategia de scaling vertical probada en 500+ campañas.",
+      "instalada": false, "categoria": "Escalamiento"
+    },
+    {
+      "id": "sk-003", "nombre": "Prepago Zona Rural", "agente": "Vigilante",
+      "icono": "🌍", "tipo": "gratuita",
+      "rating": 4.9, "usos": 2100, "creador": "Dropi Team", "verificado": true,
+      "descripcion": "Si el pedido va a un municipio rural (lista configurable), Chatea Pro solicita prepago automáticamente antes de confirmar.",
+      "instalada": true, "categoria": "Logística"
+    },
+    {
+      "id": "sk-004", "nombre": "Cierre Cálido WhatsApp", "agente": "Chatea Pro",
+      "icono": "💬", "tipo": "premium",
+      "rating": 4.7, "usos": 634, "creador": "@JuanDropper1847", "verificado": true,
+      "descripcion": "Script de 5 pasos para confirmar pedidos por WhatsApp con tono cercano. Incluye variantes para objeción de precio y para clientes indecisos.",
+      "instalada": false, "categoria": "Cierre"
+    },
+    {
+      "id": "sk-005", "nombre": "P&L Semanal Auto", "agente": "Financiero",
+      "icono": "📊", "tipo": "gratuita",
+      "rating": 4.5, "usos": 980, "creador": "Dropi Team", "verificado": true,
+      "descripcion": "Cada domingo a las 7am Gali genera y envía el P&L de la semana con el desglose de costos y la ganancia neta real.",
+      "instalada": false, "categoria": "Reportes"
+    },
+    {
+      "id": "sk-006", "nombre": "Pausa Nocturna", "agente": "Roax",
+      "icono": "🌙", "tipo": "gratuita",
+      "rating": 4.3, "usos": 1450, "creador": "Dropi Team", "verificado": true,
+      "descripcion": "Pausa campañas entre 11pm y 6am (configurable). Ahorra hasta 25% del presupuesto en horas de baja conversión.",
+      "instalada": false, "categoria": "Ahorro"
+    },
+    {
+      "id": "sk-007", "nombre": "Alerta Novedad Alta", "agente": "Vigilante",
+      "icono": "⚠️", "tipo": "gratuita",
+      "rating": 4.7, "usos": 1876, "creador": "Dropi Team", "verificado": true,
+      "descripcion": "Si la tasa de novedad de una transportadora en una ciudad supera el umbral (configurable, default 10%), Gali reasigna los nuevos pedidos a la siguiente mejor opción.",
+      "instalada": true, "categoria": "Logística"
+    },
+    {
+      "id": "sk-008", "nombre": "Bundle Mascotas x5", "agente": "ADA Spy",
+      "icono": "🐾", "tipo": "experto",
+      "rating": 4.6, "usos": 412, "creador": "@PetDropCO", "verificado": false,
+      "descripcion": "Los 5 productos de nicho mascotas que mejor se venden juntos en Colombia 2026, con ángulos de venta y proveedores recomendados.",
+      "instalada": false, "categoria": "Productos"
+    },
+    {
+      "id": "sk-009", "nombre": "Recuperación de Carritos x3", "agente": "Chatea Pro",
+      "icono": "🛒", "tipo": "gratuita",
+      "rating": 4.4, "usos": 765, "creador": "Dropi Team", "verificado": true,
+      "descripcion": "Secuencia de 3 mensajes (2h, 6h, 24h) para recuperar compradores que no confirmaron. Tasa promedio de recuperación: 18%.",
+      "instalada": false, "categoria": "Retención"
+    },
+    {
+      "id": "sk-010", "nombre": "Stack Skincare LATAM", "agente": "ADA Spy",
+      "icono": "✨", "tipo": "experto",
+      "rating": 4.8, "usos": 523, "creador": "@DropiBeauty", "verificado": true,
+      "descripcion": "Los ángulos de venta de skincare que más convierten en Colombia y México 2026, con análisis de competencia incluido.",
+      "instalada": false, "categoria": "Productos"
+    },
+    {
+      "id": "sk-011", "nombre": "Proyección de Flujo Caja", "agente": "Financiero",
+      "icono": "💰", "tipo": "premium",
+      "rating": 4.9, "usos": 289, "creador": "@ContadorDropi", "verificado": true,
+      "descripcion": "Proyecta el flujo de caja de los próximos 14 días basado en pedidos activos, tasa histórica de entrega y fechas de pago del wallet.",
+      "instalada": false, "categoria": "Finanzas"
+    },
+    {
+      "id": "sk-012", "nombre": "Detección Saturación 7 días", "agente": "ADA Spy",
+      "icono": "📉", "tipo": "gratuita",
+      "rating": 4.5, "usos": 1123, "creador": "Dropi Team", "verificado": true,
+      "descripcion": "Monitorea diariamente si el número de vendedores de un producto favorito está creciendo. Alerta con 7 días de anticipación antes de saturación.",
+      "instalada": false, "categoria": "Investigación"
+    },
+    {
+      "id": "sk-013", "nombre": "Confirmar y Despachar Auto", "agente": "Chatea Pro",
+      "icono": "⚡", "tipo": "experto",
+      "rating": 4.6, "usos": 678, "creador": "@FastDropCO", "verificado": true,
+      "descripcion": "Para pedidos con huella verde y monto < $200k, confirma y genera la etiqueta automáticamente sin intervención. Tasa de error: 0.3%.",
+      "instalada": false, "categoria": "Automatización"
+    },
+    {
+      "id": "sk-014", "nombre": "Reporte Transportadoras Sem.", "agente": "Vigilante",
+      "icono": "🚛", "tipo": "gratuita",
+      "rating": 4.2, "usos": 834, "creador": "Dropi Team", "verificado": true,
+      "descripcion": "Cada lunes envía un resumen de la tasa de entrega por transportadora y ciudad, con recomendación de cuál priorizar esa semana.",
+      "instalada": false, "categoria": "Logística"
+    },
+    {
+      "id": "sk-015", "nombre": "Tono Amigable Colombia", "agente": "Chatea Pro",
+      "icono": "🇨🇴", "tipo": "gratuita",
+      "rating": 4.8, "usos": 2340, "creador": "Dropi Team", "verificado": true,
+      "descripcion": "Configura el tono de todos los mensajes de Chatea Pro con expresiones colombianas naturales. Aumenta la tasa de respuesta un 12% promedio.",
+      "instalada": false, "categoria": "Comunicación"
+    },
+    {
+      "id": "sk-016", "nombre": "Scaling Vertical Meta", "agente": "Roax",
+      "icono": "📈", "tipo": "experto",
+      "rating": 4.7, "usos": 892, "creador": "@AlexScalerCO", "verificado": true,
+      "descripcion": "Estrategia completa de escalamiento vertical en Meta: ABO test → CBO scale → +20% cada 72h. Basada en 300+ campañas exitosas en Colombia.",
+      "instalada": false, "categoria": "Escalamiento"
+    },
+    {
+      "id": "sk-017", "nombre": "Alerta ROAS Caída Rápida", "agente": "Roax",
+      "icono": "🔴", "tipo": "gratuita",
+      "rating": 4.6, "usos": 1567, "creador": "Dropi Team", "verificado": true,
+      "descripcion": "Si el ROAS cae más de 30% en 6h, Gali pausa la campaña y notifica con el diagnóstico inmediato antes de perder más presupuesto.",
+      "instalada": false, "categoria": "Protección"
+    },
+    {
+      "id": "sk-018", "nombre": "Nicho Fitness 2026", "agente": "ADA Spy",
+      "icono": "💪", "tipo": "experto",
+      "rating": 4.4, "usos": 334, "creador": "@FitDropLATAM", "verificado": false,
+      "descripcion": "Los 8 productos fitness con mayor crecimiento en Q2 2026 en Colombia, con análisis de temporada y proveedores con mejor historial.",
+      "instalada": false, "categoria": "Productos"
+    },
+    {
+      "id": "sk-019", "nombre": "Cierre Zona Cali", "agente": "Chatea Pro",
+      "icono": "🏙️", "tipo": "experto",
+      "rating": 4.8, "usos": 445, "creador": "@CaliDropper", "verificado": true,
+      "descripcion": "Script específico para confirmar pedidos en Cali: anticipo obligatorio si tasa de novedad > 8%, tono directo, manejo de objeciones locales.",
+      "instalada": false, "categoria": "Cierre"
+    },
+    {
+      "id": "sk-020", "nombre": "Facturación Automática Siigo", "agente": "Financiero",
+      "icono": "🧾", "tipo": "premium",
+      "rating": 4.5, "usos": 178, "creador": "Dropi Team", "verificado": true,
+      "descripcion": "Genera facturas en Siigo automáticamente al cambiar el estado del pedido a 'entregado'. Requiere MCP Siigo activo.",
+      "instalada": false, "categoria": "Contabilidad"
+    }
+  ],
+  "categorias": ["Protección", "Escalamiento", "Logística", "Cierre", "Retención", "Productos", "Automatización", "Reportes", "Finanzas", "Comunicación", "Investigación", "Contabilidad"],
+  "instaladas_count": 3,
+  "mis_publicadas": []
+}

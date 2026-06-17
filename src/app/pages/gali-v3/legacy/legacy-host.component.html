@@ -1,0 +1,88 @@
+<article class="lh" *ngIf="config() as c">
+  <header class="lh__head">
+    <div class="lh__head-meta">
+      <span class="lh__icon">{{ c.icon }}</span>
+      <span class="lh__head-tag">Legacy · ✦ asistido por Gali</span>
+    </div>
+    <h1>{{ c.title }}</h1>
+    <p class="lh__intro">{{ c.intro }}</p>
+    <div class="lh__hint">
+      <span class="lh__sparkle">✦</span>
+      Click el botón flotante <strong>Gali</strong> en la esquina inferior derecha → drawer contextual sin salir.
+    </div>
+  </header>
+
+  <!-- Embed visual mock de la página clásica -->
+  <section class="lh__embed" [attr.data-tipo]="c.preview.tipo">
+    <!-- CAS preview -->
+    <ng-container *ngIf="c.preview.tipo === 'cas'">
+      <div class="lh__cas">
+        <aside class="lh__cas-list">
+          <header>Conversaciones</header>
+          <ul>
+            <li class="is-active"><strong>Carolina M.</strong><span>Cambio de talla collar</span><em>hace 4h</em></li>
+            <li><strong>Proveedor MascotasPlus</strong><span>Novedad logística</span><em>hace 1d</em></li>
+            <li><strong>Pedro G.</strong><span>Pedido cancelado</span><em>hace 2d</em></li>
+            <li><strong>Andrea L.</strong><span>Devolución serum</span><em>hace 3d</em></li>
+            <li><strong>Equipo Dropi</strong><span>Tutorial CAS</span><em>hace 5d</em></li>
+          </ul>
+        </aside>
+        <main class="lh__cas-chat">
+          <header>
+            <strong>Carolina M.</strong>
+            <span>Bogotá · cliente final</span>
+          </header>
+          <div class="lh__cas-messages">
+            <div class="lh__cas-msg lh__cas-msg--in"><p>Hola, pedí el collar GPS talla M pero mi perra es talla L. ¿Me ayudan con cambio?</p></div>
+            <div class="lh__cas-msg lh__cas-msg--in"><p>Adjunto foto de mi perra. Su cuello mide 38cm.</p></div>
+            <div class="lh__cas-msg lh__cas-msg--in"><p>El collar M le queda muy ajustado.</p></div>
+          </div>
+          <footer><textarea rows="2" placeholder="Escribe tu respuesta..."></textarea><button>Enviar</button></footer>
+        </main>
+      </div>
+    </ng-container>
+
+    <!-- Academy preview -->
+    <ng-container *ngIf="c.preview.tipo === 'academy'">
+      <div class="lh__academy">
+        <header><h2>Cursos disponibles</h2><span>Filtrar por: tu nicho</span></header>
+        <div class="lh__academy-grid">
+          <article class="lh__academy-card lh__academy-card--featured">
+            <div class="lh__academy-thumb">🚀</div>
+            <div>
+              <strong>Escalar campañas Meta sin baneos</strong>
+              <p>Aprende cómo el p75 LATAM dobla presupuestos sin perder cuentas.</p>
+              <span class="lh__academy-meta">18 min · 4 lecciones · ★ 4.9</span>
+            </div>
+          </article>
+          <article class="lh__academy-card"><div class="lh__academy-thumb">✍️</div><div><strong>Copies con data LATAM</strong><p>3 ángulos × 3 hooks × 3 CTAs.</p><span class="lh__academy-meta">12 min · ★ 4.8</span></div></article>
+          <article class="lh__academy-card"><div class="lh__academy-thumb">🛒</div><div><strong>De cero a primera venta</strong><p>Onboarding extendido para novatos.</p><span class="lh__academy-meta">35 min · ★ 4.7</span></div></article>
+          <article class="lh__academy-card"><div class="lh__academy-thumb">📊</div><div><strong>ROAS dashboard</strong><p>Lee tus métricas sin morir en el intento.</p><span class="lh__academy-meta">22 min · ★ 4.6</span></div></article>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Dropi Card preview -->
+    <ng-container *ngIf="c.preview.tipo === 'dropi-card'">
+      <div class="lh__card">
+        <article class="lh__card-visual">
+          <header>DROPI CARD</header>
+          <strong>**** **** **** 8472</strong>
+          <footer><span>ALEJANDRA P.</span><span>VISA</span></footer>
+        </article>
+        <div class="lh__card-stats">
+          <div><span>Cupo total</span><strong>$5.000.000</strong></div>
+          <div><span>Disponible</span><strong>$1.100.000</strong></div>
+          <div><span>Usado este mes</span><strong>$3.900.000 (78%)</strong></div>
+        </div>
+      </div>
+    </ng-container>
+  </section>
+
+  <awaken-overlay
+    [section]="c.section"
+    [title]="c.title"
+    [resumen]="c.resumen"
+    [suggestions]="c.suggestions">
+  </awaken-overlay>
+</article>

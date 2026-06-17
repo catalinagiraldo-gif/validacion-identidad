@@ -1,0 +1,14 @@
+{
+  "trending": [
+    { "id": "c1", "nombre": "Difusor aromaterapia LED", "categoria": "Hogar", "tendencia_pct": 340, "ventas_semana": 412, "ventana_dias": 10, "margen": 68, "precio": 58000, "fit_perfil": 78, "recomendacion": "lanzar", "razon": "Match alto con tu tono emocional + ventana corta = ataque" },
+    { "id": "c2", "nombre": "Cargador inalámbrico 3 en 1", "categoria": "Tech", "tendencia_pct": 145, "ventas_semana": 156, "ventana_dias": 18, "margen": 66, "precio": 95000, "fit_perfil": 58, "recomendacion": "esperar", "razon": "Producto sólido pero tu perfil convierte mejor con tickets bajo $80k" },
+    { "id": "c3", "nombre": "Cama ortopédica para perros", "categoria": "Mascotas", "tendencia_pct": 89, "ventas_semana": 234, "ventana_dias": 21, "margen": 73, "precio": 145000, "fit_perfil": 92, "recomendacion": "lanzar", "razon": "Tu nicho + tu audiencia mamá perro + margen alto = ideal" },
+    { "id": "c4", "nombre": "Set yoga premium 6 piezas", "categoria": "Fitness", "tendencia_pct": 56, "ventas_semana": 218, "ventana_dias": 12, "margen": 63, "precio": 79000, "fit_perfil": 71, "recomendacion": "lanzar", "razon": "Estacional (resoluciones) · ventana antes saturación" },
+    { "id": "c5", "nombre": "Serum vitamina C 30ml", "categoria": "Skincare", "tendencia_pct": 124, "ventas_semana": 89, "ventana_dias": 30, "margen": 63, "precio": 49000, "fit_perfil": 45, "recomendacion": "pasar", "razon": "Ya probaste skincare con bajo ROAS — historia te dice no" },
+    { "id": "c6", "nombre": "Juguete interactivo para perro", "categoria": "Mascotas", "tendencia_pct": 178, "ventas_semana": 187, "ventana_dias": 14, "margen": 70, "precio": 65000, "fit_perfil": 89, "recomendacion": "lanzar", "razon": "Cross-sell con Collar GPS · misma audiencia" },
+    { "id": "c7", "nombre": "Mini proyector portátil 1080p", "categoria": "Tech", "tendencia_pct": 23, "ventas_semana": 47, "ventana_dias": 45, "margen": 55, "precio": 320000, "fit_perfil": 35, "recomendacion": "pasar", "razon": "Ticket alto + margen bajo + fit bajo" },
+    { "id": "c8", "nombre": "Organizador modular cocina", "categoria": "Hogar", "tendencia_pct": 67, "ventas_semana": 134, "ventana_dias": 28, "margen": 71, "precio": 42000, "fit_perfil": 64, "recomendacion": "esperar", "razon": "Estacional fuerte en diciembre · agenda para Nov 2026" },
+    { "id": "c9", "nombre": "Lámpara recargable portátil", "categoria": "Hogar", "tendencia_pct": 34, "ventas_semana": 78, "ventana_dias": 35, "margen": 60, "precio": 45000, "fit_perfil": 52, "recomendacion": "esperar", "razon": "Tendencia plana — espera señal más fuerte" },
+    { "id": "c10", "nombre": "Termo eléctrico café 12h", "categoria": "Hogar", "tendencia_pct": 412, "ventas_semana": 89, "ventana_dias": 7, "margen": 75, "precio": 89000, "fit_perfil": 56, "recomendacion": "lanzar", "razon": "Explosión repentina · ventana muy corta · alto riesgo/recompensa" }
+  ]
+}

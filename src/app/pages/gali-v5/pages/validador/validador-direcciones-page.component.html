@@ -1,0 +1,53 @@
+<div class="validador-page">
+  <dropi-titulos title="Validador de direcciones" [breadcrumbs="breadcrumbs" />
+
+  <div class="validador-page__toolbar">
+    <div class="validador-page__filters">
+      <div class="validador-page__select">
+        <label>Departamento</label>
+        <select [(ngModel)]="dept">
+          <option value="">Seleccionar</option>
+          <option>Nariño</option>
+          <option>Cundinamarca</option>
+          <option>Antioquia</option>
+        </select>
+      </div>
+      <div class="validador-page__select">
+        <label>Ciudad</label>
+        <select [(ngModel)]="city">
+          <option value="">Seleccionar</option>
+          <option>Pasto</option>
+          <option>Bogotá</option>
+          <option>Medellín</option>
+        </select>
+      </div>
+      <dropi-button-new icon="pi-filter" [iconOnly]="true" hierarchy="primary" />
+    </div>
+    <dropi-search-oficial placeholder="Buscar dirección" [(ngModel)]="searchQuery" />
+  </div>
+
+  <dropi-button-new label="Agregar dirección" icon="pi-plus" hierarchy="primary" [width]="162" />
+
+  <div class="validador-page__cards">
+    @for (addr of addresses; track addr.id) {
+      <article class="address-card">
+        <div class="address-card__head">
+          <strong>{{ addr.alias }}</strong>
+          <dropi-tag
+            [label]="addr.validated ? 'Validada' : 'Pendiente'"
+            [variant]="addr.validated ? 'success' : 'warning'"
+          />
+        </div>
+        <p class="address-card__location">{{ addr.department }} · {{ addr.city }}</p>
+        <p class="address-card__address">{{ addr.address }}</p>
+        <div class="address-card__foot">
+          <span>Último uso: {{ addr.lastUsed }}</span>
+          <div class="address-card__actions">
+            <button type="button" title="Editar"><i class="pi pi-pencil"></i></button>
+            <button type="button" title="Eliminar"><i class="pi pi-trash"></i></button>
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+</div>

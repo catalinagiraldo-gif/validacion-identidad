@@ -1,0 +1,9 @@
+{
+  "settings": [
+    { "parametro": "Remitente WhatsApp", "valor": "Dropi Tienda", "modulo": "WhatsApp" },
+    { "parametro": "Horario envíos", "valor": "8:00 – 20:00", "modulo": "General" },
+    { "parametro": "Opt-out automático", "valor": "Activado", "modulo": "Compliance" },
+    { "parametro": "Límite diario SMS", "valor": "5.000", "modulo": "SMS" },
+    { "parametro": "Email remitente", "valor": "tienda@dropi.co", "modulo": "Email" }
+  ]
+}

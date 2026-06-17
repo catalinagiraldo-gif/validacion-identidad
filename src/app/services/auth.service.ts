@@ -35,9 +35,25 @@ export class AuthService {
     return this.currentUser$.value !== null;
   }
 
+  ensureGuestAccess(): void {
+    if (this.currentUser$.value) {
+      return;
+    }
+
+    this.setUser({
+      uid: 'guest-prototype',
+      email: 'prototipo@dropi.co',
+      displayName: 'Prototipo',
+      name: 'Prototipo',
+      photoURL: null,
+      createdAt: new Date().toISOString(),
+    });
+  }
+
   constructor() {
     this.firebaseApp = initializeApp(environment.firebaseConfig);
     this.auth = getAuth(this.firebaseApp);
+    this.ensureGuestAccess();
 
     onAuthStateChanged(this.auth, (fbUser) => {
       if (fbUser && !this.currentUser$.value) {
@@ -45,6 +61,7 @@ export class AuthService {
           uid: fbUser.uid,
           email: fbUser.email ?? '',
           displayName: fbUser.displayName ?? '',
+          name: fbUser.displayName ?? '',
           photoURL: fbUser.photoURL,
           createdAt: new Date().toISOString(),
         };
@@ -72,6 +89,7 @@ export class AuthService {
         uid: result.user.uid,
         email,
         displayName: result.user.displayName ?? '',
+        name: result.user.displayName ?? '',
         photoURL: result.user.photoURL,
         createdAt: new Date().toISOString(),
       };

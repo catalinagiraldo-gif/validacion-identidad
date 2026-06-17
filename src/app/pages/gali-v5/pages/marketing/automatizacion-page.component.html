@@ -1,0 +1,102 @@
+<div class="automatizacion-page">
+  <dropi-titulos title="Automatización" [breadcrumbs]="breadcrumbs">
+    <dropi-button-new titulosActions label="Agregar" icon="pi-plus" hierarchy="primary" [width]="140" />
+  </dropi-titulos>
+
+  <!-- ✦ Gali banner: conexión con Skills -->
+  <div class="auto-gali-banner">
+    <div class="auto-gali-banner__left">
+      <span class="auto-gali-banner__icon">✦</span>
+      <div>
+        <strong class="auto-gali-banner__title">Convierte estas automatizaciones en Skills de Gali</strong>
+        <p class="auto-gali-banner__sub">
+          Las Skills de Gali se ejecutan automáticamente con condiciones inteligentes y generan historial auditable.
+          Puedes convertir cualquier automatización en una Skill para que Gali la gestione con contexto de negocio.
+        </p>
+      </div>
+    </div>
+    <button type="button" class="auto-gali-banner__cta" (click)="goToSkills()">
+      Ver mis Skills →
+    </button>
+  </div>
+
+  <div class="automatizacion-page__table-wrap">
+    <table class="automatizacion-page__table">
+      <thead>
+        <tr>
+          <th style="width:90px">ID</th>
+          <th>Nombre</th>
+          <th style="width:120px">Activo</th>
+          <th style="width:160px">Skill Gali</th>
+          <th style="width:140px">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of flows; track row.id) {
+          <tr>
+            <td class="auto-id">{{ row.id }}</td>
+            <td class="auto-nombre">{{ row.nombre }}</td>
+            <td>
+              <button
+                type="button"
+                class="automatizacion-page__toggle"
+                [class.is-on]="row.activo"
+                (click)="toggleActivo(row)"
+                [attr.aria-pressed]="row.activo">
+                <span></span>
+              </button>
+            </td>
+            <td>
+              @if (row.skill_gali) {
+                <span class="auto-skill-badge auto-skill-badge--active">⚙ {{ row.skill_gali }}</span>
+              } @else {
+                <button type="button" class="auto-skill-cta" (click)="createSkillForFlow(row)">
+                  + Crear skill Gali
+                </button>
+              }
+            </td>
+            <td>
+              <div class="automatizacion-page__actions">
+                <button type="button" title="Ver detalle"><i class="pi pi-search"></i></button>
+                <button type="button" title="Audiencia"><i class="pi pi-users"></i></button>
+                <button type="button" title="Eliminar"><i class="pi pi-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <dropi-paginator />
+
+  <!-- Visual flow: Automatizaciones → Skills → Agente -->
+  <div class="auto-flow-diagram">
+    <div class="auto-flow-diagram__title">¿Cómo funcionan las Skills de Gali?</div>
+    <div class="auto-flow-diagram__steps">
+      <div class="auto-flow-step">
+        <div class="auto-flow-step__icon auto-flow-step__icon--auto">SMS</div>
+        <strong>Automatización</strong>
+        <span>Flujo de SMS/email configurado manualmente. Sin contexto de negocio.</span>
+      </div>
+      <div class="auto-flow-diagram__arrow">→</div>
+      <div class="auto-flow-step auto-flow-step--skill">
+        <div class="auto-flow-step__icon auto-flow-step__icon--skill">⚙</div>
+        <strong>Skill de Gali</strong>
+        <span>Trigger + Condición inteligente + Acción con historial auditable.</span>
+      </div>
+      <div class="auto-flow-diagram__arrow">→</div>
+      <div class="auto-flow-step auto-flow-step--agent">
+        <div class="auto-flow-step__icon auto-flow-step__icon--agent">✦</div>
+        <strong>Agente ejecuta</strong>
+        <span>Roax, Vigilante o Chatea Pro la ejecutan en segundo plano con contexto completo.</span>
+      </div>
+      <div class="auto-flow-diagram__arrow">→</div>
+      <div class="auto-flow-step auto-flow-step--result">
+        <div class="auto-flow-step__icon auto-flow-step__icon--result">📊</div>
+        <strong>Resultado visible</strong>
+        <span>Historial, impacto medido, señal en el workspace de Gali.</span>
+      </div>
+    </div>
+  </div>
+</div>

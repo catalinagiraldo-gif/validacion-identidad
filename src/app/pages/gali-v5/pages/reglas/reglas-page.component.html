@@ -1,0 +1,136 @@
+<div class="reglas-page">
+
+  <header class="reglas-page__header">
+    <div>
+      <span class="reglas-page__eyebrow">Condicionales · Si → Entonces</span>
+      <h1 class="reglas-page__title">Reglas</h1>
+      <p class="reglas-page__sub">
+        Acciones simples y rápidas. No son <a routerLink="/gali-v5/skills">Skills</a> — esas llevan historial, triggers complejos y varios agentes.
+      </p>
+    </div>
+    <div class="reglas-page__header-actions">
+      <a routerLink="/gali-v5/marketing/chatea-pro" class="reglas-page__link">Centro Chatea Pro →</a>
+      <button type="button" class="reglas-page__btn" (click)="showNewRule.set(true)" data-proto-skip>+ Nueva regla</button>
+    </div>
+  </header>
+
+  <div class="reglas-concept">
+    <article class="reglas-concept__card reglas-concept__card--agent">
+      <span class="reglas-concept__badge reglas-concept__badge--agent">Agente</span>
+      <p>Ejecuta. Roax, Chatea Pro, Vigilante, ADA Spy.</p>
+      <a routerLink="/gali-v5/agentes">Ver agentes →</a>
+    </article>
+    <article class="reglas-concept__card reglas-concept__card--skill">
+      <span class="reglas-concept__badge reglas-concept__badge--skill">Skill</span>
+      <p>Receta auditable: trigger + condición + acción + historial.</p>
+      <a routerLink="/gali-v5/skills">Mis skills →</a>
+    </article>
+    <article class="reglas-concept__card reglas-concept__card--rule reglas-concept__card--active">
+      <span class="reglas-concept__badge reglas-concept__badge--rule">Regla</span>
+      <p>Si pasa X → haz Y. Ideal para WhatsApp y toggles rápidos.</p>
+    </article>
+  </div>
+
+  <section class="reglas-list-section">
+    <h2 class="reglas-list-section__title">Reglas activas en tu cuenta</h2>
+    <p class="reglas-list-section__hint">Ejemplos en lenguaje colombiano — así las verás cuando Chatea Pro o Roax actúen.</p>
+
+    <div class="reglas-list">
+      @for (r of reglas(); track r.id) {
+        <article class="regla-card" [class.regla-card--off]="!r.active">
+          <div class="regla-card__logic">
+            <span class="regla-card__if">SI</span>
+            <span class="regla-card__cond">{{ r.ifLabel }}</span>
+            <span class="regla-card__then">→</span>
+            <span class="regla-card__action">{{ r.thenLabel }}</span>
+          </div>
+          <p class="regla-card__ejemplo">{{ r.ejemplo }}</p>
+          <div class="regla-card__footer">
+            <span class="regla-card__agent" [style.--c]="r.agentColor">{{ r.agent }}</span>
+            <span class="regla-card__scope">{{ r.scope }}</span>
+            <button
+              type="button"
+              class="regla-toggle"
+              [class.regla-toggle--on]="r.active"
+              (click)="toggle(r.id)"
+              [attr.aria-pressed]="r.active"
+              data-proto-skip>
+              <span class="regla-toggle__knob"></span>
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- ── PANEL ESCALAMIENTO ROAX ── -->
+  <section class="esc-panel">
+    <header class="esc-panel__header">
+      <div class="esc-panel__title-group">
+        <span class="esc-panel__agent-dot"></span>
+        <h2 class="esc-panel__title">Escalamiento automático · Roax</h2>
+        <span class="esc-panel__subtitle">Reglas estilo Revealbot para tus campañas de Meta Ads</span>
+      </div>
+      <a routerLink="/gali-v5/skills/nueva" class="esc-panel__cta-new">+ Nueva regla</a>
+    </header>
+
+    <p class="esc-panel__hint">
+      Roax ejecuta estas reglas en segundo plano. Si activas Autopilot, las aplica sin pedirte permiso.
+      Con autopilot manual, te avisa primero.
+    </p>
+
+    <div class="esc-table">
+      <div class="esc-table__head">
+        <span>Condición</span>
+        <span>→ Acción Roax</span>
+        <span>Métrica</span>
+        <span>Umbral</span>
+        <span>Estado</span>
+      </div>
+      @for (r of escalamiento(); track r.id) {
+        <div class="esc-table__row" [class.esc-table__row--off]="!r.active">
+          <div class="esc-table__cond">
+            <span class="esc-badge" [class]="tipoClass(r.tipo)">{{ tipoIcon(r.tipo) }}</span>
+            <span class="esc-table__cond-text">{{ r.condicion }}</span>
+            <button type="button" class="esc-info-btn"
+              title="{{ r.info }}"
+              (mouseenter)="showEscalamientoInfo.set(r.id)"
+              (mouseleave)="showEscalamientoInfo.set(null)"
+              data-proto-skip>ⓘ</button>
+            @if (showEscalamientoInfo() === r.id) {
+              <div class="esc-tooltip">{{ r.info }}</div>
+            }
+          </div>
+          <div class="esc-table__accion">{{ r.accion }}</div>
+          <div class="esc-table__metrica">{{ r.metrica }}</div>
+          <div class="esc-table__umbral">{{ r.umbral }}</div>
+          <div class="esc-table__toggle">
+            <button
+              type="button"
+              class="regla-toggle"
+              [class.regla-toggle--on]="r.active"
+              (click)="toggleEscalamiento(r.id)"
+              [attr.aria-pressed]="r.active"
+              data-proto-skip>
+              <span class="regla-toggle__knob"></span>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="esc-panel__footer">
+      <span class="esc-panel__active-count">{{ activeEscalamientoCount }} de {{ escalamiento().length }} reglas activas</span>
+      <a routerLink="/gali-v5/skills" class="esc-panel__link">Ver skills avanzadas →</a>
+    </div>
+  </section>
+
+  <section class="reglas-upgrade">
+    <h3>¿Necesitas lógica más potente?</h3>
+    <p>Convierte una regla en Skill para condiciones compuestas, métricas de impacto y ejecución multi-módulo.</p>
+    <div class="reglas-upgrade__actions">
+      <a routerLink="/gali-v5/skills/nueva" class="reglas-upgrade__cta">Crear skill →</a>
+      <a routerLink="/gali-v5/marketplace" class="reglas-upgrade__secondary">Explorar marketplace</a>
+    </div>
+  </section>
+</div>

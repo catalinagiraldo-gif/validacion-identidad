@@ -1,0 +1,107 @@
+<div class="providers-page">
+
+  <dropi-gali-bar
+    agent="ADA Spy"
+    status="analizando proveedores"
+    message="Detecté 2 proveedores con productos de alto margen · Difusor aromaterapia 68% · Collar GPS v2 42% · Ventana: 14 días"
+    ctaLabel="Lanzar producto con Gali →"
+    secondaryCta="Ver análisis ADA Spy"
+    (ctaClick)="goToLanzar()"
+    (secondaryClick)="verAnalisisCompleto()"
+  />
+
+  <!-- Gali insight: proveedor contextual -->
+  <div class="providers-gali-insight">
+    <div class="providers-gali-insight__gali">
+      <span class="providers-gali-insight__icon">✦</span>
+      <div class="providers-gali-insight__text">
+        <strong>Para tu proyecto activo (Collar GPS),</strong> PetStore Colombia tiene 847 unidades disponibles y 98% de calidad histórica.
+        Precio proveedor: $28.500 · Margen estimado: $18.500/u después de flete y novedad.
+      </div>
+    </div>
+    <div class="providers-gali-insight__actions">
+      <button type="button" class="providers-gali-insight__cta" (click)="goToLanzar()">Contactar proveedor →</button>
+      <button type="button" class="providers-gali-insight__secondary" data-proto-skip>Ver historial calidad</button>
+    </div>
+  </div>
+
+  <nav class="providers-page__breadcrumbs" aria-label="Breadcrumb">
+    <a routerLink="/gali-v5" class="providers-page__crumb providers-page__crumb--home">
+      <i class="pi pi-home" aria-hidden="true"></i>
+    </a>
+    <i class="pi pi-chevron-right providers-page__crumb-sep" aria-hidden="true"></i>
+    <span class="providers-page__crumb">{{ breadcrumbs[0] }}</span>
+    <i class="pi pi-chevron-right providers-page__crumb-sep" aria-hidden="true"></i>
+    <span class="providers-page__crumb">{{ breadcrumbs[1] }}</span>
+    <i class="pi pi-chevron-right providers-page__crumb-sep" aria-hidden="true"></i>
+    <span class="providers-page__crumb providers-page__crumb--active">{{ breadcrumbs[2] }}</span>
+  </nav>
+
+  <h1 class="providers-page__title">Proveedores</h1>
+
+  <section class="providers-page__filters">
+    <div class="providers-page__filter-row">
+      <div class="providers-page__select">
+        <label>Ciudad</label>
+        <div class="providers-page__select-field">
+          <span>Seleccione una ciudad</span>
+          <i class="pi pi-chevron-down"></i>
+        </div>
+      </div>
+      <div class="providers-page__select">
+        <label>Categorías</label>
+        <div class="providers-page__select-field">
+          <span>{{ category }}</span>
+          <i class="pi pi-chevron-down"></i>
+        </div>
+      </div>
+      <button type="button" class="providers-page__apply-btn" aria-label="Aplicar filtros">
+        <i class="pi pi-arrow-right"></i>
+      </button>
+      <div class="providers-page__search">
+        <i class="pi pi-search"></i>
+        <input type="search" placeholder="Buscar proveedor" [(ngModel)]="searchQuery" />
+      </div>
+    </div>
+    <div class="providers-page__favorites">
+      <i class="pi pi-heart-fill"></i>
+      <span>Favoritos</span>
+      <label class="providers-switch">
+        <input type="checkbox" [checked]="showFavorites()" (change)="showFavorites.set(!showFavorites())" />
+        <span class="providers-switch__slider"></span>
+      </label>
+    </div>
+  </section>
+
+  <div class="providers-page__grid">
+    <article *ngFor="let p of providers" class="provider-card">
+      <button
+        type="button"
+        class="provider-card__fav"
+        data-proto-skip
+        [class.provider-card__fav--active]="p.favorite"
+        (click)="toggleFavorite(p)"
+        aria-label="Favorito">
+        <i class="pi" [ngClass]="p.favorite ? 'pi-heart-fill' : 'pi-heart'"></i>
+      </button>
+      <div class="provider-card__avatar">
+        <img [src]="p.avatar" [alt]="p.name" />
+        <img
+          *ngIf="p.premium"
+          src="assets/images/dropi-baseline/catalog/insignia-premium.png"
+          alt=""
+          class="provider-card__insignia provider-card__insignia--premium"
+          aria-hidden="true"
+        />
+        <span *ngIf="p.verified && !p.premium" class="provider-card__insignia provider-card__insignia--verified">
+          <i class="pi pi-verified"></i>
+        </span>
+      </div>
+      <div class="provider-card__body">
+        <h3 class="provider-card__name">{{ p.name }}</h3>
+        <p class="provider-card__count">{{ p.productCount }} Productos</p>
+        <p class="provider-card__categories">{{ p.categories }}</p>
+      </div>
+    </article>
+  </div>
+</div>

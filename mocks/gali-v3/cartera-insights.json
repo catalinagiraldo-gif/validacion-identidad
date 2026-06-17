@@ -1,0 +1,45 @@
+{
+  "resumen": {
+    "saldo_actual": 1247000,
+    "ingresos_30d": 3680000,
+    "gastos_30d": 1820000,
+    "proyeccion_7d": 1820000,
+    "proyeccion_30d": 4320000,
+    "fecha_optima_retiro": "2026-05-29",
+    "alertas": [
+      { "tipo": "info", "msg": "Tu pico histórico es viernes a las 8pm — ya tienes patrón" },
+      { "tipo": "warning", "msg": "Gastos en Ads subieron 12% esta semana · revisa eficiencia" }
+    ]
+  },
+  "movimientos": [
+    { "fecha": "2026-05-26", "tipo": "ingreso", "concepto": "Wallet · ventas Collar GPS", "monto": 234000, "categoria": "ventas" },
+    { "fecha": "2026-05-25", "tipo": "gasto", "concepto": "Meta Ads · campaña Collar GPS", "monto": -80000, "categoria": "publicidad" },
+    { "fecha": "2026-05-25", "tipo": "ingreso", "concepto": "Wallet · ventas Collar GPS", "monto": 178000, "categoria": "ventas" },
+    { "fecha": "2026-05-24", "tipo": "ingreso", "concepto": "Wallet · ventas Collar GPS", "monto": 312000, "categoria": "ventas" },
+    { "fecha": "2026-05-24", "tipo": "gasto", "concepto": "Meta Ads · campaña Collar GPS", "monto": -80000, "categoria": "publicidad" },
+    { "fecha": "2026-05-23", "tipo": "retiro", "concepto": "Retiro a banco · Bancolombia", "monto": -500000, "categoria": "retiro" },
+    { "fecha": "2026-05-22", "tipo": "ingreso", "concepto": "Wallet · ventas Collar GPS", "monto": 156000, "categoria": "ventas" },
+    { "fecha": "2026-05-21", "tipo": "gasto", "concepto": "TikTok Ads · campaña Difusor", "monto": -45000, "categoria": "publicidad" },
+    { "fecha": "2026-05-20", "tipo": "ingreso", "concepto": "Wallet · ventas Difusor", "monto": 89000, "categoria": "ventas" }
+  ],
+  "sugerencias_gali": [
+    {
+      "titulo": "Configura retiro automático",
+      "descripcion": "Cuando saldo supere $1.5M, retira el 60% automáticamente. Te previene de gastar en cosas no planeadas.",
+      "cta": "Crear flow",
+      "route": "/gali-v3/builder"
+    },
+    {
+      "titulo": "Tu mejor día de retiro: viernes",
+      "descripcion": "Históricamente tus ingresos peak son jueves-viernes. Retira viernes 8pm para máxima eficiencia.",
+      "cta": "Programar",
+      "route": "/gali-v3/builder"
+    },
+    {
+      "titulo": "Alerta gasto Ads",
+      "descripcion": "Gasto en publicidad subió 12% semana sobre semana. Revisa si la eficiencia (ROAS) acompañó.",
+      "cta": "Ver campañas",
+      "route": "/gali-v3/dropi/campanas"
+    }
+  ]
+}

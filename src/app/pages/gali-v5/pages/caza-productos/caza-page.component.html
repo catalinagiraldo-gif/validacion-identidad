@@ -1,0 +1,193 @@
+<div class="caza-page">
+
+  <gali-chip
+    agentName="ADA Spy"
+    [message]="mode() === 'historial' ? '2 productos encajan con tu historial de nichos' : mode() === 'problemas' ? 'Mapeo de red de problemas listo' : '3 productos con alta viabilidad esta semana'"
+    [status]="mode() === 'problemas' ? 'running' : 'ok'"
+  />
+
+  <dropi-gali-bar
+    agent="ADA Spy"
+    status="búsqueda semántica activa"
+    message="3 alta viabilidad · 847 ventas esta semana en Dropi LATAM"
+    ctaLabel="Ver oportunidades en catálogo"
+    (ctaClick)="goToCatalogo()"
+  />
+
+  <div class="caza-semantic">
+    <label class="caza-semantic__label">Búsqueda semántica ADA Spy</label>
+    <div class="caza-semantic__row">
+      <input
+        type="search"
+        class="caza-semantic__input"
+        placeholder='Ej: "algo para vender en Bogotá a madres jóvenes"'
+        [ngModel]="semanticQuery()"
+        (ngModelChange)="semanticQuery.set($event)" />
+      <button type="button" class="caza-semantic__btn" (click)="buscarSemantico()">Buscar con IA</button>
+    </div>
+    <p class="caza-semantic__hint">No busques solo por nombre — describe audiencia, ciudad o problema y ADA rankea categorías + productos.</p>
+  </div>
+
+  <dropi-titulos title="Caza productos" [breadcrumbs]="breadcrumbs">
+    <dropi-button-new titulosActions label="Crear publicación" hierarchy="primary" [width]="200" />
+  </dropi-titulos>
+
+  <nav class="caza-mode-nav" aria-label="Modo de descubrimiento">
+    <button type="button" [class.active]="mode() === 'historial'" (click)="setMode('historial')">
+      Basado en mi historial
+    </button>
+    <button type="button" [class.active]="mode() === 'problemas'" (click)="setMode('problemas')">
+      Red de problemas
+    </button>
+    <button type="button" [class.active]="mode() === 'publicaciones'" (click)="setMode('publicaciones')">
+      Publicaciones
+    </button>
+  </nav>
+
+  @if (mode() === 'historial') {
+    <section class="caza-historial">
+      <p class="caza-historial__intro">
+        ADA Spy analiza tus nichos ({{ userProfile.nichos.join(', ') }}) y sugiere productos para fortalecer tu portafolio.
+        Mejor ROAS actual: <strong>{{ userProfile.mejorRoas }}</strong>
+      </p>
+      <div class="historial-list">
+        @for (p of productosHistorial; track p.id) {
+          <article class="historial-card">
+            <div class="historial-card__score" [class]="fitScoreClass(p.fitScore)">
+              <strong>{{ p.fitScore }}</strong>
+              <span>fit</span>
+            </div>
+            <div class="historial-card__body">
+              <div class="historial-card__head">
+                <h3>{{ p.nombre }}</h3>
+                <span class="historial-card__nicho">{{ p.nicho }}</span>
+              </div>
+              <p class="historial-card__ada">{{ p.adaMsg }}</p>
+              <div class="historial-card__meta">
+                <span>Margen {{ p.margen }}</span>
+                <span>Saturación {{ p.saturacion }}</span>
+                <span>{{ p.tendencia }}</span>
+              </div>
+              <p class="historial-card__razon">{{ p.razon }}</p>
+            </div>
+            <button type="button" class="historial-card__cta historial-card__cta--primary" (click)="publicarConAda(p)">
+              Publicar con ADA Spy →
+            </button>
+            <button type="button" class="historial-card__cta historial-card__cta--analysis" (click)="verAnalisis(p)">
+              Ver análisis ADA →
+            </button>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  @if (mode() === 'problemas') {
+    <section class="caza-problemas">
+      <div class="problema-search">
+        <dropi-search-oficial
+          placeholder="Describe un problema que quieres resolver..."
+          [(ngModel)]="problemQuery"
+        />
+        <button type="button" class="problema-search__btn" (click)="buscarProblema()">Mapear con ADA Spy</button>
+      </div>
+
+      @if (problemQuery) {
+        <div class="problema-layout">
+          <div class="problema-map">
+            <div class="problema-map__center">
+              <span>{{ problemExample.problemaRaiz }}</span>
+              <small>{{ problemExample.audienciaEstimada }}</small>
+            </div>
+            @for (node of problemNodes; track node.problema; let i = $index) {
+              <button
+                type="button"
+                class="problema-map__node"
+                [class.problema-map__node--active]="selectedNode() === i"
+                (click)="selectNode(i)">
+                {{ node.problema }}
+                @if (node.conexion) {
+                  <small>{{ node.conexion }}</small>
+                }
+              </button>
+            }
+          </div>
+
+          @if (selectedNode() !== null) {
+            <aside class="problema-drawer">
+              <h3>{{ problemNodes[selectedNode()!].problema }}</h3>
+              <h4>Productos que lo resuelven</h4>
+              <ul class="problema-productos">
+                @for (prod of problemNodes[selectedNode()!].productos; track prod.nombre) {
+                  <li>
+                    <strong>{{ prod.nombre }}</strong>
+                    <span>Margen {{ prod.margen }} · {{ prod.saturacion }}</span>
+                    <button type="button" (click)="crearProyecto(prod.nombre)">Crear proyecto</button>
+                  </li>
+                }
+              </ul>
+              <h4>Ángulos de venta</h4>
+              <div class="problema-angulos">
+                @for (a of problemNodes[selectedNode()!].angulos; track a) {
+                  <span class="angulo-chip">{{ a }}</span>
+                }
+              </div>
+              <h4>Perfiles de audiencia</h4>
+              <ul class="problema-perfiles">
+                @for (perfil of problemExample.perfilesAudiencia; track perfil.perfil) {
+                  <li><strong>{{ perfil.perfil }}</strong> — {{ perfil.problema }}</li>
+                }
+              </ul>
+            </aside>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  @if (mode() === 'publicaciones') {
+    <section class="caza-publicaciones">
+      <section class="caza-page__filters">
+        <div class="caza-page__filter-row">
+          <dropi-search-oficial class="caza-page__search" placeholder="Buscar publicaciones" [(ngModel)]="searchQuery" />
+        </div>
+        <div class="caza-page__toggle">
+          <span>Publicaciones con propuestas</span>
+          <label class="caza-switch">
+            <input type="checkbox" [(ngModel)]="proposalsOnly" />
+            <span class="caza-switch__slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <div class="caza-grid">
+        @for (p of publications; track p.id) {
+          <article class="pub-card">
+            <div class="pub-card__image-wrap">
+              <img [src]="p.image" [alt]="p.title" class="pub-card__image" />
+            </div>
+            <div class="pub-card__body">
+              <span class="pub-card__category">{{ p.category }}</span>
+              <h3 class="pub-card__title">{{ p.title }}</h3>
+              <strong class="pub-card__price">{{ p.price }}</strong>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  }
+</div>
+
+@if (showCrearModal()) {
+  <crear-proyecto-modal
+    (closed)="showCrearModal.set(false)"
+    (created)="onProyectoCreated($event)"
+  />
+}
+
+@if (showAdaDetail()) {
+  <gali-ada-spy-detail
+    [productId]="adaDetailId()"
+    (closed)="showAdaDetail.set(false)"
+  />
+}

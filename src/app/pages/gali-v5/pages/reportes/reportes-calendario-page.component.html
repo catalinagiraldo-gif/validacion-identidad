@@ -1,0 +1,52 @@
+<div class="calendario-page">
+  <dropi-titulos title="Calendario" [breadcrumbs]="breadcrumbs">
+    <dropi-button-new titulosActions label="Ver resumen" hierarchy="primary" [width]="200" />
+  </dropi-titulos>
+
+  <div class="calendario-page__filters">
+    <div class="calendario-page__select">
+      <label>Producto</label>
+      <select><option>Producto</option><option>Todos</option></select>
+    </div>
+    <div class="calendario-page__select">
+      <label>Tienda</label>
+      <select><option>Tienda</option><option>Mi tienda</option></select>
+    </div>
+    <dropi-button-new icon="pi-filter" [iconOnly]="true" hierarchy="primary" />
+  </div>
+
+  <div class="calendario-grid">
+    <header class="calendario-grid__head">
+      <h2>{{ monthLabel() }}</h2>
+      <div class="calendario-grid__nav">
+        <dropi-button-new icon="pi-chevron-left" [iconOnly]="true" hierarchy="outline" />
+        <dropi-button-new icon="pi-chevron-right" [iconOnly]="true" hierarchy="outline" />
+      </div>
+    </header>
+    <div class="calendario-grid__weekdays">
+      @for (wd of weekDays; track wd) {
+        <span>{{ wd }}</span>
+      }
+    </div>
+    <div class="calendario-grid__cells">
+      @for (cell of days; track cell.key) {
+        <div class="calendario-cell" [class.calendario-cell--event]="cell.event" [class.calendario-cell--muted]="cell.muted">
+          @if (cell.day) {
+            <span class="calendario-cell__num">{{ cell.day }}</span>
+          }
+          @if (cell.event) {
+            <div class="calendario-cell__events">
+              <span>Pedidos generados: <strong>{{ cell.event.orders }}</strong></span>
+              <span>Total vendido: <strong class="calendario-cell__sold">{{ cell.event.sold }}</strong></span>
+              <span>Utilidad: <strong class="calendario-cell__profit">{{ cell.event.profit }}</strong></span>
+              <span>Utilidad estimada: <strong class="calendario-cell__estimated">{{ cell.event.estimated }}</strong></span>
+              @if (cell.event.more) {
+                <span class="calendario-cell__more">+{{ cell.event.more }} más</span>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,109 @@
+@import 'styles/gali-tokens';
+
+.msg {
+  margin-bottom: 14px;
+
+  &__user {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__gali,
+  &__nudge {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  &__bubble {
+    padding: 10px 14px;
+    border-radius: 12px;
+    line-height: 1.5;
+    max-width: 280px;
+
+    &--user {
+      background: $gali-orange-soft;
+      border: 1px solid rgba(244, 154, 61, 0.3);
+      color: $gali-text-primary;
+      font-family: $gali-font-body;
+      font-size: 13px;
+      border-bottom-right-radius: 4px;
+    }
+
+    &--gali {
+      background: $gali-bg-elevated;
+      border: 1px solid $gali-border-subtle;
+      color: $gali-text-primary;
+      flex: 1;
+      max-width: none;
+      border-bottom-left-radius: 4px;
+    }
+
+    &--nudge {
+      background: linear-gradient(
+        135deg,
+        rgba(244, 154, 61, 0.06) 0%,
+        rgba(244, 154, 61, 0.02) 100%
+      );
+      border: 1px solid rgba(244, 154, 61, 0.3);
+      color: $gali-text-primary;
+      flex: 1;
+      max-width: none;
+    }
+  }
+
+  &__text {
+    font-family: $gali-font-display;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.55;
+    margin: 0;
+    color: $gali-text-primary;
+    letter-spacing: -0.005em;
+  }
+
+  &__nudge-label {
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: $gali-orange;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  &__cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: $gali-cyan;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: msg-cursor 600ms steps(2) infinite;
+  }
+
+  &__trust-mute {
+    margin-top: 8px;
+    font-family: $gali-font-mono;
+    font-size: 10px;
+    color: $gali-text-muted;
+    letter-spacing: 0.06em;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed $gali-border-subtle;
+    border-radius: 4px;
+    display: inline-block;
+    cursor: help;
+  }
+}
+
+@keyframes msg-cursor {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@include gali-reduced-motion {
+  .msg__cursor {
+    animation: none;
+    opacity: 0.7;
+  }
+}

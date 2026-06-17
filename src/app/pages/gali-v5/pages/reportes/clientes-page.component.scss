@@ -1,0 +1,96 @@
+@import '../shared/dropi-page-shell';
+
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.clientes-page {
+  @include dropi-page-shell;
+  overflow-y: auto;
+
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $size-3;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $size-3;
+  }
+}
+
+.clientes-table-wrap {
+  border: 1px solid $gray-100;
+  border-radius: 12px;
+  overflow: hidden;
+  background: $white;
+}
+
+.clientes-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    height: 55px;
+    padding: 16px 12px;
+    border-bottom: 1px solid $gray-100;
+    font-family: $font-primary;
+    font-size: 12px;
+    font-weight: $font-bold;
+    color: $gray-700;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  td {
+    height: 80px;
+    padding: 12px;
+    border-bottom: 1px solid $gray-100;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-600;
+    vertical-align: middle;
+  }
+
+  &__email {
+    width: 198px;
+    max-width: 198px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__tag-icon {
+    font-size: 24px;
+    color: $gray-500;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 16px;
+
+    button {
+      border: none;
+      background: transparent;
+      color: $gray-500;
+      cursor: pointer;
+      padding: 0;
+
+      .pi {
+        font-size: 24px;
+      }
+
+      &:hover {
+        color: $primary-500;
+      }
+    }
+  }
+}

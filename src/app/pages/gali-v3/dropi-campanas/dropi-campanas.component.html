@@ -1,0 +1,51 @@
+<article class="camp" signalHighlight>
+  <header class="camp__head">
+    <div class="camp__head-meta">
+      <span class="camp__sparkle">✦</span>
+      <span class="camp__head-tag">Campañas con health-indicator Gali</span>
+    </div>
+    <h1>Cada campaña tiene un diagnóstico vivo de Gali.</h1>
+    <p class="camp__intro">
+      No solo ROAS y CTR. Gali compara con campañas similares en su base LATAM y te dice exactamente qué hacer.
+    </p>
+  </header>
+
+  <section class="camp__list">
+    <article *ngFor="let c of campaigns" class="camp__card" [attr.data-salud]="c.salud" [attr.data-signal]="c.salud === 'mala' ? 'sig-2' : null">
+      <header>
+        <div>
+          <strong>{{ c.nombre }}</strong>
+          <span class="camp__plat">{{ c.plataforma }} Ads</span>
+        </div>
+        <div class="camp__health">
+          <span class="camp__health-score">{{ c.salud_score }}/10</span>
+          <span class="camp__health-label">salud {{ c.salud }}</span>
+        </div>
+      </header>
+
+      <div class="camp__metrics">
+        <div>
+          <span class="camp__metric-val">{{ c.roas }}x</span>
+          <span class="camp__metric-key">ROAS</span>
+        </div>
+        <div>
+          <span class="camp__metric-val">{{ c.ctr }}%</span>
+          <span class="camp__metric-key">CTR</span>
+        </div>
+        <div>
+          <span class="camp__metric-val">{{ format(c.presupuesto) }}</span>
+          <span class="camp__metric-key">presupuesto/día</span>
+        </div>
+      </div>
+
+      <div class="camp__gali">
+        <span class="camp__sparkle">✦</span>
+        <p>{{ c.gali_dice }}</p>
+      </div>
+
+      <footer>
+        <button class="camp__cta" (click)="ejecutar(c)">{{ c.accion_sugerida }} →</button>
+      </footer>
+    </article>
+  </section>
+</article>

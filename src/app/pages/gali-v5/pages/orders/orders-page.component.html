@@ -1,0 +1,92 @@
+<div class="orders-page">
+  <dropi-gali-bar
+    agent="Chatea Pro"
+    status="gestionando confirmaciones"
+    [stats]="galiStats"
+    ctaLabel="Ver señales en Gali →"
+    (ctaClick)="goToSignals()"
+  />
+
+  <div class="orders-page__toolbar">
+    <button type="button" class="orders-page__btn-primary"><i class="pi pi-plus"></i> Orden manual</button>
+    <div class="orders-page__search-wrap">
+      <div class="orders-page__search">
+        <i class="pi pi-search"></i>
+        <input type="search" placeholder="Buscar por ID, cliente o guía…" [(ngModel)]="searchQuery" />
+      </div>
+      <button type="button" class="orders-page__filter-btn" aria-label="Filtrar"><i class="pi pi-filter"></i></button>
+    </div>
+  </div>
+
+  <div class="orders-table-wrap">
+    <div class="orders-table-scroll">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th class="orders-table__th orders-table__th--check"><span class="orders-table__checkbox"></span></th>
+            <th class="orders-table__th">ID</th>
+            <th class="orders-table__th">Producto</th>
+            <th class="orders-table__th">Huella Vigilante</th>
+            <th class="orders-table__th">Cliente / Dirección</th>
+            <th class="orders-table__th">Transportadora</th>
+            <th class="orders-table__th">Recaudo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let o of orders" class="orders-table__row"
+            [class.orders-table__row--decision]="getGaliStatus(o.id) === 'decision'">
+            <td class="orders-table__td orders-table__td--check"><span class="orders-table__checkbox"></span></td>
+            <td class="orders-table__td orders-table__td--id-col">
+              {{ o.id }}
+              <span *ngIf="getGaliLabel(o.id)" class="gali-chip" [class]="getGaliChipClass(o.id)">
+                {{ getGaliLabel(o.id) }}
+              </span>
+            </td>
+            <td class="orders-table__td">{{ o.product }}</td>
+            <td class="orders-table__td">
+              @if (getRiskLevel(o); as risk) {
+                <span class="orders-risk" [class]="'orders-risk--' + risk.level" [title]="risk.hint">
+                  {{ risk.label }}
+                </span>
+              }
+            </td>
+            <td class="orders-table__td orders-table__td--client">
+              <p class="orders-table__client-name">{{ o.clientName }}</p>
+              <div class="orders-table__address-row">
+                <span class="orders-table__address">{{ o.address }}</span>
+                <i class="pi" [ngClass]="o.addressValid ? 'pi-map-marker orders-table__map--ok' : 'pi-exclamation-triangle orders-table__map--warn'"></i>
+              </div>
+              <p class="orders-table__phone">{{ o.phone }}</p>
+            </td>
+            <td class="orders-table__td">
+              <span class="orders-table__tag orders-table__tag--carrier"
+                [galiInsight]="getCarrierInsight(o.carrier)">{{ o.carrier }}</span>
+              <span class="orders-table__guide">{{ o.guide }}</span>
+            </td>
+            <td class="orders-table__td orders-table__td--recaudo">
+              <span class="orders-table__recaudo-label"
+                [galiInsight]="'Tasa de cobro efectivo: 89.3%. Vigilante detectó patrón de devolución en zona rural — anticipo recomendado en pedidos >$150k. CPA real incluye ~8% de novedades.'">{{ o.recaudo }}</span>
+              <span class="orders-table__tag orders-table__tag--status" *ngFor="let t of o.statusTags">{{ t }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="orders-table__actions-col">
+      <div class="orders-table__actions-head">Acciones</div>
+      <div *ngFor="let o of orders" class="orders-table__actions-cell">
+        <button type="button" title="Ver"><i class="pi pi-eye"></i></button>
+        <button type="button" title="Editar"><i class="pi pi-pencil"></i></button>
+        <button type="button" title="Etiqueta"><i class="pi pi-tag"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="orders-page__pagination">
+    <button type="button" class="orders-page__page-btn"><i class="pi pi-angle-double-left"></i></button>
+    <button type="button" class="orders-page__page-btn"><i class="pi pi-angle-left"></i></button>
+    <button type="button" class="orders-page__page-btn orders-page__page-btn--active">1</button>
+    <button type="button" class="orders-page__page-btn"><i class="pi pi-angle-right"></i></button>
+    <button type="button" class="orders-page__page-btn"><i class="pi pi-angle-double-right"></i></button>
+  </div>
+</div>

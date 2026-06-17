@@ -1,0 +1,61 @@
+<div class="gmi" role="dialog" aria-label="Inspector de memoria">
+  <header class="gmi__head">
+    <gali-mark state="memoria" size="sm" label="Inspector de memoria"></gali-mark>
+    <button type="button" class="gmi__close" (click)="cerrar.emit()" aria-label="Cerrar">×</button>
+  </header>
+
+  <div class="gmi__body">
+    <div class="gmi__field">
+      <span class="gmi__field-label">qué creo saber</span>
+      <ng-container *ngIf="!editando; else editTpl">
+        <p class="gmi__field-value">{{ aprendizaje.texto }}</p>
+      </ng-container>
+      <ng-template #editTpl>
+        <textarea
+          class="gmi__textarea"
+          [(ngModel)]="borrador"
+          rows="3"
+          (keydown.escape)="cancelarEdicion()"
+          (keydown.meta.enter)="confirmarEdicion()"
+          (keydown.control.enter)="confirmarEdicion()"></textarea>
+        <span class="gmi__hint">esc cancelar · ⌘↵ guardar</span>
+      </ng-template>
+    </div>
+
+    <div class="gmi__field">
+      <span class="gmi__field-label">cómo lo aprendí</span>
+      <p class="gmi__field-value gmi__field-value--meta">{{ aprendizaje.origen }}</p>
+    </div>
+
+    <div class="gmi__field gmi__field--inline">
+      <div>
+        <span class="gmi__field-label">confianza</span>
+        <span class="gmi__chip" [attr.data-conf]="aprendizaje.confianza">{{ aprendizaje.confianza }}</span>
+      </div>
+      <div>
+        <span class="gmi__field-label">estado</span>
+        <span class="gmi__chip" [attr.data-obso]="aprendizaje.obsoleto || false">
+          {{ aprendizaje.obsoleto ? 'marcado obsoleto' : 'vigente' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <footer class="gmi__foot">
+    <ng-container *ngIf="!editando; else editActions">
+      <button type="button" class="gmi__btn gmi__btn--ghost" (click)="iniciarEdicion()">Editar</button>
+      <button
+        type="button"
+        class="gmi__btn gmi__btn--ghost"
+        (click)="obsoleto.emit()"
+        *ngIf="!aprendizaje.obsoleto">
+        Marcar obsoleto
+      </button>
+      <button type="button" class="gmi__btn gmi__btn--danger" (click)="borrar.emit()">Borrar</button>
+    </ng-container>
+    <ng-template #editActions>
+      <button type="button" class="gmi__btn gmi__btn--ghost" (click)="cancelarEdicion()">Cancelar</button>
+      <button type="button" class="gmi__btn gmi__btn--primary" (click)="confirmarEdicion()">Guardar</button>
+    </ng-template>
+  </footer>
+</div>

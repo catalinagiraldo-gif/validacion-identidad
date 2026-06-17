@@ -1,0 +1,131 @@
+<aside class="biz" aria-label="Estado del negocio y memoria de Gali">
+  <section class="biz__section">
+    <header class="biz__head">
+      <span class="biz__head-label">Tu negocio ahora</span>
+      <span class="biz__head-meta">en vivo</span>
+    </header>
+    <div class="biz__metrics">
+      <a routerLink="/gali-v3/dropi/pedidos" class="biz__metric">
+        <span class="biz__metric-icon">🛒</span>
+        <span class="biz__metric-value">{{ snapshot().pedidos.hoy }}</span>
+        <span class="biz__metric-label">pedidos hoy</span>
+        <span class="biz__metric-sub" *ngIf="snapshot().pedidos.novedades_criticas">
+          {{ snapshot().pedidos.novedades_criticas }} crítica
+        </span>
+      </a>
+      <a routerLink="/historial-de-cartera" class="biz__metric">
+        <span class="biz__metric-icon">💰</span>
+        <span class="biz__metric-value">{{ formatMoney(snapshot().wallet.saldo_actual) }}</span>
+        <span class="biz__metric-label">wallet</span>
+        <span class="biz__metric-sub is-up">↑ {{ formatMoney(snapshot().wallet.proyeccion_7d) }} en 7d</span>
+      </a>
+      <a routerLink="/gali-v3/dropi/campanas" class="biz__metric">
+        <span class="biz__metric-icon">📣</span>
+        <span class="biz__metric-value">{{ snapshot().campanas.activas }}</span>
+        <span class="biz__metric-label">campañas</span>
+        <span class="biz__metric-sub is-up">ROAS {{ snapshot().campanas.roas_promedio }}x</span>
+      </a>
+      <a routerLink="/gali-v3/builder" class="biz__metric">
+        <span class="biz__metric-icon">⚡</span>
+        <span class="biz__metric-value">{{ snapshot().automatizaciones.activas }}</span>
+        <span class="biz__metric-label">flows activos</span>
+        <span class="biz__metric-sub">{{ snapshot().automatizaciones.ejecuciones_hoy }} ejec. hoy</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="biz__section">
+    <header class="biz__head">
+      <span class="biz__head-label">Señales de Gali</span>
+      <span class="biz__head-count">{{ signals().length }}</span>
+    </header>
+    <ul class="biz__signals">
+      <li *ngFor="let s of signals().slice(0, 3)"
+          class="biz__signal"
+          [class.is-tipo-riesgo]="s.tipo === 'riesgo'"
+          [class.is-tipo-oportunidad]="s.tipo === 'oportunidad'"
+          [class.is-tipo-optimizacion]="s.tipo === 'optimizacion'">
+        <span class="biz__signal-icon">{{ s.icon }}</span>
+        <div class="biz__signal-body">
+          <strong>{{ s.titulo }}</strong>
+          <p>{{ s.contexto }}</p>
+          <a [routerLink]="s.accion_sugerida.target_route" class="biz__signal-cta">
+            {{ s.accion_sugerida.label }} →
+          </a>
+        </div>
+        <button class="biz__signal-x" (click)="dismissSignal(s.id)" aria-label="Descartar">×</button>
+      </li>
+      <li *ngIf="signals().length === 0" class="biz__signal-empty">
+        Todo tranquilo. Gali sigue monitoreando.
+      </li>
+    </ul>
+  </section>
+
+  <section class="biz__section biz__memory">
+    <header class="biz__head">
+      <span class="biz__head-label">Lo que sé de ti</span>
+      <span class="biz__head-meta">memoria</span>
+    </header>
+
+    <div class="biz__memory-block">
+      <div class="biz__memory-row">
+        <span class="biz__memory-key">Nicho</span>
+        <span class="biz__memory-val">{{ memory().negocio.nicho_principal }}</span>
+      </div>
+      <div class="biz__memory-row">
+        <span class="biz__memory-key">Tono</span>
+        <span class="biz__memory-val">{{ memory().negocio.tono_preferido }}</span>
+      </div>
+      <div class="biz__memory-row">
+        <span class="biz__memory-key">ROAS objetivo</span>
+        <span class="biz__memory-val">{{ memory().negocio.roas_objetivo }}</span>
+      </div>
+      <div class="biz__memory-row">
+        <span class="biz__memory-key">Tiempo en Dropi</span>
+        <span class="biz__memory-val">{{ memory().perfil.tiempo_en_dropi }}</span>
+      </div>
+    </div>
+
+    <div class="biz__memory-aprendizajes">
+      <h5>Aprendizajes</h5>
+      <ul>
+        <li *ngFor="let a of memory().aprendizajes; let i = index" class="biz__memory-aprendizaje">
+          <span>{{ a }}</span>
+          <button (click)="removeAprendizaje(i)" aria-label="Eliminar">×</button>
+        </li>
+      </ul>
+      <div class="biz__memory-add">
+        <input
+          type="text"
+          placeholder="+ Enseñame algo nuevo..."
+          [value]="newAprendizaje()"
+          (input)="newAprendizaje.set($any($event.target).value)"
+          (keydown.enter)="addAprendizaje()"
+        />
+      </div>
+    </div>
+
+    <div class="biz__memory-next">
+      <span class="biz__memory-next-tag">Próximo paso sugerido</span>
+      <p>{{ memory().siguiente_accion_sugerida }}</p>
+    </div>
+  </section>
+
+  <section class="biz__section biz__projects" *ngIf="proyectosActivos().length">
+    <header class="biz__head">
+      <span class="biz__head-label">Proyectos activos</span>
+    </header>
+    <ul class="biz__proj-list">
+      <li *ngFor="let p of proyectosActivos()">
+        <a [routerLink]="['/gali-v3/proyecto', p.id]" class="biz__proj">
+          <span class="biz__proj-icon">{{ p.icon }}</span>
+          <div class="biz__proj-body">
+            <strong>{{ p.name }}</strong>
+            <span>ROAS {{ p.metrics.roas_actual }}x · {{ p.last_activity }}</span>
+          </div>
+          <span class="biz__proj-roas-up" *ngIf="p.metrics.roas_actual >= 2.5">↑</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+</aside>

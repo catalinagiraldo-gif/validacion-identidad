@@ -1,0 +1,41 @@
+{
+  "triggers": [
+    { "id": "t-new-order", "label": "Llega un nuevo pedido", "icon": "🛒", "categoria": "pedidos", "color": "sage" },
+    { "id": "t-ctr-low", "label": "CTR baja de un umbral", "icon": "📉", "categoria": "campanas", "color": "rust", "configFields": ["umbral_ctr", "ventana_horas"] },
+    { "id": "t-roas-up", "label": "ROAS supera objetivo", "icon": "🚀", "categoria": "campanas", "color": "sage", "configFields": ["roas_objetivo", "horas_sostenido"] },
+    { "id": "t-producto-alza", "label": "Producto entra en tendencia", "icon": "⚡", "categoria": "productos", "color": "amber" },
+    { "id": "t-wa-message", "label": "Mensaje de WhatsApp", "icon": "💬", "categoria": "notificacion", "color": "sage", "configFields": ["palabra_clave"] },
+    { "id": "t-novedad", "label": "Nueva novedad logística", "icon": "📦", "categoria": "pedidos", "color": "rust" },
+    { "id": "t-schedule", "label": "En un horario", "icon": "⏰", "categoria": "agendar", "color": "amber", "configFields": ["dia", "hora"] },
+    { "id": "t-wallet-low", "label": "Wallet baja de un mínimo", "icon": "💰", "categoria": "wallet", "color": "rust", "configFields": ["minimo_cop"] }
+  ],
+  "actions": [
+    { "id": "a-pausar-camp", "label": "Pausar campaña", "icon": "⏸", "categoria": "campanas", "color": "rust" },
+    { "id": "a-escalar-camp", "label": "Escalar presupuesto", "icon": "📈", "categoria": "campanas", "color": "sage", "configFields": ["multiplicador"] },
+    { "id": "a-generar-creative", "label": "Generar creative", "icon": "🎨", "categoria": "creativos", "color": "terracota", "configFields": ["formato", "tono"] },
+    { "id": "a-crear-landing", "label": "Crear landing", "icon": "📄", "categoria": "landings", "color": "terracota" },
+    { "id": "a-notif-wa", "label": "Notificar por WhatsApp", "icon": "💬", "categoria": "notificacion", "color": "sage", "configFields": ["mensaje"] },
+    { "id": "a-notif-email", "label": "Enviar email", "icon": "✉️", "categoria": "notificacion", "color": "amber", "configFields": ["asunto", "cuerpo"] },
+    { "id": "a-push", "label": "Notificación push", "icon": "🔔", "categoria": "notificacion", "color": "amber" },
+    { "id": "a-agente", "label": "Llamar a agente", "icon": "🤖", "categoria": "agente", "color": "terracota", "configFields": ["agente_id"] },
+    { "id": "a-retiro", "label": "Solicitar retiro de wallet", "icon": "💸", "categoria": "wallet", "color": "amber" },
+    { "id": "a-anadir-cat", "label": "Añadir al catálogo", "icon": "➕", "categoria": "productos", "color": "sage" },
+    { "id": "a-reporte", "label": "Generar reporte", "icon": "📊", "categoria": "reportes", "color": "amber" },
+    { "id": "a-claude", "label": "Pedir a Claude que analice", "icon": "✦", "categoria": "agente", "color": "terracota", "configFields": ["prompt"] }
+  ],
+  "conditions": [
+    { "id": "c-if-else", "label": "Si / sino", "icon": "🔀", "color": "amber" },
+    { "id": "c-and", "label": "Y (todas se cumplen)", "icon": "&", "color": "amber" },
+    { "id": "c-or", "label": "O (una se cumple)", "icon": "|", "color": "amber" }
+  ],
+  "api_blocks": [
+    { "id": "api-pedidos-list", "label": "API Pedidos · listar", "icon": "📦", "categoria": "api-dropi", "color": "sage", "endpoint": "GET /v1/pedidos", "auth": "Bearer", "rate_limit": "100/min" },
+    { "id": "api-pedido-update", "label": "API Pedidos · actualizar estado", "icon": "✏️", "categoria": "api-dropi", "color": "amber", "endpoint": "PATCH /v1/pedidos/:id", "auth": "Bearer", "rate_limit": "60/min" },
+    { "id": "api-productos-search", "label": "API Catálogo · buscar producto", "icon": "🔍", "categoria": "api-dropi", "color": "sage", "endpoint": "GET /v1/productos/search", "auth": "Bearer", "rate_limit": "200/min" },
+    { "id": "api-wallet-balance", "label": "API Wallet · saldo actual", "icon": "💰", "categoria": "api-dropi", "color": "sage", "endpoint": "GET /v1/wallet/balance", "auth": "Bearer", "rate_limit": "30/min" },
+    { "id": "api-comunidad-trending", "label": "API Comunidad · productos en tendencia", "icon": "🔥", "categoria": "api-comunidad", "color": "terracota", "endpoint": "GET /v1/comunidad/trending", "auth": "Bearer", "rate_limit": "60/min", "anonymity_threshold": 50 },
+    { "id": "api-comunidad-benchmark", "label": "API Comunidad · benchmark por nicho", "icon": "📊", "categoria": "api-comunidad", "color": "terracota", "endpoint": "GET /v1/comunidad/benchmark", "auth": "Bearer", "rate_limit": "60/min", "anonymity_threshold": 50 },
+    { "id": "api-claude-analyze", "label": "API Claude · analizar texto", "icon": "✦", "categoria": "api-claude", "color": "terracota", "endpoint": "POST /v1/ai/analyze", "auth": "Bearer", "rate_limit": "20/min" },
+    { "id": "api-claude-generate", "label": "API Claude · generar creative", "icon": "🎨", "categoria": "api-claude", "color": "terracota", "endpoint": "POST /v1/ai/generate", "auth": "Bearer", "rate_limit": "15/min" }
+  ]
+}

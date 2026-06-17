@@ -1,0 +1,70 @@
+{
+  "conexiones": [
+    {
+      "id": "conn-meta",
+      "name": "Meta Ads",
+      "icon": "📘",
+      "color": "#1877F2",
+      "descripcion": "Crea, pausa y monitorea campañas de Facebook e Instagram. Lee métricas en tiempo real.",
+      "categoria": "Publicidad",
+      "conectado": true,
+      "estado": "Activo · sincronizado hace 5 min",
+      "permite": ["Leer campañas", "Pausar/activar", "Cambiar presupuesto", "Métricas en vivo"]
+    },
+    {
+      "id": "conn-tiktok",
+      "name": "TikTok Ads",
+      "icon": "🎵",
+      "color": "#000000",
+      "descripcion": "Mismas capacidades que Meta pero para TikTok Ads Manager y TikTok Shop.",
+      "categoria": "Publicidad",
+      "conectado": true,
+      "estado": "Activo · sincronizado hace 12 min",
+      "permite": ["Leer campañas", "Crear nuevas", "Mover presupuesto", "TikTok Shop"]
+    },
+    {
+      "id": "conn-shopify",
+      "name": "Shopify",
+      "icon": "🛍",
+      "color": "#7AB55C",
+      "descripcion": "Conecta tu tienda Shopify externa para sincronizar inventario, órdenes y crear productos desde Dropi.",
+      "categoria": "Tienda",
+      "conectado": false,
+      "estado": "No conectado",
+      "permite": ["Sincronizar productos", "Importar órdenes", "Inventario unificado"]
+    },
+    {
+      "id": "conn-tiendanube",
+      "name": "Tienda Nube",
+      "icon": "☁️",
+      "color": "#3478C9",
+      "descripcion": "Igual que Shopify pero para Tienda Nube. Listo en 2 clicks.",
+      "categoria": "Tienda",
+      "conectado": true,
+      "estado": "Activo · sincronizado hace 1 hora",
+      "permite": ["Sincronizar productos", "Importar órdenes", "Cobros recurrentes"]
+    },
+    {
+      "id": "conn-wa",
+      "name": "WhatsApp Business",
+      "icon": "💬",
+      "color": "#25D366",
+      "descripcion": "Envía y recibe mensajes por WhatsApp Business API. Habilita Gali como asistente WA 24/7.",
+      "categoria": "Mensajería",
+      "conectado": false,
+      "estado": "No conectado",
+      "permite": ["Enviar mensajes", "Recibir mensajes", "Plantillas aprobadas", "Listas de difusión"]
+    },
+    {
+      "id": "conn-claude",
+      "name": "Claude",
+      "icon": "✦",
+      "color": "#D97706",
+      "descripcion": "Conecta tu cuenta de Claude para análisis avanzado, generación de contenido y razonamientos complejos.",
+      "categoria": "IA",
+      "conectado": false,
+      "estado": "Disponible",
+      "permite": ["Análisis profundos", "Generación de contenido", "Razonamientos largos", "Code execution"]
+    }
+  ]
+}

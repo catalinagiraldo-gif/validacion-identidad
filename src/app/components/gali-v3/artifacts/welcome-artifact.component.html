@@ -1,0 +1,164 @@
+<article class="welcome">
+  <header class="welcome__hero">
+    <div class="welcome__hero-tag">
+      <span class="welcome__sparkle">✦</span>
+      <span>{{ memoria().perfil.nivel }} · {{ memoria().perfil.tiempo_en_dropi }} en Dropi</span>
+    </div>
+    <h1 class="welcome__title">
+      Hola, <em>{{ memoria().perfil.nombre }}</em>.
+    </h1>
+    <p class="welcome__subtitle">
+      {{ nivelTagline() }}<br/>
+      Recuerdo que vendes <strong>{{ memoria().negocio.nicho_principal | lowercase }}</strong>,
+      tu tono es <strong>{{ memoria().negocio.tono_preferido }}</strong>
+      y tu ROAS objetivo es <strong>{{ memoria().negocio.roas_objetivo }}</strong>.
+      Hoy te tengo <strong>{{ signalsCount() }} señales</strong>.
+    </p>
+
+    <div class="welcome__last-activity">
+      Última actividad: hace <strong>{{ memoria().perfil.ultima_actividad }}</strong>
+    </div>
+  </header>
+
+  <section class="welcome__cards">
+    <a *ngIf="ultimoProyecto() as up"
+       [routerLink]="['/gali-v3/proyecto', up.id]"
+       class="welcome__card welcome__card--resume">
+      <div class="welcome__card-tag">Continuar</div>
+      <h3>{{ up.icon }} {{ up.name }}</h3>
+      <p>{{ up.memory.siguiente_accion }}</p>
+      <div class="welcome__card-meta">
+        <span>ROAS {{ up.metrics.roas_actual }}x</span>
+        <span>{{ up.metrics.ventas_totales }} ventas</span>
+        <span>{{ up.days_active }}d activo</span>
+      </div>
+      <span class="welcome__card-arrow">→</span>
+    </a>
+
+    <a routerLink="/gali-v3/proyecto/nuevo" class="welcome__card welcome__card--new">
+      <div class="welcome__card-tag">Construir nuevo</div>
+      <h3>📁 Arrancar un proyecto</h3>
+      <p>Dile a Gali qué quieres lograr y arma contigo el plan, las landings y las automatizaciones.</p>
+      <div class="welcome__card-meta">
+        <span>De cero a primera venta</span>
+      </div>
+      <span class="welcome__card-arrow">→</span>
+    </a>
+
+    <a routerLink="/gali-v3/builder" class="welcome__card welcome__card--build">
+      <div class="welcome__card-tag">Automatizar</div>
+      <h3>⚡ Recetas</h3>
+      <p>Cuéntale a Gali qué quieres que pase solo. Revisa y activa — sin jerga de Make.</p>
+      <div class="welcome__card-meta">
+        <span>Sin código · 5 minutos</span>
+      </div>
+      <span class="welcome__card-arrow">→</span>
+    </a>
+  </section>
+
+  <!-- ✦ Bloques de Gali — sección destacada con CTA + lista de guardados -->
+  <section class="welcome__bloques">
+    <div class="welcome__bloques-intro">
+      <div class="welcome__bloques-tag">
+        <span class="welcome__sparkle" aria-hidden="true">✦</span>
+        <span>Bloques de Gali · Constructor de tableros</span>
+      </div>
+      <h2 class="welcome__bloques-title">
+        Crea <em>cualquier dato</em> que quieras ver
+      </h2>
+      <p class="welcome__bloques-desc">
+        Describe en español lo que necesitas — "ventas por ciudad esta semana", "margen efectivo descontando devoluciones",
+        "fuga de pedidos en el funnel". Gali lo arma en vivo y queda guardado aquí.
+      </p>
+      <a routerLink="/gali-v3/bloque-builder" class="welcome__bloques-cta">
+        <span aria-hidden="true">✦</span>
+        {{ bloquesCustom().length === 0 ? 'Crear mi primer bloque' : 'Crear un bloque nuevo' }}
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="welcome__bloques-output">
+      <div *ngIf="bloquesCustom().length === 0" class="welcome__bloques-empty">
+        <svg viewBox="0 0 200 110" class="welcome__bloques-empty-art" aria-hidden="true">
+          <rect x="16" y="24" width="56" height="64" rx="6" fill="#FCE4C7" stroke="#F49A3D" stroke-width="1.4"/>
+          <rect x="80" y="14" width="52" height="36" rx="6" fill="#FFF9F0" stroke="#B8593A" stroke-width="1.4"/>
+          <rect x="80" y="58" width="52" height="30" rx="6" fill="#D8DECF" stroke="#5F7058" stroke-width="1.4"/>
+          <rect x="140" y="24" width="44" height="64" rx="6" fill="#F3E1B8" stroke="#C88A1C" stroke-width="1.4" stroke-dasharray="4 3"/>
+          <text x="162" y="60" text-anchor="middle" font-family="Inter" font-size="18" fill="#C88A1C">+</text>
+        </svg>
+        <p>Aún no tienes bloques. Cada uno que crees aparecerá aquí y también en el panel "Mis bloques" de la derecha.</p>
+      </div>
+
+      <ul *ngIf="bloquesCustom().length > 0" class="welcome__bloques-list">
+        <li *ngFor="let b of bloquesCustomTop(); let i = index" [style.animation-delay.ms]="i * 80" class="welcome__bloques-item">
+          <a routerLink="/gali-v3/bloque-builder" class="welcome__bloques-card">
+            <span class="welcome__bloques-icon" aria-hidden="true">{{ b.icono }}</span>
+            <div class="welcome__bloques-card-body">
+              <strong>{{ b.titulo }}</strong>
+              <span>{{ b.descripcion }}</span>
+              <div class="welcome__bloques-meta">
+                <em>{{ b.categoria }}</em>
+                <em [attr.data-real]="!b.datos_simulados">{{ b.datos_simulados ? 'simulado' : 'datos reales' }}</em>
+              </div>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="welcome__quick">
+    <header class="welcome__shortcuts-head">
+      <span class="welcome__shortcuts-tag">Atajos rápidos</span>
+      <span class="welcome__shortcuts-more">⌘K para command palette</span>
+    </header>
+    <div class="welcome__quick-grid">
+      <a routerLink="/gali-v3/artifact/landing/land-1" class="welcome__quick-card">
+        <span>📄</span>
+        <div><strong>Editar landing del Collar GPS</strong><em>v2 · click para editar in-place</em></div>
+      </a>
+      <a routerLink="/gali-v3/vista/operacion-hoy" class="welcome__quick-card">
+        <span>📋</span>
+        <div><strong>Vista: Mi operación de hoy</strong><em>todo lo importante en una pantalla</em></div>
+      </a>
+      <a routerLink="/gali-v3/vista/nueva" class="welcome__quick-card">
+        <span>✦</span>
+        <div><strong>Componer una vista nueva</strong><em>Gali la arma desde un prompt</em></div>
+      </a>
+      <a routerLink="/gali-v3/mercado/agente/ag-1" class="welcome__quick-card">
+        <span>🛡</span>
+        <div><strong>Conocer al Vigilante anti-baneo</strong><em>agente instalado en tu cuenta</em></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="welcome__shortcuts">
+    <header class="welcome__shortcuts-head">
+      <span class="welcome__shortcuts-tag">Plantillas para ti</span>
+      <a routerLink="/gali-v3/mercado" class="welcome__shortcuts-more">Ver todo el mercado →</a>
+    </header>
+    <div class="welcome__shortcuts-list">
+      <a *ngFor="let p of plantillasDestacadas()"
+         routerLink="/gali-v3/mercado"
+         [queryParams]="{ tab: 'plantillas', id: p.id }"
+         class="welcome__shortcut">
+        <span class="welcome__shortcut-icon">{{ p.icon }}</span>
+        <div>
+          <strong>{{ p.name }}</strong>
+          <span>{{ p.descripcion }}</span>
+        </div>
+        <span class="welcome__shortcut-time">{{ p.tiempo_estimado }}</span>
+      </a>
+    </div>
+  </section>
+
+  <proximos-pasos contexto="inicio"></proximos-pasos>
+
+  <footer class="welcome__foot">
+    <p>
+      <span class="welcome__sparkle">✦</span>
+      Puedes preguntarme cualquier cosa abajo. No tienes que seguir un orden.
+      Soy experto sin ser experto: yo te acompaño.
+    </p>
+  </footer>
+</article>

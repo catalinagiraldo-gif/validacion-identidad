@@ -1,0 +1,60 @@
+{
+  "alertas": [
+    {
+      "pedido_id": "DRP-48102",
+      "dias_sin_actualizacion": 7,
+      "transportadora": "Coordinadora",
+      "estado": "critico",
+      "titulo": "Sin actualización > 5 días"
+    },
+    {
+      "pedido_id": "DRP-48088",
+      "dias_sin_actualizacion": 6,
+      "transportadora": "Coordinadora",
+      "estado": "critico",
+      "titulo": "Cliente no responde — reagendar"
+    },
+    {
+      "pedido_id": "DRP-48071",
+      "dias_sin_actualizacion": 5,
+      "transportadora": "Servientrega",
+      "estado": "critico",
+      "titulo": "Dirección incorrecta"
+    }
+  ],
+  "transportadoras": [
+    {
+      "nombre": "Coordinadora",
+      "tasa_novedad_semana": 12,
+      "tasa_semana_anterior": 4,
+      "umbral": 8,
+      "estado": "atencion"
+    },
+    {
+      "nombre": "Interrapidísimo",
+      "tasa_novedad_semana": 3,
+      "tasa_semana_anterior": 3,
+      "umbral": 8,
+      "estado": "ok"
+    },
+    {
+      "nombre": "Servientrega",
+      "tasa_novedad_semana": 5,
+      "tasa_semana_anterior": 6,
+      "umbral": 8,
+      "estado": "ok"
+    },
+    {
+      "nombre": "Envía",
+      "tasa_novedad_semana": 2,
+      "tasa_semana_anterior": 2,
+      "umbral": 8,
+      "estado": "ok"
+    }
+  ],
+  "receta_activa": {
+    "label": "Si novedad > 8%, alertar WhatsApp",
+    "ultima_alerta": "hoy 8:32am ✓",
+    "route": "/gali-v3/builder"
+  }
+}

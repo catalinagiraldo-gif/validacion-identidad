@@ -1,0 +1,1137 @@
+@import 'styles/gali-v5-tokens';
+@import '../shared/dropi-page-host';
+
+:host {
+  @include dropi-page-host;
+}
+
+$agent-color: var(--agent-color, #{$primary-500});
+
+.agentes-page {
+  min-height: 100%;
+  padding: $size-6 $size-8;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: $size-5;
+  background: $white;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $size-4;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    margin: 0 0 $size-1;
+    font-family: $font-primary;
+    font-size: $font-2xl;
+    font-weight: $font-bold;
+    color: $gray-800;
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-500;
+  }
+
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+
+    @media (max-width: 900px) {
+      flex-shrink: 1;
+    }
+  }
+
+  &__btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-1;
+    height: 36px;
+    padding: 0 $size-4;
+    border: none;
+    border-radius: $radius-md;
+    background: $primary-500;
+    color: $white;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    &:hover { opacity: 0.88; }
+  }
+
+  &__btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-1;
+    height: 36px;
+    padding: 0 $size-4;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    background: $white;
+    color: $gray-700;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.15s;
+    &:hover { border-color: $primary-500; color: $primary-500; }
+  }
+}
+
+// Banner conceptual A/S/R — versión expandida con íconos y descripción
+.agentes-concept {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  align-items: center;
+  gap: $size-2;
+  padding: $size-5 $size-6;
+  background: $gray-50;
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+
+  // Tablet estrecho y mobile: apila verticalmente
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+
+    .agentes-concept__connector {
+      justify-content: flex-start;
+      padding: 0;
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    gap: $size-3;
+    padding: $size-3;
+    border-radius: $radius-md;
+    background: $white;
+    border: 1px solid $gray-100;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+
+    &--agent { border-top: 3px solid $primary-500; }
+    &--skill  { border-top: 3px solid #22c55e; }
+    &--rule   { border-top: 3px solid #38bdf8; }
+
+    &:hover {
+      border-color: $gray-200;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+  }
+
+  &__icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    .pi { font-size: 16px; }
+
+    &--agent { background: rgba($primary-500, 0.12); color: $primary-600; }
+    &--skill  { background: #f0fdf4; color: #16a34a; }
+    &--rule   { background: #f0f9ff; color: #0284c7; }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0 $size-1;
+  }
+
+  &__connector-label {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-400;
+    font-weight: $font-medium;
+    white-space: nowrap;
+    background: $gray-100;
+    padding: 4px 8px;
+    border-radius: $radius-full;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 $size-2;
+    border-radius: $radius-sm;
+    font-family: $font-primary;
+    font-size: 10px;
+    font-weight: $font-bold;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    width: fit-content;
+
+    &--agent { background: rgba($primary-500, 0.12); color: $primary-600; }
+    &--skill  { background: #f0fdf4; color: #16a34a; }
+    &--rule   { background: #f0f9ff; color: #0284c7; }
+  }
+
+  &__desc {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-600;
+    line-height: 1.4;
+  }
+
+  &__example {
+    font-family: $font-primary;
+    font-size: 10px;
+    color: $gray-400;
+    font-style: italic;
+  }
+
+  &__cta-row {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+    flex-wrap: wrap;
+    margin-top: 2px;
+  }
+
+  &__link {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $primary-500;
+    text-decoration: none;
+    font-weight: $font-medium;
+    flex-shrink: 0;
+    &:hover { text-decoration: underline; }
+
+    &--create {
+      background: rgba($primary-500, 0.08);
+      color: $primary-600;
+      padding: 2px $size-2;
+      border-radius: $radius-sm;
+      font-weight: $font-semibold;
+      &:hover { background: rgba($primary-500, 0.14); text-decoration: none; }
+    }
+  }
+}
+
+// Layout 2 columnas
+.agentes-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: $size-4;
+  flex: 1;
+  min-height: 0;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Lista de agentes (columna izquierda)
+.agentes-list {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+}
+
+.agent-card {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  padding: $size-4;
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  background: $white;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+
+  &:hover {
+    border-color: $gray-200;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  &--selected {
+    border-color: $agent-color;
+    border-left-width: 3px;
+    background: rgba(0, 0, 0, 0.015);
+  }
+
+  &--create {
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    border-style: dashed;
+    border-color: $gray-200;
+    padding: $size-5;
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $size-2;
+  }
+
+  &__identity {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $agent-color;
+    flex-shrink: 0;
+    opacity: 0.45;
+
+    &--pulse {
+      opacity: 1;
+      animation: agent-dot-pulse 2.4s ease-in-out infinite;
+    }
+  }
+
+  &__name {
+    display: block;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-800;
+    line-height: 1.2;
+  }
+
+  &__role {
+    display: block;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-500;
+    line-height: 1.2;
+  }
+
+  &__status {
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: $font-bold;
+    padding: 2px $size-2;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+
+    &[data-status="activo"] { background: #f0fdf4; color: #16a34a; }
+    &[data-status="esperando"] { background: $gray-100; color: $gray-500; }
+    &[data-status="pausa"] { background: #fef3c7; color: #92400e; }
+  }
+
+  &__last-action {
+    display: flex;
+    align-items: baseline;
+    gap: $size-2;
+    min-width: 0;
+  }
+
+  &__action-text {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-600;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__action-time {
+    font-family: $font-primary;
+    font-size: 11px;
+    color: $gray-400;
+    flex-shrink: 0;
+  }
+
+  &__metrics {
+    display: flex;
+    gap: $size-4;
+  }
+
+  &__metric {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  &__metric-val {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-700;
+  }
+
+  &__metric-label {
+    font-family: $font-primary;
+    font-size: 11px;
+    color: $gray-400;
+  }
+
+  &__create-icon {
+    font-size: 20px;
+    color: $gray-300;
+    margin-bottom: $size-1;
+  }
+
+  &__create-label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-500;
+  }
+
+  &__create-desc {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-400;
+  }
+}
+
+// Detalle del agente (columna derecha)
+.agent-detail {
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  background: $white;
+  padding: $size-5;
+  display: flex;
+  flex-direction: column;
+  gap: $size-5;
+  height: fit-content;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+  }
+
+  &__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.06);
+    border: 2px solid $agent-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__avatar-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $agent-color;
+    opacity: 0.5;
+
+    &--pulse {
+      opacity: 1;
+      animation: agent-dot-pulse 2.4s ease-in-out infinite;
+    }
+  }
+
+  &__name {
+    margin: 0 0 2px;
+    font-family: $font-primary;
+    font-size: $font-lg;
+    font-weight: $font-bold;
+    color: $gray-800;
+  }
+
+  &__role {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-500;
+  }
+
+  &__header-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__header-status {
+    flex-shrink: 0;
+  }
+
+  &__live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: $radius-full;
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: $font-bold;
+    background: $gray-100;
+    color: $gray-500;
+
+    &[data-status="activo"] {
+      background: #f0fdf4;
+      color: #16a34a;
+    }
+
+    &[data-status="esperando"] {
+      background: $gray-100;
+      color: $gray-500;
+    }
+  }
+
+  &__live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: agent-dot-pulse 2.4s ease-in-out infinite;
+  }
+
+  &__ctas {
+    display: flex;
+    gap: $size-2;
+    flex-wrap: wrap;
+  }
+
+  &__customize-btn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: $size-1;
+    height: 32px;
+    padding: 0 $size-3;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    background: $white;
+    color: $gray-600;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    &:hover { border-color: $agent-color; color: $agent-color; }
+  }
+
+  &__description {
+    margin: 0;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-600;
+    line-height: 1.5;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+    padding-top: $size-4;
+    border-top: 1px solid $gray-100;
+  }
+
+  &__section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__section-title {
+    margin: 0;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-bold;
+    color: $gray-700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__link {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $primary-500;
+    text-decoration: none;
+    font-weight: $font-medium;
+    &:hover { text-decoration: underline; }
+  }
+
+  &__skills {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+  }
+
+  &__empty {
+    margin: 0;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-400;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $size-3;
+  }
+}
+
+// CTAs de acción rápida por agente
+.agent-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: $size-1;
+  height: 34px;
+  padding: 0 $size-3;
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.32, 0.72, 0, 1);
+
+  .pi { font-size: 12px; }
+
+  &--primary {
+    border: 1px solid $primary-500;
+    background: $primary-500;
+    color: $white;
+    &:hover { background: darken($primary-500, 8%); transform: translateY(-1px); }
+  }
+
+  &--secondary {
+    border: 1px solid $gray-200;
+    background: $white;
+    color: $gray-700;
+    &:hover { border-color: $gray-300; background: $gray-50; }
+  }
+
+  &--warn {
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.06);
+    color: #dc2626;
+    &:hover { background: rgba(239, 68, 68, 0.12); }
+  }
+}
+
+// Capacidades del agente
+.agent-capabilities {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $size-1;
+}
+
+.agent-capability {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-2;
+  font-family: $font-primary;
+  font-size: $font-xs;
+  color: $gray-600;
+  line-height: 1.4;
+
+  &__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: $agent-color;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+}
+
+// Historial de acciones recientes
+.agent-history {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.agent-history-item {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-3;
+  padding: $size-2 $size-3;
+  border-radius: $radius-sm;
+  position: relative;
+
+  &--ok    { background: rgba(34, 197, 94, 0.05); }
+  &--warn  { background: rgba(245, 158, 11, 0.05); }
+  &--info  { background: $gray-50; }
+
+  &__indicator {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+
+    .agent-history-item--ok   & { background: #22c55e; }
+    .agent-history-item--warn & { background: #f59e0b; }
+    .agent-history-item--info & { background: $gray-300; }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__text {
+    margin: 0 0 2px;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-700;
+    line-height: 1.4;
+  }
+
+  &__impact {
+    display: block;
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: $font-semibold;
+    color: #16a34a;
+    margin-bottom: 2px;
+  }
+
+  &__time {
+    font-family: $font-primary;
+    font-size: 10px;
+    color: $gray-400;
+  }
+}
+
+.agent-skill-row {
+  display: flex;
+  align-items: center;
+  gap: $size-2;
+  padding: $size-2 $size-3;
+  background: $gray-50;
+  border-radius: $radius-sm;
+
+  &__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: $gray-300;
+    flex-shrink: 0;
+
+    &--on { background: #22c55e; }
+  }
+
+  &__name {
+    flex: 1;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    color: $gray-700;
+  }
+
+  &__runs {
+    font-family: $font-primary;
+    font-size: 11px;
+    color: $gray-400;
+    flex-shrink: 0;
+  }
+}
+
+.agent-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: $size-3;
+  background: $gray-50;
+  border-radius: $radius-md;
+
+  &__val {
+    font-family: $font-primary;
+    font-size: $font-lg;
+    font-weight: $font-bold;
+    color: $gray-800;
+  }
+
+  &__label {
+    font-family: $font-primary;
+    font-size: 11px;
+    color: $gray-400;
+  }
+}
+
+.agent-last-action {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-2;
+  padding: $size-3;
+  background: $gray-50;
+  border-radius: $radius-md;
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $agent-color;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  &__text {
+    margin: 0 0 2px;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    color: $gray-700;
+  }
+
+  &__time {
+    font-family: $font-primary;
+    font-size: 11px;
+    color: $gray-400;
+  }
+}
+
+@keyframes agent-dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
+@media (max-width: 1100px) {
+  .agentes-concept {
+    grid-template-columns: 1fr;
+    gap: $size-3;
+  }
+  .agentes-concept__connector {
+    justify-content: flex-start;
+    padding-left: $size-3;
+  }
+}
+
+@media (max-width: 960px) {
+  .agentes-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Crear Agente Personalizado ───────────────────────────────────────────────
+
+.create-agent-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $size-4;
+}
+
+.create-agent-panel {
+  width: min(520px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: $radius-xl;
+  background: $white;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+  animation: ca-slide-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $size-4 $size-5;
+    border-bottom: 1px solid $gray-100;
+    font-size: $font-md;
+    font-weight: $font-bold;
+    color: $gray-800;
+  }
+
+  &__close {
+    border: none;
+    background: none;
+    color: $gray-400;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: $font-primary;
+    line-height: 1;
+
+    &:hover { color: $gray-700; }
+  }
+
+  &__steps {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: $size-3 $size-5;
+    border-bottom: 1px solid $gray-50;
+  }
+
+  &__body {
+    padding: $size-5;
+    display: flex;
+    flex-direction: column;
+    gap: $size-4;
+  }
+
+  &__eyebrow {
+    font-size: 11px;
+    font-weight: $font-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $primary-500;
+    margin: 0;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-lg;
+    font-weight: $font-bold;
+    color: $gray-800;
+  }
+
+  &__hint {
+    margin: -$size-2 0 0;
+    font-size: $font-xs;
+    color: $gray-500;
+  }
+
+  &__done {
+    align-items: center;
+    text-align: center;
+
+    h2 {
+      margin: 0;
+      font-size: $font-lg;
+      font-weight: $font-bold;
+      color: $gray-800;
+    }
+
+    p {
+      margin: 0;
+      font-size: $font-sm;
+      color: $gray-500;
+      max-width: 36ch;
+    }
+  }
+}
+
+.ca-done-icon {
+  font-size: 32px;
+  color: $primary-500;
+}
+
+.ca-step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $gray-200;
+  transition: background 0.2s;
+
+  &--active { background: $primary-500; }
+}
+
+.ca-step-line {
+  flex: 1;
+  height: 2px;
+  background: $gray-100;
+  border-radius: 1px;
+}
+
+.ca-field {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+
+  label {
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $gray-700;
+  }
+}
+
+.ca-input {
+  padding: $size-2 $size-3;
+  border: 1.5px solid $gray-200;
+  border-radius: $radius-md;
+  font-size: $font-sm;
+  color: $gray-800;
+  outline: none;
+  font-family: $font-primary;
+  transition: border-color 0.15s;
+  background: $white;
+
+  &:focus {
+    border-color: $primary-400;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.08);
+  }
+
+  &::placeholder { color: $gray-400; }
+}
+
+.ca-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $size-2;
+  margin-bottom: $size-2;
+}
+
+.ca-chip {
+  padding: 4px 12px;
+  border: 1px solid $gray-200;
+  border-radius: $radius-full;
+  background: $white;
+  font-size: $font-xs;
+  color: $gray-600;
+  cursor: pointer;
+  font-family: $font-primary;
+  transition: all 0.12s;
+
+  &--selected {
+    border-color: $primary-400;
+    background: rgba($primary-500, 0.08);
+    color: $primary-700;
+  }
+
+  &:hover { border-color: $primary-300; }
+}
+
+.ca-skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+}
+
+.ca-skill-item {
+  display: flex;
+  align-items: center;
+  gap: $size-3;
+  padding: $size-2 $size-3;
+  border: 1px solid $gray-100;
+  border-radius: $radius-md;
+  background: $white;
+  font-size: $font-sm;
+  color: $gray-700;
+  cursor: pointer;
+  text-align: left;
+  font-family: $font-primary;
+  transition: all 0.12s;
+
+  &:hover { border-color: $primary-300; background: rgba($primary-500, 0.02); }
+
+  &--selected {
+    border-color: $primary-400;
+    background: rgba($primary-500, 0.06);
+    color: $primary-700;
+    font-weight: $font-medium;
+  }
+
+  &__check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba($primary-500, 0.1);
+    color: $primary-600;
+    font-size: 12px;
+    font-weight: $font-bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+}
+
+.ca-summary {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  padding: $size-4;
+  background: $gray-50;
+  border-radius: $radius-lg;
+  border: 1px solid $gray-100;
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    font-size: $font-sm;
+
+    span { color: $gray-500; }
+    strong { color: $gray-800; }
+  }
+}
+
+.ca-skills-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $size-2;
+}
+
+.ca-skill-tag {
+  padding: 3px 10px;
+  border-radius: $radius-full;
+  background: rgba($primary-500, 0.1);
+  color: $primary-700;
+  font-size: $font-xs;
+  font-weight: $font-medium;
+}
+
+.ca-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $size-3;
+  margin-top: $size-2;
+}
+
+.ca-btn-primary {
+  padding: $size-2 $size-5;
+  border: none;
+  border-radius: $radius-full;
+  background: $primary-500;
+  color: $white;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  font-family: $font-primary;
+  transition: background 0.15s, transform 0.1s;
+
+  &:hover { background: $primary-600; }
+  &:active { transform: scale(0.98); }
+  &:disabled { opacity: 0.4; cursor: default; }
+}
+
+.ca-btn-secondary {
+  padding: $size-2 $size-4;
+  border: 1px solid $gray-200;
+  border-radius: $radius-full;
+  background: $white;
+  color: $gray-600;
+  font-size: $font-sm;
+  cursor: pointer;
+  font-family: $font-primary;
+  transition: border-color 0.12s;
+
+  &:hover { border-color: $gray-400; }
+}
+
+@keyframes ca-slide-in {
+  from { opacity: 0; transform: scale(0.94) translateY(16px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

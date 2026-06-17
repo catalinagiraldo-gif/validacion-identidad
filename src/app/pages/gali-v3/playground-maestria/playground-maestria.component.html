@@ -1,0 +1,92 @@
+<div class="pm3">
+  <div class="pm3__atmos" aria-hidden="true"></div>
+
+  <header class="pm3__head">
+    <div class="pm3__crumbs">
+      <span class="pm3__crumbs-mono">gali-v3 / playground</span>
+      <span class="pm3__crumbs-dot">·</span>
+      <a class="pm3__crumbs-link" [routerLink]="['/gali-v3']">ir al lienzo →</a>
+    </div>
+
+    <div class="pm3__mast">
+      <gali-mark state="reposo" size="xl"></gali-mark>
+      <div class="pm3__mast-text">
+        <h1 class="pm3__title">
+          La misma <em>voz</em>,<br/>tres formas de hablarte.
+        </h1>
+        <p class="pm3__sub">
+          Gali se reconfigura según tu nivel de maestría — densidad, verbosidad, controles.
+          Al cambiar de nivel también re-armo tu lienzo con el starter pack correspondiente.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <section class="pm3__section" aria-label="Selector de nivel">
+    <div class="pm3__section-head">
+      <span class="pm3__section-mono">01 — Nivel actual</span>
+      <span class="pm3__section-rule"></span>
+    </div>
+
+    <div class="pm3__levels">
+      <button
+        *ngFor="let n of niveles"
+        type="button"
+        class="pm3__level"
+        [class.pm3__level--active]="(nivelActual$ | async) === n"
+        (click)="setNivel(n)">
+        <span class="pm3__level-mono">{{ n.toUpperCase() }}</span>
+        <strong class="pm3__level-label">{{ persona(n).label }}</strong>
+        <span class="pm3__level-tag">{{ persona(n).tagline }}</span>
+        <dl class="pm3__level-meta">
+          <div><dt>Densidad</dt><dd>{{ persona(n).densidad }}</dd></div>
+          <div><dt>Voz</dt><dd>{{ persona(n).verbosidad }}</dd></div>
+          <div><dt>Avanzado</dt><dd>{{ persona(n).controlesAvanzados ? 'sí' : 'no' }}</dd></div>
+        </dl>
+      </button>
+    </div>
+  </section>
+
+  <section class="pm3__section" aria-label="Comparativa de voz">
+    <div class="pm3__section-head">
+      <span class="pm3__section-mono">02 — Comparativa de voz</span>
+      <span class="pm3__section-rule"></span>
+    </div>
+
+    <div class="pm3__samples">
+      <article class="pm3__sample" *ngFor="let s of samples">
+        <header class="pm3__sample-head">
+          <gali-mark state="propuesta" size="sm"></gali-mark>
+          <span>{{ s.context }}</span>
+        </header>
+        <div class="pm3__sample-grid">
+          <div
+            *ngFor="let n of niveles"
+            class="pm3__sample-voice"
+            [class.pm3__sample-voice--active]="(nivelActual$ | async) === n">
+            <span class="pm3__sample-voice-tag">{{ persona(n).label }}</span>
+            <p class="pm3__sample-voice-text">{{ s.voices[n] }}</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="pm3__section" aria-label="Estados del sello">
+    <div class="pm3__section-head">
+      <span class="pm3__section-mono">03 — Estados del sello ✦</span>
+      <span class="pm3__section-rule"></span>
+    </div>
+
+    <div class="pm3__marks">
+      <div class="pm3__mark-cell" *ngFor="let st of markStates">
+        <gali-mark [state]="st" size="xl"></gali-mark>
+        <span class="pm3__mark-cell-label">{{ st }}</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pm3__foot">
+    <span class="pm3__foot-mono">gali-v3 · light · claude dropi mode</span>
+  </footer>
+</div>

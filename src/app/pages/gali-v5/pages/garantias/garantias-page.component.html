@@ -1,0 +1,55 @@
+<div class="garantias-page" *ngIf="config">
+
+  <gali-agent-alert
+    agent="vigilante"
+    variant="decision"
+    message="2 garantías listas para cierre automático · 1 posible fraude detectado (P-160606)"
+    primaryCta="Autorizar cierres automáticos"
+    secondaryCta="Ver señales →"
+    secondaryRoute="/gali-v5"
+  />
+
+  <nav class="garantias-page__breadcrumbs" aria-label="Breadcrumb">
+    <a routerLink="/gali-v5" class="garantias-page__crumb"><i class="pi pi-home"></i></a>
+    <i class="pi pi-chevron-right garantias-page__crumb-sep"></i>
+    <span class="garantias-page__crumb">{{ config.breadcrumbs[0] }}</span>
+    <i class="pi pi-chevron-right garantias-page__crumb-sep"></i>
+    <span class="garantias-page__crumb garantias-page__crumb--active">{{ config.title }}</span>
+  </nav>
+
+  <h1 class="garantias-page__title">{{ config.title }}</h1>
+
+  <div class="garantias-page__toolbar">
+    <button type="button" class="garantias-page__btn-primary"><i class="pi pi-plus"></i> Agregar</button>
+    <button type="button" class="garantias-page__filter-btn" aria-label="Filtrar"><i class="pi pi-filter"></i></button>
+  </div>
+
+  <div class="garantias-page__table-scroll">
+    <table class="garantias-table">
+      <thead>
+        <tr>
+          <th *ngFor="let col of config.columns" [style.min-width]="col.width">{{ col.label }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of config.rows">
+          <td *ngFor="let col of config.columns">
+            <span *ngIf="col.key === 'check'" class="garantias-table__checkbox"></span>
+            <span *ngIf="col.key === 'estado' && variant === 'garantias'" class="garantias-table__tag">{{ row[col.key] }}</span>
+            <span *ngIf="col.key === 'guia' && variant === 'ordenes-despacho'" class="garantias-table__tag garantias-table__tag--carrier">ENVIA</span>
+            <span *ngIf="col.key === 'guia' && variant === 'ordenes-despacho'" class="garantias-table__guide">{{ row[col.key] }}</span>
+            <div *ngIf="col.key === 'acciones'" class="garantias-table__actions">
+              <button type="button"><i class="pi pi-eye"></i></button>
+              <button type="button"><i class="pi pi-pencil"></i></button>
+            </div>
+            <ng-container *ngIf="!['check', 'estado', 'guia', 'acciones'].includes(col.key)">{{ row[col.key] }}</ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="garantias-page__pagination">
+    <button type="button" class="garantias-page__page-btn orders-page__page-btn--active">1</button>
+  </div>
+</div>

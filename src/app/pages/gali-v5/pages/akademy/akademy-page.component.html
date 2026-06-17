@@ -1,0 +1,131 @@
+<div class="akademy-page">
+
+  <!-- Header -->
+  <div class="akademy-header">
+    <div class="akademy-header__left">
+      <h1 class="akademy-header__title">🎓 Akademy</h1>
+      <p class="akademy-header__sub">Aprende con los mejores dropshippers de Colombia</p>
+    </div>
+    <button type="button" class="akademy-header__gali-btn" (click)="askGali()">
+      <span>✦</span> Gali recomienda para mí →
+    </button>
+  </div>
+
+  <!-- Gali recommendation strip -->
+  <div class="akademy-gali-rec">
+    <div class="akademy-gali-rec__gali">
+      <span class="akademy-gali-rec__icon">✦</span>
+      <div>
+        <strong>Gali recomienda para ti ahora mismo</strong>
+        <p>Tu ROAS real es 1.93x vs 2.9x declarado por Meta. La diferencia viene de novedades en Cali. Este curso te enseña a calcular y optimizar el P&L real.</p>
+      </div>
+    </div>
+    <div class="akademy-gali-rec__course" (click)="startCourse(galiRec)" role="button" tabindex="0">
+      <div class="akademy-gali-rec__meta">
+        <span class="akademy-badge" [style.background]="levelColors[galiRec.level]">{{ galiRec.level }}</span>
+        <span class="akademy-cat">{{ galiRec.category }}</span>
+        <span class="akademy-duration">{{ galiRec.duration }}</span>
+      </div>
+      <strong class="akademy-gali-rec__title">{{ galiRec.title }}</strong>
+      <p class="akademy-gali-rec__desc">{{ galiRec.desc }}</p>
+      <div class="akademy-gali-rec__footer">
+        <span class="akademy-instructor">Por {{ galiRec.instructor }}</span>
+        <button type="button" class="akademy-btn-primary" (click)="startCourse(galiRec); $event.stopPropagation()">Empezar ahora →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="akademy-tabs">
+    <button type="button" class="akademy-tab" [class.akademy-tab--active]="activeTab() === 'para-ti'" (click)="activeTab.set('para-ti')">Para ti</button>
+    <button type="button" class="akademy-tab" [class.akademy-tab--active]="activeTab() === 'todos'" (click)="activeTab.set('todos')">Todos los cursos</button>
+    <button type="button" class="akademy-tab" [class.akademy-tab--active]="activeTab() === 'mis-cursos'" (click)="activeTab.set('mis-cursos')">Mis cursos</button>
+  </div>
+
+  <!-- Para ti -->
+  @if (activeTab() === 'para-ti') {
+    <div class="akademy-grid">
+      @for (course of courses; track course.id) {
+        @if (course.agentRec) {
+          <div class="akademy-card akademy-card--rec" (click)="startCourse(course)" role="button" tabindex="0">
+            @if (course.agent) {
+              <div class="akademy-card__agent-badge" [style.background]="agentColors[course.agent]">
+                <span>✦</span> {{ course.agent }}
+              </div>
+            }
+            <div class="akademy-card__meta">
+              <span class="akademy-badge" [style.background]="levelColors[course.level]">{{ course.level }}</span>
+              <span class="akademy-cat">{{ course.category }}</span>
+              <span class="akademy-duration">{{ course.duration }}</span>
+            </div>
+            <strong class="akademy-card__title">{{ course.title }}</strong>
+            <p class="akademy-card__desc">{{ course.desc }}</p>
+            <div class="akademy-card__footer">
+              <span class="akademy-instructor">{{ course.instructor }}</span>
+              <button type="button" class="akademy-btn-secondary">Ver curso →</button>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  }
+
+  <!-- Todos -->
+  @if (activeTab() === 'todos') {
+    <div class="akademy-grid">
+      @for (course of courses; track course.id) {
+        <div class="akademy-card" (click)="startCourse(course)" role="button" tabindex="0">
+          @if (course.agent) {
+            <div class="akademy-card__agent-badge" [style.background]="agentColors[course.agent]">
+              <span>✦</span> {{ course.agent }}
+            </div>
+          }
+          <div class="akademy-card__meta">
+            <span class="akademy-badge" [style.background]="levelColors[course.level]">{{ course.level }}</span>
+            <span class="akademy-cat">{{ course.category }}</span>
+            <span class="akademy-duration">{{ course.duration }}</span>
+          </div>
+          <strong class="akademy-card__title">{{ course.title }}</strong>
+          <p class="akademy-card__desc">{{ course.desc }}</p>
+          <div class="akademy-card__footer">
+            <span class="akademy-instructor">{{ course.instructor }}</span>
+            <button type="button" class="akademy-btn-secondary">Ver curso →</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Mis cursos -->
+  @if (activeTab() === 'mis-cursos') {
+    @if (myCourses.length) {
+      <div class="akademy-my-courses">
+        @for (course of myCourses; track course.id) {
+          <div class="akademy-my-row" (click)="startCourse(course)" role="button" tabindex="0">
+            <div class="akademy-my-row__info">
+              <strong>{{ course.title }}</strong>
+              <span>{{ course.instructor }} · {{ course.duration }} · {{ course.category }}</span>
+            </div>
+            <div class="akademy-my-row__progress">
+              <div class="akademy-progress-bar">
+                <div class="akademy-progress-bar__fill" [style.width.%]="courseProgress(course)"></div>
+              </div>
+              <span class="akademy-progress-pct">{{ courseProgress(course) }}%</span>
+            </div>
+            @if (course.completed) {
+              <span class="akademy-completed-badge">✓ Completado</span>
+            } @else {
+              <button type="button" class="akademy-btn-secondary">Continuar →</button>
+            }
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="akademy-empty">
+        <p>No has empezado ningún curso aún.</p>
+        <button type="button" class="akademy-btn-primary" (click)="activeTab.set('para-ti')">Ver recomendaciones →</button>
+      </div>
+    }
+  }
+
+</div>

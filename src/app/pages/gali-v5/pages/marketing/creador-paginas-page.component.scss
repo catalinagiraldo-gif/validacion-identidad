@@ -1,0 +1,159 @@
+@import 'styles/gali-v5-tokens';
+@import './marketing-shared';
+@import '../shared/dropi-page-host';
+
+:host {
+  @include marketing-page-shell;
+}
+
+.creador-paginas-page {
+  @include marketing-page-inner;
+
+  &__filters {
+    @include dropi-toolbar-row;
+    align-items: flex-end;
+    margin-bottom: $size-4;
+  }
+
+  &__date {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      font-family: $font-primary;
+      font-size: $font-xs;
+      color: $gray-500;
+    }
+  }
+
+  &__date-value {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    height: 40px;
+    padding: 0 $size-3;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    background: $white;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-700;
+    white-space: nowrap;
+
+    i {
+      color: $gray-400;
+    }
+  }
+
+  &__select {
+    height: 40px;
+    min-width: 140px;
+    padding: 0 $size-3;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    background: $white;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-600;
+  }
+
+  &__trash-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    background: $white;
+    color: $gray-600;
+    cursor: pointer;
+  }
+
+  &__search {
+    flex: 1;
+    min-width: 200px;
+    margin-left: auto;
+  }
+
+  &__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $size-3;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-600;
+  }
+
+  &__sort {
+    height: 36px;
+    padding: 0 $size-3;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    background: $white;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-700;
+  }
+
+  &__table-wrap {
+    @include marketing-content-card;
+    overflow-x: auto;
+    margin-bottom: $size-4;
+  }
+
+  &__table {
+    @include marketing-table;
+
+    td:first-child {
+      white-space: normal;
+    }
+  }
+
+  &__product {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+
+    img {
+      border-radius: $radius-md;
+      object-fit: cover;
+      background: $gray-100;
+      flex-shrink: 0;
+    }
+
+    strong {
+      display: block;
+      font-family: $font-primary;
+      font-size: $font-sm;
+      font-weight: $font-semibold;
+      color: $gray-800;
+    }
+
+    span {
+      font-family: $font-primary;
+      font-size: $font-xs;
+      color: $gray-500;
+    }
+  }
+
+  &__url {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-1;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $info;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__actions {
+    @include marketing-icon-actions;
+  }
+}

@@ -1,0 +1,443 @@
+@import 'styles/gali-v5-tokens';
+@import './gali-v5-nav-icons';
+
+// Figma panel nav tokens (component 9219:220003)
+$panel-bg: #f0f4f9; // gray-50 Figma
+$nav-hover-bg: #e9eef5; // gray-100 Figma
+
+:host {
+  display: block;
+  grid-column: 2;
+  grid-row: 1;
+  width: var(--dropi-section-width, 200px);
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  transition: width 0.25s ease;
+}
+
+.section-nav {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: $panel-bg;
+  border-right: 1px solid $gray-100;
+  padding: $size-4 $size-2 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &--collapsed {
+    padding: $size-3 $size-1;
+    align-items: center;
+
+    .section-nav__head {
+      justify-content: center;
+      margin-bottom: $size-3;
+      padding: 0;
+    }
+
+    .section-nav__collapse {
+      width: 32px;
+      height: 32px;
+    }
+
+    .section-nav__list {
+      align-items: center;
+      width: 100%;
+    }
+
+    .section-nav__row--icon-only {
+      justify-content: center;
+      width: 36px;
+      min-width: 36px;
+      height: 36px;
+      padding: 0;
+      margin: 0 auto;
+
+      .section-nav__icon {
+        margin: 0;
+      }
+
+      &.section-nav__row--active,
+      &.section-nav__row--child-active {
+        background: $white;
+
+        .section-nav__icon {
+          @include nav-icon-active-primary;
+        }
+      }
+    }
+  }
+
+  // ── AI Context Band ──────────────────────────────────────────────────
+  &--ai {
+    background: #fff8f2;
+    border-right-color: rgba($primary-500, 0.18);
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $size-1;
+    margin-bottom: $size-5;
+    padding: 0 $size-2;
+    flex-shrink: 0;
+
+    &--ai {
+      border-left: 3px solid $primary-500;
+      padding-left: $size-2 - 3px;
+      margin: 0 (-$size-2) $size-5;
+      padding-right: $size-2;
+    }
+  }
+
+  &__ai-spark {
+    font-size: 10px;
+    color: $primary-500;
+    margin-right: 4px;
+    animation: ai-spark-breathe 3s ease-in-out infinite;
+    display: inline-block;
+    line-height: 1;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    margin: 0;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-700;
+    line-height: 1.1;
+
+    .section-nav--ai & {
+      color: $primary-500;
+    }
+  }
+
+  &__collapse {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: $gray-500;
+    cursor: pointer;
+    border-radius: $radius-sm;
+
+    &:hover {
+      background: $nav-hover-bg;
+      color: $gray-700;
+    }
+
+    .pi {
+      font-size: 14px;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+  }
+
+  &__item {
+    list-style: none;
+    margin: 0;
+  }
+
+  &__group-label {
+    display: block;
+    padding: $size-3 $size-2 $size-1;
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: $font-bold;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $gray-500;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+    width: 100%;
+    min-height: 35px;
+    padding: 0 $size-2;
+    border: none;
+    border-radius: $radius-md;
+    background: transparent;
+    text-decoration: none;
+    color: $gray-700;
+    cursor: pointer;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    line-height: 1.5;
+    transition: background 0.12s ease, color 0.12s ease;
+
+    &:hover:not(&--active) {
+      background: $nav-hover-bg;
+    }
+
+    &--parent {
+      font-weight: $font-regular;
+    }
+
+    &--child-active {
+      color: $primary-500;
+      font-weight: $font-medium;
+
+      .section-nav__icon {
+        @include nav-icon-active-primary;
+      }
+    }
+
+    &--active {
+      background: $white;
+      color: $primary-500;
+      font-weight: $font-medium;
+
+      .section-nav__icon {
+        @include nav-icon-active-primary;
+      }
+    }
+  }
+
+  &__icon {
+    @include nav-icon-shell;
+    @include nav-icon-default;
+  }
+
+  &__label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  &__chevron {
+    margin-left: auto;
+    font-size: 12px;
+    color: $gray-400;
+
+    &--active {
+      color: $primary-500;
+    }
+  }
+
+  &__badge {
+    flex-shrink: 0;
+    padding: 2px 4px;
+    border-radius: $radius-md;
+    font-size: 10px;
+    font-weight: $font-medium;
+    line-height: 1.5;
+
+    &--nuevo {
+      background: $primary-500;
+      color: $white;
+    }
+
+    &--beta {
+      background: rgba($info, 0.15);
+      color: $secondary-600;
+    }
+  }
+
+  &__tree {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__tree-link {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    padding: 2px 0 2px $size-3;
+    text-decoration: none;
+    min-height: 35px;
+    border-radius: $radius-md;
+
+    &:hover:not(&--active) .section-nav__tree-label {
+      background: $nav-hover-bg;
+    }
+
+    &--active .section-nav__tree-label {
+      color: $primary-500;
+      font-weight: $font-medium;
+      background: $white;
+    }
+  }
+
+  &__tree-line {
+    position: relative;
+    width: 13px;
+    height: 40px;
+    flex-shrink: 0;
+
+    &::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 50%;
+      width: 1px;
+      background: $gray-200;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      width: 6px;
+      height: 1px;
+      background: $gray-200;
+    }
+  }
+
+  &__tree-label {
+    flex: 1;
+    padding: 4px $size-2;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $gray-700;
+    line-height: 1.5;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+
+  // ── Agent footer ────────────────────────────────────────────────────
+  &__list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: $size-2;
+  }
+
+  &__agent-footer {
+    --af-color: #{$primary-500};
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    padding: $size-3;
+    margin-top: auto;
+    border-top: 1px solid $gray-100;
+    background: rgba(255, 97, 2, 0.04);
+    border-radius: 0 0 $radius-sm $radius-sm;
+    flex-shrink: 0;
+  }
+
+  &__af-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--af-color);
+    flex-shrink: 0;
+    animation: af-pulse 2s ease-in-out infinite;
+  }
+
+  &__af-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__af-label {
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: $font-bold;
+    color: var(--af-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  &__af-status {
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: $font-regular;
+    color: $gray-500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+  }
+
+  &__af-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--af-color);
+    border-radius: $radius-sm;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.12s ease;
+    padding: 0;
+
+    .pi { font-size: 11px; }
+
+    &:hover {
+      background: rgba(255, 97, 2, 0.08);
+    }
+  }
+}
+
+@keyframes af-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
+@keyframes ai-spark-breathe {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+// ── Agent activity indicators ────────────────────────────────────────────────
+.section-nav__agent-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-left: auto;
+  animation: af-pulse 2s ease-in-out infinite;
+}
+
+.section-nav__agent-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: white;
+  font-family: var(--font-primary, 'Inter');
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+}

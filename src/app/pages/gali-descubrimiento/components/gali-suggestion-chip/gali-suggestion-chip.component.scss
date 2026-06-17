@@ -1,0 +1,74 @@
+@import 'styles/gali-tokens';
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid $gali-border-default;
+  border-radius: $gali-radius-pill;
+  color: $gali-text-primary;
+  font-family: $gali-font-body;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 200ms $gali-ease-out;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: chip-in 400ms $gali-ease-out forwards;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: $gali-cyan;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.15);
+  }
+
+  &:focus-visible {
+    @include gali-focus;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &--accent {
+    background: $gali-orange;
+    border-color: $gali-orange;
+    color: $gali-bg-base;
+    font-weight: 600;
+    box-shadow: $gali-shadow-cta;
+
+    &:hover {
+      background: $gali-orange-hover;
+      border-color: $gali-orange-hover;
+      transform: translateY(-1px);
+    }
+  }
+
+  &__arrow {
+    color: $gali-cyan;
+    font-size: 10px;
+    font-family: $gali-font-mono;
+  }
+
+  &--accent &__arrow {
+    color: $gali-bg-base;
+  }
+}
+
+@keyframes chip-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@include gali-reduced-motion {
+  .chip {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,442 @@
+{
+  "user": {
+    "id": "u-sebas-001",
+    "name": "Sebas",
+    "level": "descubridor",
+    "joinedDays": 14,
+    "salesCount": 1
+  },
+  "mission": {
+    "id": "m-001",
+    "title": "Encontrar producto ganador",
+    "totalSteps": 4,
+    "currentStep": 1,
+    "currentStepName": "Producto",
+    "progressPct": 20,
+    "steps": [
+      { "id": "s1", "label": "Producto", "status": "current", "pct": 20 },
+      { "id": "s2", "label": "Estrategia", "status": "locked", "pct": 0 },
+      { "id": "s3", "label": "Creación", "status": "locked", "pct": 0 },
+      { "id": "s4", "label": "Lanzamiento", "status": "locked", "pct": 0 }
+    ],
+    "stats": { "similarUsersCompleted": 247, "avgDays": 2.4 }
+  },
+  "products": [
+    {
+      "id": "p-001",
+      "name": "Collar GPS Smart para mascotas",
+      "image": "assets/images/products/smartwatch.jpg",
+      "category": "mascotas",
+      "supplier": { "name": "DropiVerified Pet Co.", "verified": true },
+      "cost": 26000,
+      "suggestedPrice": 89000,
+      "margin": 71,
+      "salesWeek": 340,
+      "trendPct": 23,
+      "badge": { "icon": "🔥", "label": "Más vendido esta semana" },
+      "reasoning": {
+        "salesPercentile": "top 5% Colombia",
+        "marginRationale": "Margen 71% supera mínimo recomendado 50%",
+        "trendNote": "+23% últimas 4 semanas"
+      },
+      "confidence": 91
+    },
+    {
+      "id": "p-002",
+      "name": "Organizador de cables magnético",
+      "image": "assets/images/products/organizador-cocina.jpg",
+      "category": "hogar",
+      "supplier": { "name": "Suppli", "verified": true },
+      "cost": 8500,
+      "suggestedPrice": 29900,
+      "margin": 72,
+      "salesWeek": 218,
+      "trendPct": 8,
+      "badge": { "icon": "⚡", "label": "Estable" },
+      "reasoning": {
+        "salesPercentile": "top 12% Colombia",
+        "marginRationale": "Margen 72% — alto",
+        "trendNote": "+8% estable 8 semanas"
+      },
+      "confidence": 79
+    },
+    {
+      "id": "p-003",
+      "name": "Mascarilla LED para rostro",
+      "image": "assets/images/products/serum-vitamina-c.jpg",
+      "category": "skincare",
+      "supplier": { "name": "BeautyDropi", "verified": true },
+      "cost": 42000,
+      "suggestedPrice": 149000,
+      "margin": 72,
+      "salesWeek": 190,
+      "trendPct": 41,
+      "badge": { "icon": "📈", "label": "Tendencia al alza" },
+      "reasoning": {
+        "salesPercentile": "top 15% Colombia",
+        "marginRationale": "Margen 72%",
+        "trendNote": "+41% esta semana"
+      },
+      "confidence": 84
+    },
+    {
+      "id": "p-004",
+      "name": "Tapete de acupresión",
+      "image": "assets/images/products/ropa-deportiva.jpg",
+      "category": "fitness",
+      "supplier": { "name": "FitSupply LATAM", "verified": true },
+      "cost": 18000,
+      "suggestedPrice": 59000,
+      "margin": 69,
+      "salesWeek": 167,
+      "trendPct": -4,
+      "badge": null,
+      "reasoning": {
+        "salesPercentile": "top 22% Colombia",
+        "marginRationale": "Margen 69%",
+        "trendNote": "Leve baja -4%"
+      },
+      "confidence": 72
+    },
+    {
+      "id": "p-005",
+      "name": "Smartwatch Fit Pro 2026",
+      "image": "assets/images/products/smartwatch.jpg",
+      "category": "tech",
+      "supplier": { "name": "TechDropi", "verified": true },
+      "cost": 95000,
+      "suggestedPrice": 269000,
+      "margin": 65,
+      "salesWeek": 412,
+      "trendPct": 31,
+      "badge": { "icon": "🔥", "label": "Más vendido" },
+      "confidence": 88
+    },
+    {
+      "id": "p-006",
+      "name": "Audífonos TWS Pro Bass",
+      "image": "assets/images/products/audifonos-tws.jpg",
+      "category": "tech",
+      "supplier": { "name": "TechDropi", "verified": true },
+      "cost": 38000,
+      "suggestedPrice": 119000,
+      "margin": 68,
+      "salesWeek": 287,
+      "trendPct": 14,
+      "badge": { "icon": "⚡", "label": "Estable" },
+      "confidence": 81
+    },
+    {
+      "id": "p-007",
+      "name": "Aspiradora robot Smart",
+      "image": "assets/images/products/aspiradora-robot.jpg",
+      "category": "hogar",
+      "supplier": { "name": "Casa+", "verified": true },
+      "cost": 145000,
+      "suggestedPrice": 379000,
+      "margin": 62,
+      "salesWeek": 132,
+      "trendPct": 19,
+      "badge": { "icon": "📈", "label": "Tendencia" },
+      "confidence": 76
+    },
+    {
+      "id": "p-008",
+      "name": "Lámpara LED de escritorio",
+      "image": "assets/images/products/lampara-led.jpg",
+      "category": "hogar",
+      "supplier": { "name": "Suppli", "verified": true },
+      "cost": 22000,
+      "suggestedPrice": 79000,
+      "margin": 72,
+      "salesWeek": 154,
+      "trendPct": 11,
+      "badge": { "icon": "🆕", "label": "Nuevo" },
+      "confidence": 74
+    },
+    {
+      "id": "p-009",
+      "name": "Sérum Vitamina C Anti-edad",
+      "image": "assets/images/products/serum-vitamina-c.jpg",
+      "category": "skincare",
+      "supplier": { "name": "BeautyDropi", "verified": true },
+      "cost": 19500,
+      "suggestedPrice": 69000,
+      "margin": 72,
+      "salesWeek": 245,
+      "trendPct": 28,
+      "badge": { "icon": "📈", "label": "Tendencia" },
+      "confidence": 86
+    },
+    {
+      "id": "p-010",
+      "name": "Plancha de cabello iónica",
+      "image": "assets/images/products/plancha-cabello.jpg",
+      "category": "skincare",
+      "supplier": { "name": "BeautyDropi", "verified": true },
+      "cost": 48000,
+      "suggestedPrice": 139000,
+      "margin": 66,
+      "salesWeek": 178,
+      "trendPct": 6,
+      "badge": null,
+      "confidence": 71
+    },
+    {
+      "id": "p-011",
+      "name": "Faja reductora premium",
+      "image": "assets/images/products/faja-reductora.jpg",
+      "category": "fitness",
+      "supplier": { "name": "FitSupply LATAM", "verified": true },
+      "cost": 24000,
+      "suggestedPrice": 79000,
+      "margin": 70,
+      "salesWeek": 198,
+      "trendPct": 17,
+      "badge": { "icon": "🔥", "label": "Top fitness" },
+      "confidence": 80
+    },
+    {
+      "id": "p-012",
+      "name": "Zapatillas Air Run",
+      "image": "assets/images/products/zapatillas-air.jpg",
+      "category": "fitness",
+      "supplier": { "name": "FitSupply LATAM", "verified": true },
+      "cost": 58000,
+      "suggestedPrice": 149000,
+      "margin": 61,
+      "salesWeek": 156,
+      "trendPct": 9,
+      "badge": null,
+      "confidence": 68
+    },
+    {
+      "id": "p-013",
+      "name": "Cámara WiFi para mascotas",
+      "image": "assets/images/products/camara-wifi.jpg",
+      "category": "mascotas",
+      "supplier": { "name": "DropiVerified Pet Co.", "verified": true },
+      "cost": 52000,
+      "suggestedPrice": 149000,
+      "margin": 65,
+      "salesWeek": 198,
+      "trendPct": 22,
+      "badge": { "icon": "📈", "label": "Tendencia" },
+      "confidence": 82
+    },
+    {
+      "id": "p-014",
+      "name": "Comedero automático Smart",
+      "image": "assets/images/products/bascula-bt.jpg",
+      "category": "mascotas",
+      "supplier": { "name": "DropiVerified Pet Co.", "verified": true },
+      "cost": 67000,
+      "suggestedPrice": 179000,
+      "margin": 63,
+      "salesWeek": 124,
+      "trendPct": 15,
+      "badge": null,
+      "confidence": 73
+    },
+    {
+      "id": "p-015",
+      "name": "Lavadora portátil ultrasónica para mascotas",
+      "image": "assets/images/products/aspiradora-robot.jpg",
+      "category": "mascotas",
+      "supplier": { "name": "DropiVerified Pet Co.", "verified": true },
+      "cost": 38000,
+      "suggestedPrice": 109000,
+      "margin": 65,
+      "salesWeek": 89,
+      "trendPct": 34,
+      "badge": { "icon": "🆕", "label": "Nuevo" },
+      "confidence": 70
+    },
+    {
+      "id": "p-016",
+      "name": "Sábanas King de microfibra",
+      "image": "assets/images/products/sabanas-king.jpg",
+      "category": "hogar",
+      "supplier": { "name": "Casa+", "verified": true },
+      "cost": 42000,
+      "suggestedPrice": 119000,
+      "margin": 65,
+      "salesWeek": 167,
+      "trendPct": 4,
+      "badge": null,
+      "confidence": 67
+    },
+    {
+      "id": "p-017",
+      "name": "Kit maquillaje 24 piezas",
+      "image": "assets/images/products/kit-maquillaje.jpg",
+      "category": "skincare",
+      "supplier": { "name": "BeautyDropi", "verified": true },
+      "cost": 35000,
+      "suggestedPrice": 99000,
+      "margin": 65,
+      "salesWeek": 142,
+      "trendPct": 12,
+      "badge": null,
+      "confidence": 75
+    },
+    {
+      "id": "p-018",
+      "name": "Parlante Bluetooth resistente",
+      "image": "assets/images/products/parlante-bt.jpg",
+      "category": "tech",
+      "supplier": { "name": "TechDropi", "verified": true },
+      "cost": 32000,
+      "suggestedPrice": 95000,
+      "margin": 66,
+      "salesWeek": 198,
+      "trendPct": 11,
+      "badge": null,
+      "confidence": 77
+    },
+    {
+      "id": "p-019",
+      "name": "Cartera de cuero premium",
+      "image": "assets/images/products/cartera-premium.jpg",
+      "category": "accesorios",
+      "supplier": { "name": "Tienda Proveedor", "verified": true },
+      "cost": 28000,
+      "suggestedPrice": 89000,
+      "margin": 69,
+      "salesWeek": 134,
+      "trendPct": 7,
+      "badge": null,
+      "confidence": 69
+    },
+    {
+      "id": "p-020",
+      "name": "Mochila USB anti-robo",
+      "image": "assets/images/products/mochila-usb.jpg",
+      "category": "accesorios",
+      "supplier": { "name": "Tienda Proveedor", "verified": true },
+      "cost": 42000,
+      "suggestedPrice": 119000,
+      "margin": 65,
+      "salesWeek": 187,
+      "trendPct": 13,
+      "badge": { "icon": "⚡", "label": "Estable" },
+      "confidence": 76
+    }
+  ],
+  "responses": {
+    "tendencia": {
+      "message": "Aquí están los 8 productos con mayor tracción en Colombia hoy. Los ordené por combinación de volumen de ventas y margen. El primero es un outlier interesante esta semana.",
+      "confidence": 87,
+      "productIds": ["p-005", "p-001", "p-009", "p-006", "p-011", "p-013", "p-018", "p-003"],
+      "reasoning": "Te muestro estos 8 porque mencionaste \"tendencia\" — los ordené por ventas semanales + margen (>50%) + crecimiento.",
+      "learning": { "icon": "📊", "label": "Te interesa: tendencias", "key": "interest_trending" }
+    },
+    "mascotas": {
+      "message": "Encontré 24 productos en la categoría mascotas. Te muestro los que tienen mejor combinación de margen y demanda actual. El collar GPS está rompiendo tendencia esta semana con +23% de ventas.",
+      "confidence": 91,
+      "productIds": ["p-001", "p-013", "p-014", "p-015", "p-002", "p-008", "p-007", "p-018"],
+      "reasoning": "Filtré por categoría \"mascotas\" + margen mínimo 50% + ordenado por tendencia.",
+      "learning": { "icon": "🎯", "label": "Nicho explorado: mascotas", "key": "niche_pets" }
+    },
+    "skincare": {
+      "message": "Productos de skincare con margen alto y demanda estable. La mascarilla LED para rostro está subiendo +41% esta semana en Colombia.",
+      "confidence": 84,
+      "productIds": ["p-003", "p-009", "p-017", "p-010", "p-005", "p-008", "p-001", "p-016"],
+      "reasoning": "Filtré por categoría \"skincare\" + margen >50% — la mascarilla LED es el outlier esta semana.",
+      "learning": { "icon": "🎯", "label": "Nicho explorado: skincare", "key": "niche_skincare" }
+    },
+    "hogar": {
+      "message": "Categoría hogar tiene productos estables con buen margen. El organizador de cables magnético lleva 8 semanas consistente.",
+      "confidence": 79,
+      "productIds": ["p-002", "p-008", "p-007", "p-016", "p-018", "p-005", "p-006", "p-020"],
+      "reasoning": "Filtré por categoría \"hogar\" + margen >50% — productos con consistencia semanal.",
+      "learning": { "icon": "🎯", "label": "Nicho explorado: hogar", "key": "niche_home" }
+    },
+    "fitness": {
+      "message": "Fitness está en alza esta semana. El tapete de acupresión tiene buena conversión a pesar de tendencia ligera a la baja.",
+      "confidence": 72,
+      "productIds": ["p-011", "p-004", "p-012", "p-005", "p-001", "p-006", "p-018", "p-009"],
+      "reasoning": "Filtré por categoría \"fitness\" + ordenado por ventas semanales actuales.",
+      "learning": { "icon": "🎯", "label": "Nicho explorado: fitness", "key": "niche_fitness" }
+    },
+    "tech": {
+      "message": "Tecnología sigue dominando. Smartwatch y audífonos lideran el segmento con márgenes consistentes >60%.",
+      "confidence": 83,
+      "productIds": ["p-005", "p-006", "p-018", "p-007", "p-013", "p-008", "p-014", "p-001"],
+      "reasoning": "Filtré por categoría \"tech\" + ordenado por ventas semanales + margen.",
+      "learning": { "icon": "🎯", "label": "Nicho explorado: tech", "key": "niche_tech" }
+    },
+    "default": {
+      "message": "Te muestro 8 productos con buena tracción esta semana. Si quieres filtrar por nicho específico, dime cuál te interesa.",
+      "confidence": 68,
+      "productIds": ["p-005", "p-001", "p-006", "p-009", "p-002", "p-011", "p-013", "p-018"],
+      "reasoning": "Sin filtro específico — te muestro top 8 ranking general de la semana.",
+      "learning": null
+    }
+  },
+  "suggestions": {
+    "hero": [
+      "Quiero ver tendencias de hoy",
+      "Busco algo en la categoría de hogar",
+      "Tengo un producto en mente"
+    ],
+    "workspace_default": [
+      "¿Cuál tiene el mejor margen?",
+      "Muéstrame solo productos en tendencia",
+      "¿Hay algo nuevo esta semana?"
+    ],
+    "workspace_idle_nudge": [
+      "Comparar margen",
+      "Comparar competencia",
+      "Estoy mirando, gracias"
+    ],
+    "post_select": [
+      "Sí, vamos",
+      "Quiero ver más productos"
+    ]
+  },
+  "executionSteps": {
+    "tendencia": [
+      { "label": "Consultando catálogo Dropi", "duration": 1400 },
+      { "label": "Filtrando por demanda > top 20%", "duration": 600 },
+      { "label": "Cruzando con tendencia LATAM 7d", "duration": 900 },
+      { "label": "Ranking final por score combinado", "duration": 700 }
+    ],
+    "mascotas": [
+      { "label": "Consultando catálogo Dropi", "duration": 1100 },
+      { "label": "Filtrando por categoría: mascotas", "duration": 500 },
+      { "label": "Aplicando margen mínimo 50%", "duration": 600 },
+      { "label": "Ranking por tendencia 30d", "duration": 800 }
+    ],
+    "skincare": [
+      { "label": "Consultando catálogo Dropi", "duration": 1200 },
+      { "label": "Filtrando por categoría: skincare", "duration": 500 },
+      { "label": "Detectando outliers de tendencia", "duration": 950 },
+      { "label": "Ranking por estabilidad + crecimiento", "duration": 650 }
+    ],
+    "hogar": [
+      { "label": "Consultando catálogo Dropi", "duration": 1000 },
+      { "label": "Filtrando por categoría: hogar", "duration": 600 },
+      { "label": "Filtrando por consistencia 8+ semanas", "duration": 850 },
+      { "label": "Ranking por margen + estabilidad", "duration": 700 }
+    ],
+    "fitness": [
+      { "label": "Consultando catálogo Dropi", "duration": 1100 },
+      { "label": "Filtrando por categoría: fitness", "duration": 500 },
+      { "label": "Cruzando con tendencia LATAM", "duration": 900 },
+      { "label": "Ranking por ventas actuales", "duration": 600 }
+    ],
+    "tech": [
+      { "label": "Consultando catálogo Dropi", "duration": 1200 },
+      { "label": "Filtrando por categoría: tech", "duration": 600 },
+      { "label": "Aplicando margen + volumen", "duration": 800 },
+      { "label": "Ranking final combinado", "duration": 700 }
+    ],
+    "default": [
+      { "label": "Consultando catálogo Dropi", "duration": 1100 },
+      { "label": "Aplicando filtros base", "duration": 600 },
+      { "label": "Ranking por score combinado", "duration": 900 },
+      { "label": "Preparando resultados", "duration": 500 }
+    ]
+  }
+}

@@ -1,0 +1,309 @@
+@import 'styles/gali-v5-tokens';
+@import '../shared/dropi-page-shell';
+
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.orders-page {
+  @include dropi-page-shell;
+
+  &__search-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    min-width: 280px;
+  }
+}
+
+.orders-risk {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: $radius-sm;
+  font-size: 10px;
+  font-weight: $font-bold;
+  white-space: nowrap;
+
+  &--verde { background: rgba(34, 197, 94, 0.12); color: #15803d; }
+  &--amarillo { background: rgba(245, 158, 11, 0.15); color: #b45309; }
+  &--rojo { background: rgba(239, 68, 68, 0.12); color: #b91c1c; }
+}
+
+.orders-table-wrap {
+  display: flex;
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  background: $white;
+}
+
+.orders-table-scroll {
+  flex: 1;
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+  min-width: 660px;
+  border-collapse: collapse;
+  font-family: $font-primary;
+  font-size: $font-sm;
+
+  &__th {
+    padding: 12px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: $font-medium;
+    color: $gray-600;
+    background: $gray-50;
+    border-bottom: 1px solid $gray-100;
+    white-space: nowrap;
+
+    &--check {
+      width: 60px;
+    }
+  }
+
+  &__row {
+    border-bottom: 1px solid $gray-100;
+
+    &:hover {
+      background: rgba($primary-500, 0.02);
+    }
+  }
+
+  &__td {
+    padding: 12px;
+    vertical-align: top;
+    color: $gray-700;
+
+    &--check {
+      width: 60px;
+    }
+
+    &--client {
+      min-width: 280px;
+      max-width: 400px;
+    }
+
+    &--recaudo {
+      min-width: 140px;
+    }
+  }
+
+  &__checkbox {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 1px solid $gray-300;
+    border-radius: 4px;
+    background: $white;
+  }
+
+  &__client-name {
+    margin: 0 0 4px;
+    font-weight: $font-medium;
+  }
+
+  &__address-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  &__address {
+    font-size: $font-sm;
+    color: $gray-600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 360px;
+  }
+
+  &__map--ok {
+    color: $success;
+    font-size: 16px;
+  }
+
+  &__map--warn {
+    color: $warning;
+    font-size: 16px;
+  }
+
+  &__phone {
+    margin: 0;
+    font-size: $font-sm;
+    color: $gray-600;
+  }
+
+  &__tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 32px;
+    font-size: 11px;
+    font-weight: $font-bold;
+    margin-bottom: 4px;
+
+    &--carrier {
+      background: rgba($primary-500, 0.12);
+      color: $primary-600;
+    }
+
+    &--status {
+      background: $gray-100;
+      color: $gray-600;
+      margin-right: 4px;
+    }
+  }
+
+  &__guide {
+    display: block;
+    font-size: $font-sm;
+    color: $gray-600;
+  }
+
+  &__recaudo-label {
+    display: block;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    margin-bottom: 6px;
+  }
+
+  &__actions-col {
+    flex: 0 0 300px;
+    border-left: 1px solid $gray-100;
+    background: $white;
+  }
+
+  &__actions-head {
+    padding: 12px;
+    font-size: 12px;
+    font-weight: $font-medium;
+    color: $gray-600;
+    background: $gray-50;
+    border-bottom: 1px solid $gray-100;
+    height: 55px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+  }
+
+  &__actions-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $size-2;
+    min-height: 101px;
+    padding: 12px;
+    border-bottom: 1px solid $gray-100;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid $gray-200;
+      border-radius: 8px;
+      background: $white;
+      color: $gray-600;
+      cursor: pointer;
+
+      &:hover {
+        border-color: $primary-500;
+        color: $primary-500;
+      }
+    }
+  }
+}
+
+// ── Gali Triage Layer ─────────────────────────────────────────────
+.gali-triage-bar {
+  display: flex;
+  align-items: center;
+  gap: $size-4;
+  padding: $size-3 $size-4;
+  margin-bottom: $size-4;
+  background: #fff7ed;
+  border: 1px solid rgba($primary-500, 0.2);
+  border-radius: $radius-lg;
+  flex-wrap: wrap;
+
+  &__icon { font-size: 14px; color: $primary-500; flex-shrink: 0; }
+
+  &__stats {
+    display: flex;
+    gap: $size-4;
+    flex: 1 1 0;
+    flex-wrap: wrap;
+  }
+
+  &__total {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-500;
+    flex-shrink: 0;
+  }
+
+  &__cta {
+    background: transparent;
+    border: 1px solid $primary-500;
+    border-radius: $radius-md;
+    padding: 4px $size-3;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    color: $primary-500;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+
+    &:hover { background: rgba($primary-500, 0.06); }
+  }
+}
+
+.gali-triage-stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-medium;
+
+  .pi { font-size: 12px; }
+
+  &--auto    { color: #166534; }
+  &--managing { color: $primary-600; }
+  &--decision { color: #9a3412; font-weight: $font-bold; }
+}
+
+.orders-table__row--decision {
+  background: #fff7ed !important;
+}
+
+.orders-table__td--id-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gali-chip {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: $radius-pill;
+  font-family: $font-primary;
+  font-size: 10px;
+  font-weight: $font-semibold;
+  white-space: nowrap;
+
+  &--auto     { background: #dcfce7; color: #166534; }
+  &--managing { background: #fff7ed; color: #9a3412; }
+  &--decision { background: #fee2e2; color: #991b1b; }
+}

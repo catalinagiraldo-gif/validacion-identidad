@@ -1,0 +1,283 @@
+@import 'styles/gali-tokens';
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: $gali-bg-base;
+  color: $gali-text-primary;
+  font-family: $gali-font-body;
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+}
+
+// Global ambient atmosphere
+:host::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 800px 600px at 8% 15%, rgba(244, 154, 61, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 700px 500px at 92% 85%, rgba(78, 205, 196, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse 500px 500px at 50% 50%, rgba(139, 92, 246, 0.04) 0%, transparent 50%);
+  animation: gw-mesh-drift 28s ease-in-out infinite;
+}
+
+:host::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
+  background-size: 200px 200px;
+  mix-blend-mode: overlay;
+}
+
+.gw {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+
+  &__body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  &[data-layout='hero'] .gw__body {
+    justify-content: center;
+  }
+
+  &__canvas {
+    flex: 1;
+    min-width: 0;
+    padding: 20px 32px 32px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    animation: gw-canvas-in 600ms 200ms $gali-ease-out both;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $gali-border-default;
+      border-radius: 4px;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+
+    @media (max-width: 1440px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width: 1100px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 80px 40px;
+    color: $gali-text-secondary;
+    font-family: $gali-font-mono;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__toast {
+    position: fixed;
+    bottom: 24px;
+    right: 360px;
+    background: $gali-bg-elevated;
+    border: 1px solid $gali-border-default;
+    border-radius: $gali-radius-card;
+    padding: 12px 20px;
+    color: $gali-text-primary;
+    font-family: $gali-font-body;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: $gali-shadow-card-hover;
+    animation: gw-toast-in 320ms $gali-ease-out;
+    z-index: 200;
+  }
+
+  &__toast-icon {
+    color: $gali-success;
+    font-weight: 700;
+  }
+
+  &__modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: $gali-bg-overlay;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    animation: tour-fade-in 240ms ease;
+  }
+
+  &__modal {
+    background: $gali-bg-elevated;
+    border: 1px solid $gali-border-default;
+    border-radius: $gali-radius-modal;
+    padding: 36px;
+    max-width: 460px;
+    width: 92vw;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    animation: gw-modal-in 360ms $gali-ease-spring;
+
+    &-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-family: $gali-font-display;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: $gali-text-primary;
+      margin: 0 0 12px;
+    }
+
+    p {
+      font-family: $gali-font-body;
+      font-size: 14px;
+      line-height: 1.6;
+      color: $gali-text-secondary;
+      margin: 0 0 8px;
+    }
+
+    &-meta {
+      font-family: $gali-font-mono;
+      font-size: 11px;
+      color: $gali-text-muted;
+      margin-bottom: 24px !important;
+    }
+
+    &-btn {
+      background: $gali-orange;
+      color: $gali-bg-base;
+      border: none;
+      padding: 10px 24px;
+      border-radius: $gali-radius-input;
+      font-family: $gali-font-body;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: $gali-shadow-cta;
+      transition: all 160ms ease;
+
+      &:hover {
+        background: $gali-orange-hover;
+        transform: translateY(-1px);
+      }
+
+      &:focus-visible {
+        @include gali-focus;
+      }
+    }
+  }
+}
+
+@keyframes gw-mesh-drift {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(2%, -1%);
+  }
+  66% {
+    transform: translate(-1%, 2%);
+  }
+}
+
+@keyframes gw-canvas-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gw-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gw-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes tour-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@include gali-reduced-motion {
+  :host::before {
+    animation: none;
+  }
+  .gw__canvas,
+  .gw__toast,
+  .gw__modal,
+  .gw__modal-backdrop {
+    animation: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .gw__toast {
+    right: 24px;
+  }
+}

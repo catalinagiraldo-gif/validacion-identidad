@@ -1,0 +1,112 @@
+<div class="dropicard-page">
+  <dropi-titulos title="Dropicard" [breadcrumbs]="breadcrumbs">
+    <dropi-button-new titulosActions label="Solicitar tarjeta" hierarchy="primary" [width]="200" />
+  </dropi-titulos>
+
+  <div class="dropicard-page__toolbar">
+    <div class="dropicard-page__toolbar-filters">
+      <select class="dropicard-page__select" [(ngModel)]="typeFilter">
+        <option value="">Todas</option>
+        <option value="physical">Tarjeta Física</option>
+        <option value="virtual">Tarjeta Virtual</option>
+      </select>
+      <select class="dropicard-page__select" [(ngModel)]="statusFilter">
+        <option value="">Seleccionar</option>
+        <option value="pending">Pendiente</option>
+        <option value="active">Activa</option>
+      </select>
+      <dropi-button-new icon="pi-arrow-right" [iconOnly]="true" hierarchy="primary" />
+    </div>
+    <div class="dropicard-page__toolbar-search">
+      <dropi-search-oficial placeholder="Buscar" [width]="320" [(ngModel)]="searchQuery" />
+    </div>
+  </div>
+
+  <div class="dropicard-page__select-action">
+    <dropi-button-new label="Seleccionar tarjetas" hierarchy="outline" [width]="200" />
+  </div>
+
+  <div class="dropicard-page__list-panel">
+    @if (filteredCards.length === 0) {
+      <div class="dropicard-page__empty">
+        <i class="pi pi-credit-card"></i>
+        <p>No hay tarjetas que coincidan con los filtros.</p>
+      </div>
+    } @else {
+      <div class="dropicard-list">
+        @for (card of filteredCards; track card.id) {
+          <article class="dropicard-row">
+            <div class="dropicard-row__visual">
+              <img class="dropicard-row__thumb" [src]="card.image" [alt]="card.typeLabel" />
+            </div>
+
+            <div class="dropicard-row__identity">
+              <span class="dropicard-row__type-chip">{{ card.typeLabel }}</span>
+              <strong class="dropicard-row__holder">{{ card.holder }}</strong>
+            </div>
+
+            <div class="dropicard-row__id-block">
+              <span class="dropicard-row__field-label">ID</span>
+              <div class="dropicard-row__id-row">
+                <span>{{ card.idDisplay }}</span>
+                <button type="button" class="dropicard-row__icon-btn" title="Copiar ID" (click)="copyId(card.id)">
+                  <i class="pi pi-copy"></i>
+                </button>
+                <button type="button" class="dropicard-row__icon-btn" title="Ver ID completo">
+                  <i class="pi pi-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="dropicard-row__status">
+              <dropi-tag
+                [label]="card.statusLabel"
+                [variant]="card.status === 'active' ? 'success' : 'warning'"
+              />
+            </div>
+
+            <div class="dropicard-row__balance">
+              <span class="dropicard-row__field-label">Saldo</span>
+              <div class="dropicard-row__balance-row">
+                @if (card.balanceVisible) {
+                  <span class="dropicard-row__balance-value">{{ card.balance }}</span>
+                } @else {
+                  <span class="dropicard-row__balance-hidden">
+                    <span>$</span>
+                    @for (star of hiddenStars; track $index) {
+                      <span>*</span>
+                    }
+                  </span>
+                }
+                <button
+                  type="button"
+                  class="dropicard-row__icon-btn"
+                  (click)="toggleBalance(card)"
+                  [attr.aria-label]="card.balanceVisible ? 'Ocultar saldo' : 'Mostrar saldo'"
+                >
+                  <i class="pi" [class.pi-eye]="!card.balanceVisible" [class.pi-eye-slash]="card.balanceVisible"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="dropicard-row__actions">
+              @if (card.status === 'pending') {
+                <dropi-button-new label="Activar" hierarchy="outline" [width]="168" />
+              } @else {
+                <button type="button" class="dropicard-row__action-icon" title="Depositar">
+                  <i class="pi pi-download"></i>
+                </button>
+                <button type="button" class="dropicard-row__action-icon" title="Retirar">
+                  <i class="pi pi-upload"></i>
+                </button>
+                <button type="button" class="dropicard-row__action-icon" title="Información">
+                  <i class="pi pi-info-circle"></i>
+                </button>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </div>
+</div>

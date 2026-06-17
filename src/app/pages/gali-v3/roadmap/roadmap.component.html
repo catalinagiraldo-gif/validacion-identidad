@@ -1,0 +1,89 @@
+<article class="roadmap">
+  <header class="roadmap__hero">
+    <span class="roadmap__tag">
+      <span class="roadmap__sparkle" aria-hidden="true">✦</span>
+      Roadmap post-V4 · Visión 2026-2027
+    </span>
+    <h1>Dónde vamos <em>después</em> de Gali V4.</h1>
+    <p class="roadmap__lead">
+      V4 entregó orquestador AI-first, Constructor de bloques, marketplace de comunidad,
+      programa de builders. Esto es lo que sigue. Cada hito tiene fecha objetivo, dependencias y riesgos.
+    </p>
+    <div class="roadmap__current">
+      <span class="roadmap__current-tag">Versión actual</span>
+      <strong>{{ data.version_actual }}</strong>
+      <span class="roadmap__current-hito">{{ data.hito_actual }}</span>
+    </div>
+  </header>
+
+  <!-- TIMELINE -->
+  <section class="roadmap__timeline">
+    <div *ngFor="let fase of data.fases_post_v4; let i = index"
+         class="roadmap__fase"
+         [attr.data-estado]="fase.estado"
+         [style.animation-delay.ms]="i * 100">
+      <div class="roadmap__fase-dot">
+        <span class="roadmap__sparkle">✦</span>
+      </div>
+      <article class="roadmap__fase-card">
+        <header class="roadmap__fase-head">
+          <div>
+            <strong class="roadmap__fase-id">{{ fase.id }}</strong>
+            <h2>{{ fase.label }}</h2>
+          </div>
+          <div class="roadmap__fase-meta">
+            <span class="roadmap__fase-estado">{{ fase.estado.replace('_', ' ') }}</span>
+            <span class="roadmap__fase-fecha">{{ fase.fecha_objetivo }}</span>
+          </div>
+        </header>
+
+        <ul class="roadmap__fase-items">
+          <li *ngFor="let item of fase.items">
+            <span class="roadmap__bullet" aria-hidden="true">›</span>
+            {{ item }}
+          </li>
+        </ul>
+
+        <div class="roadmap__fase-deps" *ngIf="fase.depende_de?.length">
+          <strong>Depende de:</strong>
+          <ul>
+            <li *ngFor="let d of fase.depende_de">{{ d }}</li>
+          </ul>
+        </div>
+
+        <div class="roadmap__fase-riesgos" *ngIf="fase.riesgos?.length">
+          <strong>Riesgos:</strong>
+          <ul>
+            <li *ngFor="let r of fase.riesgos">⚠ {{ r }}</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- PRINCIPIOS -->
+  <section class="roadmap__principios">
+    <header>
+      <h2>Principios no-negociables</h2>
+      <p>Aplican a toda fase futura. No se diluyen con el crecimiento.</p>
+    </header>
+    <ul>
+      <li *ngFor="let p of data.principios_no_negociables">
+        <span class="roadmap__principio-id">{{ p.id.toUpperCase() }}</span>
+        <div>
+          <strong>{{ p.label }}</strong>
+          <p>{{ p.descripcion }}</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <footer class="roadmap__cta">
+    <a routerLink="/gali-v4" class="roadmap__cta-primary">
+      <span aria-hidden="true">←</span> Volver al Inicio V4
+    </a>
+    <a routerLink="/gali-v4/builders" class="roadmap__cta-secondary">
+      Programa de builders →
+    </a>
+  </footer>
+</article>

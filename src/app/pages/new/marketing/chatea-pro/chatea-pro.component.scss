@@ -1,18 +1,17 @@
 @import 'styles/variables-new';
 
-// ============================================
+// =====================================================================
 // Chatea Pro — Marketing Module
-// Chat automation with WhatsApp preview
-// ============================================
+// Design: Figma Ub7Up7f5K0WGuDC6g2jdCu node 9341-44321
+// =====================================================================
 
-$text-header: #495057;
-$text-paragraph: #7B8190;
-$wa-green: #075E54;
-$wa-light-green: #25D366;
-$wa-bg: #ECE5DD;
-$wa-bubble-bot: #FFFFFF;
-$wa-bubble-user: #DCF8C6;
-$wa-header-bg: #128C7E;
+// ── Banner palette (Figma exact values) ──────────────────────────────
+$chatea-blue:        rgba(0, 158, 227, 0.9);   // icon circle bg
+$chatea-blue-full:   #009ee3;                  // primary CTA bg
+$chatea-glass:       rgba(0, 0, 0, 0.26);      // glass background
+$chatea-glass-dark:  rgba(0, 0, 0, 0.5);       // gradient endpoint
+$chatea-border:      rgba(255, 255, 255, 0.6);
+$chatea-text-sub:    #e6eaf2;                  // body text on dark bg
 
 :host {
   display: block;
@@ -25,36 +24,38 @@ $wa-header-bg: #128C7E;
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: $space-4 $space-8;
-  position: relative;
+  padding: $space-4 $space-6;
 }
 
-// ========== Breadcrumb ==========
+// ── Breadcrumb ────────────────────────────────────────────────────────
 .breadcrumb {
   display: flex;
   align-items: center;
   gap: $space-2;
   margin-bottom: $space-4;
+}
 
-  .breadcrumb-item {
-    font-family: $font-primary;
-    font-size: $font-sm;
-    font-weight: $font-medium;
-    color: $text-paragraph;
-    line-height: 24px;
+.bc-item {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  color: $gray-500;
+  line-height: 1.5;
 
-    &.active {
-      color: $primary-500;
-      font-weight: $font-semibold;
-    }
-
-    .pi-home { font-size: 14px; }
+  &--active {
+    color: $primary-500;
+    font-weight: $font-semibold;
   }
+}
 
-  .breadcrumb-chevron {
-    font-size: 10px;
-    color: $gray-300;
-  }
+.bc-sep {
+  color: $gray-300;
+  font-size: $font-sm;
+}
+
+// ── Page header ───────────────────────────────────────────────────────
+.page-header {
+  margin-bottom: $space-4;
 }
 
 .page-title {
@@ -62,345 +63,540 @@ $wa-header-bg: #128C7E;
   font-size: $font-2xl;
   font-weight: $font-bold;
   color: $gray-900;
-  margin: 0 0 $space-5 0;
+  margin: 0;
+  line-height: $line-height-simple;
 }
 
-// ========== Layout ==========
-.chatea-layout {
+// ── Hero Banner ───────────────────────────────────────────────────────
+.banner {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  // Dark gradient background matching Figma dark-night palette
+  background:
+    radial-gradient(ellipse 60% 80% at 80% 20%, rgba(0, 158, 227, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 20% 80%, rgba(0, 80, 120, 0.15) 0%, transparent 60%),
+    linear-gradient(145deg, #0a0f1e 0%, #111827 50%, #0d1520 100%);
+  min-height: 555px;
   display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: $space-5;
-  min-height: 0;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: 1fr auto;
+  gap: 0;
+  padding: 34px 34px 0 34px;
+  margin-bottom: $space-5;
 
   @media (max-width: $bp-lg) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    min-height: auto;
+    padding: $space-5;
+  }
+}
+
+// Left-to-right text area gradient overlay
+.banner__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.3) 55%,
+    transparent 100%
+  );
+  border-radius: 16px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+// ── Copy (left column) ───────────────────────────────────────────────
+.banner__copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 170px; // space for carousel overlay
+  max-width: 540px;
+
+  @media (max-width: $bp-lg) {
+    padding-bottom: $space-5;
+    max-width: 100%;
+  }
+}
+
+.banner__heading {
+  font-family: $font-primary;
+  font-size: $font-3xl;  // 30px — Figma exact
+  font-weight: $font-bold;
+  color: #f0f4f9; // Figma var(--gray-50, #f0f4f9)
+  line-height: 1.1;
+  margin: 0 0 $space-4 0;
+  letter-spacing: 0;
+
+  @media (max-width: $bp-md) {
+    font-size: $font-2xl;
+  }
+
+  @media (max-width: $bp-sm) {
+    font-size: $font-xl;
+  }
+}
+
+.banner__subtitle {
+  font-family: $font-primary;
+  font-size: $font-base; // 16px — Figma font-size-m
+  font-weight: $font-medium;
+  color: #f0f4f9;
+  line-height: 1.5;
+  margin: 0 0 $space-6 0;
+  max-width: 480px;
+
+  @media (max-width: $bp-md) {
+    font-size: $font-md;
+    max-width: 100%;
+  }
+}
+
+.banner__ctas {
+  display: flex;
+  align-items: center;
+  gap: $space-5;
+  flex-wrap: wrap;
+}
+
+// "Comienza ahora" — blue filled button (Figma: bg #009ee3, rounded-32px)
+.btn-start {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 16px 24px;
+  background: $chatea-blue-full;
+  border: none;
+  border-radius: 32px;
+  font-family: $font-primary;
+  font-size: $font-base;
+  font-weight: $font-bold;
+  color: $neutral-white;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: darken(#009ee3, 8%);
+    transform: translateY(-1px);
+  }
+
+  .btn-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+}
+
+// "Ver como funciona" — glass ghost button (Figma: bg rgba(0,0,0,0.26), border white)
+.btn-watch {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 15px 24px;
+  background: $chatea-glass;
+  border: 1px solid $neutral-white;
+  border-radius: 32px;
+  font-family: $font-primary;
+  font-size: $font-base;
+  font-weight: $font-bold;
+  color: $neutral-white;
+  text-decoration: none;
+  cursor: pointer;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  transition: background 0.2s ease, transform 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+  }
+
+  .btn-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+}
+
+// ── Phone Mockup (right column) ──────────────────────────────────────
+.banner__phone {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 1;
+
+  @media (max-width: $bp-lg) {
+    display: none;
+  }
+}
+
+.phone-frame {
+  width: 336px;
+  height: auto;
+  position: relative;
+  z-index: 2;
+  display: block;
+  margin-top: 20px;
+}
+
+.phone-screen {
+  position: absolute;
+  top: 53px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 290px;
+  height: 590px;
+  border-radius: 28px;
+  overflow: hidden;
+  z-index: 1;
+  background: #f5f2eb;
+}
+
+.phone-chat-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.15;
+}
+
+// Coin: slides in from bottom on load
+.coin {
+  position: absolute;
+  left: -58px;
+  bottom: 20px;
+  width: 140px;
+  height: auto;
+  z-index: 3;
+  animation: coinSlideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
+
+  @media (max-width: $bp-lg) {
+    display: none;
+  }
+}
+
+@keyframes coinSlideIn {
+  from {
+    transform: translateY(80px) rotate(-15deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+// Floating idle animation on coin after load
+@keyframes coinFloat {
+  0%, 100% { transform: translateY(0px) rotate(-3deg); }
+  50%       { transform: translateY(-10px) rotate(3deg); }
+}
+
+.coin {
+  animation:
+    coinSlideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both,
+    coinFloat 3s ease-in-out 1.2s infinite;
+}
+
+// ── Carousel (overlaid bottom-left of banner) ─────────────────────────
+.carousel {
+  // Spans bottom of left column, positioned relative to banner grid
+  grid-column: 1;
+  position: absolute;
+  left: 34px;
+  bottom: 34px;
+  width: 481px;
+  z-index: 2;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: $chatea-glass;
+
+  @media (max-width: $bp-lg) {
+    position: static;
+    width: 100%;
+    margin-top: $space-4;
+    border-radius: $radius-3;
+  }
+
+  @media (max-width: $bp-sm) {
+    width: 100%;
+  }
+}
+
+.carousel__track {
+  position: relative;
+  min-height: 113px;
+  padding: 25px 23px;
+}
+
+.carousel__slide {
+  display: none;
+  align-items: flex-start;
+  gap: $space-4;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+
+  &--active {
+    display: flex;
+    opacity: 1;
+    transform: translateX(0);
+    animation: slideIn 0.35s ease forwards;
+  }
+
+  &--prev {
+    display: none;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.carousel__icon-wrap {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 32px;
+  background: $chatea-blue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+
+.carousel__icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.carousel__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.carousel__title-row {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  flex-wrap: wrap;
+}
+
+.carousel__title {
+  font-family: $font-primary;
+  font-size: $font-lg;  // 18px
+  font-weight: $font-bold;
+  color: $neutral-white;
+  line-height: 1.1;
+}
+
+.carousel__tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  background: $success-500; // #0abb87 — Figma exact
+  border-radius: 32px;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  color: $neutral-white;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.carousel__desc {
+  font-family: $font-primary;
+  font-size: $font-md;  // 14px
+  font-weight: $font-regular;
+  color: $chatea-text-sub; // #e6eaf2
+  line-height: 1.5;
+  margin: 0;
+}
+
+// Dots indicator
+.carousel__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding-bottom: 12px;
+}
+
+.carousel__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  padding: 0;
+  transition: width 0.2s ease, background 0.2s ease;
+
+  &--active {
+    width: 18px;
+    border-radius: 3px;
+    background: $neutral-white;
+  }
+}
+
+// Arrow nav buttons (top-right of carousel)
+.carousel__nav {
+  position: absolute;
+  top: 21px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+.carousel__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 29px;
+  height: 29px;
+  border-radius: 32px;
+  border: 1px solid $neutral-white;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  img {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+}
+
+// ── Stats section ─────────────────────────────────────────────────────
+.stats-section {
+  margin-top: $space-5;
+}
+
+.stats-title {
+  font-family: $font-primary;
+  font-size: $font-lg;
+  font-weight: $font-bold;
+  color: $gray-800;
+  margin: 0 0 $space-5 0;
+  line-height: 1.3;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $space-4;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $bp-sm) {
     grid-template-columns: 1fr;
   }
 }
 
-// ========== Flows Panel ==========
-.flows-panel {
-  background: $neutral-white;
-  border-radius: $radius-3;
-  box-shadow: $shadow-small;
-  padding: $space-5;
-  display: flex;
-  flex-direction: column;
-}
-
-.panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: $space-4;
-}
-
-.panel-title {
-  font-family: $font-primary;
-  font-size: $font-lg;
-  font-weight: $font-semibold;
-  color: $gray-800;
-  margin: 0;
-}
-
-.btn-add-flow {
-  width: 36px;
-  height: 36px;
-  border-radius: $radius-2;
-  border: 1px dashed $gray-300;
-  background: transparent;
-  color: $gray-500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: $primary-400;
-    color: $primary-500;
-    background: rgba($primary-500, 0.04);
-  }
-}
-
-.flows-list {
-  display: flex;
-  flex-direction: column;
-  gap: $space-3;
-}
-
-.flow-card {
-  padding: $space-4;
-  border: 1px solid $gray-200;
-  border-radius: $radius-2;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  animation: fadeInRow 0.3s ease forwards;
-  opacity: 0;
-
-  &:hover {
-    border-color: $gray-300;
-    background: $gray-50;
-  }
-
-  &--active {
-    border-color: $primary-400;
-    background: rgba($primary-500, 0.04);
-    box-shadow: 0 0 0 1px $primary-400;
-  }
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: $space-2;
-  }
-
-  &__name {
-    font-family: $font-primary;
-    font-size: $font-md;
-    font-weight: $font-semibold;
-    color: $gray-800;
-  }
-
-  &__meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: $space-2;
-  }
-
-  &__trigger {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-family: $font-primary;
-    font-size: $font-sm;
-    color: $text-paragraph;
-
-    i { font-size: 12px; }
-  }
-
-  &__responses {
-    font-family: $font-primary;
-    font-size: $font-sm;
-    color: $gray-500;
-  }
-}
-
-.flow-status {
-  font-size: $font-xs;
-  font-weight: $font-semibold;
-  padding: 2px 8px;
-  border-radius: $radius-4;
-
-  &--active {
-    background: rgba($success-500, 0.1);
-    color: $success-600;
-  }
-
-  &--inactive {
-    background: rgba($gray-400, 0.12);
-    color: $gray-600;
-  }
-}
-
-// ========== WhatsApp Preview ==========
-.preview-panel {
-  display: flex;
-  justify-content: center;
-
-  @media (max-width: $bp-lg) {
-    order: -1;
-  }
-}
-
-.wa-phone-frame {
-  width: 100%;
-  max-width: 380px;
-  background: $wa-bg;
+.stat-card {
+  position: relative;
   border-radius: $radius-3;
   overflow: hidden;
-  box-shadow: $shadow-large;
+  padding: $space-4 $space-4 $space-5;
+  background:
+    radial-gradient(ellipse 80% 60% at 85% -10%, rgba(0, 158, 227, 0.08) 0%, transparent 70%),
+    $neutral-white;
+  box-shadow: $shadow-small;
+  border: 1px solid $gray-100;
   display: flex;
   flex-direction: column;
-  min-height: 520px;
-}
+  gap: $space-1;
+  animation: statFadeIn 0.4s ease both;
 
-.wa-header {
-  display: flex;
-  align-items: center;
-  gap: $space-3;
-  padding: $space-3 $space-4;
-  background: $wa-header-bg;
-  color: $neutral-white;
-
-  &__back i {
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  &__avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    i { font-size: 16px; }
-  }
-
-  &__info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__name {
-    font-family: $font-primary;
-    font-size: $font-md;
-    font-weight: $font-semibold;
-  }
-
-  &__status {
-    font-family: $font-primary;
-    font-size: $font-xs;
-    opacity: 0.8;
-  }
-
-  &__actions {
-    display: flex;
-    gap: $space-4;
-
-    i {
-      font-size: 16px;
-      cursor: pointer;
-      opacity: 0.9;
-    }
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, $chatea-blue-full, transparent);
+    border-radius: 12px 12px 0 0;
   }
 }
 
-.wa-chat-area {
-  flex: 1;
-  padding: $space-3 $space-4;
-  display: flex;
-  flex-direction: column;
-  gap: $space-2;
-  overflow-y: auto;
+@keyframes statFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.wa-date-divider {
-  text-align: center;
-  margin: $space-2 0;
-
-  span {
-    display: inline-block;
-    padding: 4px 12px;
-    background: rgba(255,255,255,0.7);
-    border-radius: $radius-2;
-    font-family: $font-primary;
-    font-size: $font-xs;
-    color: $gray-600;
-  }
+.stat-value {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $chatea-blue-full;
+  line-height: 1.1;
 }
 
-.wa-message {
-  max-width: 80%;
-  padding: $space-2 $space-3;
-  border-radius: $radius-2;
-  position: relative;
-
-  &--bot {
-    align-self: flex-start;
-    background: $wa-bubble-bot;
-    border-top-left-radius: 0;
-  }
-
-  &--user {
-    align-self: flex-end;
-    background: $wa-bubble-user;
-    border-top-right-radius: 0;
-  }
-
-  &__text {
-    font-family: $font-primary;
-    font-size: $font-md;
-    color: $gray-900;
-    margin: 0 0 2px 0;
-    line-height: $line-height-large;
-  }
-
-  &__time {
-    font-family: $font-primary;
-    font-size: 10px;
-    color: $gray-500;
-    display: block;
-    text-align: right;
-  }
+.stat-label {
+  font-family: $font-primary;
+  font-size: $font-base;
+  font-weight: $font-semibold;
+  color: $gray-800;
+  line-height: 1.3;
 }
 
-.wa-input-bar {
-  display: flex;
-  align-items: center;
-  gap: $space-2;
-  padding: $space-2 $space-3;
-  background: $gray-50;
-
-  input {
-    flex: 1;
-    height: 36px;
-    border: none;
-    border-radius: 18px;
-    padding: 0 $space-4;
-    font-family: $font-primary;
-    font-size: $font-md;
-    background: $neutral-white;
-    color: $gray-700;
-    outline: none;
-
-    &::placeholder { color: $gray-400; }
-  }
-}
-
-.wa-input-btn {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: transparent;
+.stat-desc {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-regular;
   color: $gray-500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  i { font-size: 18px; }
+  line-height: 1.5;
+  margin: $space-2 0 0 0;
 }
 
-.wa-send-btn {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 50%;
-  background: $wa-header-bg;
-  color: $neutral-white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  i { font-size: 16px; }
-}
-
-@keyframes fadeInRow {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-// ========== Responsive ==========
+// ── Responsive ────────────────────────────────────────────────────────
 @media (max-width: $bp-md) {
   .page-wrapper {
     padding: $space-4;
+  }
+
+  .banner {
+    padding: $space-5;
+    min-height: auto;
+  }
+
+  .stats-title {
+    font-size: $font-base;
   }
 }
 
@@ -409,11 +605,20 @@ $wa-header-bg: #128C7E;
     padding: $space-3 $space-4;
   }
 
-  .page-title {
-    font-size: $font-xl;
+  .banner__ctas {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $space-3;
   }
 
-  .wa-phone-frame {
-    min-height: 400px;
+  .btn-start,
+  .btn-watch {
+    width: 100%;
+    justify-content: center;
+    max-width: 320px;
+  }
+
+  .stats-grid {
+    gap: $space-3;
   }
 }

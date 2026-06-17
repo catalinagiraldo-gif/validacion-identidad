@@ -1,0 +1,173 @@
+@import '../shared/dropi-page-shell';
+
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.novedades-page {
+  @include dropi-page-shell;
+  overflow-y: auto;
+
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $size-3;
+  }
+}
+
+.novedades-table-wrap {
+  border: 1px solid $gray-100;
+  border-radius: $radius-md;
+  overflow-x: auto;
+}
+
+.novedades-table {
+  width: 100%;
+  min-width: 960px;
+  border-collapse: collapse;
+  font-family: $font-primary;
+
+  &__th {
+    height: 55px;
+    padding: 0 $size-3;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $gray-600;
+    background: $gray-50;
+    border-bottom: 1px solid $gray-100;
+    text-align: left;
+  }
+
+  &__row {
+    height: 150px; // Figma row height
+  }
+
+  &__td {
+    padding: $size-3;
+    font-size: $font-sm;
+    color: $gray-700;
+    border-bottom: 1px solid $gray-100;
+    vertical-align: top;
+
+    &--multiline {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      line-height: 1.4;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $size-2;
+
+    button {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: $radius-md;
+      background: transparent;
+      color: $gray-500;
+      cursor: pointer;
+
+      &:hover {
+        background: $gray-50;
+        color: $primary-600;
+      }
+    }
+  }
+}
+
+// ── Gali Novedades Layer ──────────────────────────────────────────
+.gali-nov-banner {
+  display: flex;
+  align-items: center;
+  gap: $size-4;
+  padding: $size-3 $size-4;
+  margin-bottom: $size-4;
+  background: #fff7ed;
+  border: 1px solid rgba($primary-500, 0.2);
+  border-radius: $radius-lg;
+  flex-wrap: wrap;
+
+  &__icon { font-size: 14px; color: $primary-500; flex-shrink: 0; }
+
+  &__text {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    strong { font-family: $font-primary; font-size: $font-sm; font-weight: $font-semibold; color: $gray-800; }
+    span   { font-family: $font-primary; font-size: $font-xs; color: $gray-500; }
+  }
+
+  &__cta {
+    background: $primary-500;
+    border: none;
+    border-radius: $radius-md;
+    padding: 6px $size-4;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    color: $white;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+
+    &:hover { background: $primary-600; }
+  }
+}
+
+.nov-tipo-tag {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 6px;
+  border-radius: $radius-pill;
+  font-family: $font-primary;
+  font-size: 10px;
+  font-weight: $font-semibold;
+
+  &--recuperable   { background: #dcfce7; color: #166534; }
+  &--irreversible  { background: #fee2e2; color: #991b1b; }
+  &--cliente       { background: #fef3c7; color: #92400e; }
+  &--transportadora { background: #e0f2fe; color: #075985; }
+}
+
+.novedades-table__row--resolved {
+  background: #f0fdf4 !important;
+  opacity: 0.7;
+}
+
+.gali-resolve-btn {
+  background: transparent;
+  border: 1px solid $primary-500;
+  border-radius: $radius-md;
+  padding: 3px 8px;
+  font-family: $font-primary;
+  font-size: 11px;
+  font-weight: $font-semibold;
+  color: $primary-500;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover { background: rgba($primary-500, 0.08); }
+}
+
+.nov-resolved-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: $font-primary;
+  font-size: 11px;
+  font-weight: $font-semibold;
+  color: #166534;
+
+  .pi { font-size: 12px; }
+}

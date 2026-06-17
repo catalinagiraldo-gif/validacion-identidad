@@ -1,0 +1,317 @@
+{
+  "resumen_lider_virtual": {
+    "frases": [
+      "Esta semana 1.247 dropshippers en LATAM movieron $2.8B COP. La conversación se concentró en 3 ángulos nuevos para productos de bienestar.",
+      "Mucha gente que estaba en saturación con su producto top consiguió oxígeno entrando a Medellín y Cali con ajustes mínimos.",
+      "Cuidado con la transportadora Coordinadora en eje cafetero: 23 reportes esta semana de retrasos de 4+ días."
+    ],
+    "actualizado_hace": "12 minutos",
+    "data_window": "últimos 7 días",
+    "vendedores_analizados": 1247,
+    "confianza_global": 0.78,
+    "data_flywheel": {
+      "recipes_activas_aportando": 312,
+      "bloques_compartidos_aportando": 142,
+      "vendedores_publicando": 87,
+      "k_anonymity_min": 50,
+      "data_freshness_minutes": 12,
+      "explicacion": "Las señales se alimentan en tiempo real de recipes activas + bloques compartidos por la comunidad. Anonimización K≥50 por agregado. Cada nuevo dropshipper que se une mejora la precisión de los insights para todos."
+    }
+  },
+  "modo_mentor_intro": "Soy la voz combinada del top 5% de vendedores en tu nicho y geografía. No tengo opiniones — sintetizo lo que están haciendo quienes lograron lo que tú quieres lograr.",
+  "filtros_disponibles": [
+    { "id": "perfil", "label": "Para mi perfil", "descripcion": "Filtrado por nicho mascotas + bienestar, Bogotá y Medellín, ROAS 2-3x" },
+    { "id": "nicho", "label": "Mi nicho", "descripcion": "Solo señales de mascotas/bienestar — todas las geografías" },
+    { "id": "ecosistema", "label": "Todo LATAM", "descripcion": "Todas las categorías y países — útil para descubrir tendencias macro" }
+  ],
+  "senales": [
+    {
+      "id": "sen-1",
+      "tipo": "tendencia",
+      "titulo": "Ángulo 'rutina nocturna' creciendo +210% en skincare",
+      "contexto": "248 vendedores rotaron de ángulo emocional/familia a ángulo rutina/autocuidado en 14 días. CTR promedio subió 1.4x.",
+      "fuente": "248 dropshippers en LATAM, datos anonimizados de campañas Meta",
+      "confianza": 0.82,
+      "vendedores_afectados": 248,
+      "relevancia_perfil": 0.65,
+      "categoria": "skincare",
+      "geografia": ["CO", "MX", "PE"],
+      "accion_sugerida": "Probar ángulo en tu LED Facial — tu landing actual sigue ángulo emocional",
+      "ruta_aplicar": "/gali-v3/landings"
+    },
+    {
+      "id": "sen-2",
+      "tipo": "tendencia",
+      "titulo": "Productos para mascotas con función 'rastreo GPS' ganando saturación tope",
+      "contexto": "El Collar GPS y derivados (correa GPS, placa GPS) cruzaron los 1.000 vendedores activos en CO. Los que están ganando ahora son los que entraron antes de marzo.",
+      "fuente": "847 dropshippers vendiendo Collar GPS o derivados, datos Meta + TikTok",
+      "confianza": 0.91,
+      "vendedores_afectados": 847,
+      "relevancia_perfil": 0.95,
+      "categoria": "mascotas",
+      "geografia": ["CO"],
+      "accion_sugerida": "Diferenciar: tu landing puede empezar a destacar 'GPS + alerta de salud' (ángulo que casi nadie usa)",
+      "ruta_aplicar": "/gali-v3/artifact/landing/land-1"
+    },
+    {
+      "id": "sen-3",
+      "tipo": "estrategia",
+      "titulo": "El top 10% está moviendo presupuesto a TikTok Ads esta semana",
+      "contexto": "63 de los 100 mejores vendedores subieron su share de TikTok del 22% al 35% en 7 días. Razón: CPM de Meta subió 18% y TikTok mantuvo CPM estable.",
+      "fuente": "Top 100 vendedores por GMV (anonimizados)",
+      "confianza": 0.74,
+      "vendedores_afectados": 63,
+      "relevancia_perfil": 0.55,
+      "categoria": "ads",
+      "geografia": ["CO", "MX"],
+      "accion_sugerida": "Probar destinar 20% de tu presupuesto Meta a TikTok esta semana",
+      "ruta_aplicar": "/gali-v3/dropi/campanas"
+    },
+    {
+      "id": "sen-4",
+      "tipo": "oportunidad",
+      "titulo": "Cali está sub-explotado: solo 14% de los dropshippers de tu nicho venden ahí",
+      "contexto": "Bogotá y Medellín tienen 71% de saturación combinada. Cali muestra demanda de búsqueda creciente +28% pero pocos vendedores activos.",
+      "fuente": "Datos agregados de Google Trends + plataformas de pedidos Dropi",
+      "confianza": 0.68,
+      "vendedores_afectados": 14,
+      "relevancia_perfil": 0.85,
+      "categoria": "geografia",
+      "geografia": ["CO"],
+      "accion_sugerida": "Replicar tu mejor creative ajustando localización a Cali — bajo riesgo, alto potencial",
+      "ruta_aplicar": "/gali-v3/dropi/campanas"
+    },
+    {
+      "id": "sen-5",
+      "tipo": "estrategia",
+      "titulo": "Automatización 'confirmación WhatsApp' redujo tasa de devoluciones 11%",
+      "contexto": "412 vendedores activaron recipe de confirmación automática vía WhatsApp en últimos 30 días. Promedio: -11% devoluciones, +6% ROAS.",
+      "fuente": "412 dropshippers con WhatsApp Business conectado",
+      "confianza": 0.86,
+      "vendedores_afectados": 412,
+      "relevancia_perfil": 0.78,
+      "categoria": "operacion",
+      "geografia": ["CO", "MX", "AR"],
+      "accion_sugerida": "Instalar plantilla del mercado 'Confirmación WA automática' (5 minutos)",
+      "ruta_aplicar": "/gali-v3/mercado"
+    },
+    {
+      "id": "sen-6",
+      "tipo": "tendencia",
+      "titulo": "Aumento súbito en búsquedas de 'productos eco-friendly' en MX",
+      "contexto": "+47% week-over-week en términos relacionados a sustentabilidad en plataformas de e-commerce mexicanas.",
+      "fuente": "Datos agregados México: Mercado Libre + Shopify trends",
+      "confianza": 0.61,
+      "vendedores_afectados": 89,
+      "relevancia_perfil": 0.30,
+      "categoria": "sustentable",
+      "geografia": ["MX"],
+      "accion_sugerida": "Si tienes producto con ángulo ecológico viable, MX está en momentum",
+      "ruta_aplicar": "/gali-v3/dropi/caza-productos"
+    },
+    {
+      "id": "sen-7",
+      "tipo": "estrategia",
+      "titulo": "Los que están escalando a 200+ pedidos diversificaron a 3+ productos",
+      "contexto": "Análisis de 156 vendedores que superaron los 200 pedidos/mes este trimestre. 92% tenían 3+ productos activos. El 8% restante eran nichos hyperespecíficos.",
+      "fuente": "Cohorte top performance Q1 2026 (n=156)",
+      "confianza": 0.88,
+      "vendedores_afectados": 156,
+      "relevancia_perfil": 0.92,
+      "categoria": "escala",
+      "geografia": ["CO", "MX", "PE", "AR"],
+      "accion_sugerida": "Si tu objetivo es 200 pedidos/mes, prioriza diversificación de productos sobre escalamiento de uno solo",
+      "ruta_aplicar": "/gali-v3/objetivo"
+    },
+    {
+      "id": "sen-8",
+      "tipo": "oportunidad",
+      "titulo": "Horario óptimo para campañas en CO: 7-9pm domingos",
+      "contexto": "Tasa de conversión 1.6x mayor en ese slot vs promedio. Saturación competitiva 35% más baja.",
+      "fuente": "Análisis de 2.300 campañas activas en Colombia",
+      "confianza": 0.73,
+      "vendedores_afectados": 2300,
+      "relevancia_perfil": 0.70,
+      "categoria": "ads",
+      "geografia": ["CO"],
+      "accion_sugerida": "Ajustar dayparting de tus campañas activas para concentrar 30% del budget en domingo PM",
+      "ruta_aplicar": "/gali-v3/dropi/campanas"
+    },
+    {
+      "id": "sen-9",
+      "tipo": "estrategia",
+      "titulo": "Landings con video hero >30s convierten 22% menos que con video <15s",
+      "contexto": "Comparativo de 1.840 landings activas en LATAM. Videos hero más cortos consistentemente mejor performance.",
+      "fuente": "1.840 landings con tracking activo",
+      "confianza": 0.80,
+      "vendedores_afectados": 1840,
+      "relevancia_perfil": 0.60,
+      "categoria": "landings",
+      "geografia": ["CO", "MX", "PE", "AR"],
+      "accion_sugerida": "Revisar tus videos hero — si tienes alguno >30s, generar variante corta con Gali",
+      "ruta_aplicar": "/gali-v3/landings"
+    },
+    {
+      "id": "sen-10",
+      "tipo": "oportunidad",
+      "titulo": "Combos producto + accesorio aumentan AOV 38% promedio",
+      "contexto": "Vendedores que incluyen accesorio gratis (o muy barato) en la página de checkout ven aumento sostenido del ticket promedio.",
+      "fuente": "Cohorte de 320 tiendas con tracking de AOV en Dropi",
+      "confianza": 0.77,
+      "vendedores_afectados": 320,
+      "relevancia_perfil": 0.75,
+      "categoria": "checkout",
+      "geografia": ["CO", "MX"],
+      "accion_sugerida": "Probar agregar 'correa GPS extra' como complemento opcional al checkout del Collar GPS",
+      "ruta_aplicar": "/gali-v3/dropi/catalogo"
+    }
+  ],
+  "productos_tendencia": [
+    {
+      "id": "prod-t1",
+      "nombre": "Lámpara de sal del Himalaya",
+      "categoria": "bienestar",
+      "crecimiento_semanal": 47,
+      "vendedores_activos": 89,
+      "margen_promedio": 64,
+      "saturacion_dias": 21,
+      "ticket_promedio_cop": 78000,
+      "confianza": 0.71,
+      "imagen_emoji": "💡",
+      "ciudades_top": ["Bogotá", "Medellín"],
+      "tendencia_creative": "Ángulo 'sueño y relajación'"
+    },
+    {
+      "id": "prod-t2",
+      "nombre": "Cinturón postural inteligente",
+      "categoria": "bienestar",
+      "crecimiento_semanal": 32,
+      "vendedores_activos": 156,
+      "margen_promedio": 58,
+      "saturacion_dias": 14,
+      "ticket_promedio_cop": 95000,
+      "confianza": 0.65,
+      "imagen_emoji": "🧘",
+      "ciudades_top": ["Bogotá", "Cali"],
+      "tendencia_creative": "Testimonial corto (15s) con dolor de espalda"
+    },
+    {
+      "id": "prod-t3",
+      "nombre": "Almohada cervical memory foam",
+      "categoria": "bienestar",
+      "crecimiento_semanal": 28,
+      "vendedores_activos": 203,
+      "margen_promedio": 52,
+      "saturacion_dias": 18,
+      "ticket_promedio_cop": 89000,
+      "confianza": 0.78,
+      "imagen_emoji": "🛏",
+      "ciudades_top": ["Medellín", "Bogotá", "Barranquilla"],
+      "tendencia_creative": "Comparativo antes/después"
+    },
+    {
+      "id": "prod-t4",
+      "nombre": "Tapete de acupresión",
+      "categoria": "bienestar",
+      "crecimiento_semanal": 22,
+      "vendedores_activos": 174,
+      "margen_promedio": 61,
+      "saturacion_dias": 12,
+      "ticket_promedio_cop": 73000,
+      "confianza": 0.69,
+      "imagen_emoji": "🧱",
+      "ciudades_top": ["Bogotá"],
+      "tendencia_creative": "UGC con persona usando 5 minutos al día"
+    },
+    {
+      "id": "prod-t5",
+      "nombre": "Difusor aromático inteligente",
+      "categoria": "bienestar",
+      "crecimiento_semanal": 19,
+      "vendedores_activos": 67,
+      "margen_promedio": 67,
+      "saturacion_dias": 35,
+      "ticket_promedio_cop": 112000,
+      "confianza": 0.73,
+      "imagen_emoji": "🌿",
+      "ciudades_top": ["Medellín", "Cali"],
+      "tendencia_creative": "Ambiente nocturno + esencias"
+    }
+  ],
+  "casos_top": [
+    {
+      "id": "caso-1",
+      "perfil_anonimizado": "Operador Bogotá, 6 meses en Dropi, nicho mascotas",
+      "resultado": "Llegó a $4.2M COP/mes facturado sostenido",
+      "tiempo": "8 semanas",
+      "estrategia_clave": "Dejó de competir en Collar GPS y se especializó en accesorios premium para perros mayores. Ticket promedio $145k vs $89k del mercado.",
+      "metricas_finales": {
+        "roas": 3.4,
+        "pedidos_mes": 312,
+        "productos_activos": 4
+      },
+      "ciudades": ["Bogotá", "Chía", "Soacha"],
+      "aprendizaje_aplicable": "Diferenciación por sub-nicho > competir en producto saturado"
+    },
+    {
+      "id": "caso-2",
+      "perfil_anonimizado": "Estratega Medellín, 14 meses en Dropi, nicho skincare",
+      "resultado": "Pasó de ROAS 1.8x a ROAS 3.1x sostenido",
+      "tiempo": "5 semanas",
+      "estrategia_clave": "Rotó completamente del ángulo 'belleza/juventud' al ángulo 'autocuidado/rutina nocturna'. Mantuvo mismos productos y audiencia, solo cambió creatives y landing.",
+      "metricas_finales": {
+        "roas": 3.1,
+        "pedidos_mes": 178,
+        "productos_activos": 3
+      },
+      "ciudades": ["Medellín", "Bello", "Itagüí"],
+      "aprendizaje_aplicable": "El ángulo importa más que el producto en categorías saturadas"
+    },
+    {
+      "id": "caso-3",
+      "perfil_anonimizado": "Aprendiz Cali, 3 meses en Dropi, nicho fitness",
+      "resultado": "Primer ROAS 2x sostenido + 47 pedidos primer mes",
+      "tiempo": "6 semanas",
+      "estrategia_clave": "Empezó con producto único (banda elástica) en una sola ciudad. Reinvirtió 80% de ganancias en ads del mismo producto antes de diversificar.",
+      "metricas_finales": {
+        "roas": 2.1,
+        "pedidos_mes": 47,
+        "productos_activos": 1
+      },
+      "ciudades": ["Cali"],
+      "aprendizaje_aplicable": "Para empezar: producto único + ciudad única + reinversión disciplinada"
+    }
+  ],
+  "alertas_comunidad": [
+    {
+      "id": "alerta-1",
+      "tipo": "transportadora",
+      "severidad": "alta",
+      "titulo": "Coordinadora con retrasos en eje cafetero",
+      "contexto": "23 reportes en últimos 7 días de entregas con retraso de 4+ días en Pereira, Manizales y Armenia.",
+      "fuente": "23 vendedores reportando incidencias",
+      "alternativa_sugerida": "Cambiar a Servientrega para esta zona temporalmente",
+      "afectados": 23
+    },
+    {
+      "id": "alerta-2",
+      "tipo": "proveedor",
+      "severidad": "media",
+      "titulo": "Proveedor 'TechAccesorios CO' con stock bajo",
+      "contexto": "Stock del Collar GPS modelo Pro ha bajado del 78% al 22% en 5 días. Tiempo de reposición estimado: 12 días.",
+      "fuente": "Inventario reportado por proveedor",
+      "alternativa_sugerida": "Anticipar pedido o cambiar a proveedor 'GlobalPet' (margen ligeramente menor pero stock estable)",
+      "afectados": 67
+    },
+    {
+      "id": "alerta-3",
+      "tipo": "saturacion",
+      "severidad": "media",
+      "titulo": "Collar GPS clásico cruzando umbral de saturación",
+      "contexto": "1.047 vendedores activos en CO. CPM subió 23% en 14 días. Las primeras señales de saturación están aquí.",
+      "fuente": "Análisis competitivo agregado",
+      "alternativa_sugerida": "Diferenciar producto (modelo Pro con alerta de salud, o variantes premium) o pivotear a sub-nicho",
+      "afectados": 1047
+    }
+  ]
+}

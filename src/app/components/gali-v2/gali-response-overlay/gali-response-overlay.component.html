@@ -1,0 +1,42 @@
+<div class="gro" *ngIf="respuesta" (click)="onBackdropClick($event)" role="dialog" aria-label="Respuesta de Gali">
+  <div class="gro__sheet" (click)="$event.stopPropagation()">
+    <header class="gro__head">
+      <gali-mark [state]="streamingActivo ? 'actuando' : 'propuesta'" size="md" label="Gali"></gali-mark>
+      <button type="button" class="gro__close" (click)="cerrar()" aria-label="Cerrar overlay">esc ×</button>
+    </header>
+
+    <div class="gro__body" (click)="saltarStream()">
+      <p class="gro__texto">
+        {{ textoStream }}<span class="gro__caret" *ngIf="streamingActivo">▍</span>
+      </p>
+
+      <div class="gro__productos" *ngIf="respuesta.productos?.length && !streamingActivo">
+        <article *ngFor="let p of respuesta.productos" class="gro__producto">
+          <header class="gro__producto-head">
+            <span class="gro__producto-tag">producto</span>
+            <h4 class="gro__producto-nombre">{{ p.nombre }}</h4>
+          </header>
+          <dl class="gro__producto-meta">
+            <div><dt>ROAS perfil</dt><dd>{{ p.roasPerfil }}</dd></div>
+            <div><dt>Días antes saturación</dt><dd>{{ p.diasAntesSaturacion }}</dd></div>
+          </dl>
+        </article>
+      </div>
+
+      <div class="gro__acciones" *ngIf="respuesta.acciones?.length && !streamingActivo">
+        <button
+          *ngFor="let a of respuesta.acciones"
+          type="button"
+          class="gro__accion"
+          [attr.data-tipo]="a.tipo"
+          (click)="ejecutar(a)">
+          {{ a.label }}
+        </button>
+      </div>
+    </div>
+
+    <footer class="gro__foot" *ngIf="!streamingActivo">
+      <span class="gro__foot-mono">esc para cerrar · click acción para ejecutar</span>
+    </footer>
+  </div>
+</div>

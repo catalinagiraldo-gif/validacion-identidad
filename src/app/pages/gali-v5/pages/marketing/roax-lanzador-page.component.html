@@ -1,0 +1,67 @@
+<div class="roax-lanzador-page">
+  <dropi-titulos title="Lanzador de campañas" [breadcrumbs]="breadcrumbs" />
+
+  @if (launched()) {
+    <div class="roax-launched-overlay">
+      <div class="roax-launched-card">
+        <span class="roax-launched-icon">✓</span>
+        <h3>Campaña lanzada con Roax</h3>
+        <p>Gali está configurando las skills automáticas. Redirigiendo a Medir…</p>
+      </div>
+    </div>
+  }
+
+  <div class="roax-lanzador-page__top">
+    <img class="roax-lanzador-page__logo" [src]="dropiLogo" alt="roax" />
+    <div class="roax-lanzador-page__top-actions">
+      <dropi-button-new label="Soporte" icon="pi-headphones" hierarchy="outline" [width]="110" />
+      <dropi-button-new label="Ajustes" icon="pi-cog" hierarchy="outline" [width]="110" />
+    </div>
+  </div>
+
+  <div class="roax-lanzador-page__stepper">
+    @for (step of steps; track step; let i = $index) {
+      <div class="roax-lanzador-page__step" [class.is-active]="i === currentStep" [class.is-done]="i < currentStep">
+        <span class="roax-lanzador-page__step-num">{{ i + 1 }}</span>
+        <span class="roax-lanzador-page__step-label">{{ step }}</span>
+      </div>
+      @if (i < steps.length - 1) {
+        <div class="roax-lanzador-page__connector" [class.is-done]="i < currentStep"></div>
+      }
+    }
+  </div>
+
+  <section class="roax-lanzador-page__panel">
+    @if (currentStep === 0) {
+      <h2>Selecciona el tipo de venta que vas a realizar</h2>
+      <p>El tipo de venta esta relacionado al canal donde ejecutarás la venta, y al cual va ir dirigida la campaña.</p>
+
+      <div class="roax-lanzador-page__grid">
+        @for (canal of canales; track canal.id) {
+          <button
+            type="button"
+            class="roax-lanzador-page__card"
+            [class.is-selected]="canal.selected"
+            (click)="selectCanal(canal)"
+          >
+            <span class="roax-lanzador-page__radio" [class.is-selected]="canal.selected"></span>
+            @if (canal.logo) {
+              <img [src]="canal.logo" [alt]="canal.label" class="roax-lanzador-page__card-logo" />
+            }
+            <strong>{{ canal.label }}</strong>
+            @if (canal.description) {
+              <span class="roax-lanzador-page__card-desc">{{ canal.description }}</span>
+            }
+          </button>
+        }
+      </div>
+    } @else {
+      <h2>{{ steps[currentStep] }}</h2>
+      <p>Configura este paso para continuar con el lanzador ROAX.</p>
+    }
+  </section>
+
+  <div class="roax-lanzador-page__footer">
+    <dropi-button-new label="Continuar" hierarchy="primary" [width]="160" />
+  </div>
+</div>

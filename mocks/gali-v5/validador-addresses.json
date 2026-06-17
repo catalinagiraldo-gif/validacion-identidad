@@ -1,0 +1,24 @@
+{
+  "addresses": [
+    {"id": "1", "alias": "Casa principal", "department": "Nariño", "city": "Pasto", "address": "Manzana A Casa 17 Barrio Caicedonia", "validated": true, "lastUsed": "27/05/2026"},
+    {"id": "2", "alias": "Oficina Bogotá", "department": "Cundinamarca", "city": "Bogotá", "address": "Calle 100 #19-45 Of 302", "validated": true, "lastUsed": "26/05/2026"},
+    {"id": "3", "alias": "Bodega Medellín", "department": "Antioquia", "city": "Medellín", "address": "Carrera 80 #45-67 Local 12", "validated": false, "lastUsed": "25/05/2026"},
+    {"id": "4", "alias": "Punto Cali", "department": "Valle del Cauca", "city": "Cali", "address": "Av. 6N #28-15 Edificio Torre Verde", "validated": true, "lastUsed": "24/05/2026"},
+    {"id": "5", "alias": "Cliente recurrente", "department": "Atlántico", "city": "Barranquilla", "address": "Mz B Lote 8 Urbanización Los Pinos", "validated": true, "lastUsed": "23/05/2026"},
+    {"id": "6", "alias": "Tienda Cartagena", "department": "Bolívar", "city": "Cartagena", "address": "Calle 10 #5-20 Barrio Centro", "validated": false, "lastUsed": "22/05/2026"},
+    {"id": "7", "alias": "Depósito Bucaramanga", "department": "Santander", "city": "Bucaramanga", "address": "Transversal 54 #102-45 Casa esquina", "validated": true, "lastUsed": "21/05/2026"},
+    {"id": "8", "alias": "Apartamento norte", "department": "Cundinamarca", "city": "Bogotá", "address": "Carrera 15 #93-47 Apt 501", "validated": true, "lastUsed": "20/05/2026"},
+    {"id": "9", "alias": "Local comercial", "department": "Antioquia", "city": "Medellín", "address": "Calle 50 #46-78 Local 3", "validated": false, "lastUsed": "19/05/2026"},
+    {"id": "10", "alias": "Casa campestre", "department": "Cundinamarca", "city": "Chía", "address": "Vereda El Hato Km 2 Vía Sopó", "validated": true, "lastUsed": "18/05/2026"},
+    {"id": "11", "alias": "Punto entrega Pereira", "department": "Risaralda", "city": "Pereira", "address": "Carrera 8 #19-45 Centro Comercial", "validated": true, "lastUsed": "17/05/2026"},
+    {"id": "12", "alias": "Sucursal Manizales", "department": "Caldas", "city": "Manizales", "address": "Calle 19 #23-10 Edificio Palogrande", "validated": false, "lastUsed": "16/05/2026"},
+    {"id": "13", "alias": "Cliente VIP", "department": "Valle del Cauca", "city": "Palmira", "address": "Carrera 30 #28-15 Barrio La Magdalena", "validated": true, "lastUsed": "15/05/2026"},
+    {"id": "14", "alias": "Punto Ibagué", "department": "Tolima", "city": "Ibagué", "address": "Calle 60 #5-23 Barrio San Fernando", "validated": true, "lastUsed": "14/05/2026"},
+    {"id": "15", "alias": "Almacén Cúcuta", "department": "Norte de Santander", "city": "Cúcuta", "address": "Av. 0 #12-34 Barrio Caobos", "validated": false, "lastUsed": "13/05/2026"},
+    {"id": "16", "alias": "Casa Villavicencio", "department": "Meta", "city": "Villavicencio", "address": "Carrera 26 #40-12 Barrio Centro", "validated": true, "lastUsed": "12/05/2026"},
+    {"id": "17", "alias": "Punto Santa Marta", "department": "Magdalena", "city": "Santa Marta", "address": "Calle 22 #3-45 El Rodadero", "validated": true, "lastUsed": "11/05/2026"},
+    {"id": "18", "alias": "Oficina Neiva", "department": "Huila", "city": "Neiva", "address": "Carrera 5 #10-20 Centro", "validated": false, "lastUsed": "10/05/2026"},
+    {"id": "19", "alias": "Depósito Armenia", "department": "Quindío", "city": "Armenia", "address": "Calle 14 #23-45 Barrio La Fachada", "validated": true, "lastUsed": "09/05/2026"},
+    {"id": "20", "alias": "Punto Popayán", "department": "Cauca", "city": "Popayán", "address": "Carrera 9 #4-56 Barrio Centro", "validated": true, "lastUsed": "08/05/2026"}
+  ]
+}

@@ -1,0 +1,305 @@
+<div class="mkt-page">
+
+  <!-- Header -->
+  <div class="mkt-page__header">
+    <div class="mkt-page__header-left">
+      <a routerLink="/gali-v5/skills" class="mkt-page__back">
+        <i class="pi pi-arrow-left"></i>
+      </a>
+      <div>
+        <h1 class="mkt-page__title">Marketplace de Skills</h1>
+        <span class="mkt-page__sub">Skills creadas por la comunidad Dropi · activadas por dropshippers reales</span>
+      </div>
+    </div>
+    <div class="mkt-page__header-right">
+      <button type="button" class="mkt-page__btn mkt-page__btn--publish" (click)="openShareModal()">
+        <i class="pi pi-upload"></i> Publicar mi skill
+      </button>
+    </div>
+  </div>
+
+  <!-- ── SKILL CREATOR DASHBOARD ── -->
+  <div class="creator-dashboard">
+    <div class="creator-dashboard__header">
+      <strong class="creator-dashboard__title">Mi actividad como creator</strong>
+      <span class="creator-dashboard__sub">Skills que has publicado · úsalas como base para nuevas</span>
+    </div>
+    <div class="creator-dashboard__grid">
+      <div class="creator-stat">
+        <span class="creator-stat__value">3</span>
+        <span class="creator-stat__label">Skills publicadas</span>
+      </div>
+      <div class="creator-stat">
+        <span class="creator-stat__value">47</span>
+        <span class="creator-stat__label">Usuarios activos</span>
+      </div>
+      <div class="creator-stat">
+        <span class="creator-stat__value">12</span>
+        <span class="creator-stat__label">Forks</span>
+      </div>
+      <div class="creator-stat creator-stat--highlight">
+        <span class="creator-stat__value">4.7 ★</span>
+        <span class="creator-stat__label">Rating promedio</span>
+      </div>
+    </div>
+
+    <div class="creator-my-skills">
+      <div class="creator-skill-row">
+        <div class="creator-skill-row__info">
+          <strong>Smart Routing de Novedades v2</strong>
+          <span class="creator-skill-row__meta">Vigilante · Logística · 23 usuarios activos · 8 forks</span>
+        </div>
+        <div class="creator-skill-row__metrics">
+          <span class="creator-skill-row__rating">4.8 ★</span>
+          <span class="creator-skill-row__version">v2.1</span>
+          <span class="creator-skill-row__status creator-skill-row__status--active">● Activa</span>
+        </div>
+        <button type="button" class="creator-skill-row__edit" data-proto-skip>Editar →</button>
+      </div>
+      <div class="creator-skill-row">
+        <div class="creator-skill-row__info">
+          <strong>Auto-pausa CTR Bajo Meta</strong>
+          <span class="creator-skill-row__meta">Roax · Marketing · 18 usuarios activos · 4 forks</span>
+        </div>
+        <div class="creator-skill-row__metrics">
+          <span class="creator-skill-row__rating">4.6 ★</span>
+          <span class="creator-skill-row__version">v1.3</span>
+          <span class="creator-skill-row__status creator-skill-row__status--active">● Activa</span>
+        </div>
+        <button type="button" class="creator-skill-row__edit" data-proto-skip>Editar →</button>
+      </div>
+      <div class="creator-skill-row creator-skill-row--draft">
+        <div class="creator-skill-row__info">
+          <strong>Diagnóstico Post-mortem Campaña</strong>
+          <span class="creator-skill-row__meta">Roax · Marketing · En borrador · no publicada</span>
+        </div>
+        <div class="creator-skill-row__metrics">
+          <span class="creator-skill-row__version">borrador</span>
+          <span class="creator-skill-row__status creator-skill-row__status--draft">○ Borrador</span>
+        </div>
+        <button type="button" class="creator-skill-row__edit" routerLink="/gali-v5/skills/nueva">Publicar →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search + Tabs -->
+  <div class="mkt-page__toolbar">
+    <div class="mkt-page__search-wrap">
+      <i class="pi pi-search mkt-page__search-icon"></i>
+      <input
+        type="text"
+        class="mkt-page__search"
+        placeholder="Buscar skills por nombre, sección o agente…"
+        [value]="searchQuery()"
+        (input)="searchQuery.set($any($event.target).value)"
+      />
+    </div>
+    <div class="mkt-page__tabs">
+      <button type="button" class="mkt-page__tab"
+        [class.mkt-page__tab--active]="activeTab() === 'populares'"
+        (click)="activeTab.set('populares')">
+        🔥 Populares
+      </button>
+      <button type="button" class="mkt-page__tab"
+        [class.mkt-page__tab--active]="activeTab() === 'por-seccion'"
+        (click)="activeTab.set('por-seccion')">
+        📂 Por sección
+      </button>
+      <button type="button" class="mkt-page__tab"
+        [class.mkt-page__tab--active]="activeTab() === 'expertos'"
+        (click)="activeTab.set('expertos')">
+        ⭐ Expertos
+      </button>
+      <button type="button" class="mkt-page__tab"
+        [class.mkt-page__tab--active]="activeTab() === 'nuevas'"
+        (click)="activeTab.set('nuevas')">
+        ✨ Nuevas
+      </button>
+    </div>
+  </div>
+
+  <!-- Section filters (solo en "Por sección") -->
+  @if (activeTab() === 'por-seccion') {
+    <div class="mkt-page__section-filters">
+      <button type="button" class="mkt-sec-filter"
+        [class.mkt-sec-filter--active]="activeSectionFilter() === null"
+        (click)="activeSectionFilter.set(null)">
+        Todas
+      </button>
+      @for (sec of sectionFilters; track sec) {
+        <button type="button" class="mkt-sec-filter"
+          [class.mkt-sec-filter--active]="activeSectionFilter() === sec"
+          (click)="setSection(sec)">
+          {{ sec }}
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Stats strip -->
+  <div class="mkt-page__stats-strip">
+    <span class="mkt-stat">
+      <strong>{{ filteredSkills().length }}</strong> skills encontradas
+    </span>
+    <span class="mkt-stat-sep">·</span>
+    <span class="mkt-stat">
+      <strong>12.4k</strong> activaciones totales
+    </span>
+    <span class="mkt-stat-sep">·</span>
+    <span class="mkt-stat">
+      <strong>47</strong> creadores
+    </span>
+    <span class="mkt-stat-sep">·</span>
+    <span class="mkt-stat mkt-stat--highlight">
+      <span class="mkt-stat__dot"></span> Comunidad activa
+    </span>
+  </div>
+
+  <!-- Grid -->
+  <div class="mkt-page__grid">
+
+    @for (skill of filteredSkills(); track skill.id) {
+      <div class="mkt-card" [class.mkt-card--verified]="skill.verificado">
+
+        <!-- Top badges -->
+        <div class="mkt-card__top">
+          <div class="mkt-card__badges">
+            <span class="mkt-card__tipo"
+              [class.mkt-card__tipo--op]="skill.tipo === 'Operación'"
+              [class.mkt-card__tipo--exp]="skill.tipo === 'Experto'"
+              [class.mkt-card__tipo--prem]="skill.tipo === 'Premium'"
+              [class.mkt-card__tipo--lanz]="skill.tipo === 'Lanzamiento'">
+              {{ skill.tipo }}
+            </span>
+            @for (sec of skill.secciones; track sec) {
+              <span class="mkt-card__sec">{{ sec }}</span>
+            }
+          </div>
+          @if (skill.tag) {
+            <span class="mkt-card__tag">{{ skill.tag }}</span>
+          }
+        </div>
+
+        <!-- Skill name & desc -->
+        <h3 class="mkt-card__nombre">{{ skill.nombre }}</h3>
+        <p class="mkt-card__desc">{{ skill.descripcion }}</p>
+
+        <!-- Creator profile -->
+        <div class="mkt-creator">
+          <div class="mkt-creator__avatar" [style.background]="skill.autorColor">
+            {{ skill.autorAvatar }}
+          </div>
+          <div class="mkt-creator__info">
+            <span class="mkt-creator__name">
+              {{ skill.autor }}
+              @if (skill.verificado) {
+                <span class="mkt-creator__check">✓</span>
+              }
+            </span>
+            @if (skill.autorBio) {
+              <span class="mkt-creator__bio">{{ skill.autorBio }}</span>
+            }
+            @if (skill.handle) {
+              <span class="mkt-creator__handle">{{ skill.handle }}</span>
+            }
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="mkt-card__stats">
+          <span class="mkt-stat-pill">
+            <i class="pi pi-star-fill"></i> {{ skill.rating }}
+          </span>
+          <span class="mkt-stat-pill">
+            <i class="pi pi-share-alt"></i> {{ skill.forks }} forks
+          </span>
+          <span class="mkt-stat-pill">
+            <i class="pi pi-users"></i> {{ skill.uses }}
+          </span>
+          @if (skill.comments > 0) {
+            <span class="mkt-stat-pill">
+              <i class="pi pi-comment"></i> {{ skill.comments }}
+            </span>
+          }
+        </div>
+
+        <!-- Actions -->
+        <div class="mkt-card__actions">
+          <button type="button" class="mkt-card__btn mkt-card__btn--ghost"
+            (click)="forkSkill(skill.id)">
+            <i class="pi pi-copy"></i> Usar como base
+          </button>
+          <button type="button" class="mkt-card__btn mkt-card__btn--primary"
+            (click)="activateSkill(skill.id)">
+            Activar →
+          </button>
+        </div>
+
+      </div>
+    }
+
+    @if (filteredSkills().length === 0) {
+      <div class="mkt-page__empty">
+        <i class="pi pi-search" style="font-size: 28px; opacity: .3"></i>
+        <p>No hay skills que coincidan con tu búsqueda.</p>
+        <button type="button" class="mkt-page__btn mkt-page__btn--ghost"
+          (click)="searchQuery.set(''); activeSectionFilter.set(null)">
+          Limpiar filtros
+        </button>
+      </div>
+    }
+
+  </div>
+
+</div>
+
+<!-- Toast: skill publicada -->
+@if (shareDone()) {
+  <div class="mkt-toast">
+    <i class="pi pi-check-circle"></i>
+    Skill publicada en el marketplace ✦
+  </div>
+}
+
+<!-- Share modal -->
+@if (showShareModal()) {
+  <div class="mkt-modal-backdrop" (click)="showShareModal.set(false)">
+    <div class="mkt-modal" (click)="$event.stopPropagation()">
+      <div class="mkt-modal__header">
+        <span class="mkt-modal__icon">🔗</span>
+        <h3 class="mkt-modal__title">Publicar skill en el marketplace</h3>
+        <button type="button" class="mkt-modal__close" (click)="showShareModal.set(false)">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+      <p class="mkt-modal__desc">
+        Al publicar tu skill, otros dropshippers podrán activarla o usarla como base.
+        Ganarás créditos de comunidad por cada fork.
+      </p>
+      <div class="mkt-modal__options">
+        <label class="mkt-modal__option">
+          <input type="radio" name="share-vis" value="public" checked>
+          <span>
+            <strong>Pública</strong> — visible para todos en el marketplace
+          </span>
+        </label>
+        <label class="mkt-modal__option">
+          <input type="radio" name="share-vis" value="link">
+          <span>
+            <strong>Solo con link</strong> — comparte con quien quieras
+          </span>
+        </label>
+      </div>
+      <div class="mkt-modal__footer">
+        <button type="button" class="mkt-modal__btn mkt-modal__btn--cancel"
+          (click)="showShareModal.set(false)">
+          Cancelar
+        </button>
+        <button type="button" class="mkt-modal__btn mkt-modal__btn--primary"
+          (click)="confirmShare()">
+          Publicar en marketplace ✦
+        </button>
+      </div>
+    </div>
+  </div>
+}

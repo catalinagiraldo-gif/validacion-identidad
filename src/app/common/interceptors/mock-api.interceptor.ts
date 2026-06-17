@@ -1,5 +1,6 @@
 import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 
 import ordersData from '../../../../mocks/orders.json';
 import pedidosData from '../../../../mocks/pedidos.json';
@@ -18,6 +19,11 @@ import billingDropshippersData from '../../../../mocks/billing-dropshippers.json
 import carriersData from '../../../../mocks/carriers.json';
 import carriersMvpData from '../../../../mocks/carriers-mvp.json';
 import auditLogData from '../../../../mocks/audit-log.json';
+import galiDiscoveryData from '../../../../mocks/gali-discovery.json';
+import galiStrategyData from '../../../../mocks/gali-strategy.json';
+import galiCreationData from '../../../../mocks/gali-creation.json';
+import galiLaunchData from '../../../../mocks/gali-launch.json';
+import galiDashboardData from '../../../../mocks/gali-dashboard.json';
 
 // Mutable in-memory copies (reset on page refresh)
 let orders = [...ordersData];
@@ -128,6 +134,31 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
   // GET /api/audit-log
   if (req.url.includes('/api/audit-log') && req.method === 'GET') {
     return of(new HttpResponse({ status: 200, body: auditLogData }));
+  }
+
+  // GET /api/gali-discovery
+  if (req.url.includes('/api/gali-discovery') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: galiDiscoveryData })).pipe(delay(300));
+  }
+
+  // GET /api/gali-strategy
+  if (req.url.includes('/api/gali-strategy') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: galiStrategyData })).pipe(delay(300));
+  }
+
+  // GET /api/gali-creation
+  if (req.url.includes('/api/gali-creation') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: galiCreationData })).pipe(delay(300));
+  }
+
+  // GET /api/gali-launch
+  if (req.url.includes('/api/gali-launch') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: galiLaunchData })).pipe(delay(300));
+  }
+
+  // GET /api/gali-dashboard
+  if (req.url.includes('/api/gali-dashboard') && req.method === 'GET') {
+    return of(new HttpResponse({ status: 200, body: galiDashboardData })).pipe(delay(300));
   }
 
   return next(req);

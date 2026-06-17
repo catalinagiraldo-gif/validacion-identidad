@@ -1,0 +1,134 @@
+<div class="negotiations-page">
+  <nav class="negotiations-page__breadcrumbs" aria-label="Breadcrumb">
+    <a routerLink="/gali-v5" class="negotiations-page__crumb negotiations-page__crumb--home">
+      <i class="pi pi-home" aria-hidden="true"></i>
+    </a>
+    <i class="pi pi-chevron-right negotiations-page__crumb-sep" aria-hidden="true"></i>
+    <span class="negotiations-page__crumb">{{ breadcrumbs[0] }}</span>
+    <i class="pi pi-chevron-right negotiations-page__crumb-sep" aria-hidden="true"></i>
+    <span class="negotiations-page__crumb negotiations-page__crumb--active">{{ breadcrumbs[1] }}</span>
+  </nav>
+
+  <header class="negotiations-page__head">
+    <h1 class="negotiations-page__title">Negociaciones</h1>
+    <div class="negotiations-page__community">
+      <span>ID Comunidad: {{ communityId }}</span>
+      <button type="button" class="negotiations-page__copy" data-proto-skip (click)="copyId(communityId)" aria-label="Copiar ID">
+        <i class="pi pi-copy"></i>
+      </button>
+    </div>
+  </header>
+
+  <section class="negotiations-page__toolbar">
+    <div class="negotiations-page__filters">
+      <div class="negotiations-page__select">
+        <label>Estado</label>
+        <div class="negotiations-page__select-field">
+          <span>Todos los estados</span>
+          <i class="pi pi-chevron-down"></i>
+        </div>
+      </div>
+      <button type="button" class="negotiations-page__filter-icon" aria-label="Filtrar">
+        <i class="pi pi-filter"></i>
+      </button>
+    </div>
+    <div class="negotiations-page__search">
+      <i class="pi pi-search"></i>
+      <input type="search" placeholder="Buscar negociación o proveedor" [(ngModel)]="searchQuery" />
+    </div>
+  </section>
+
+  <div class="negotiations-page__tabs" role="tablist">
+    <button
+      *ngFor="let tab of tabs"
+      type="button"
+      role="tab"
+      class="negotiations-page__tab"
+      data-proto-skip
+      [class.negotiations-page__tab--active]="activeTab() === tab"
+      [attr.aria-selected]="activeTab() === tab"
+      (click)="selectTab(tab)">
+      {{ tab }}
+    </button>
+  </div>
+
+  <div class="negotiations-page__cards">
+    <article *ngFor="let n of negotiations" class="neg-card">
+      <header class="neg-card__header">
+        <div class="neg-card__header-main">
+          <span class="neg-card__id">ID negociación: {{ n.id }}</span>
+          <button type="button" class="neg-card__copy" data-proto-skip (click)="copyId(n.id)" aria-label="Copiar ID">
+            <i class="pi pi-copy"></i>
+          </button>
+          <span class="neg-card__sep" aria-hidden="true"></span>
+          <span class="neg-card__date">Fecha de creación: {{ n.createdAt }}</span>
+        </div>
+      </header>
+
+      <div class="neg-card__body">
+        <div class="neg-card__cell">
+          <span class="neg-card__cell-label">Proveedor</span>
+          <div class="neg-card__provider">
+            <img [src]="n.provider.avatar" [alt]="n.provider.name" class="neg-card__avatar" />
+            <span class="neg-card__provider-name">{{ n.provider.name }}</span>
+          </div>
+        </div>
+        <div class="neg-card__cell">
+          <span class="neg-card__cell-label">Productos</span>
+          <strong class="neg-card__product-count">{{ n.productCount }}</strong>
+          <span class="neg-card__product-scope">{{ n.productScope }}</span>
+        </div>
+        <div class="neg-card__cell">
+          <span class="neg-card__cell-label">Comisión</span>
+          <div class="neg-card__kv">
+            <span>Tipo:</span>
+            <strong>{{ n.commissionType }}</strong>
+          </div>
+          <div class="neg-card__kv">
+            <span>Monto:</span>
+            <strong>{{ n.commissionAmount }}</strong>
+          </div>
+        </div>
+        <div class="neg-card__cell">
+          <span class="neg-card__cell-label">Desempeño</span>
+          <span class="neg-card__cell-sublabel">Últimos 90 días</span>
+          <div class="neg-card__kv">
+            <span>Cantidad:</span>
+            <strong>{{ n.performanceQty }}</strong>
+          </div>
+          <div class="neg-card__kv">
+            <span>Valor ventas:</span>
+            <strong>{{ n.performanceSales }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <footer class="neg-card__footer">
+        <div class="neg-card__status-group">
+          <span class="neg-card__tag" [ngClass]="'neg-card__tag--' + n.status">
+            {{ statusLabel(n.status) }}
+          </span>
+          <div class="neg-card__alert" *ngIf="n.deadline">
+            <i class="pi pi-exclamation-triangle"></i>
+            <span>Debes responder antes de {{ n.deadline }}</span>
+          </div>
+        </div>
+        <div class="neg-card__actions">
+          <button type="button" class="neg-card__action neg-card__action--muted">
+            <i class="pi pi-times-circle"></i> Rechazar
+          </button>
+          <button type="button" class="neg-card__action neg-card__action--primary">
+            <i class="pi pi-check-circle"></i> Aprobar
+          </button>
+          <button type="button" class="neg-card__action neg-card__action--muted">
+            <i class="pi pi-eye"></i> Ver detalles
+          </button>
+        </div>
+      </footer>
+    </article>
+  </div>
+
+  <div class="negotiations-page__load-more">
+    <button type="button" class="negotiations-page__load-btn">Cargar más negociaciones</button>
+  </div>
+</div>

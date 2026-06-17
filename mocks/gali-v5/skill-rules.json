@@ -1,0 +1,54 @@
+[
+  {
+    "id": "skill-001",
+    "nombre": "Auto-pausa si CTR cae",
+    "descripcion": "Pausa la campaña activa y activa la alternativa cuando el CTR cae bajo umbral por 48h",
+    "trigger": { "event": "roax_check", "agent": "roax", "interval": "cada 4h" },
+    "condition": { "metric": "CTR", "operator": "<", "value": 0.8, "unit": "%", "duration": "48h" },
+    "action": { "type": "pause_and_activate", "params": { "pause": "active_video", "activate": "backup_video" } },
+    "notification": { "message": "Cambié Video A → Video B por CTR bajo", "cta": "Ver detalle" },
+    "status": "active",
+    "ultima_ejecucion": "hace 2h",
+    "ejecuciones_total": 7,
+    "runHistory": [
+      { "fecha": "2026-05-29 14:30", "resultado": "ejecutado", "detalle": "CTR Video A fue 0.7% — Pausé, activé Video B", "impacto": "CTR: 1.2% → 1.8%" },
+      { "fecha": "2026-05-28 10:15", "resultado": "ejecutado", "detalle": "CTR Video C fue 0.6% — Pausé campaña", "impacto": "ROAS estabilizado" },
+      { "fecha": "2026-05-27 —", "resultado": "no_activado", "detalle": "CTR sobre umbral todo el día", "impacto": "—" },
+      { "fecha": "2026-05-26 08:00", "resultado": "ejecutado", "detalle": "CTR cayó a 0.5% — Pausé, activé backup", "impacto": "CTR: 0.5% → 1.4%" },
+      { "fecha": "2026-05-25 —", "resultado": "no_activado", "detalle": "CTR sobre umbral", "impacto": "—" }
+    ]
+  },
+  {
+    "id": "skill-002",
+    "nombre": "Escalado ROAS automático",
+    "descripcion": "Incrementa el presupuesto diario cuando el ROAS supera el objetivo durante 48h continuas",
+    "trigger": { "event": "roax_check", "agent": "roax", "interval": "cada 6h" },
+    "condition": { "metric": "ROAS", "operator": ">=", "value": 2.8, "duration": "48h" },
+    "action": { "type": "budget_increase", "params": { "percent": 15, "max_daily": 100000 } },
+    "notification": { "message": "Escalé presupuesto +15% (ROAS ≥ 2.8x por 48h)", "cta": "Ver" },
+    "status": "active",
+    "ultima_ejecucion": "hace 4h",
+    "ejecuciones_total": 3,
+    "runHistory": [
+      { "fecha": "2026-05-29 10:00", "resultado": "ejecutado", "detalle": "ROAS fue 2.9x por 52h — Budget $57.5k → $66k", "impacto": "+$8.500/día" },
+      { "fecha": "2026-05-22 09:30", "resultado": "ejecutado", "detalle": "ROAS fue 3.1x por 60h — Budget $50k → $57.5k", "impacto": "+$7.500/día" },
+      { "fecha": "2026-05-15 —", "resultado": "no_activado", "detalle": "ROAS 2.3x, no alcanzó umbral", "impacto": "—" }
+    ]
+  },
+  {
+    "id": "skill-003",
+    "nombre": "Smart routing novedad",
+    "descripcion": "Cambia transportadora automáticamente cuando la novedad supera el umbral en zona específica",
+    "trigger": { "event": "vigilante_alert", "agent": "vigilante", "interval": "cada 2h" },
+    "condition": { "metric": "novedad_pct", "operator": ">", "value": 8, "unit": "%", "zone": "Bogotá" },
+    "action": { "type": "reroute_orders", "params": { "from": "coordinadora", "to": "servientrega", "max_orders": 20 } },
+    "notification": { "message": "Reasigné pedidos por novedad alta en Bogotá", "cta": "Ver pedidos" },
+    "status": "paused",
+    "ultima_ejecucion": "hace 3 días",
+    "ejecuciones_total": 12,
+    "runHistory": [
+      { "fecha": "2026-05-26 14:00", "resultado": "ejecutado", "detalle": "Novedad Coordinadora 11% — Reasigné 8 pedidos", "impacto": "4 novedades ahorradas" },
+      { "fecha": "2026-05-20 09:00", "resultado": "ejecutado", "detalle": "Novedad 9% — Reasigné 5 pedidos", "impacto": "2 novedades ahorradas" }
+    ]
+  }
+]

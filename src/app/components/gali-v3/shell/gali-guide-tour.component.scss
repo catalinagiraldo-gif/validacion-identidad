@@ -1,0 +1,204 @@
+@import 'styles/gali-v3-tokens';
+
+.gtour {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  pointer-events: none;
+  animation: gtour-in 280ms $gv3-ease-out;
+
+  &__mask {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+  }
+
+  &__ring {
+    position: fixed;
+    border-radius: $gv3-radius-lg;
+    box-shadow:
+      0 0 0 2px $gv3-orange,
+      0 0 0 6px rgba(244, 154, 61, 0.18),
+      0 12px 40px rgba(60, 30, 10, 0.18);
+    pointer-events: none;
+    animation: gtour-pulse 2.4s ease-in-out infinite;
+  }
+
+  &__card {
+    position: fixed;
+    width: min(400px, calc(100vw - 32px));
+    padding: $gv3-space-5;
+    background: $gv3-bg-surface;
+    border: 1px solid $gv3-border-default;
+    border-radius: $gv3-radius-xl;
+    box-shadow: $gv3-shadow-lg;
+    pointer-events: auto;
+    animation: gtour-card-in 320ms $gv3-ease-organic;
+
+    &--center {
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $gv3-space-3;
+    margin-bottom: $gv3-space-3;
+  }
+
+  &__badge {
+    font-family: $gv3-font-mono;
+    font-size: $gv3-text-xs;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $gv3-terracota;
+    background: $gv3-terracota-tint;
+    border: 1px solid rgba(184, 89, 58, 0.2);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+
+  &__skip {
+    border: none;
+    background: transparent;
+    font-family: $gv3-font-body;
+    font-size: $gv3-text-sm;
+    color: $gv3-text-tertiary;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: $gv3-radius-sm;
+
+    &:hover {
+      color: $gv3-text-primary;
+      background: $gv3-orange-tint;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $gv3-orange;
+      outline-offset: 2px;
+    }
+  }
+
+  &__title {
+    margin: 0 0 $gv3-space-2;
+    font-family: $gv3-font-display;
+    font-size: $gv3-text-xl;
+    font-weight: 600;
+    color: $gv3-text-primary;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  &__body {
+    margin: 0 0 $gv3-space-4;
+    font-family: $gv3-font-body;
+    font-size: $gv3-text-base;
+    line-height: 1.55;
+    color: $gv3-text-secondary;
+    text-wrap: pretty;
+  }
+
+  &__foot {
+    display: flex;
+    flex-direction: column;
+    gap: $gv3-space-3;
+  }
+
+  &__dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: $gv3-border-strong;
+    transition: all 200ms ease;
+
+    &--on {
+      width: 22px;
+      border-radius: 999px;
+      background: $gv3-orange;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $gv3-space-2;
+  }
+
+  &__btn {
+    border: none;
+    border-radius: $gv3-radius-md;
+    font-family: $gv3-font-body;
+    font-size: $gv3-text-sm;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px 16px;
+    transition: transform 120ms ease, background 120ms ease;
+
+    &:focus-visible {
+      outline: 2px solid $gv3-orange;
+      outline-offset: 2px;
+    }
+
+    &--ghost {
+      background: transparent;
+      color: $gv3-text-secondary;
+
+      &:hover {
+        background: $gv3-orange-tint;
+        color: $gv3-text-primary;
+      }
+    }
+
+    &--primary {
+      background: $gv3-orange;
+      color: $gv3-text-onAccent;
+      box-shadow: $gv3-shadow-md;
+
+      &:hover {
+        background: $gv3-orange-hover;
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
+
+@keyframes gtour-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes gtour-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes gtour-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px $gv3-orange, 0 0 0 6px rgba(244, 154, 61, 0.18), 0 12px 40px rgba(60, 30, 10, 0.18); }
+  50% { box-shadow: 0 0 0 2px $gv3-orange, 0 0 0 10px rgba(244, 154, 61, 0.28), 0 16px 48px rgba(60, 30, 10, 0.22); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gtour,
+  .gtour__card,
+  .gtour__ring {
+    animation: none;
+  }
+}

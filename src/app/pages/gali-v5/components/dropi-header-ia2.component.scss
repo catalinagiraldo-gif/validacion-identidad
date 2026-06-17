@@ -1,0 +1,420 @@
+@import 'styles/gali-v5-tokens';
+
+// Gali Command Bar — Mission Control header
+.header-ia2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 53px;
+  padding: $size-2 $size-3;
+  background: $white;
+  border-bottom: 1px solid $gray-100;
+  flex-shrink: 0;
+  gap: $size-3;
+  position: relative;
+  z-index: 20;
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+    min-width: 0;
+  }
+
+  &__logo-link {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+    text-decoration: none;
+  }
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-2;
+    flex-shrink: 0;
+    padding: 6px $size-3;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    background: $white;
+    color: $gray-600;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    line-height: 1;
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+    .pi {
+      font-size: 13px;
+      color: $primary-500;
+    }
+
+    &:hover {
+      background: $gray-50;
+      border-color: $primary-500;
+      color: $gray-800;
+    }
+  }
+
+  &__logo {
+    width: 108px;
+    height: 37px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $size-4;
+    flex-shrink: 0;
+    min-width: 0;
+  }
+
+  &__beta {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  &__beta-label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: #50a5f1; // Figma info-500
+    line-height: 1.1;
+  }
+
+  &__beta-switch {
+    position: relative;
+    width: 40px;
+    height: 21px;
+    border-radius: 12px;
+    background: $gray-200;
+    transition: background 0.2s ease;
+
+    &--on {
+      background: #50a5f1;
+    }
+  }
+
+  &__beta-knob {
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    width: 17px;
+    height: 17px;
+    border-radius: 10px;
+    background: $white;
+    transition: left 0.2s ease;
+
+    .header-ia2__beta-switch--on & {
+      left: 20px;
+    }
+  }
+
+  // ── Zona contextual transversal ───────────────────────────────
+  &__context {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  // Business Health Score widget
+  &__health {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border: 1.5px solid var(--health-color, #{$primary-500});
+    border-radius: $radius-md;
+    background: color-mix(in srgb, var(--health-color, #{$primary-500}) 8%, white);
+    cursor: pointer;
+    font-family: $font-primary;
+    transition: background 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+
+    &:hover {
+      background: color-mix(in srgb, var(--health-color, #{$primary-500}) 14%, white);
+    }
+  }
+
+  &__health-num {
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  &__health-bar {
+    width: 36px;
+    height: 4px;
+    background: $gray-200;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  &__health-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  &__health-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $gray-400;
+  }
+
+  &__health-breakdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    padding: 14px 16px;
+    min-width: 240px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    strong {
+      font-size: 13px;
+      font-weight: 700;
+      color: $gray-800;
+      margin-bottom: 2px;
+    }
+  }
+
+  .hb-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: $gray-600;
+    font-family: $font-primary;
+
+    span:last-child {
+      font-weight: 700;
+    }
+  }
+
+  .hb-footer {
+    font-size: 10px;
+    color: $gray-400;
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  // Agente activo — clickeable, abre el panel derecho
+  &__agent-ctx {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    padding: 5px $size-3;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    background: $gray-50;
+    cursor: pointer;
+    font-family: $font-primary;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    min-width: 0;
+    max-width: 360px;
+
+    &:hover {
+      border-color: rgba(0, 0, 0, 0.18);
+      background: $white;
+    }
+  }
+
+  &__ctx-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: ctx-pulse 2.5s ease-in-out infinite;
+  }
+
+  &__ctx-name {
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-800;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  &__ctx-sep {
+    color: $gray-300;
+    font-size: $font-sm;
+    flex-shrink: 0;
+  }
+
+  &__ctx-status {
+    font-size: $font-xs;
+    color: $gray-500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+  }
+
+  // Señales pendientes — claro y directo
+  &__signals-pill {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    padding: 4px $size-3;
+    border: 1px solid rgba($primary-500, 0.25);
+    border-radius: $radius-full;
+    background: rgba($primary-500, 0.06);
+    text-decoration: none;
+    color: $primary-600;
+    flex-shrink: 0;
+    transition: border-color 0.15s ease, background 0.15s ease;
+
+    &:hover {
+      border-color: $primary-500;
+      background: rgba($primary-500, 0.1);
+    }
+  }
+
+  &__signals-num {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $primary-600;
+    line-height: 1;
+  }
+
+  &__signals-label {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    color: $primary-500;
+    line-height: 1;
+  }
+
+  &__auto-badge {
+    padding: 3px $size-3;
+    border-radius: $radius-full;
+    background: $primary-500;
+    color: $white;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-bold;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  // ─────────────────────────────────────────────────────────────
+
+  &__wallet {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    padding: $size-1 $size-3;
+    border-radius: $radius-md;
+    background: $gray-50;
+    flex-shrink: 0;
+  }
+
+  &__wallet-icon {
+    font-size: 18px;
+    color: $gray-500;
+  }
+
+  &__wallet-amount,
+  &__wallet-mask {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $gray-700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__eye {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: $gray-500;
+    cursor: pointer;
+    border-radius: $radius-sm;
+
+    &:hover {
+      background: $gray-100;
+    }
+  }
+
+  &__avatar {
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    border: 2px solid $gray-100;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    background: $gray-100;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .header-ia2 {
+    &__wallet-amount { font-size: $font-xs; }
+    &__ctx-status { display: none; }
+    &__ctx-sep { display: none; }
+  }
+}
+
+@media (max-width: 640px) {
+  .header-ia2 {
+    padding: $size-2;
+
+    &__back span { display: none; }
+    &__back { padding: 6px $size-2; }
+    &__logo { width: 88px; height: 30px; }
+    &__actions { gap: $size-2; }
+    &__signals-pill { display: none; }
+    &__wallet { padding: $size-1 $size-2; }
+    &__wallet-amount { font-size: $font-xs; }
+    &__ctx-name { font-size: $font-xs; }
+  }
+}
+
+@keyframes ctx-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.55; transform: scale(0.85); }
+}
+
+@keyframes menu-appear {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

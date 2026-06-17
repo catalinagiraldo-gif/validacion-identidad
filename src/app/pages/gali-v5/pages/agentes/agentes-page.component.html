@@ -1,0 +1,337 @@
+<div class="agentes-page">
+
+  <!-- Header de página -->
+  <div class="agentes-page__header">
+    <div>
+      <h1 class="agentes-page__title">Agentes</h1>
+      <p class="agentes-page__subtitle">Cada agente se especializa en un área de tu negocio. Usan skills para ejecutar acciones automáticas.</p>
+    </div>
+    <div class="agentes-page__header-actions">
+      <a routerLink="/gali-v5/reglas" class="agentes-page__btn-outline">
+        <i class="pi pi-list-check"></i> Reglas
+      </a>
+      <a routerLink="/gali-v5/skills" class="agentes-page__btn-outline">
+        <i class="pi pi-sparkles"></i> Skills
+      </a>
+      <a routerLink="/gali-v5/skills/comunidad" class="agentes-page__btn-outline">
+        <i class="pi pi-shop"></i> Marketplace
+      </a>
+      <button type="button" class="agentes-page__btn-primary" (click)="openCreateAgent()" data-proto-skip>
+        <i class="pi pi-plus"></i> Crear agente
+      </button>
+    </div>
+  </div>
+
+  <!-- Jerarquía de orquestación IA: Agente → usa Skills ≠ Reglas -->
+  <div class="agentes-concept">
+    <div class="agentes-concept__item agentes-concept__item--agent">
+      <div class="agentes-concept__icon-wrap agentes-concept__icon-wrap--agent">
+        <i class="pi pi-android"></i>
+      </div>
+      <div class="agentes-concept__content">
+        <span class="agentes-concept__badge agentes-concept__badge--agent">Agente</span>
+        <span class="agentes-concept__desc">Entidad que <strong>ejecuta</strong> acciones de forma autónoma. Tú lo configuras una vez; él actúa 24/7.</span>
+        <span class="agentes-concept__example">Roax · Vigilante · Chatea Pro · ADA Spy</span>
+      </div>
+    </div>
+    <div class="agentes-concept__connector">
+      <span class="agentes-concept__connector-label">usa</span>
+    </div>
+    <div class="agentes-concept__item agentes-concept__item--skill">
+      <div class="agentes-concept__icon-wrap agentes-concept__icon-wrap--skill">
+        <i class="pi pi-bolt"></i>
+      </div>
+      <div class="agentes-concept__content">
+        <span class="agentes-concept__badge agentes-concept__badge--skill">Skill</span>
+        <span class="agentes-concept__desc"><strong>Receta automatizable</strong> con trigger, condición y acción. Tiene historial auditable por ejecución.</span>
+        <div class="agentes-concept__cta-row">
+          <a routerLink="/gali-v5/skills" class="agentes-concept__link">Mis skills →</a>
+          <a routerLink="/gali-v5/skills/nueva" class="agentes-concept__link agentes-concept__link--create">+ Crear skill</a>
+        </div>
+      </div>
+    </div>
+    <div class="agentes-concept__connector">
+      <span class="agentes-concept__connector-label">vs</span>
+    </div>
+    <div class="agentes-concept__item agentes-concept__item--rule">
+      <div class="agentes-concept__icon-wrap agentes-concept__icon-wrap--rule">
+        <i class="pi pi-sliders-h"></i>
+      </div>
+      <div class="agentes-concept__content">
+        <span class="agentes-concept__badge agentes-concept__badge--rule">Regla</span>
+        <span class="agentes-concept__desc"><strong>Solo Chatea Pro</strong>: Si condición se cumple → ejecuta acción. Simple, sin trigger de tiempo, sin historial.</span>
+        <div class="agentes-concept__cta-row">
+          <a routerLink="/gali-v5/reglas" class="agentes-concept__link">Mis reglas →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Layout 2 columnas: lista de agentes | detalle -->
+  <div class="agentes-layout">
+
+    <!-- Columna izquierda: lista de agentes -->
+    <div class="agentes-list">
+      @for (agent of agents; track agent.id) {
+        <button
+          type="button"
+          class="agent-card"
+          [class.agent-card--selected]="selectedAgent().id === agent.id"
+          [style.--agent-color]="agent.color"
+          (click)="selectAgent(agent)">
+
+          <div class="agent-card__top">
+            <div class="agent-card__identity">
+              <span class="agent-card__dot" [class.agent-card__dot--pulse]="agent.status === 'activo'"></span>
+              <div>
+                <strong class="agent-card__name">{{ agent.name }}</strong>
+                <span class="agent-card__role">{{ agent.role }}</span>
+              </div>
+            </div>
+            <span class="agent-card__status" [attr.data-status]="agent.status">{{ getStatusLabel(agent.status) }}</span>
+          </div>
+
+          <div class="agent-card__last-action">
+            <span class="agent-card__action-text">{{ agent.lastAction }}</span>
+            <span class="agent-card__action-time">{{ agent.lastActionTime }}</span>
+          </div>
+
+          <div class="agent-card__metrics">
+            <div class="agent-card__metric">
+              <span class="agent-card__metric-val">{{ agent.actionsThisWeek }}</span>
+              <span class="agent-card__metric-label">acciones/sem</span>
+            </div>
+            <div class="agent-card__metric">
+              <span class="agent-card__metric-val">{{ agent.successRate }}%</span>
+              <span class="agent-card__metric-label">tasa de éxito</span>
+            </div>
+          </div>
+        </button>
+      }
+
+      <!-- Crear agente personalizado -->
+      <div class="agent-card agent-card--create">
+        <i class="pi pi-plus agent-card__create-icon"></i>
+        <span class="agent-card__create-label">Crear mi agente</span>
+        <span class="agent-card__create-desc">Próximamente — diseña tu propio flujo</span>
+      </div>
+    </div>
+
+    <!-- Columna derecha: detalle del agente seleccionado -->
+    <div class="agent-detail" [style.--agent-color]="selectedAgent().color">
+
+      <!-- Header del agente -->
+      <div class="agent-detail__header">
+        <div class="agent-detail__avatar">
+          <span class="agent-detail__avatar-dot" [class.agent-detail__avatar-dot--pulse]="selectedAgent().status === 'activo'"></span>
+        </div>
+        <div class="agent-detail__header-info">
+          <h2 class="agent-detail__name">{{ selectedAgent().name }}</h2>
+          <span class="agent-detail__role">{{ selectedAgent().role }}</span>
+        </div>
+        <div class="agent-detail__header-status">
+          <span class="agent-detail__live-badge" [attr.data-status]="selectedAgent().status">
+            <span class="agent-detail__live-dot"></span>
+            {{ getStatusLabel(selectedAgent().status) }}
+          </span>
+        </div>
+        <button type="button" class="agent-detail__customize-btn" data-proto-skip>
+          <i class="pi pi-cog"></i> Personalizar
+        </button>
+      </div>
+
+      <p class="agent-detail__description">{{ selectedAgent().description }}</p>
+
+      <!-- CTAs específicos del agente -->
+      <div class="agent-detail__ctas">
+        @for (cta of selectedAgent().ctas; track cta.label) {
+          <button type="button" class="agent-cta" [class]="'agent-cta--' + cta.variant" data-proto-skip>
+            <i class="pi" [class]="cta.icon"></i>
+            {{ cta.label }}
+          </button>
+        }
+      </div>
+
+      <!-- Stats de esta semana -->
+      <div class="agent-detail__section">
+        <h3 class="agent-detail__section-title">Esta semana</h3>
+        <div class="agent-detail__stats">
+          <div class="agent-stat">
+            <strong class="agent-stat__val">{{ selectedAgent().actionsThisWeek }}</strong>
+            <span class="agent-stat__label">Acciones</span>
+          </div>
+          <div class="agent-stat">
+            <strong class="agent-stat__val">{{ selectedAgent().successRate }}%</strong>
+            <span class="agent-stat__label">Éxito</span>
+          </div>
+          <div class="agent-stat">
+            <strong class="agent-stat__val">{{ selectedAgent().skills.length }}</strong>
+            <span class="agent-stat__label">Skills activas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capacidades del agente -->
+      <div class="agent-detail__section">
+        <h3 class="agent-detail__section-title">Qué puede hacer</h3>
+        <ul class="agent-capabilities">
+          @for (cap of selectedAgent().capabilities; track cap) {
+            <li class="agent-capability">
+              <span class="agent-capability__dot"></span>
+              {{ cap }}
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Skills del agente -->
+      <div class="agent-detail__section">
+        <div class="agent-detail__section-head">
+          <h3 class="agent-detail__section-title">Skills asignadas</h3>
+          <a routerLink="/gali-v5/skills" class="agent-detail__link">+ Agregar skill</a>
+        </div>
+        <div class="agent-detail__skills">
+          @for (skill of selectedAgent().skills; track skill.name) {
+            <div class="agent-skill-row">
+              <span class="agent-skill-row__dot" [class.agent-skill-row__dot--on]="skill.status === 'active'"></span>
+              <span class="agent-skill-row__name">{{ skill.name }}</span>
+              <span class="agent-skill-row__runs">{{ skill.runs }} ejec.</span>
+            </div>
+          }
+          @if (selectedAgent().skills.length === 0) {
+            <p class="agent-detail__empty">Este agente no tiene skills asignadas aún.</p>
+          }
+        </div>
+      </div>
+
+      <!-- Historial de acciones recientes -->
+      <div class="agent-detail__section">
+        <h3 class="agent-detail__section-title">Historial reciente</h3>
+        <div class="agent-history">
+          @for (action of selectedAgent().recentHistory; track action.time) {
+            <div class="agent-history-item" [class]="'agent-history-item--' + action.result">
+              <div class="agent-history-item__indicator"></div>
+              <div class="agent-history-item__content">
+                <p class="agent-history-item__text">{{ action.text }}</p>
+                @if (action.impact) {
+                  <span class="agent-history-item__impact">{{ action.impact }}</span>
+                }
+                <span class="agent-history-item__time">{{ action.time }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ── CREAR AGENTE PERSONALIZADO ── -->
+  @if (showCreateAgent()) {
+    <div class="create-agent-backdrop" (click)="showCreateAgent.set(false)">
+      <div class="create-agent-panel" (click)="$event.stopPropagation()" role="dialog">
+
+        <div class="create-agent-panel__header">
+          <strong>Crear agente personalizado</strong>
+          <button type="button" class="create-agent-panel__close" (click)="showCreateAgent.set(false)" aria-label="Cerrar">✕</button>
+        </div>
+
+        <div class="create-agent-panel__steps">
+          @for (s of [1, 2, 3]; track s) {
+            <span class="ca-step-dot" [class.ca-step-dot--active]="createAgentDraft().step >= s"></span>
+            @if (s < 3) { <span class="ca-step-line"></span> }
+          }
+        </div>
+
+        @if (!createAgentDone()) {
+
+          <!-- Step 1: Nombre y rol -->
+          @if (createAgentDraft().step === 1) {
+            <div class="create-agent-panel__body">
+              <p class="create-agent-panel__eyebrow">Paso 1 de 3 · Identidad</p>
+              <h2 class="create-agent-panel__title">¿Cómo se llama y qué hace?</h2>
+              <div class="ca-field">
+                <label>Nombre del agente</label>
+                <input type="text" placeholder="Ej: Mi Agente de Pedidos VIP" class="ca-input"
+                  [ngModel]="createAgentDraft().nombre" (ngModelChange)="setDraftNombre($event)" />
+              </div>
+              <div class="ca-field">
+                <label>Rol</label>
+                <div class="ca-chips">
+                  @for (r of rolSuggestions; track r) {
+                    <button type="button" class="ca-chip" [class.ca-chip--selected]="isRolSelected(r)"
+                      (click)="setDraftRol(r)">{{ r }}</button>
+                  }
+                </div>
+                <input type="text" placeholder="O escribe uno propio…" class="ca-input"
+                  [ngModel]="createAgentDraft().rol" (ngModelChange)="setDraftRol($event)" />
+              </div>
+              <button type="button" class="ca-btn-primary"
+                [disabled]="!createAgentDraft().nombre.trim() || !createAgentDraft().rol.trim()"
+                (click)="nextCreateStep()">Siguiente →</button>
+            </div>
+          }
+
+          <!-- Step 2: Skills -->
+          @if (createAgentDraft().step === 2) {
+            <div class="create-agent-panel__body">
+              <p class="create-agent-panel__eyebrow">Paso 2 de 3 · Capacidades</p>
+              <h2 class="create-agent-panel__title">¿Qué skills puede usar?</h2>
+              <p class="create-agent-panel__hint">Selecciona las skills que este agente puede ejecutar automáticamente.</p>
+              <div class="ca-skills-list">
+                @for (s of availableSkills; track s) {
+                  <button type="button" class="ca-skill-item"
+                    [class.ca-skill-item--selected]="isSkillSelected(s)"
+                    (click)="toggleSkillForAgent(s)">
+                    <span class="ca-skill-item__check">{{ isSkillSelected(s) ? '✓' : '+' }}</span>
+                    {{ s }}
+                  </button>
+                }
+              </div>
+              <div class="ca-nav">
+                <button type="button" class="ca-btn-secondary" (click)="prevCreateStep()">← Atrás</button>
+                <button type="button" class="ca-btn-primary" (click)="nextCreateStep()">Siguiente →</button>
+              </div>
+            </div>
+          }
+
+          <!-- Step 3: Confirmar -->
+          @if (createAgentDraft().step === 3) {
+            <div class="create-agent-panel__body">
+              <p class="create-agent-panel__eyebrow">Paso 3 de 3 · Revisar y lanzar</p>
+              <h2 class="create-agent-panel__title">{{ createAgentDraft().nombre }}</h2>
+              <div class="ca-summary">
+                <div class="ca-summary__row"><span>Rol</span><strong>{{ createAgentDraft().rol }}</strong></div>
+                <div class="ca-summary__row"><span>Skills asignadas</span><strong>{{ createAgentDraft().skills.length || 0 }}</strong></div>
+                <div class="ca-summary__row"><span>Estado inicial</span><strong>Modo manual — te pide permiso siempre</strong></div>
+              </div>
+              @if (createAgentDraft().skills.length) {
+                <div class="ca-skills-preview">
+                  @for (s of createAgentDraft().skills; track s) {
+                    <span class="ca-skill-tag">{{ s }}</span>
+                  }
+                </div>
+              }
+              <div class="ca-nav">
+                <button type="button" class="ca-btn-secondary" (click)="prevCreateStep()">← Atrás</button>
+                <button type="button" class="ca-btn-primary" (click)="launchAgent()">🚀 Crear agente</button>
+              </div>
+            </div>
+          }
+
+        } @else {
+          <!-- Done state -->
+          <div class="create-agent-panel__body create-agent-panel__done">
+            <span class="ca-done-icon">✦</span>
+            <h2>{{ createAgentDraft().nombre }} está listo</h2>
+            <p>Tu agente fue creado en modo manual. Cuando quieras, actívalo en Autopilot desde el panel de Gali.</p>
+            <button type="button" class="ca-btn-primary" (click)="showCreateAgent.set(false)">Ver mis agentes</button>
+          </div>
+        }
+
+      </div>
+    </div>
+  }
+
+</div>

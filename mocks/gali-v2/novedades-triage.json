@@ -1,0 +1,159 @@
+{
+  "novedades": [
+    {
+      "id": "n-001",
+      "tipo": "direccion_incorrecta",
+      "pedido_id": "DRP-48211",
+      "cliente": "Andrea Mosquera",
+      "ciudad": "Cali",
+      "fecha": "2026-05-23",
+      "estado_gali": "pendiente",
+      "accion_gali": "Necesito tu decisión: el cliente confirmó dirección nueva pero no pagó el reenvío.",
+      "requiere_humano": true,
+      "urgencia": "alta",
+      "monto_riesgo_cop": 89000
+    },
+    {
+      "id": "n-002",
+      "tipo": "no_entregado",
+      "pedido_id": "DRP-48198",
+      "cliente": "Carlos Rincón",
+      "ciudad": "Bogotá",
+      "fecha": "2026-05-22",
+      "estado_gali": "pendiente",
+      "accion_gali": "Cliente reportó 3 intentos fallidos. Necesito decisión: reagendar o devolver.",
+      "requiere_humano": true,
+      "urgencia": "alta",
+      "monto_riesgo_cop": 142000
+    },
+    {
+      "id": "n-003",
+      "tipo": "devolucion",
+      "pedido_id": "DRP-48150",
+      "cliente": "María Paula Suárez",
+      "ciudad": "Medellín",
+      "fecha": "2026-05-21",
+      "estado_gali": "pendiente",
+      "accion_gali": "Producto llegó con defecto. Cliente pide reembolso completo + envío de reemplazo.",
+      "requiere_humano": true,
+      "urgencia": "media",
+      "monto_riesgo_cop": 165000
+    },
+    {
+      "id": "n-100",
+      "tipo": "direccion_incorrecta",
+      "pedido_id": "DRP-48211",
+      "cliente": "Juan David López",
+      "ciudad": "Barranquilla",
+      "estado_gali": "procesando",
+      "accion_gali": "Estoy escribiendo al cliente vía WhatsApp del proveedor para confirmar nueva dirección.",
+      "eta": "~2h",
+      "urgencia": "media"
+    },
+    {
+      "id": "n-101",
+      "tipo": "no_entregado",
+      "pedido_id": "DRP-48205",
+      "cliente": "Lucía Hernández",
+      "ciudad": "Pereira",
+      "estado_gali": "procesando",
+      "accion_gali": "Reagendando con la transportadora. El cliente confirmó disponibilidad mañana 9am.",
+      "eta": "~24h",
+      "urgencia": "baja"
+    },
+    {
+      "id": "n-102",
+      "tipo": "direccion_incorrecta",
+      "pedido_id": "DRP-48180",
+      "cliente": "Esteban Vélez",
+      "ciudad": "Cartagena",
+      "estado_gali": "procesando",
+      "accion_gali": "Cliente respondió. Corrigiendo dirección con proveedor — espero confirmación.",
+      "eta": "~3h",
+      "urgencia": "baja"
+    },
+    {
+      "id": "n-103",
+      "tipo": "stock",
+      "pedido_id": "DRP-48177",
+      "cliente": "Natalia Pérez",
+      "ciudad": "Bogotá",
+      "estado_gali": "procesando",
+      "accion_gali": "Proveedor sin stock — buscando alternativo con el mismo producto.",
+      "eta": "~6h",
+      "urgencia": "media"
+    },
+    {
+      "id": "n-104",
+      "tipo": "devolucion",
+      "pedido_id": "DRP-48160",
+      "cliente": "Felipe Martínez",
+      "ciudad": "Cali",
+      "estado_gali": "procesando",
+      "accion_gali": "Devolución aprobada. Gestionando reembolso con la pasarela.",
+      "eta": "~12h",
+      "urgencia": "baja"
+    },
+    {
+      "id": "n-105",
+      "tipo": "fraude",
+      "pedido_id": "DRP-48145",
+      "cliente": "[Anónimo]",
+      "ciudad": "Bogotá",
+      "estado_gali": "procesando",
+      "accion_gali": "Patrón sospechoso detectado. Cancelando preventivamente y reportando.",
+      "eta": "~1h",
+      "urgencia": "media"
+    },
+    {
+      "id": "n-200",
+      "tipo": "direccion_incorrecta",
+      "pedido_id": "DRP-48088",
+      "cliente": "Andrés Quintero",
+      "ciudad": "Bucaramanga",
+      "estado_gali": "resuelto",
+      "accion_gali": "Dirección corregida. Pedido reenviado sin costo extra.",
+      "urgencia": "baja"
+    },
+    {
+      "id": "n-201",
+      "tipo": "no_entregado",
+      "pedido_id": "DRP-48091",
+      "cliente": "Diana Castro",
+      "ciudad": "Medellín",
+      "estado_gali": "resuelto",
+      "accion_gali": "Entregado en segundo intento.",
+      "urgencia": "baja"
+    },
+    {
+      "id": "n-202",
+      "tipo": "stock",
+      "pedido_id": "DRP-48065",
+      "cliente": "Roberto Méndez",
+      "ciudad": "Cali",
+      "estado_gali": "resuelto",
+      "accion_gali": "Producto sustituido por equivalente; cliente conforme.",
+      "urgencia": "baja"
+    },
+    {
+      "id": "n-203",
+      "tipo": "devolucion",
+      "pedido_id": "DRP-48041",
+      "cliente": "Camila Salazar",
+      "ciudad": "Bogotá",
+      "estado_gali": "resuelto",
+      "accion_gali": "Reembolso completo procesado.",
+      "urgencia": "baja"
+    },
+    {
+      "id": "n-204",
+      "tipo": "direccion_incorrecta",
+      "pedido_id": "DRP-48020",
+      "cliente": "Mateo Gómez",
+      "ciudad": "Pereira",
+      "estado_gali": "resuelto",
+      "accion_gali": "Dirección verificada y entregada.",
+      "urgencia": "baja"
+    }
+  ]
+}

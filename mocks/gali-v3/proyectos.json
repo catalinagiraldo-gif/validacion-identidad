@@ -1,0 +1,172 @@
+{
+  "proyectos": [
+    {
+      "id": "collar-gps-2026",
+      "name": "Lanzamiento Collar GPS",
+      "status": "activo",
+      "icon": "🐕",
+      "created_at": "2026-05-08",
+      "last_activity": "hace 2 horas",
+      "days_active": 18,
+      "product": {
+        "id": "prod-001",
+        "name": "Collar GPS para perros",
+        "image": "/assets/images/products/collar-gps.jpg",
+        "costo": 26000,
+        "precio_sugerido": 89000,
+        "margen": 71,
+        "angulo_elegido": "Mamá / seguridad emocional",
+        "ciudad_principal": "Bogotá"
+      },
+      "pipeline": [
+        { "stage": "Producto", "status": "completado", "label": "Collar GPS elegido" },
+        { "stage": "Landing", "status": "completado", "label": "landing-collar-mama-v2" },
+        { "stage": "Creatives", "status": "completado", "label": "3 piezas activas" },
+        { "stage": "Campaña", "status": "activo", "label": "Meta Ads · $80k/día" },
+        { "stage": "ROAS", "status": "activo", "label": "2.8x ↑" }
+      ],
+      "artifacts": {
+        "landings": [
+          { "id": "land-1", "name": "landing-collar-mama-v2", "version": 2, "url": "/gali-v3/proyecto/collar-gps-2026" }
+        ],
+        "flows": [
+          { "id": "flow-1", "name": "Auto-pausa si CTR<2%", "estado": "activo", "ejecuciones": 4 }
+        ],
+        "vistas": [
+          { "id": "vista-1", "name": "Operación Collar GPS hoy", "slug": "operacion-collar-hoy" }
+        ],
+        "agentes": [
+          { "id": "ag-1", "name": "Vigilante anti-baneo", "estado": "monitoreando" }
+        ]
+      },
+      "memory": {
+        "decisiones_clave": [
+          "Elegiste ángulo 'Mamá / seguridad' (38% más ventas en Dropi LATAM)",
+          "Pausaste Creative A — Video B 2x más CTR",
+          "Escalaste presupuesto a $80k/día"
+        ],
+        "aprendizajes": [
+          "Tu audiencia: mujeres 28-45, mascotas pequeñas",
+          "Mejor hora de publicación: 7-9pm hora COL",
+          "Bogotá responde 18% mejor que Medellín"
+        ],
+        "siguiente_accion": "Expandir a Medellín — hay demanda sin competencia activa. Estimo +$200k/día con el mismo creative.",
+        "siguiente_accion_razonamiento": "Compara con 312 campañas similares: el percentil 75 expandió ciudad en día 18-22 y duplicó ventas."
+      },
+      "metrics": {
+        "roas_actual": 2.8,
+        "ventas_totales": 47,
+        "ventas_semana": 18,
+        "presupuesto_diario": 80000,
+        "ctr_actual": 3.4,
+        "dias_antes_saturacion": 14
+      }
+    },
+    {
+      "id": "skincare-coreano-2026",
+      "name": "Skincare coreano (nicho nuevo)",
+      "status": "pausado",
+      "icon": "✨",
+      "created_at": "2026-04-22",
+      "last_activity": "hace 8 días",
+      "days_active": 12,
+      "product": {
+        "id": "prod-002",
+        "name": "Serum vitamina C 30ml",
+        "image": "/assets/images/products/serum-vitc.jpg",
+        "costo": 18000,
+        "precio_sugerido": 49000,
+        "margen": 63,
+        "angulo_elegido": "Glass skin / rutina coreana",
+        "ciudad_principal": "Medellín"
+      },
+      "pipeline": [
+        { "stage": "Producto", "status": "completado", "label": "Serum elegido" },
+        { "stage": "Landing", "status": "completado", "label": "landing-glass-skin-v1" },
+        { "stage": "Creatives", "status": "pausado", "label": "0 piezas activas" },
+        { "stage": "Campaña", "status": "pausado", "label": "Sin actividad" },
+        { "stage": "ROAS", "status": "pendiente", "label": "—" }
+      ],
+      "artifacts": {
+        "landings": [{ "id": "land-2", "name": "landing-glass-skin-v1", "version": 1 }],
+        "flows": [],
+        "vistas": [],
+        "agentes": []
+      },
+      "memory": {
+        "decisiones_clave": [
+          "Pausé creatives — ROAS llegó a 1.2x (objetivo era 2.5x+)",
+          "Decidí explorar nicho de mascotas mientras tanto"
+        ],
+        "aprendizajes": [
+          "Mi audiencia no respondía al tono aspiracional",
+          "El precio de $49k era percibido como caro para la categoría"
+        ],
+        "siguiente_accion": "Reanudar con ángulo distinto (problema-solución) y precio $39k",
+        "siguiente_accion_razonamiento": "Análisis Gali: tu perfil convierte mejor con productos $25k-$45k"
+      },
+      "metrics": {
+        "roas_actual": 1.2,
+        "ventas_totales": 8,
+        "ventas_semana": 0,
+        "presupuesto_diario": 0,
+        "ctr_actual": 1.1,
+        "dias_antes_saturacion": null
+      }
+    },
+    {
+      "id": "fitness-bands-2026",
+      "name": "Bandas elásticas fitness",
+      "status": "completado",
+      "icon": "💪",
+      "created_at": "2026-03-12",
+      "last_activity": "hace 32 días",
+      "days_active": 28,
+      "product": {
+        "id": "prod-003",
+        "name": "Set bandas elásticas 5pcs",
+        "image": "/assets/images/products/fitness-bands.jpg",
+        "costo": 14000,
+        "precio_sugerido": 45000,
+        "margen": 69,
+        "angulo_elegido": "Home office / cuerpo sano",
+        "ciudad_principal": "Bogotá + Medellín"
+      },
+      "pipeline": [
+        { "stage": "Producto", "status": "completado", "label": "Bandas elegidas" },
+        { "stage": "Landing", "status": "completado", "label": "landing-bands-home-v3" },
+        { "stage": "Creatives", "status": "completado", "label": "6 piezas (3 ganadoras)" },
+        { "stage": "Campaña", "status": "completado", "label": "Cerrada — saturación" },
+        { "stage": "ROAS", "status": "completado", "label": "2.6x final" }
+      ],
+      "artifacts": {
+        "landings": [{ "id": "land-3", "name": "landing-bands-home-v3", "version": 3 }],
+        "flows": [],
+        "vistas": [],
+        "agentes": []
+      },
+      "memory": {
+        "decisiones_clave": [
+          "Identificamos pico de demanda en enero (resoluciones)",
+          "El ángulo 'cuerpo sano sin ir al gym' funcionó mejor que 'tonificar'",
+          "Cerré la campaña al detectar saturación en semana 4"
+        ],
+        "aprendizajes": [
+          "Productos estacionales: lanzar 3 semanas antes del pico",
+          "Mi competidor lanzó la semana 2 — bajó mi CTR 30%",
+          "ROAS sostenible para producto estacional: 2.5x"
+        ],
+        "siguiente_accion": "Proyecto cerrado — reactivar para temporada Enero 2027",
+        "siguiente_accion_razonamiento": "Histórico Dropi muestra +180% búsquedas en enero"
+      },
+      "metrics": {
+        "roas_actual": 2.6,
+        "ventas_totales": 142,
+        "ventas_semana": 0,
+        "presupuesto_diario": 0,
+        "ctr_actual": 0,
+        "dias_antes_saturacion": null
+      }
+    }
+  ]
+}

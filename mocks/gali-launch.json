@@ -1,0 +1,48 @@
+{
+  "campaign": {
+    "platforms": [
+      { "id": "meta", "label": "Meta Ads", "icon": "📘", "isDefault": true },
+      { "id": "tiktok", "label": "TikTok Ads", "icon": "🎵", "isDefault": false }
+    ],
+    "audience": {
+      "country": "Colombia",
+      "age": "25-45",
+      "interests": ["mascotas", "tecnología", "lifestyle"]
+    },
+    "preFilledValues": {
+      "platform": "meta",
+      "budget": 50000,
+      "duration": 7
+    },
+    "budgetRange": { "min": 20000, "max": 500000, "step": 5000 },
+    "durationOptions": [3, 5, 7, 14, 21, 30]
+  },
+  "roasCurve": [
+    { "budget": 20000, "minSales": 3, "maxSales": 6, "minRoas": 1.8, "maxRoas": 2.8, "minReach": 4200, "maxReach": 6800 },
+    { "budget": 50000, "minSales": 8, "maxSales": 15, "minRoas": 2.1, "maxRoas": 3.4, "minReach": 12000, "maxReach": 18000 },
+    { "budget": 100000, "minSales": 18, "maxSales": 30, "minRoas": 2.3, "maxRoas": 3.8, "minReach": 24000, "maxReach": 36000 },
+    { "budget": 200000, "minSales": 38, "maxSales": 60, "minRoas": 2.5, "maxRoas": 4.1, "minReach": 48000, "maxReach": 72000 },
+    { "budget": 500000, "minSales": 92, "maxSales": 145, "minRoas": 2.6, "maxRoas": 4.3, "minReach": 120000, "maxReach": 180000 }
+  ],
+  "notifications": [
+    { "id": "n-24h", "time": "24h", "label": "Métricas iniciales", "enabled": true },
+    { "id": "n-72h", "time": "72h", "label": "Primera optimización", "enabled": true },
+    { "id": "n-7d", "time": "7 días", "label": "Reporte final + siguiente misión", "enabled": true }
+  ],
+  "messages": {
+    "intro": "Todo listo para lanzar. Pre-llené la campaña con los datos de tu flujo. Solo ajusta el presupuesto y la duración — cuando confirmes, me conecto con Meta y publico.",
+    "budgetChanged": "Ajusté la estimación con el nuevo presupuesto.",
+    "confirmReady": "Cuando confirmes, conecto con Meta vía MCP y la campaña queda activa en 30 minutos.",
+    "published": "¡Tu campaña está en el aire! Te aviso mañana con las primeras métricas.",
+    "nextMission": "Mientras corre tu campaña, hay 2 misiones disponibles que podemos atacar."
+  },
+  "executionSteps": {
+    "launch": [
+      { "label": "Validando configuración de campaña", "duration": 800 },
+      { "label": "Conectando con Meta Ads (MCP)", "duration": 1400 },
+      { "label": "Publicando creatives", "duration": 1200 },
+      { "label": "Activando audiencia + presupuesto", "duration": 900 },
+      { "label": "Programando notificaciones (24h, 72h, 7d)", "duration": 600 }
+    ]
+  }
+}

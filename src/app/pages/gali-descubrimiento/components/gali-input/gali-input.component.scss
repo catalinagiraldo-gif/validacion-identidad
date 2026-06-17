@@ -1,0 +1,153 @@
+@import 'styles/gali-tokens';
+
+.gi {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 16px;
+  background: $gali-bg-elevated;
+  border: 1px solid $gali-border-default;
+  border-radius: $gali-radius-input;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+
+  &:focus-within {
+    border-color: $gali-cyan;
+    box-shadow: 0 0 0 4px $gali-cyan-glow;
+  }
+
+  &--hero {
+    padding: 12px 12px 12px 20px;
+  }
+
+  &--disabled {
+    opacity: 0.6;
+  }
+
+  &--shake {
+    animation: gi-shake 200ms ease;
+  }
+
+  &__field {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: $gali-text-primary;
+    font-family: $gali-font-body;
+    font-size: 14px;
+
+    &::placeholder {
+      color: $gali-text-muted;
+    }
+  }
+
+  &--hero &__field {
+    font-size: 18px;
+  }
+
+  &__btn {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: $gali-radius-input;
+    background: transparent;
+    border: none;
+    color: $gali-text-secondary;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: $gali-text-primary;
+    }
+
+    &:focus-visible {
+      @include gali-focus;
+    }
+
+    &-dot {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: $gali-cyan;
+      box-shadow: 0 0 6px $gali-cyan-glow;
+    }
+  }
+
+  &__tooltip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: $gali-bg-base;
+    border: 1px solid $gali-border-default;
+    border-radius: $gali-radius-input;
+    padding: 6px 10px;
+    color: $gali-text-primary;
+    font-family: $gali-font-mono;
+    font-size: 11px;
+    white-space: nowrap;
+    animation: gi-tip-in 240ms $gali-ease-out;
+  }
+
+  &__send {
+    width: 36px;
+    height: 36px;
+    border-radius: $gali-radius-input;
+    background: $gali-orange;
+    border: none;
+    color: $gali-bg-base;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 160ms ease, transform 160ms ease;
+    box-shadow: $gali-shadow-cta;
+
+    &:hover:not(:disabled) {
+      background: $gali-orange-hover;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      background: $gali-text-disabled;
+      color: $gali-text-muted;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    &:focus-visible {
+      @include gali-focus;
+    }
+  }
+}
+
+@keyframes gi-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+@keyframes gi-tip-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@include gali-reduced-motion {
+  .gi--shake,
+  .gi__tooltip {
+    animation: none;
+  }
+}

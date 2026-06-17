@@ -1,0 +1,211 @@
+<article class="retos">
+  <!-- Hero del jugador -->
+  <header class="retos__hero">
+    <div class="retos__hero-main">
+      <div class="retos__hero-meta">
+        <span class="retos__sparkle">✦</span>
+        <span class="retos__hero-tag">Retos y gamificación · nivel {{ perfil().nivel }}</span>
+      </div>
+      <h1>Hola, <em>{{ perfil().nombre }}</em>.</h1>
+      <p class="retos__hero-sub">
+        Llevas <strong>{{ perfil().racha_dias }} días seguidos</strong> activa. Tu mejor racha fue {{ perfil().racha_max }}. Hoy ganaste <strong>{{ puntosHoy() }} puntos</strong>.
+      </p>
+    </div>
+
+    <div class="retos__hero-stats">
+      <div class="retos__stat">
+        <span class="retos__stat-val">{{ perfil().puntos_totales | number }}</span>
+        <span class="retos__stat-label">puntos totales</span>
+      </div>
+      <div class="retos__stat retos__stat--streak">
+        <span class="retos__stat-val">🔥 {{ perfil().racha_dias }}</span>
+        <span class="retos__stat-label">días racha</span>
+      </div>
+      <div class="retos__stat">
+        <span class="retos__stat-val">#{{ perfil().rank_cohorte }}</span>
+        <span class="retos__stat-label">de {{ perfil().cohorte_total }} en cohorte</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Progreso diario -->
+  <section class="retos__daily-bar">
+    <div class="retos__daily-bar-head">
+      <strong>Retos de hoy</strong>
+      <span>{{ diariosDone() }} de {{ diariosTotal() }} completados</span>
+    </div>
+    <div class="retos__bar">
+      <span [style.width.%]="progresoDiario()"></span>
+    </div>
+  </section>
+
+  <!-- Retos diarios -->
+  <section class="retos__section">
+    <header class="retos__section-head">
+      <span class="retos__section-icon">⏰</span>
+      <h2>Hoy · {{ diariosTotal() - diariosDone() }} pendientes</h2>
+      <span class="retos__section-meta">resetea cada día a las 00:00</span>
+    </header>
+    <ul class="retos__list">
+      <li *ngFor="let r of diarios()" class="retos__reto" [class.is-done]="r.completado">
+        <button class="retos__reto-check" (click)="toggleReto(r)" [attr.aria-label]="r.completado ? 'Marcar como pendiente' : 'Marcar como completado'">
+          <span *ngIf="r.completado">✓</span>
+          <span *ngIf="!r.completado"></span>
+        </button>
+        <div class="retos__reto-body">
+          <strong>{{ r.titulo }}</strong>
+          <p>{{ r.descripcion }}</p>
+        </div>
+        <div class="retos__reto-meta">
+          <span class="retos__reto-pts">+{{ r.puntos }}pts</span>
+          <span class="retos__reto-deadline">{{ r.deadline }}</span>
+          <button *ngIf="r.ruta && !r.completado" class="retos__reto-cta" (click)="iniciarReto(r)">
+            Empezar →
+          </button>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Retos semanales -->
+  <section class="retos__section">
+    <header class="retos__section-head">
+      <span class="retos__section-icon">📅</span>
+      <h2>Esta semana</h2>
+      <span class="retos__section-meta">compara con tu cohorte</span>
+    </header>
+    <ul class="retos__weekly-list">
+      <li *ngFor="let r of semanales()" class="retos__weekly" [class.is-done]="r.completado">
+        <div class="retos__weekly-head">
+          <strong>{{ r.titulo }}</strong>
+          <span class="retos__reto-pts">+{{ r.puntos }}pts</span>
+        </div>
+        <p>{{ r.descripcion }}</p>
+        <div class="retos__weekly-bar">
+          <span [style.width.%]="r.progreso"></span>
+        </div>
+        <footer>
+          <span class="retos__weekly-progress">{{ r.progreso }}% · {{ r.deadline }}</span>
+          <span class="retos__cohorte-meta">{{ r.cohorte_completaron }} de tu cohorte ya lo completó</span>
+          <button *ngIf="r.ruta && !r.completado" class="retos__reto-cta" (click)="iniciarReto(r)">
+            Continuar →
+          </button>
+        </footer>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Misiones largas -->
+  <section class="retos__section">
+    <header class="retos__section-head">
+      <span class="retos__section-icon">🎯</span>
+      <h2>Misiones largas</h2>
+      <span class="retos__section-meta">tu camino de escala</span>
+    </header>
+    <div class="retos__misiones">
+      <article *ngFor="let m of misiones()" class="retos__mision" [class.is-expanded]="selectedMision() === m.id">
+        <header (click)="expandirMision(m)">
+          <strong>{{ m.titulo }}</strong>
+          <span class="retos__reto-pts">+{{ m.puntos }}pts</span>
+        </header>
+        <p>{{ m.descripcion }}</p>
+        <div class="retos__weekly-bar">
+          <span [style.width.%]="m.progreso"></span>
+        </div>
+        <span class="retos__mision-deadline">{{ m.progreso }}% completado · {{ m.deadline }}</span>
+
+        <div class="retos__mision-detail" *ngIf="selectedMision() === m.id">
+          <ol class="retos__checkpoints">
+            <li *ngFor="let c of m.checkpoints" [class.is-done]="c.done">
+              <span class="retos__cp-dot">{{ c.done ? '✓' : '○' }}</span>
+              {{ c.label }}
+            </li>
+          </ol>
+          <div class="retos__mision-razon">
+            <span class="retos__sparkle">✦</span>
+            <em>{{ m.razon_gali }}</em>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Líder de comunidad virtual -->
+  <section class="retos__lider" [class.is-active]="lider().activo">
+    <div class="retos__lider-icon">{{ lider().icon }}</div>
+    <div class="retos__lider-body">
+      <header>
+        <strong>{{ lider().nombre }}</strong>
+        <span class="retos__lider-tag">Mentor virtual</span>
+        <span *ngIf="lider().activo" class="retos__lider-active-dot">activo</span>
+      </header>
+      <p class="retos__lider-tagline">{{ lider().tagline }}</p>
+      <p class="retos__lider-desc">{{ lider().descripcion }}</p>
+      <blockquote *ngIf="lider().activo" class="retos__lider-consejo">
+        "{{ lider().ejemplo_consejo }}"
+      </blockquote>
+      <div class="retos__lider-meta">
+        <span>★ {{ lider().ratings_dropshippers }} · {{ lider().consultas_resueltas | number }} consultas</span>
+      </div>
+    </div>
+    <div class="retos__lider-cta">
+      <button class="retos__lider-toggle" (click)="activarLider()">
+        {{ lider().activo ? 'Pausar mentor' : 'Activar mentor' }}
+      </button>
+      <button *ngIf="lider().activo" class="retos__lider-ask" (click)="preguntarLider()">
+        ✦ Preguntarle algo
+      </button>
+    </div>
+  </section>
+
+  <!-- Insignias + Cohorte -->
+  <div class="retos__bottom-grid">
+    <section class="retos__insignias">
+      <header class="retos__section-head">
+        <span class="retos__section-icon">🏆</span>
+        <h3>Tus insignias</h3>
+        <span class="retos__section-meta">{{ insignias().length }} ganadas</span>
+      </header>
+      <div class="retos__insignias-grid">
+        <div *ngFor="let i of insignias()" class="retos__insignia" [class.is-rara]="i.rara">
+          <span class="retos__insignia-icon">{{ i.icon }}</span>
+          <strong>{{ i.nombre }}</strong>
+          <span class="retos__insignia-fecha">{{ i.fecha }}</span>
+        </div>
+      </div>
+
+      <header class="retos__section-head retos__section-head--sub">
+        <span class="retos__section-meta">Próximas a desbloquear</span>
+      </header>
+      <div class="retos__insignias-grid">
+        <div *ngFor="let i of insigniasProx()" class="retos__insignia retos__insignia--bloqueada">
+          <span class="retos__insignia-icon">{{ i.icon }}</span>
+          <strong>{{ i.nombre }}</strong>
+          <span class="retos__insignia-desc">{{ i.descripcion }}</span>
+          <div class="retos__weekly-bar">
+            <span [style.width.%]="i.progreso"></span>
+          </div>
+          <span class="retos__insignia-fecha">{{ i.progreso }}% completado</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="retos__cohorte">
+      <header class="retos__section-head">
+        <span class="retos__section-icon">👥</span>
+        <h3>Tu cohorte</h3>
+        <span class="retos__section-meta">{{ perfil().cohorte_total }} dropshippers</span>
+      </header>
+      <ol class="retos__cohorte-list">
+        <li *ngFor="let c of cohorte()" [class.is-me]="c.yo">
+          <span class="retos__cohorte-rank">#{{ c.rank }}</span>
+          <span class="retos__cohorte-name">{{ c.nombre }}</span>
+          <span class="retos__cohorte-ciudad">{{ c.ciudad }}</span>
+          <span class="retos__cohorte-pts">{{ c.puntos | number }}pts</span>
+        </li>
+      </ol>
+    </section>
+  </div>
+
+  <proximos-pasos contexto="inicio" titulo="Sigue progresando"></proximos-pasos>
+</article>

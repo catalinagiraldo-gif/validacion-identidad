@@ -1,0 +1,156 @@
+{
+  "agentes": [
+    {
+      "id": "ag-1",
+      "name": "Vigilante anti-baneo",
+      "icon": "🛡",
+      "color": "rust",
+      "tagline": "Revisa tus creatives antes de que Meta los detecte",
+      "descripcion": "Analiza video/banner/copy contra políticas vigentes de Meta y TikTok. Marca elementos riesgosos y propone reemplazo. Pasa por filtro automáticamente antes de cualquier publicación.",
+      "creado_por": "Equipo Dropi",
+      "instalaciones": 2847,
+      "rating": 4.8,
+      "prerequisites": ["MCP Meta Ads (opcional para autopausa)"],
+      "que_hace": [
+        "Escanea creative al subirlo",
+        "Detecta claims comparativos, antes/después, música con copyright",
+        "Sugiere reemplazo específico para cada hallazgo",
+        "Opcional: bloquea publicación si riesgo > 80%"
+      ],
+      "instalado": true
+    },
+    {
+      "id": "ag-2",
+      "name": "Analista de novedades",
+      "icon": "📦",
+      "color": "amber",
+      "tagline": "Resuelve novedades logísticas en segundo plano",
+      "descripcion": "Triage automático: novedades de dirección errónea se resuelven contactando al cliente vía WhatsApp; rechazos se notifican con acción sugerida; fraudes se escalan al humano.",
+      "creado_por": "Equipo Dropi",
+      "instalaciones": 1923,
+      "rating": 4.7,
+      "prerequisites": ["MCP WhatsApp Business"],
+      "que_hace": [
+        "Clasifica cada novedad por tipo",
+        "Para direcciones erróneas: pide confirmación al cliente automáticamente",
+        "Para rechazos: notifica con razón probable",
+        "Para fraude: escala con evidencia recolectada"
+      ],
+      "instalado": false
+    },
+    {
+      "id": "ag-3",
+      "name": "Generador de copies",
+      "icon": "✍️",
+      "color": "terracota",
+      "tagline": "3 ángulos × 3 hooks × 3 CTAs en segundos",
+      "descripcion": "A partir de un producto y tu memoria de tono, genera 27 combinaciones de copy en formato Meta/TikTok. Marca cuáles tienen mayor probabilidad de conversión según data LATAM.",
+      "creado_por": "Equipo Dropi",
+      "instalaciones": 3104,
+      "rating": 4.9,
+      "prerequisites": [],
+      "que_hace": [
+        "Lee tu tono histórico desde la memoria",
+        "Genera ángulos basados en data LATAM real",
+        "Marca top 5 por probabilidad de conversión",
+        "Permite editar y guardar como plantilla"
+      ],
+      "instalado": false
+    },
+    {
+      "id": "ag-4",
+      "name": "Detector productos en alza",
+      "icon": "⚡",
+      "color": "sage",
+      "tagline": "Te avisa antes de que el producto explote",
+      "descripcion": "Monitorea catálogo Dropi 24/7. Detecta productos que entran en curva exponencial de ventas y te avisa con ventana de oportunidad estimada antes de saturación.",
+      "creado_por": "Equipo Dropi",
+      "instalaciones": 4521,
+      "rating": 4.9,
+      "prerequisites": [],
+      "que_hace": [
+        "Filtra por tu nicho preferido",
+        "Detecta productos con +200% ventas en 7 días",
+        "Calcula ventana antes de saturación",
+        "Te notifica vía push o WhatsApp"
+      ],
+      "instalado": true
+    },
+    {
+      "id": "ag-5",
+      "name": "Asistente WhatsApp",
+      "icon": "💬",
+      "color": "sage",
+      "tagline": "Atiende clientes por WA mientras duermes",
+      "descripcion": "Cliente te escribe → agente responde con info del producto y precio. Si confirma, crea la orden y te notifica. Tú apruebas o el agente la procesa solo (modo avanzado).",
+      "creado_por": "Comunidad",
+      "instalaciones": 1156,
+      "rating": 4.6,
+      "prerequisites": ["MCP WhatsApp Business", "Chatea Pro"],
+      "que_hace": [
+        "Responde preguntas sobre producto y precio",
+        "Recolecta datos del cliente",
+        "Crea orden en Dropi al confirmar",
+        "Te alerta de casos confusos"
+      ],
+      "instalado": false
+    },
+    {
+      "id": "ag-6",
+      "name": "Optimizador de presupuesto",
+      "icon": "💰",
+      "color": "amber",
+      "tagline": "Mueve plata entre campañas según ROAS",
+      "descripcion": "Cada 24h analiza tus campañas activas y reasigna presupuesto: quita a las que pierden, da a las que ganan, todo dentro del techo que tú definas.",
+      "creado_por": "Equipo Dropi",
+      "instalaciones": 782,
+      "rating": 4.7,
+      "prerequisites": ["MCP Meta Ads"],
+      "que_hace": [
+        "Compara ROAS entre campañas",
+        "Reasigna presupuesto al ganador",
+        "Respeta techo total que tú defines",
+        "Te muestra el diff antes de aplicar"
+      ],
+      "instalado": false
+    },
+    {
+      "id": "ag-7",
+      "name": "Espía de competidores",
+      "icon": "🔍",
+      "color": "rust",
+      "tagline": "Mira qué creatives están corriendo tus competidores",
+      "descripcion": "Para un producto que estés vendiendo, te muestra los creatives activos de otros dropshippers en LATAM, sus ángulos, y diferencias de ROAS estimado.",
+      "creado_por": "Comunidad",
+      "instalaciones": 2014,
+      "rating": 4.5,
+      "prerequisites": [],
+      "que_hace": [
+        "Busca creatives activos de competidores",
+        "Compara ángulos vs el tuyo",
+        "Sugiere diferenciador",
+        "Alerta cuando un competidor pausa"
+      ],
+      "instalado": false
+    },
+    {
+      "id": "ag-8",
+      "name": "Líder de Comunidad virtual",
+      "icon": "👥",
+      "color": "terracota",
+      "tagline": "Responde como tu mentor pero 24/7",
+      "descripcion": "Modelado con las conversaciones públicas de los Top 10 dropshippers de Dropi. Responde como ellos lo harían. Para cuando necesitas un norte y tu mentor está dormido.",
+      "creado_por": "Equipo Dropi",
+      "instalaciones": 891,
+      "rating": 4.8,
+      "prerequisites": [],
+      "que_hace": [
+        "Responde dudas con estilo mentor",
+        "Sugiere acciones que han funcionado a top",
+        "Te conecta a mentor real si lo pides",
+        "Documenta tu progreso para que el mentor lo vea"
+      ],
+      "instalado": false
+    }
+  ]
+}

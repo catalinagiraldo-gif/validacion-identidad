@@ -1,0 +1,189 @@
+<div class="onboarding-backdrop" (click)="skip()">
+  <div class="onboarding-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-label="Configura tu objetivo con Gali">
+
+    <!-- Header -->
+    <div class="onboarding-modal__header">
+      <span class="onboarding-modal__logo">✦ Gali</span>
+      <div class="onboarding-modal__steps">
+        @for (s of [1, 2, 3, 4]; track s; let last = $last) {
+          <span class="step-dot" [class.step-dot--active]="step() >= s" [class.step-dot--done]="step() > s"></span>
+          @if (!last) {
+            <span class="step-line"></span>
+          }
+        }
+      </div>
+      <button type="button" class="onboarding-modal__skip" (click)="skip()">Saltar →</button>
+    </div>
+
+    <!-- Step 1: Objetivo -->
+    @if (step() === 1) {
+      <div class="onboarding-modal__body onboarding-modal__body--step1">
+        <div class="onboarding-modal__eyebrow">Paso 1 de 4</div>
+        <h1 class="onboarding-modal__title">¿Qué quieres lograr en los próximos 30 días?</h1>
+        <p class="onboarding-modal__subtitle">Gali configurará tu workspace y activará los agentes correctos para tu objetivo.</p>
+
+        <div class="goal-options">
+          @for (g of goalOptions; track g.id) {
+            <button
+              type="button"
+              class="goal-option"
+              [class.goal-option--selected]="selectedGoal()?.id === g.id"
+              (click)="selectGoal(g)">
+              <span class="goal-option__icon">{{ g.icon }}</span>
+              <span class="goal-option__label">{{ g.label }}</span>
+              @if (selectedGoal()?.id === g.id) {
+                <span class="goal-option__check">✓</span>
+              }
+            </button>
+          }
+          <button
+            type="button"
+            class="goal-option goal-option--custom"
+            [class.goal-option--selected]="showCustom()"
+            (click)="selectCustom()">
+            <span class="goal-option__icon">✏️</span>
+            <span class="goal-option__label">Escribir mi propio objetivo</span>
+          </button>
+          @if (showCustom()) {
+            <input
+              type="text"
+              class="goal-custom-input"
+              placeholder="Ej: Tener 3 productos activos rentables con ROAS > 2.5x"
+              [ngModel]="customGoal()"
+              (ngModelChange)="customGoal.set($event)" />
+          }
+        </div>
+
+        <button
+          type="button"
+          class="onboarding-modal__cta"
+          [disabled]="!selectedGoal() && !customGoal().trim()"
+          (click)="goToStep2()">
+          Continuar →
+        </button>
+      </div>
+    }
+
+    <!-- Step 2: Estado actual -->
+    @if (step() === 2) {
+      <div class="onboarding-modal__body">
+        <div class="onboarding-modal__eyebrow">Paso 2 de 4</div>
+        <h1 class="onboarding-modal__title">Cuéntame sobre tu operación actual</h1>
+        <p class="onboarding-modal__subtitle">Esto le permite a Gali darte recomendaciones calibradas a tu nivel.</p>
+
+        <div class="estado-fields">
+          <div class="estado-field">
+            <label class="estado-field__label">¿Cuántos pedidos tienes por semana ahora?</label>
+            <div class="slider-wrap">
+              <span class="slider-min">0</span>
+              <input
+                type="range"
+                class="pedidos-slider"
+                min="0" max="200" step="5"
+                [ngModel]="pedidosPerWeek()"
+                (ngModelChange)="pedidosPerWeek.set(+$event)" />
+              <span class="slider-max">200+</span>
+            </div>
+            <div class="slider-value">{{ pedidosLabel }}</div>
+          </div>
+
+          <div class="estado-field">
+            <label class="estado-field__label">¿Cuánto llevas operando en Dropi?</label>
+            <div class="tenure-options">
+              @for (opt of [['< 1 mes', 'nuevo'], ['1–6 meses', '1-6'], ['6–12 meses', '6-12'], ['Más de 1 año', '1y+']] ; track opt[1]) {
+                <button
+                  type="button"
+                  class="tenure-opt"
+                  [class.tenure-opt--selected]="mesesOperando() === opt[1]"
+                  (click)="mesesOperando.set(opt[1])">
+                  {{ opt[0] }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="onboarding-modal__nav">
+          <button type="button" class="onboarding-modal__back" (click)="step.set(1)">← Atrás</button>
+          <button type="button" class="onboarding-modal__cta" (click)="goToStep3()">Continuar →</button>
+        </div>
+      </div>
+    }
+
+    <!-- Step 3: Arquitectura Agentes / Skills / Reglas -->
+    @if (step() === 3) {
+      <div class="onboarding-modal__body">
+        <div class="onboarding-modal__eyebrow">Paso 3 de 4</div>
+        <h1 class="onboarding-modal__title">Cómo funciona Gali por dentro</h1>
+        <p class="onboarding-modal__subtitle">Tres piezas distintas — así no se mezclan en una sola bolsa.</p>
+
+        <div class="onboarding-arch">
+          <div class="onboarding-arch__row">
+            <span class="onboarding-arch__badge onboarding-arch__badge--agent">Agente</span>
+            <span>Ejecuta (Roax, Vigilante, Chatea Pro, ADA Spy)</span>
+          </div>
+          <div class="onboarding-arch__arrow">↓ usa</div>
+          <div class="onboarding-arch__row">
+            <span class="onboarding-arch__badge onboarding-arch__badge--skill">Skill</span>
+            <span>Receta con historial: trigger + condición + acción</span>
+          </div>
+          <div class="onboarding-arch__arrow">≠</div>
+          <div class="onboarding-arch__row">
+            <span class="onboarding-arch__badge onboarding-arch__badge--rule">Regla</span>
+            <span>Condicional rápido (sobre todo WhatsApp)</span>
+          </div>
+        </div>
+
+        <p class="onboarding-modal__footnote">
+          Gali orquesta los agentes. Tú defines skills y reglas; ellos actúan en Productos, Pedidos, Marketing y más.
+        </p>
+
+        <div class="onboarding-modal__nav">
+          <button type="button" class="onboarding-modal__back" (click)="step.set(2)">← Atrás</button>
+          <button type="button" class="onboarding-modal__cta" (click)="goToStep4()">Continuar →</button>
+        </div>
+      </div>
+    }
+
+    <!-- Step 4: Agente recomendado + Día 1 path -->
+    @if (step() === 4) {
+      <div class="onboarding-modal__body onboarding-modal__body--step4">
+        <div class="onboarding-modal__eyebrow">Paso 4 de 4 · Tu plan para hoy</div>
+        <h1 class="onboarding-modal__title">Tu Día 1 con Gali</h1>
+
+        @if (recommendedAgent; as agent) {
+          <div class="agent-rec-mini" [style.--agent-color]="agent.color">
+            <span class="agent-rec-mini__dot"></span>
+            <strong>{{ agent.nombre }}</strong>
+            <span>es tu agente principal para este objetivo</span>
+          </div>
+        }
+
+        <div class="day-one-steps">
+          @for (s of dayOneSteps; track s.num) {
+            <div class="day-one-step">
+              <div class="day-one-step__num">{{ s.num }}</div>
+              <div class="day-one-step__body">
+                <strong class="day-one-step__title">{{ s.title }}</strong>
+                <p class="day-one-step__desc">{{ s.desc }}</p>
+              </div>
+              <button type="button" class="day-one-step__cta" (click)="goToDayOneStep(s)">
+                {{ s.cta }}
+              </button>
+            </div>
+          }
+        </div>
+
+        <div class="onboarding-modal__agent-cta">
+          <button type="button" class="onboarding-modal__cta" (click)="activateAgent()">
+            Ir al Hub de Gali →
+          </button>
+          <button type="button" class="onboarding-modal__later" (click)="skip()">
+            Configurar después
+          </button>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

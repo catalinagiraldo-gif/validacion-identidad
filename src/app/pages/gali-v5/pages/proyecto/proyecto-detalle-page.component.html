@@ -1,0 +1,314 @@
+<div class="proyecto">
+
+  <!-- ══════════════════════════════════════════════
+       HERO DEL PROYECTO
+  ══════════════════════════════════════════════ -->
+  <header class="proyecto__hero">
+    <div class="proyecto__hero-top">
+      <div class="proyecto__meta">
+        <a [routerLink]="['/gali-v5']" class="proyecto__back">
+          <i class="pi pi-arrow-left"></i>
+          <span>Hub</span>
+        </a>
+        <span class="proyecto__estado-badge">{{ proyecto.estadoLabel }}</span>
+        <span class="proyecto__sep">·</span>
+        <span class="proyecto__semana">{{ proyecto.semana }}</span>
+        <span class="proyecto__sep">·</span>
+        <span class="proyecto__dias">{{ proyecto.diasActivo }} días activo</span>
+      </div>
+      <div class="proyecto__actions-top">
+        <button type="button" class="btn-hero btn-hero--ghost">Ver en mapa</button>
+        <button type="button" class="btn-hero btn-hero--ghost">Historial completo</button>
+      </div>
+    </div>
+
+    <h1 class="proyecto__nombre">
+      <span class="proyecto__icon">{{ proyecto.icono }}</span>
+      {{ proyecto.nombre }}
+    </h1>
+
+    <!-- Pipeline de stages -->
+    <div class="proyecto__pipeline">
+      <div
+        *ngFor="let step of pipeline; let last = last"
+        class="pipeline-step"
+        [class]="getPipelineClass(step.status)">
+        <div class="pipeline-step__dot"></div>
+        <span class="pipeline-step__stage">{{ step.stage }}</span>
+        <span class="pipeline-step__label">{{ step.label }}</span>
+        <div *ngIf="!last" class="pipeline-step__connector"></div>
+      </div>
+    </div>
+
+    <!-- Gali Alert Bar -->
+    <div class="proyecto__gali-bar">
+      <span class="proyecto__gali-icon">✦</span>
+      <p class="proyecto__gali-msg">{{ proyecto.galiAlerta }}</p>
+      <div class="proyecto__gali-actions">
+        <button type="button" class="btn-alert btn-alert--primary" (click)="goToSignals()">Ver señales en Gali</button>
+        <button type="button" class="btn-alert btn-alert--ghost" (click)="goToSkillEditor()">Crear skill automática</button>
+        <button type="button" class="btn-alert btn-alert--ghost" (click)="goToMedir()" title="P&amp;L: Pérdidas y Ganancias — tu rentabilidad real después de todos los costos">Ver P&amp;L</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════
+       TABS
+  ══════════════════════════════════════════════ -->
+  <nav class="proyecto__tabs">
+    <button
+      *ngFor="let tab of tabs"
+      type="button"
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === tab.id"
+      (click)="setTab(tab.id)"
+      data-proto-skip>
+      {{ tab.label }}
+    </button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       CONTENT AREA
+  ══════════════════════════════════════════════ -->
+  <div class="proyecto__content">
+
+    <!-- ── TAB: RESUMEN ── -->
+    <div *ngIf="activeTab() === 'resumen'" class="tab-panel">
+
+      <!-- Metrics grid -->
+      <div class="metrics-grid">
+        <div
+          *ngFor="let card of resumenCards"
+          class="metric-card"
+          [class.metric-card--accent]="card.accent"
+          [class.metric-card--alert]="card.alert">
+          <span class="metric-card__label">{{ card.label }}</span>
+          <span class="metric-card__value">{{ card.value }}</span>
+          <span class="metric-card__sub">{{ card.sub }}</span>
+        </div>
+      </div>
+
+      <!-- Body: 2 cols — Agentes + Loop + Memoria -->
+      <div class="resumen-body">
+
+        <!-- Agentes asignados -->
+        <section class="resumen-section">
+          <h3 class="section-title">Agentes asignados a este proyecto</h3>
+
+          <div class="agents-stack">
+            <div
+              *ngFor="let agent of agentes"
+              class="agent-row"
+              [class.agent-row--active]="agent.estado === 'activo'"
+              [class.agent-row--waiting]="agent.estado === 'esperando'"
+              [class.agent-row--paused]="agent.estado === 'pausa'">
+
+              <div class="agent-row__header">
+                <span class="agent-row__icon">{{ agent.icono }}</span>
+                <div class="agent-row__info">
+                  <span class="agent-row__name">{{ agent.nombre }}</span>
+                  <span class="agent-row__tool">{{ agent.herramienta }}</span>
+                </div>
+                <span class="agent-dot" [class]="getAgentStatusClass(agent.estado)"></span>
+              </div>
+
+              <p class="agent-row__obs">{{ agent.observacion }}</p>
+              <p class="agent-row__last">{{ agent.ultimaAccion }}</p>
+
+              <div class="agent-row__actions">
+                <a [routerLink]="agent.route" class="agent-link">
+                  Ir a {{ agent.herramienta }} →
+                </a>
+                <button type="button" class="agent-btn-sm" (click)="openSkillsEditor(agent.nombre)" data-proto-skip>
+                  Ver reglas
+                </button>
+                <button type="button" class="agent-btn-sm agent-btn-sm--ghost">Pausar</button>
+              </div>
+            </div>
+
+            <button type="button" class="add-agent-row">
+              <i class="pi pi-plus"></i> Agregar agente al proyecto
+            </button>
+          </div>
+        </section>
+
+        <!-- Loop cerrado del proyecto -->
+        <section class="resumen-section">
+          <h3 class="section-title">Loop cerrado — acciones en este proyecto</h3>
+          <div class="loop-list">
+            <div
+              *ngFor="let entry of loopEntries"
+              class="loop-entry"
+              [class]="getLoopClass(entry.tipo)">
+              <div class="loop-entry__header">
+                <span class="loop-entry__icon">{{ entry.icono }}</span>
+                <span class="loop-entry__agent">{{ entry.agente }}</span>
+                <span class="loop-entry__time">{{ entry.hace }}</span>
+              </div>
+              <p class="loop-entry__accion">{{ entry.accion }}</p>
+              <p class="loop-entry__resultado">{{ entry.resultado }}</p>
+              <button *ngIf="entry.cta" type="button" class="loop-cta">{{ entry.cta }}</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Memoria de Gali -->
+      <section class="memoria-section">
+        <h3 class="section-title">Memoria Gali — lo que recuerda sobre este proyecto</h3>
+        <div class="memoria-grid">
+          <div class="memoria-card">
+            <h4 class="memoria-card__title">Decisiones clave</h4>
+            <ul class="memoria-list">
+              <li *ngFor="let d of memoriaDecisiones">{{ d }}</li>
+            </ul>
+          </div>
+          <div class="memoria-card">
+            <h4 class="memoria-card__title">Aprendizajes</h4>
+            <ul class="memoria-list">
+              <li *ngFor="let a of memoriaAprendizajes">{{ a }}</li>
+            </ul>
+          </div>
+          <div class="memoria-card memoria-card--accent">
+            <h4 class="memoria-card__title">✦ Siguiente acción recomendada</h4>
+            <p class="memoria-card__body">{{ siguienteAccion }}</p>
+            <button type="button" class="btn-hero btn-hero--primary" style="margin-top: 12px;">
+              Ejecutar recomendación
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ── TAB: CREATIVOS ── -->
+    <div *ngIf="activeTab() === 'creativos'" class="tab-panel">
+      <div class="creativos-grid">
+        <div
+          *ngFor="let c of creativos"
+          class="creative-card"
+          [class]="getCreativeClass(c.estado)">
+          <div class="creative-card__header">
+            <span class="creative-card__name">{{ c.nombre }}</span>
+            <span class="creative-card__tipo">{{ c.tipo }}</span>
+            <span class="creative-card__estado-dot"></span>
+          </div>
+          <div class="creative-card__metrics">
+            <span class="creative-card__kv">
+              <span class="creative-card__k">CTR</span>
+              <span class="creative-card__v">{{ c.ctr }}</span>
+            </span>
+            <span *ngIf="c.roas" class="creative-card__kv">
+              <span class="creative-card__k">ROAS</span>
+              <span class="creative-card__v creative-card__v--accent">{{ c.roas }}</span>
+            </span>
+          </div>
+          <p *ngIf="c.nota" class="creative-card__nota">{{ c.nota }}</p>
+          <div class="creative-card__actions">
+            <button type="button" class="btn-creative">
+              {{ c.estado === 'pausado' ? 'Reactivar' : c.estado === 'ganador' ? 'Es el ganador ✓' : 'Pausar' }}
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="add-creative-card">
+          <i class="pi pi-plus"></i>
+          <span>Generar nuevo creative</span>
+          <small>Gali propone 3 variaciones basadas en Video B</small>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── TAB: P&L REAL (Pérdidas y Ganancias — rentabilidad real del proyecto) ── -->
+    <div *ngIf="activeTab() === 'pl'" class="tab-panel">
+      <div class="pl-container">
+        <div class="pl-insight">
+          <span class="pl-insight__icon">✦</span>
+          <p class="pl-insight__text">Tu ROAS real (1.93x) es muy diferente al que reporta Meta (2.9x) porque incluye novedades, fletes y garantías. El 40% del gap viene de novedades en Cali.</p>
+          <button type="button" class="btn-alert btn-alert--primary" (click)="showDiagnostic.set(true)" data-proto-skip>Ver diagnóstico</button>
+        </div>
+
+        <div class="pl-table">
+          <div class="pl-table__header">
+            <span>Concepto</span>
+            <span>Monto (COP)</span>
+            <span>% de ventas</span>
+          </div>
+          <div
+            *ngFor="let line of plLines"
+            class="pl-row"
+            [class]="getPlClass(line.variant)">
+            <span class="pl-row__label">{{ line.label }}</span>
+            <span class="pl-row__value">{{ line.value }}</span>
+            <span class="pl-row__pct">{{ line.pct }}</span>
+          </div>
+        </div>
+
+        <div class="pl-roas-compare">
+          <div class="roas-box roas-box--declarado">
+            <span class="roas-box__label">ROAS declarado Meta</span>
+            <span class="roas-box__value">2.9x</span>
+            <span class="roas-box__note">Lo que Meta reporta</span>
+          </div>
+          <div class="roas-box roas-box--real">
+            <span class="roas-box__label">ROAS real Gali</span>
+            <span class="roas-box__value">1.93x</span>
+            <span class="roas-box__note">Después de todos los costos</span>
+          </div>
+          <div class="roas-box roas-box--gap">
+            <span class="roas-box__label">Gap</span>
+            <span class="roas-box__value roas-box__value--alert">-0.97x</span>
+            <span class="roas-box__note">Causa: novedades Cali +10pts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TABS con placeholder (Producto, Estrategia, Campañas, Pedidos) ── -->
+    <div *ngIf="activeTab() === 'producto' || activeTab() === 'estrategia' || activeTab() === 'campanas' || activeTab() === 'pedidos'"
+      class="tab-panel tab-panel--placeholder">
+      <div class="placeholder-state">
+        <span class="placeholder-state__icon">
+          {{ activeTab() === 'producto' ? '📦' : activeTab() === 'estrategia' ? '🎯' : activeTab() === 'campanas' ? '⚡' : '🚛' }}
+        </span>
+        <h3 class="placeholder-state__title">
+          {{ activeTab() === 'producto' ? 'Detalles del producto' :
+             activeTab() === 'estrategia' ? 'Estrategia y avatar' :
+             activeTab() === 'campanas' ? 'Campañas de Meta / TikTok' :
+             'Pedidos y novedades del proyecto' }}
+        </h3>
+        <p class="placeholder-state__desc">
+          Esta sección conecta con
+          <a [routerLink]="activeTab() === 'campanas' ? ['/gali-v5/marketing/roax-informes'] :
+                          activeTab() === 'pedidos' ? ['/gali-v5/mis-pedidos/mis-pedidos'] :
+                          ['/gali-v5/productos/catalogo']"
+            class="placeholder-state__link">
+            {{ activeTab() === 'campanas' ? 'Roax' :
+               activeTab() === 'pedidos' ? 'Mis Pedidos' :
+               'Catálogo' }}
+          </a>
+          con vista filtrada para este proyecto.
+        </p>
+        <a
+          [routerLink]="activeTab() === 'campanas' ? ['/gali-v5/marketing/roax-informes'] :
+                        activeTab() === 'pedidos' ? ['/gali-v5/mis-pedidos/mis-pedidos'] :
+                        ['/gali-v5/productos/catalogo']"
+          class="btn-hero btn-hero--primary">
+          Ir al módulo →
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Modals -->
+<app-diagnostico-modal
+  *ngIf="showDiagnostic()"
+  (closed)="showDiagnostic.set(false)"
+  (actionExecuted)="showDiagnostic.set(false)">
+</app-diagnostico-modal>
+
+<!-- SkillsEditorModal superseded by SkillEditorPage (/gali-v5/skills/nueva) -->

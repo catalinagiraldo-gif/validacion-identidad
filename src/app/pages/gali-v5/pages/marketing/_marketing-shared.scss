@@ -1,0 +1,127 @@
+@import 'styles/gali-v5-tokens';
+@import '../shared/dropi-page-host';
+
+@mixin marketing-page-shell {
+  @include dropi-page-host;
+}
+
+@mixin marketing-page-inner {
+  min-height: 100%;
+  overflow-x: hidden;
+  padding: $size-4 $size-8 $size-8;
+  box-sizing: border-box;
+}
+
+@mixin marketing-content-card {
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  background: $white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+@mixin marketing-table-wrap {
+  overflow-x: auto;
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  background: $white;
+}
+
+@mixin marketing-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    height: 48px;
+    padding: 0 $size-4;
+    border-bottom: 1px solid $gray-100;
+    background: $gray-50;
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    color: $gray-600;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  td {
+    height: 64px;
+    padding: 0 $size-4;
+    border-bottom: 1px solid $gray-100;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-700;
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover td {
+    background: rgba($gray-50, 0.6);
+  }
+}
+
+@mixin marketing-icon-actions {
+  display: flex;
+  align-items: center;
+  gap: $size-2;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid $gray-200;
+    border-radius: 50%;
+    background: $white;
+    color: $gray-600;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $primary-500;
+      color: $primary-500;
+    }
+  }
+}
+
+@mixin marketing-channel-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  padding: $size-3;
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  background: $gray-50;
+  min-width: 132px;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    height: 44px;
+    padding: 0 $size-3;
+    border: 1px solid transparent;
+    border-radius: $radius-md;
+    background: transparent;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $gray-500;
+    text-align: left;
+    cursor: pointer;
+
+    i {
+      font-size: 16px;
+    }
+
+    &.is-active {
+      border-color: rgba($primary-500, 0.25);
+      background: $white;
+      color: $primary-500;
+      font-weight: $font-bold;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+  }
+}

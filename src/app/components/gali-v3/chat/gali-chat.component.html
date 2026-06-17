@@ -1,0 +1,161 @@
+<div class="chat" [class.is-expanded]="isExpanded()">
+  <header class="chat__head">
+    <div class="chat__head-context">
+      <span class="chat__sparkle" aria-hidden="true">✦</span>
+      <span class="chat__head-title">Gali</span>
+      <span class="chat__head-divider">·</span>
+      <span class="chat__head-route">{{ contextLabel() }}</span>
+    </div>
+    <div class="chat__head-right">
+      <button class="chat__head-icon" title="⌘+K" aria-label="Atajos">⌘K</button>
+      <button class="chat__head-icon" (click)="toggleExpand()" [attr.aria-expanded]="isExpanded()">
+        {{ isExpanded() ? '⌄' : '⌃' }}
+      </button>
+    </div>
+  </header>
+
+  <div class="chat__messages" [class.is-empty]="messages().length === 0">
+    <div *ngFor="let m of messages()" class="chat__msg" [class.is-user]="m.role === 'user'" [class.is-gali]="m.role === 'gali'">
+      <div class="chat__msg-avatar" *ngIf="m.role === 'gali'">✦</div>
+      <div class="chat__msg-body">
+        <div class="chat__msg-meta" *ngIf="m.role === 'gali'">Gali</div>
+        <div class="chat__msg-content">
+          <span>{{ m.content }}</span>
+          <span class="chat__msg-cursor" *ngIf="m.streaming"></span>
+        </div>
+        <div class="chat__msg-artifacts" *ngIf="m.artifacts?.length">
+          <span *ngFor="let a of m.artifacts" class="chat__msg-artifact-chip">
+            <span class="chat__sparkle">✦</span> Artifact: {{ a.type }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div #messagesEnd></div>
+  </div>
+
+  <div class="chat__suggestions" *ngIf="!isStreaming() && contextualSuggestions().length && !recording()">
+    <button
+      *ngFor="let s of contextualSuggestions().slice(0, 4)"
+      class="chat__suggestion"
+      (click)="pickSuggestion(s)"
+    >
+      {{ s }}
+    </button>
+  </div>
+
+  <div class="chat__streaming-banner" *ngIf="isStreaming()">
+    <span class="chat__streaming-dots"><span></span><span></span><span></span></span>
+    Gali está pensando…
+  </div>
+
+  <!-- Voice recording banner real -->
+  <div class="chat__voice-banner" *ngIf="recording()">
+    <span class="chat__voice-pulse"></span>
+    <span class="chat__voice-label">Escuchando…</span>
+    <span class="chat__voice-interim" *ngIf="voiceInterim()">{{ voiceInterim() }}</span>
+    <button class="chat__voice-stop" (click)="toggleRecord()">Detener</button>
+  </div>
+
+  <!-- Voice error -->
+  <div class="chat__voice-error" *ngIf="voiceError() && !recording()">
+    ⚠️ {{ voiceError() }}
+  </div>
+
+  <!-- Adjuntos chips -->
+  <div class="chat__attachments" *ngIf="attachments().length">
+    <span class="chat__attachments-label">Adjuntos ({{ attachments().length }}):</span>
+    <span *ngFor="let a of attachments(); let i = index" class="chat__attachment-chip">
+      <img *ngIf="a.type === 'image' && a.thumb" [src]="a.thumb" alt="" class="chat__attachment-thumb"/>
+      <span *ngIf="a.type !== 'image'" class="chat__attachment-icon">{{ a.type === 'url' ? '🔗' : a.type === 'product' ? '📦' : '✦' }}</span>
+      <span class="chat__attachment-info">
+        <strong>{{ a.label }}</strong>
+        <em *ngIf="a.meta">{{ a.meta }}</em>
+      </span>
+      <button class="chat__attachment-x" (click)="removeAttachment(i)" aria-label="Quitar">×</button>
+    </span>
+  </div>
+
+  <div class="chat__input-wrap">
+    <button
+      class="chat__input-attach"
+      (click)="toggleAttach()"
+      [class.is-open]="attachOpen()"
+      title="Adjuntar producto, URL, imagen"
+      aria-label="Adjuntar"
+    >
+      <span>📎</span>
+    </button>
+
+    <input #fileInput type="file" accept="image/*" style="display:none" (change)="onFileSelected($event)" />
+
+    <div class="chat__attach-popover" *ngIf="attachOpen()">
+      <button (click)="pickFileUpload()">📷 Subir imagen</button>
+      <button (click)="openUrlPaste()">🔗 Pegar URL</button>
+      <button (click)="attachProduct('Collar GPS para perros', 'Producto del catálogo · $89k · margen 71%')">📦 Adjuntar Collar GPS</button>
+      <button (click)="attachProduct('Serum Vitamina C', 'Producto del catálogo · $49k · margen 63%')">📦 Adjuntar Serum</button>
+      <button (click)="attachArtifact()">✦ Adjuntar artifact previo</button>
+    </div>
+
+    <div class="chat__url-popover" *ngIf="urlPasteOpen()">
+      <input
+        type="url"
+        placeholder="Pega una URL (TikTok, IG, AliExpress, Shopify...)"
+        [value]="urlDraft()"
+        (input)="urlDraft.set($any($event.target).value)"
+        (keydown.enter)="attachUrl()"
+        autofocus />
+      <div class="chat__url-actions">
+        <button (click)="closeUrlPaste()" class="chat__url-cancel">Cancelar</button>
+        <button (click)="attachUrl()" class="chat__url-add" [disabled]="!urlDraft().trim()">Adjuntar →</button>
+      </div>
+    </div>
+
+    <div class="chat__slash" *ngIf="slashOpen()">
+      <header>Comandos</header>
+      <ul>
+        <li *ngFor="let c of slashCommands" (click)="pickSlash(c.command)">
+          <span class="chat__slash-icon">{{ c.icon }}</span>
+          <div>
+            <strong>{{ c.command }}</strong>
+            <span>{{ c.description }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <textarea
+      #inputEl
+      class="chat__input"
+      rows="1"
+      placeholder="Pídele algo a Gali, o escribe / para ver comandos"
+      [value]="draft()"
+      (input)="onInput($any($event.target).value)"
+      (keydown.enter)="$event.preventDefault(); send()"
+      (keydown.shift.enter)="$event.stopPropagation()"
+    ></textarea>
+
+    <button
+      class="chat__input-voice"
+      (click)="toggleRecord()"
+      [class.is-recording]="recording()"
+      [class.is-disabled]="!voiceAvailable()"
+      [title]="voiceAvailable() ? 'Hablar (Web Speech API)' : 'Voz no soportada en este navegador'"
+      aria-label="Grabar voz"
+    >
+      <span *ngIf="!recording()">🎤</span>
+      <span *ngIf="recording()" class="chat__voice-wave-real">
+        <span *ngFor="let level of voiceWaveform()" [style.transform]="'scaleY(' + (0.2 + level * 0.8) + ')'"></span>
+      </span>
+    </button>
+
+    <button
+      class="chat__input-send"
+      (click)="send()"
+      [disabled]="(!draft().trim() && attachments().length === 0) || isStreaming()"
+      aria-label="Enviar"
+    >
+      <span *ngIf="!isStreaming()">↑</span>
+      <span *ngIf="isStreaming()" class="chat__send-spinner"></span>
+    </button>
+  </div>
+</div>
