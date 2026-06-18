@@ -138,6 +138,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'configuraciones/validacion-identidad-pais',
+        loadComponent: () =>
+          import('./pages/old/validacion-identidad-pais/validacion-identidad-pais.component').then(
+            m => m.ValidacionIdentidadPaisComponent,
+          ),
+      },
+      {
         path: 'parametrizar-tarifas',
         loadComponent: () =>
           import('./pages/old/parametrizar-tarifas/parametrizar-tarifas.component').then(
@@ -444,6 +451,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/old/validacion-identidad-hub/validacion-identidad-hub.component').then(
             m => m.ValidacionIdentidadHubComponent,
+          ),
+      },
+      {
+        path: 'configuraciones/validacion-identidad-pais',
+        loadComponent: () =>
+          import('./pages/old/validacion-identidad-pais/validacion-identidad-pais.component').then(
+            m => m.ValidacionIdentidadPaisComponent,
           ),
       },
       {

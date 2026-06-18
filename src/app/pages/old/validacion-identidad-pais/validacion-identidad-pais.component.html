@@ -1,0 +1,270 @@
+<div class="page-wrapper">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="breadcrumb-item">Configuraciones</span>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-item breadcrumb-item--active">Validación de identidad</span>
+    </div>
+    <h1 class="page-title">Validación de identidad — Flujo por país</h1>
+    <p class="page-desc">
+      Entiende qué datos llenas tú en Dropi y qué datos extrae el proveedor externo según tu país y tipo de persona.
+    </p>
+  </div>
+
+  <!-- Controls bar -->
+  <div class="controls-bar">
+    <!-- Persona toggle -->
+    <div class="persona-toggle">
+      <button
+        class="persona-btn"
+        [class.persona-btn--active]="tipoPersona === 'natural'"
+        (click)="tipoPersona = 'natural'"
+      >
+        <span class="persona-icon">👤</span>
+        Persona natural
+      </button>
+      <button
+        class="persona-btn"
+        [class.persona-btn--active]="tipoPersona === 'juridica'"
+        (click)="tipoPersona = 'juridica'"
+      >
+        <span class="persona-icon">🏢</span>
+        Persona jurídica
+      </button>
+    </div>
+
+    <!-- Country tabs -->
+    <div class="country-tabs">
+      <button
+        *ngFor="let pais of paisesOrdenados"
+        class="country-tab"
+        [class.country-tab--active]="paisActual === pais"
+        (click)="cambiarPais(pais)"
+      >
+        <span class="tab-flag">{{ getPaisBandera(pais) }}</span>
+        <span class="tab-code">{{ pais }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Provider banner -->
+  <div class="provider-banner">
+    <div class="provider-note">
+      <span class="provider-note-icon">ℹ️</span>
+      {{ config.notaEdicion }}
+    </div>
+    <div class="provider-badge-wrap">
+      <span class="provider-label">Proveedor activo:</span>
+      <span class="provider-badge" [class.provider-badge--truora]="proveedor === 'Truora'" [class.provider-badge--sumsub]="proveedor === 'Sumsub'">
+        {{ proveedor }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Split layout: Dropi zone + Provider zone -->
+  <div class="split-layout">
+
+    <!-- LEFT: Dropi form zone -->
+    <div class="dropi-zone">
+      <div class="zone-header">
+        <div class="zone-icon">📋</div>
+        <div class="zone-header-text">
+          <h2 class="zone-title">Lo que llenas en Dropi</h2>
+          <p class="zone-subtitle" *ngIf="config.formularioEditable">
+            Tú completas estos campos antes de comenzar la verificación.
+          </p>
+          <p class="zone-subtitle" *ngIf="!config.formularioEditable">
+            Los campos personales se completan solos después de la verificación.
+          </p>
+        </div>
+      </div>
+
+      <!-- Leyenda de orígenes -->
+      <div class="origen-leyenda">
+        <span class="leyenda-item">
+          <span class="origen-dot origen-dot--usuario"></span>
+          Tú lo llenas
+        </span>
+        <span class="leyenda-item">
+          <span class="origen-dot origen-dot--registro"></span>
+          Del registro
+        </span>
+        <span class="leyenda-item">
+          <span class="origen-dot origen-dot--sdk"></span>
+          Lo completa el SDK
+        </span>
+      </div>
+
+      <!-- Campos de contacto -->
+      <div class="field-group">
+        <div class="field-group-title">Información de contacto</div>
+        <div class="field-row" *ngFor="let campo of camposContacto">
+          <div class="field-label">{{ campo.label }}</div>
+          <div class="field-value-wrap" [class]="'field-value-wrap--' + origenEfectivo(campo)">
+            <span class="field-value">{{ campo.valorDemo }}</span>
+            <span class="origen-tag" [class]="'origen-tag--' + origenEfectivo(campo)">
+              {{ origenLabel(campo) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campos de empresa -->
+      <div class="field-group">
+        <div class="field-group-title">
+          Información de empresa
+          <span class="group-tag-juridica" *ngIf="tipoPersona === 'juridica'">Jurídica</span>
+        </div>
+        <div class="field-row" *ngFor="let campo of camposEmpresa">
+          <div class="field-label">{{ campo.label }}</div>
+          <div class="field-value-wrap" [class]="'field-value-wrap--' + origenEfectivo(campo)">
+            <span class="field-value">{{ campo.valorDemo }}</span>
+            <span class="origen-tag" [class]="'origen-tag--' + origenEfectivo(campo)">
+              {{ origenLabel(campo) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campos fiscales (si aplican para el país) -->
+      <div class="field-group" *ngIf="camposFiscales.length > 0">
+        <div class="field-group-title">Información tributaria</div>
+        <div class="field-row" *ngFor="let campo of camposFiscales">
+          <div class="field-label">{{ campo.label }}</div>
+          <div class="field-value-wrap" [class]="'field-value-wrap--' + origenEfectivo(campo)">
+            <span class="field-value">{{ campo.valorDemo }}</span>
+            <span class="origen-tag" [class]="'origen-tag--' + origenEfectivo(campo)">
+              {{ origenLabel(campo) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nota sin campos fiscales -->
+      <div class="no-fiscal-note" *ngIf="camposFiscales.length === 0">
+        <span>Sin campos tributarios para {{ config.nombre }}</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: Provider zone -->
+    <div class="provider-zone" [class.provider-zone--truora]="proveedor === 'Truora'">
+      <div class="zone-header">
+        <div class="zone-icon">🔒</div>
+        <div class="zone-header-text">
+          <h2 class="zone-title">Lo que verifica <span [class.name-truora]="proveedor === 'Truora'" [class.name-sumsub]="proveedor === 'Sumsub'">{{ proveedor }}</span></h2>
+          <p class="zone-subtitle">Proceso obligatorio para activar transferencias y retiros.</p>
+        </div>
+      </div>
+
+      <!-- Provider type badge -->
+      <div class="provider-type-row">
+        <div class="provider-type-badge" [class.provider-type-badge--truora]="proveedor === 'Truora'" [class.provider-type-badge--sumsub]="proveedor === 'Sumsub'">
+          <span class="provider-type-name">{{ proveedor }}</span>
+          <span class="provider-type-type">{{ tipoPersona === 'natural' ? 'KYC — Persona natural' : 'KYB — Persona jurídica' }}</span>
+        </div>
+      </div>
+
+      <!-- Steps -->
+      <div class="provider-steps">
+        <div class="provider-step" *ngFor="let paso of pasosProveedor; let i = index" [style.animation-delay]="(i * 60) + 'ms'">
+          <div class="step-number" [class.step-number--kyb]="paso.soloJuridica">{{ paso.numero }}</div>
+          <div class="step-content">
+            <div class="step-title">
+              {{ paso.titulo }}
+              <span class="step-badge-kyb" *ngIf="paso.soloJuridica">Solo jurídica</span>
+            </div>
+            <div class="step-desc">{{ paso.descripcion }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Provider info footer -->
+      <div class="provider-footer">
+        <div class="provider-time">⏱️ Tiempo estimado: ~5 minutos</div>
+        <div class="provider-req">Necesitas: buena iluminación, cámara y tu documento a mano.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA principal -->
+  <div class="cta-bar" *ngIf="!mostrarResultado">
+    <button class="btn-primary" (click)="verResultado()">
+      Ver resultado de la verificación →
+    </button>
+    <span class="cta-note">Simula qué pasa después de completar el proceso con {{ proveedor }}</span>
+  </div>
+
+  <!-- Resultado section (progressive disclosure) -->
+  <div class="resultado-section" *ngIf="mostrarResultado">
+
+    <div class="resultado-header">
+      <div class="resultado-icon">✅</div>
+      <div>
+        <h2 class="resultado-title">Verificación exitosa</h2>
+        <p class="resultado-sub">{{ proveedor }} confirmó tu identidad. Tu cuenta está activa.</p>
+      </div>
+    </div>
+
+    <!-- Campos pre-cargados por SDK (solo países donde el form estaba deshabilitado) -->
+    <div class="resultado-block" *ngIf="camposAutocompletados.length > 0">
+      <div class="resultado-block-title">
+        <span class="resultado-block-icon">🤖</span>
+        Campos completados automáticamente por {{ proveedor }}
+      </div>
+      <div class="resultado-field-list">
+        <div class="resultado-field-row" *ngFor="let campo of camposAutocompletados">
+          <span class="resultado-field-label">{{ campo.label }}</span>
+          <span class="resultado-field-value">{{ campo.valorDemo }}</span>
+          <span class="sdk-badge">SDK</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Para CO: nota de que Dropi pre-cargó los datos -->
+    <div class="resultado-block" *ngIf="config.formularioEditable">
+      <div class="resultado-block-title">
+        <span class="resultado-block-icon">✔️</span>
+        Datos enviados a {{ proveedor }} para verificación
+      </div>
+      <p class="resultado-text">
+        En Colombia, los datos que ingresaste en Dropi fueron enviados a {{ proveedor }}, quien confirmó que coinciden con tu documento físico. No se modificaron campos — solo se verificaron.
+      </p>
+    </div>
+
+    <!-- Lock 6 meses -->
+    <div class="lock-alert">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-text">
+        <strong>Datos bloqueados por 6 meses.</strong>
+        No podrás modificar los datos validados hasta el 17/12/2026.
+        Si necesitas actualizar algún dato, escríbenos al chat de soporte.
+      </div>
+    </div>
+
+    <!-- Habilitaciones -->
+    <div class="habilitaciones">
+      <div class="habilitacion-item">
+        <span class="hab-icon">✅</span>
+        <span>Transferencias a wallets habilitadas</span>
+      </div>
+      <div class="habilitacion-item">
+        <span class="hab-icon">✅</span>
+        <span>Retiros disponibles</span>
+      </div>
+      <div class="habilitacion-item">
+        <span class="hab-icon">✅</span>
+        <span>Límites de operación aumentados</span>
+      </div>
+    </div>
+
+    <!-- Reset -->
+    <div class="resultado-actions">
+      <button class="btn-ghost" (click)="resetear()">
+        ← Volver al proceso
+      </button>
+    </div>
+  </div>
+
+</div>

@@ -487,6 +487,23 @@
             "effects": ["habilitar-transferencia-wallets", "habilitar-retiros", "formulario-readonly-6-meses"]
           }
         },
+        "validacion-identidad-pais": {
+          "route": "/configuraciones/validacion-identidad-pais",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "prototype": "/configuraciones/validacion-identidad-pais",
+          "figjamSource": "https://www.figma.com/board/89yfrFN1cQa4hI9cshybpH/",
+          "description": "Prototipo v4 educativo: country switcher CO/MX/AR/CL/EC, split visual Dropi vs Sumsub/Truora, campos exactos por país del FigJam formulario unificado. Sin estados ni journeys.",
+          "origin_points": [
+            "login.sin-validacion.cta:verificar-identidad",
+            "configurar.datos-personales"
+          ],
+          "on_success": {
+            "feedback": "inline",
+            "message": "Verificación exitosa — datos bloqueados 6 meses",
+            "effects": ["habilitar-transferencia-wallets", "habilitar-retiros", "formulario-readonly-6-meses"]
+          }
+        },
         "verificacion-identidad": {
           "route": "/configuraciones/verificacion-identidad",
           "type": "page",
