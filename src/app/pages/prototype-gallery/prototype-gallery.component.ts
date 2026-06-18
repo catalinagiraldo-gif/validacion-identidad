@@ -23,9 +23,9 @@ const FOLDER_META: Record<string, { label: string; icon: string; description: st
     description: 'Plataforma AI de Dropi — V2, V3 y V5',
   },
   'verificacion-identidad': {
-    label: 'Validación de identidad',
+    label: 'Migración Sumsub — KYC/KYB',
     icon: '🪪',
-    description: 'Onboarding unificado Sumsub/Truora + flujos FigJam por país',
+    description: 'Migración de Truora a Sumsub: onboarding unificado, flujos por país CO/CL/EC/MX/AR, estado único y matriz de campos.',
   },
 };
 
@@ -195,7 +195,7 @@ const FOLDER_META: Record<string, { label: string; icon: string; description: st
           <div class="hub__grid" *ngIf="nonFolderPrototypes.length > 0">
             <a
               *ngFor="let proto of nonFolderPrototypes; let i = index"
-              [routerLink]="'/' + currentArch + proto.route"
+              [routerLink]="getRoute(proto)"
               class="hub__card"
               [title]="proto.description"
               [style.animation-delay]="(i * 60) + 'ms'"

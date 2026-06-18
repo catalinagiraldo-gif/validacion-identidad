@@ -504,6 +504,15 @@
             "effects": ["habilitar-transferencia-wallets", "habilitar-retiros", "formulario-readonly-6-meses"]
           }
         },
+        "flujo-identidad-2026-06-18": {
+          "route": "/configuraciones/flujo-identidad-2026-06-18",
+          "type": "page",
+          "roles": ["dropshipper"],
+          "prototype": "/configuraciones/flujo-identidad-2026-06-18",
+          "jira": "PROD-761",
+          "description": "Prototipo v5 spec Plan1.md — 15 vistas end-to-end: entrada, datos readonly, actualización MFA-gateada, formulario 2 pasos (núcleo + fiscal por país), confirmación pre-Sumsub, WebSDK mock, estados pendiente/rechazado/baneado/incompleto/exitoso, apelación, documento adjunto.",
+          "origin_points": ["home.nuevo-proyecto", "gallery.verificacion-identidad"]
+        },
         "verificacion-identidad": {
           "route": "/configuraciones/verificacion-identidad",
           "type": "page",

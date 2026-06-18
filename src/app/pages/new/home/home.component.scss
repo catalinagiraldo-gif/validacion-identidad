@@ -330,6 +330,289 @@
 }
 
 // ============================================
+// RPP Projects Section
+// ============================================
+
+@keyframes fade-up-card {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rpp-projects {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.section-label {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  color: $gray-500;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  padding: $space-5;
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+  box-shadow: $shadow-small;
+  border-left: 3px solid $primary-500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: fade-up-card 0.4s ease both;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-medium;
+
+    .project-card__cta {
+      color: $primary-600;
+    }
+  }
+
+  // --- Header row: badge + type tag ---
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-2;
+  }
+
+  &__status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px $space-2;
+    background-color: $primary-50;
+    border: 1px solid $primary-200;
+    border-radius: $radius-4;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $primary-600;
+    line-height: 1.4;
+  }
+
+  &__type-tag {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $gray-400;
+    letter-spacing: 0.04em;
+  }
+
+  // --- Title row: icon + name + subtitle ---
+  &__title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: $space-3;
+  }
+
+  &__icon {
+    font-size: 28px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &__name {
+    font-family: $font-primary;
+    font-size: $font-xl;
+    font-weight: $font-bold;
+    color: $gray-800;
+    margin: 0 0 2px 0;
+    line-height: 1.2;
+  }
+
+  &__subtitle {
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-medium;
+    color: $gray-500;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  // --- Description ---
+  &__desc {
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-regular;
+    color: $gray-600;
+    margin: 0;
+    line-height: 1.55;
+    max-width: 680px;
+  }
+
+  // --- Country chips ---
+  &__countries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+    align-items: center;
+  }
+
+  // --- Key differences alert ---
+  &__diff-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: $space-2;
+    padding: $space-3 $space-4;
+    background-color: $gray-50;
+    border-radius: $radius-2;
+    border: 1px solid $gray-100;
+
+    i {
+      color: $secondary-500;
+      font-size: $font-md;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .diff-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      span {
+        font-family: $font-primary;
+        font-size: $font-sm;
+        font-weight: $font-regular;
+        color: $gray-600;
+        line-height: 1.5;
+
+        &:first-child {
+          font-weight: $font-semibold;
+          color: $primary-600;
+        }
+      }
+    }
+  }
+
+  // --- Stats row ---
+  &__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+  }
+
+  // --- Footer: date + CTA ---
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: $space-2;
+    padding-top: $space-2;
+    border-top: 1px solid $gray-100;
+  }
+
+  &__date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $gray-400;
+
+    i {
+      font-size: $font-sm;
+    }
+  }
+
+  &__cta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-semibold;
+    color: $primary-500;
+    transition: color 0.15s ease;
+
+    i {
+      font-size: 12px;
+      transition: transform 0.15s ease;
+    }
+
+    &:hover i {
+      transform: translateX(3px);
+    }
+  }
+}
+
+// Country chips
+.country-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px $space-3;
+  background-color: $gray-100;
+  border: 1.5px solid transparent;
+  border-radius: $radius-4;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-bold;
+  color: $gray-600;
+  letter-spacing: 0.04em;
+  transition: background-color 0.15s ease;
+
+  &--special {
+    background-color: $primary-50;
+    border-color: $primary-300;
+    color: $primary-700;
+
+    &::after {
+      content: '★';
+      font-size: 9px;
+      margin-left: 4px;
+      color: $primary-500;
+    }
+  }
+}
+
+// Stat chips
+.stat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $space-2 $space-3;
+  background-color: $gray-50;
+  border: 1px solid $gray-100;
+  border-radius: $radius-2;
+  min-width: 70px;
+
+  &__value {
+    font-family: $font-primary;
+    font-size: $font-xl;
+    font-weight: $font-bold;
+    color: $gray-800;
+    line-height: 1.2;
+  }
+
+  &__label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $gray-500;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+}
+
+// ============================================
 // Responsive Breakpoints
 // ============================================
 
@@ -357,11 +640,49 @@
   .quick-action {
     height: auto;
   }
+
+  .project-card__desc {
+    max-width: 100%;
+  }
+
+  .project-card__stats {
+    gap: $space-2;
+  }
+
+  .stat-chip {
+    flex: 1;
+    min-width: 70px;
+  }
 }
 
 @media (max-width: $bp-sm) {
   .page-wrapper {
     padding: $space-4;
+  }
+
+  .project-card {
+    padding: $space-4;
+    gap: $space-3;
+  }
+
+  .project-card__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $space-2;
+  }
+
+  .project-card__cta {
+    align-self: flex-end;
+  }
+
+  .project-card__diff-alert {
+    flex-direction: column;
+    gap: $space-2;
+  }
+
+  .stat-chip {
+    min-width: calc(50% - #{$space-2});
+    flex: none;
   }
 
   .greeting {

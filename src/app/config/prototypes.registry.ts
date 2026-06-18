@@ -38,6 +38,7 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     dateAdded: "2026-06-17",
     thumbnail: "thumbnail.png",
     architecture: "old",
+    folder: "verificacion-identidad",
   },
   {
     title: "Verificación de identidad — Flujos FigJam",
@@ -77,6 +78,18 @@ export const PROTOTYPE_REGISTRY: PrototypeMeta[] = [
     thumbnail: "thumbnail.png",
     architecture: "old",
     folder: "verificacion-identidad",
+  },
+  {
+    title: "Flujo de Validación de Identidad · v5 · 2026-06-18",
+    module: "configuraciones",
+    slug: "flujo-identidad-2026-06-18",
+    route: "/configuraciones/flujo-identidad-2026-06-18",
+    description: "Prototipo completo spec Plan1.md — 15 vistas: entrada, datos readonly, solicitud de actualización, MFA, formulario núcleo (paso 1), módulo fiscal por país (paso 2), confirmación pre-Sumsub, Sumsub WebSDK mock, estados pendiente/rechazado/baneado/incompleto/exitoso, apelación y gestión de documento adjunto. Roles CO/MX/AR/CL/EC · KYC + KYB.",
+    profiles: ["dropshipper"],
+    owner: "producto@dropi.co",
+    dateAdded: "2026-06-18",
+    thumbnail: "thumbnail.png",
+    architecture: "old",
   },
   {
     title: "Historial de Cartera",

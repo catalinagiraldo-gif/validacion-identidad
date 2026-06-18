@@ -145,6 +145,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'configuraciones/flujo-identidad-2026-06-18',
+        loadComponent: () =>
+          import('./pages/old/flujo-identidad/flujo-identidad.component').then(
+            m => m.FlujoIdentidadComponent,
+          ),
+      },
+      {
         path: 'parametrizar-tarifas',
         loadComponent: () =>
           import('./pages/old/parametrizar-tarifas/parametrizar-tarifas.component').then(
@@ -507,6 +514,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/new/configurar/dropitesters/dropitesters.component').then(
             m => m.DropitestersNewComponent,
+          ),
+      },
+      {
+        path: 'configuraciones/flujo-identidad-2026-06-18',
+        loadComponent: () =>
+          import('./pages/new/configurar/flujo-identidad/flujo-identidad.component').then(
+            m => m.FlujoIdentidadComponent,
           ),
       },
       // Pedidos proveedor

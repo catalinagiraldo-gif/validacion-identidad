@@ -1,0 +1,1027 @@
+<!-- ============================================================ -->
+<!-- Flujo de Validación de Identidad v5 · 2026-06-18          -->
+<!-- 15 vistas del spec Plan1.md                               -->
+<!-- ============================================================ -->
+
+<div class="page-wrapper">
+
+  <!-- -------------------------------------------------------- -->
+  <!-- DEMO SWITCHER                                            -->
+  <!-- -------------------------------------------------------- -->
+  <div class="demo-switcher">
+    <span class="demo-switcher__label">
+      <i class="pi pi-sliders-h"></i> Perfil demo
+    </span>
+    <div class="demo-switcher__chips">
+      <button
+        *ngFor="let p of perfiles; trackBy: trackById"
+        class="demo-chip"
+        [class.demo-chip--active]="perfilActivo().id === p.id"
+        (click)="seleccionarPerfil(p)"
+      >{{ p.label }}</button>
+    </div>
+  </div>
+
+  <!-- -------------------------------------------------------- -->
+  <!-- HEADER CONTEXTUAL                                        -->
+  <!-- -------------------------------------------------------- -->
+  <div class="proto-header">
+    <div class="proto-header__breadcrumb">
+      Configuraciones
+      <i class="pi pi-angle-right"></i>
+      Validación de identidad
+    </div>
+    <div class="proto-header__title-row">
+      <h1 class="proto-header__title">Validación de identidad</h1>
+      <span class="estado-badge" [ngClass]="estadoClase()">{{ estadoLabel() }}</span>
+    </div>
+    <p class="proto-header__subtitle">
+      Gestiona tu identidad verificada para acceder a retiros, facturación y beneficios exclusivos.
+    </p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- VISTA 1 — Entrada y encuadre del beneficio                  -->
+  <!-- ============================================================ -->
+  <section *ngIf="isVista('v1-entrada')" class="vista vista--entry">
+    <div class="entry-card">
+      <div class="entry-card__badge-row">
+        <span class="entry-tag">Vista 1 · Entrada</span>
+        <span class="entry-tag entry-tag--new">⭐ Flujo nuevo</span>
+      </div>
+
+      <div class="entry-card__icon-wrap">
+        <div class="entry-icon">🪪</div>
+      </div>
+
+      <h2 class="entry-card__heading">Valida tu identidad para empezar a retirar tus ganancias</h2>
+      <p class="entry-card__body">
+        Completa la verificación de identidad en aproximadamente <strong>5 minutos</strong>.
+        Es un proceso seguro que nos permite proteger tu cuenta y cumplir con regulaciones financieras.
+      </p>
+
+      <div class="entry-benefits">
+        <div class="entry-benefit">
+          <i class="pi pi-wallet"></i>
+          <span>Retira tus ganancias a tu cuenta bancaria</span>
+        </div>
+        <div class="entry-benefit">
+          <i class="pi pi-file-edit"></i>
+          <span>Activa la facturación automática</span>
+        </div>
+        <div class="entry-benefit">
+          <i class="pi pi-shield"></i>
+          <span>Protege tu cuenta con verificación extra</span>
+        </div>
+      </div>
+
+      <div class="entry-card__timing">
+        <i class="pi pi-clock"></i>
+        Tiempo estimado: <strong>~5 minutos</strong>
+      </div>
+
+      <div class="entry-card__actions">
+        <button class="btn btn--primary btn--lg" (click)="comenzarValidacion()">
+          Comenzar validación <i class="pi pi-arrow-right"></i>
+        </button>
+        <button class="btn btn--ghost" (click)="navTo('v2-datos')">
+          Más tarde
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VISTA 2 — Mis datos personales y de facturación             -->
+  <!-- ============================================================ -->
+  <section *ngIf="isVista('v2-datos')" class="vista">
+    <div class="vista-label">Vista 2 · Mis datos personales y de facturación</div>
+
+    <!-- Banner de estado -->
+    <div *ngIf="perfilActivo().estado === 'pendiente'" class="status-banner status-banner--warning">
+      <i class="pi pi-hourglass"></i>
+      <div>
+        <strong>Validación en revisión</strong>
+        <p>Tu documentación está siendo revisada. Te notificaremos cuando tengamos novedades.</p>
+      </div>
+      <button class="btn btn--secondary btn--sm" (click)="continuarValidacion()">Continuar validación</button>
+    </div>
+    <div *ngIf="perfilActivo().estado === 'rechazado'" class="status-banner status-banner--error">
+      <i class="pi pi-times-circle"></i>
+      <div>
+        <strong>Validación rechazada</strong>
+        <p>{{ motivoRechazo }}</p>
+      </div>
+      <button class="btn btn--error btn--sm" (click)="navTo('v10-rechazado')">Ver detalles</button>
+    </div>
+    <div *ngIf="perfilActivo().estado === 'baneado'" class="status-banner status-banner--error">
+      <i class="pi pi-ban"></i>
+      <div>
+        <strong>Cuenta restringida</strong>
+        <p>El acceso a esta cuenta está temporalmente restringido.</p>
+      </div>
+      <button class="btn btn--error btn--sm" (click)="openModal('v12-apelacion-modal')">Solicitar revisión</button>
+    </div>
+    <div *ngIf="perfilActivo().estado === 'incompleta'" class="status-banner status-banner--warning">
+      <i class="pi pi-exclamation-triangle"></i>
+      <div>
+        <strong>Validación incompleta</strong>
+        <p>Quedaste a mitad del proceso. Puedes continuar desde donde lo dejaste.</p>
+      </div>
+      <button class="btn btn--primary btn--sm" (click)="navTo('v13-incompleta')">Continuar</button>
+    </div>
+
+    <!-- Datos readonly -->
+    <div class="data-card">
+      <div class="data-card__header">
+        <h3>Identidad</h3>
+        <button class="btn btn--ghost btn--sm" (click)="abrirActualizacion()">
+          <i class="pi pi-pencil"></i> Solicitar actualización
+        </button>
+      </div>
+      <div class="data-grid">
+        <div class="data-field">
+          <span class="data-field__label">Nombre completo</span>
+          <span class="data-field__value">{{ formNucleo.primerNombre }} {{ formNucleo.segundoNombre }} {{ formNucleo.primerApellido }} {{ formNucleo.segundoApellido }}</span>
+        </div>
+        <div class="data-field">
+          <span class="data-field__label">Fecha de nacimiento</span>
+          <span class="data-field__value">{{ formNucleo.fechaNacimiento }}</span>
+        </div>
+        <div class="data-field">
+          <span class="data-field__label">Tipo de documento</span>
+          <span class="data-field__value">{{ formNucleo.tipoDocumento }}</span>
+        </div>
+        <div class="data-field">
+          <span class="data-field__label">Número de documento</span>
+          <span class="data-field__value">{{ formNucleo.numeroDocumento }}</span>
+        </div>
+        <div class="data-field">
+          <span class="data-field__label">Nacionalidad</span>
+          <span class="data-field__value">{{ formNucleo.nacionalidad }}</span>
+        </div>
+        <div class="data-field">
+          <span class="data-field__label">País</span>
+          <span class="data-field__value">{{ paisLabel }}</span>
+        </div>
+        <div class="data-field">
+          <span class="data-field__label">Tipo de persona</span>
+          <span class="data-field__value">{{ formNucleo.tipoPersona === 'natural' ? 'Persona natural' : 'Persona jurídica' }}</span>
+        </div>
+        <div class="data-field">
+          <span class="data-field__label">{{ camposGeograficos }}</span>
+          <span class="data-field__value">{{ formNucleo.ciudad }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card__header"><h3>Contacto</h3></div>
+      <div class="data-grid">
+        <div class="data-field">
+          <span class="data-field__label">Email</span>
+          <span class="data-field__value">{{ formNucleo.email }}</span>
+        </div>
+        <div class="data-field">
+          <span class="data-field__label">Teléfono</span>
+          <span class="data-field__value">{{ formNucleo.telefono }}</span>
+        </div>
+        <div class="data-field data-field--full">
+          <span class="data-field__label">Dirección</span>
+          <span class="data-field__value">{{ formNucleo.direccion }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Documento de validación -->
+    <div class="data-card data-card--doc" (click)="verDocumento()">
+      <div class="data-card__header">
+        <div class="doc-preview-row">
+          <div class="doc-icon">📄</div>
+          <div>
+            <h3>Documento de validación</h3>
+            <span class="doc-meta">{{ formNucleo.tipoDocumento }} · Validado el 10 de enero, 2026</span>
+          </div>
+        </div>
+        <span *ngIf="documentoDesactualizado()" class="badge badge--warning">Desactualizado</span>
+        <i class="pi pi-angle-right doc-arrow"></i>
+      </div>
+    </div>
+
+    <!-- CTA inicio flujo -->
+    <div *ngIf="perfilActivo().estado === 'sin_iniciar'" class="cta-bar">
+      <button class="btn btn--primary btn--lg" (click)="navTo('v1-entrada')">
+        Iniciar verificación de identidad <i class="pi pi-arrow-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VISTA 5 — Formulario núcleo (paso 1 de 2)                   -->
+  <!-- ============================================================ -->
+  <section *ngIf="isVista('v5-formulario-nucleo')" class="vista">
+    <div class="vista-label">Vista 5 · Formulario — Núcleo de identidad (paso 1 de 2)</div>
+
+    <!-- Stepper -->
+    <div class="stepper">
+      <div class="step step--active">
+        <div class="step__circle">1</div>
+        <span class="step__label">Datos de identidad</span>
+      </div>
+      <div class="step__connector"></div>
+      <div class="step" [class.step--active]="paisConFiscal">
+        <div class="step__circle">2</div>
+        <span class="step__label">Información fiscal</span>
+      </div>
+      <div class="step__connector"></div>
+      <div class="step">
+        <div class="step__circle">3</div>
+        <span class="step__label">Confirmación</span>
+      </div>
+    </div>
+
+    <form class="form-card">
+      <div class="form-section">
+        <h3 class="form-section__title">Información personal</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Primer nombre <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="formNucleo.primerNombre" name="primerNombre" placeholder="Primer nombre" />
+          </div>
+          <div class="form-field">
+            <label>Segundo nombre</label>
+            <input type="text" [(ngModel)]="formNucleo.segundoNombre" name="segundoNombre" placeholder="Segundo nombre" />
+          </div>
+          <div class="form-field">
+            <label>Primer apellido <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="formNucleo.primerApellido" name="primerApellido" placeholder="Primer apellido" />
+          </div>
+          <div class="form-field">
+            <label>Segundo apellido <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="formNucleo.segundoApellido" name="segundoApellido" placeholder="Segundo apellido" />
+          </div>
+          <div class="form-field">
+            <label>Fecha de nacimiento <span class="required">*</span></label>
+            <input type="date" [(ngModel)]="formNucleo.fechaNacimiento" name="fechaNacimiento" />
+          </div>
+          <div class="form-field">
+            <label>Nacionalidad <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="formNucleo.nacionalidad" name="nacionalidad" placeholder="Ej: Colombiana" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section__title">Tipo de persona y documento</h3>
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <label>Tipo de persona <span class="required">*</span></label>
+            <div class="radio-group">
+              <label class="radio-opt" [class.radio-opt--active]="formNucleo.tipoPersona === 'natural'">
+                <input type="radio" [(ngModel)]="formNucleo.tipoPersona" name="tipoPersona" value="natural" />
+                Persona natural
+              </label>
+              <label class="radio-opt" [class.radio-opt--active]="formNucleo.tipoPersona === 'juridica'">
+                <input type="radio" [(ngModel)]="formNucleo.tipoPersona" name="tipoPersona" value="juridica" />
+                Persona jurídica
+              </label>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Tipo de documento <span class="required">*</span></label>
+            <select [(ngModel)]="formNucleo.tipoDocumento" name="tipoDocumento">
+              <option>Cédula de ciudadanía</option>
+              <option>Cédula de extranjería</option>
+              <option>Pasaporte</option>
+              <option>NIT</option>
+              <option>RUT</option>
+              <option>RFC</option>
+              <option>CUIT</option>
+              <option>RUC</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Número de documento <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="formNucleo.numeroDocumento" name="numeroDocumento" placeholder="Sin puntos ni guiones" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloque empresa (solo jurídica) -->
+      <div *ngIf="formNucleo.tipoPersona === 'juridica'" class="form-section form-section--empresa">
+        <div class="form-section__label-tag">Solo personas jurídicas</div>
+        <h3 class="form-section__title">Información de empresa</h3>
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <label>Razón social <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="formNucleo.razonSocial" name="razonSocial" placeholder="Nombre legal de la empresa" />
+          </div>
+          <div class="form-field form-field--full">
+            <label>Documento que confirma existencia legal</label>
+            <div class="upload-zone">
+              <i class="pi pi-upload"></i>
+              <span>Arrastra aquí o <strong>selecciona el archivo</strong></span>
+              <span class="upload-hint">PDF, JPG o PNG · máx. 5 MB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section__title">Contacto y ubicación</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>País <span class="required">*</span></label>
+            <select [(ngModel)]="formNucleo.pais" name="pais">
+              <option value="CO">Colombia</option>
+              <option value="CL">Chile</option>
+              <option value="MX">México</option>
+              <option value="AR">Argentina</option>
+              <option value="EC">Ecuador</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>{{ camposGeograficos }} <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="formNucleo.ciudad" name="ciudad" [placeholder]="camposGeograficos" />
+          </div>
+          <div class="form-field form-field--full">
+            <label>Dirección <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="formNucleo.direccion" name="direccion" placeholder="Calle, número, apartamento" />
+          </div>
+          <div class="form-field">
+            <label>Email de contacto <span class="required">*</span></label>
+            <input type="email" [(ngModel)]="formNucleo.email" name="email" placeholder="correo@ejemplo.com" />
+          </div>
+          <div class="form-field">
+            <label>Teléfono <span class="required">*</span></label>
+            <input type="tel" [(ngModel)]="formNucleo.telefono" name="telefono" placeholder="+57 300 000 0000" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn--ghost" (click)="navTo('v2-datos')">
+          <i class="pi pi-arrow-left"></i> Cancelar
+        </button>
+        <button type="button" class="btn btn--primary" (click)="continuarFormulario()">
+          {{ paisConFiscal ? 'Continuar a información fiscal' : 'Revisar antes de enviar' }}
+          <i class="pi pi-arrow-right"></i>
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VISTA 6 — Formulario fiscal (paso 2 de 2)                   -->
+  <!-- ============================================================ -->
+  <section *ngIf="isVista('v6-formulario-fiscal')" class="vista">
+    <div class="vista-label">Vista 6 · Formulario — Módulo fiscal (paso 2 de 2) · {{ paisLabel }}</div>
+
+    <!-- Stepper -->
+    <div class="stepper">
+      <div class="step step--completed">
+        <div class="step__circle"><i class="pi pi-check"></i></div>
+        <span class="step__label">Datos de identidad</span>
+      </div>
+      <div class="step__connector step__connector--done"></div>
+      <div class="step step--active">
+        <div class="step__circle">2</div>
+        <span class="step__label">Información fiscal</span>
+      </div>
+      <div class="step__connector"></div>
+      <div class="step">
+        <div class="step__circle">3</div>
+        <span class="step__label">Confirmación</span>
+      </div>
+    </div>
+
+    <div *ngIf="!paisConFiscal" class="info-banner">
+      <i class="pi pi-info-circle"></i>
+      <p>No se requiere información fiscal adicional para {{ paisLabel }}. Puedes continuar a la confirmación.</p>
+    </div>
+
+    <form *ngIf="paisConFiscal" class="form-card">
+      <!-- Colombia -->
+      <div *ngIf="formNucleo.pais === 'CO'" class="form-section">
+        <h3 class="form-section__title">Información fiscal — Colombia</h3>
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <label>
+              Tipo de régimen <span class="required">*</span>
+              <span class="field-hint">¿Cómo te identifica la DIAN?</span>
+            </label>
+            <select [(ngModel)]="formFiscal.tipoRegimen" name="tipoRegimen">
+              <option *ngFor="let o of opcionesFiscales">{{ o }}</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>
+              Tipo de responsabilidad <span class="required">*</span>
+              <span class="field-hint">Responsabilidades frente al fisco</span>
+            </label>
+            <select [(ngModel)]="formFiscal.tipoResponsabilidad" name="tipoResponsabilidad">
+              <option>Gran contribuyente</option>
+              <option>Autorretenedor</option>
+              <option>Agente retenedor IVA</option>
+              <option>No responsable de IVA</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Impuesto (opcional)</label>
+            <input type="text" [(ngModel)]="formFiscal.impuesto" name="impuesto" placeholder="Ej: IVA" />
+          </div>
+        </div>
+      </div>
+
+      <!-- México -->
+      <div *ngIf="formNucleo.pais === 'MX'" class="form-section">
+        <h3 class="form-section__title">Información fiscal — México</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>
+              Código postal <span class="required">*</span>
+            </label>
+            <input type="text" [(ngModel)]="formFiscal.codigoPostal" name="codigoPostal" placeholder="Ej: 06600" />
+          </div>
+          <div class="form-field">
+            <label>
+              Régimen fiscal <span class="required">*</span>
+              <span class="field-hint">Según tu perfil ante el SAT</span>
+            </label>
+            <select [(ngModel)]="formFiscal.regimenFiscal" name="regimenFiscal">
+              <option *ngFor="let o of opcionesFiscales">{{ o }}</option>
+            </select>
+          </div>
+          <div class="form-field form-field--full">
+            <label class="toggle-label">
+              <input type="checkbox" [(ngModel)]="formFiscal.sujetoImpuestos" name="sujetoImpuestos" />
+              <span>Sujeto a impuestos retenidos</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Argentina -->
+      <div *ngIf="formNucleo.pais === 'AR'" class="form-section">
+        <h3 class="form-section__title">Información fiscal — Argentina</h3>
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <label>
+              Condición frente al IVA <span class="required">*</span>
+              <span class="field-hint">Tu situación tributaria ante ARCA (ex AFIP)</span>
+            </label>
+            <select [(ngModel)]="formFiscal.condicionIVA" name="condicionIVA">
+              <option *ngFor="let o of opcionesFiscales">{{ o }}</option>
+            </select>
+          </div>
+          <div class="form-field form-field--full">
+            <label>Provincia / Ciudad <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="formFiscal.provincia" name="provincia" placeholder="Ej: Buenos Aires" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn--ghost" (click)="navTo('v5-formulario-nucleo')">
+          <i class="pi pi-arrow-left"></i> Atrás
+        </button>
+        <button type="button" class="btn btn--primary" (click)="revisarAntesDeEnviar()">
+          Revisar antes de enviar <i class="pi pi-arrow-right"></i>
+        </button>
+      </div>
+    </form>
+
+    <div *ngIf="!paisConFiscal" class="form-actions form-actions--standalone">
+      <button type="button" class="btn btn--ghost" (click)="navTo('v5-formulario-nucleo')">
+        <i class="pi pi-arrow-left"></i> Atrás
+      </button>
+      <button type="button" class="btn btn--primary" (click)="revisarAntesDeEnviar()">
+        Revisar antes de enviar <i class="pi pi-arrow-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VISTA 9 — Estado: Validación en revisión                    -->
+  <!-- ============================================================ -->
+  <section *ngIf="isVista('v9-pendiente')" class="vista">
+    <div class="vista-label">Vista 9 · Estado — Validación en revisión</div>
+    <div class="status-page">
+      <div class="status-page__icon status-page__icon--warning">⏳</div>
+      <h2 class="status-page__title">Tu identidad está siendo verificada</h2>
+      <p class="status-page__body">
+        Recibimos tu documentación. Nuestro equipo la revisará en un plazo de <strong>1 a 3 días hábiles</strong>.
+        Te notificaremos por email cuando tengamos una respuesta.
+      </p>
+
+      <div class="status-info-card">
+        <div class="status-info-card__row">
+          <span class="status-info-card__label">Enviado el</span>
+          <span class="status-info-card__value">18 de junio, 2026 — 09:42</span>
+        </div>
+        <div class="status-info-card__row">
+          <span class="status-info-card__label">Tiempo estimado</span>
+          <span class="status-info-card__value">1–3 días hábiles</span>
+        </div>
+      </div>
+
+      <div class="blocked-list">
+        <h4>Mientras esperas, estas funciones están temporalmente limitadas:</h4>
+        <div class="blocked-item">
+          <i class="pi pi-wallet"></i>
+          <span>Retiro de fondos</span>
+        </div>
+        <div class="blocked-item">
+          <i class="pi pi-file-edit"></i>
+          <span>Facturación automática</span>
+        </div>
+      </div>
+      <div class="allowed-list">
+        <h4>Puedes seguir usando sin restricciones:</h4>
+        <div class="allowed-item">
+          <i class="pi pi-check-circle"></i>
+          <span>Catálogo de productos y pedidos</span>
+        </div>
+        <div class="allowed-item">
+          <i class="pi pi-check-circle"></i>
+          <span>Academy y capacitaciones</span>
+        </div>
+      </div>
+
+      <div class="status-page__actions">
+        <button class="btn btn--primary" (click)="navTo('v2-datos')">Ver mis datos</button>
+        <button class="btn btn--ghost" (click)="navTo('v1-entrada')">Ir al inicio</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VISTA 10 — Estado: Validación rechazada                     -->
+  <!-- ============================================================ -->
+  <section *ngIf="isVista('v10-rechazado')" class="vista">
+    <div class="vista-label">Vista 10 · Estado — Validación rechazada</div>
+    <div class="status-page">
+      <div class="status-page__icon status-page__icon--error">✗</div>
+      <h2 class="status-page__title">No pudimos verificar tu identidad</h2>
+
+      <div class="rejection-reason">
+        <div class="rejection-reason__category">
+          <i class="pi pi-camera"></i> Problema con el documento
+        </div>
+        <p class="rejection-reason__detail">{{ motivoRechazo }}</p>
+      </div>
+
+      <div class="attempts-bar" *ngIf="intentosRestantes() > 0">
+        <i class="pi pi-refresh"></i>
+        <span>Te quedan <strong>{{ intentosRestantes() }} intentos</strong> para reintentar</span>
+      </div>
+
+      <div class="status-page__actions" *ngIf="intentosRestantes() > 0">
+        <button class="btn btn--primary" (click)="reintentarDesdePerfil()">
+          <i class="pi pi-camera"></i> Reintentar captura
+        </button>
+        <button class="btn btn--secondary" (click)="navTo('v5-formulario-nucleo')">
+          Corregir datos del formulario
+        </button>
+        <button class="btn btn--ghost" (click)="navTo('v2-datos')">Volver a mis datos</button>
+      </div>
+
+      <div *ngIf="intentosRestantes() === 0" class="no-attempts-msg">
+        <p>Agotaste los intentos disponibles. Contacta a soporte para continuar.</p>
+        <button class="btn btn--ghost" (click)="openModal('v12-apelacion-modal')">Solicitar revisión manual</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VISTA 11 — Estado: Cuenta bloqueada                         -->
+  <!-- ============================================================ -->
+  <section *ngIf="isVista('v11-baneado')" class="vista">
+    <div class="vista-label">Vista 11 · Estado — Cuenta restringida</div>
+    <div class="status-page">
+      <div class="status-page__icon status-page__icon--blocked">🔒</div>
+      <h2 class="status-page__title">Acceso restringido</h2>
+      <p class="status-page__body">
+        Tu cuenta tiene restricciones de acceso. Si crees que esto es un error, puedes solicitar una revisión manual a través del siguiente formulario.
+        Nuestro equipo se comunicará contigo en un máximo de <strong>5 días hábiles</strong>.
+      </p>
+
+      <div *ngIf="apelacionEnviada()" class="sent-banner">
+        <i class="pi pi-check-circle"></i>
+        Solicitud enviada — nos pondremos en contacto contigo pronto.
+      </div>
+
+      <div class="status-page__actions" *ngIf="!apelacionEnviada()">
+        <button class="btn btn--primary" (click)="openModal('v12-apelacion-modal')">
+          <i class="pi pi-send"></i> Solicitar revisión
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VISTA 13 — Estado: Validación incompleta                    -->
+  <!-- ============================================================ -->
+  <section *ngIf="isVista('v13-incompleta')" class="vista">
+    <div class="vista-label">Vista 13 · Estado — Validación incompleta</div>
+    <div class="status-page">
+      <div class="status-page__icon status-page__icon--warning">⚠️</div>
+      <h2 class="status-page__title">Quedaste a mitad de la validación</h2>
+      <p class="status-page__body">
+        El 18 de junio, 2026 iniciaste el proceso pero no lo terminaste.
+        Completaste el <strong>paso 3 de 4</strong> — falta la selfie de verificación.
+      </p>
+
+      <div class="progress-steps-mini">
+        <div class="psm-step psm-step--done"><i class="pi pi-check"></i> Documento (frente)</div>
+        <div class="psm-step psm-step--done"><i class="pi pi-check"></i> Documento (reverso)</div>
+        <div class="psm-step psm-step--done"><i class="pi pi-check"></i> Datos del documento</div>
+        <div class="psm-step psm-step--pending"><i class="pi pi-circle"></i> Selfie / Verificación</div>
+      </div>
+
+      <div class="status-page__actions">
+        <button class="btn btn--primary" (click)="openModal('v8-sumsub-modal')">
+          <i class="pi pi-play"></i> Continuar validación
+        </button>
+        <button class="btn btn--ghost" (click)="openModal('v8-sumsub-modal')">
+          Empezar desde el principio
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VISTA 14 — Estado: Validación exitosa                       -->
+  <!-- ============================================================ -->
+  <section *ngIf="isVista('v14-exitosa')" class="vista">
+    <div class="vista-label">Vista 14 · Estado — Validación exitosa</div>
+    <div class="status-page">
+      <div class="status-page__icon status-page__icon--success">✓</div>
+      <h2 class="status-page__title">¡Identidad verificada exitosamente!</h2>
+      <p class="status-page__body">
+        Tu identidad fue validada el <strong>18 de junio, 2026</strong>. Ahora tienes acceso a todas las funciones de Dropi.
+      </p>
+
+      <div class="unlocked-list">
+        <h4>Funciones desbloqueadas:</h4>
+        <div class="unlocked-item">
+          <i class="pi pi-check-circle"></i>
+          <div>
+            <strong>Retiro de fondos</strong>
+            <span>Ya puedes transferir tus ganancias a tu cuenta bancaria</span>
+          </div>
+        </div>
+        <div class="unlocked-item">
+          <i class="pi pi-check-circle"></i>
+          <div>
+            <strong>Facturación automática</strong>
+            <span>Genera facturas electrónicas desde tu perfil</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="status-page__actions">
+        <button class="btn btn--primary btn--lg" (click)="navTo('v2-datos')">
+          Ver mis datos <i class="pi pi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- MODALES                                                      -->
+<!-- ============================================================ -->
+
+<!-- Backdrop -->
+<div
+  class="modal-backdrop"
+  *ngIf="modalActivo()"
+  (click)="closeModal()"
+></div>
+
+<!-- ------------------------------------------------------------ -->
+<!-- Modal V3 — Solicitar actualización de datos                  -->
+<!-- ------------------------------------------------------------ -->
+<div class="modal" *ngIf="isModal('v3-solicitud-modal')">
+  <div class="modal__inner">
+    <div class="modal__header">
+      <div>
+        <div class="vista-label vista-label--modal">Vista 3 · Solicitar actualización de datos</div>
+        <h3 class="modal__title">¿Qué datos deseas actualizar?</h3>
+      </div>
+      <button class="modal__close" (click)="closeModal()"><i class="pi pi-times"></i></button>
+    </div>
+    <div class="modal__body">
+      <p class="modal__intro">
+        Por seguridad, te pediremos verificar tu identidad antes de habilitar la edición.
+      </p>
+      <div class="group-list">
+        <label
+          class="group-item"
+          *ngFor="let g of gruposActualizacion"
+          [class.group-item--selected]="isGrupoSelected(g.id)"
+          (click)="toggleGrupo(g.id)"
+        >
+          <div class="group-item__check">
+            <i class="pi" [class.pi-check-square]="isGrupoSelected(g.id)" [class.pi-stop]="!isGrupoSelected(g.id)"></i>
+          </div>
+          <div class="group-item__info">
+            <strong>{{ g.label }}</strong>
+            <span>{{ g.desc }}</span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" (click)="closeModal()">Cancelar</button>
+      <button
+        class="btn btn--primary"
+        [disabled]="gruposSeleccionados().length === 0"
+        (click)="continuarActualizacion()"
+      >
+        Continuar <i class="pi pi-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ------------------------------------------------------------ -->
+<!-- Modal V4 — Verificación de seguridad MFA                    -->
+<!-- ------------------------------------------------------------ -->
+<div class="modal" *ngIf="isModal('v4-mfa-modal')">
+  <div class="modal__inner modal__inner--sm">
+    <div class="modal__header">
+      <div>
+        <div class="vista-label vista-label--modal">Vista 4 · MFA</div>
+        <h3 class="modal__title">Verificación de seguridad</h3>
+      </div>
+      <button class="modal__close" (click)="closeModal()"><i class="pi pi-times"></i></button>
+    </div>
+    <div class="modal__body modal__body--center">
+      <div class="mfa-icon">🔐</div>
+      <p class="mfa-desc">Enviamos un código de 6 dígitos a <strong>***1234</strong></p>
+      <p class="mfa-hint">Código de prueba: <code>123456</code></p>
+
+      <div class="otp-inputs">
+        <input
+          *ngFor="let d of otpDigits(); let i = index"
+          [id]="'otp-' + i"
+          class="otp-box"
+          type="text"
+          maxlength="1"
+          [value]="d"
+          (input)="onOtpInput(i, $event)"
+        />
+      </div>
+
+      <div *ngIf="otpError()" class="otp-error">
+        <i class="pi pi-exclamation-circle"></i> {{ otpError() }}
+      </div>
+
+      <button class="btn btn--ghost btn--sm mfa-resend">
+        <i class="pi pi-refresh"></i> Reenviar código (60s)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ------------------------------------------------------------ -->
+<!-- Modal V7 — Revisa antes de enviar                           -->
+<!-- ------------------------------------------------------------ -->
+<div class="modal" *ngIf="isModal('v7-confirmacion-modal')">
+  <div class="modal__inner modal__inner--lg">
+    <div class="modal__header">
+      <div>
+        <div class="vista-label vista-label--modal">Vista 7 · Confirmación</div>
+        <h3 class="modal__title">Revisa antes de enviar</h3>
+      </div>
+      <button class="modal__close" (click)="closeModal()"><i class="pi pi-times"></i></button>
+    </div>
+    <div class="modal__body">
+      <p class="modal__intro">
+        Verifica que todos tus datos sean correctos. Un error en el número de documento puede invalidar el intento.
+      </p>
+
+      <div class="review-section">
+        <div class="review-section__header">
+          <h4>Identidad</h4>
+          <button class="btn btn--ghost btn--sm" (click)="closeModal(); navTo('v5-formulario-nucleo')">Editar</button>
+        </div>
+        <div class="review-grid">
+          <div class="review-field"><span>Nombre</span><strong>{{ formNucleo.primerNombre }} {{ formNucleo.primerApellido }}</strong></div>
+          <div class="review-field"><span>Documento</span><strong>{{ formNucleo.numeroDocumento }}</strong></div>
+          <div class="review-field"><span>Tipo persona</span><strong>{{ formNucleo.tipoPersona === 'natural' ? 'Natural' : 'Jurídica' }}</strong></div>
+          <div class="review-field"><span>País</span><strong>{{ paisLabel }}</strong></div>
+        </div>
+      </div>
+
+      <div class="review-section" *ngIf="paisConFiscal">
+        <div class="review-section__header">
+          <h4>Fiscal</h4>
+          <button class="btn btn--ghost btn--sm" (click)="closeModal(); navTo('v6-formulario-fiscal')">Editar</button>
+        </div>
+        <div class="review-grid">
+          <div class="review-field" *ngIf="formNucleo.pais === 'CO'">
+            <span>Régimen</span><strong>{{ formFiscal.tipoRegimen }}</strong>
+          </div>
+          <div class="review-field" *ngIf="formNucleo.pais === 'AR'">
+            <span>Condición IVA</span><strong>{{ formFiscal.condicionIVA }}</strong>
+          </div>
+          <div class="review-field" *ngIf="formNucleo.pais === 'MX'">
+            <span>Régimen fiscal</span><strong>{{ formFiscal.regimenFiscal }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="confirm-notice">
+        <i class="pi pi-info-circle"></i>
+        Al confirmar, validaremos tu identidad con nuestro proveedor de verificación. Esto puede tardar unos minutos.
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" (click)="closeModal()">Volver a editar</button>
+      <button class="btn btn--primary" (click)="confirmarYValidar()">
+        Confirmar y validar <i class="pi pi-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ------------------------------------------------------------ -->
+<!-- Modal V8 — Sumsub WebSDK (simulado)                         -->
+<!-- ------------------------------------------------------------ -->
+<div class="modal modal--fullscreen" *ngIf="isModal('v8-sumsub-modal')">
+  <div class="sumsub-overlay">
+    <div class="sumsub-header">
+      <div class="sumsub-logo">
+        <span class="sumsub-badge">Vista 8 · Sumsub SDK (mock)</span>
+      </div>
+      <button class="sumsub-close" (click)="cerrarSumsub()">
+        <i class="pi pi-times"></i> Salir
+      </button>
+    </div>
+
+    <div class="sumsub-body">
+      <!-- Progress -->
+      <div class="sumsub-progress">
+        <div
+          class="sumsub-step"
+          *ngFor="let s of sumsubSteps; let i = index"
+          [class.sumsub-step--done]="i < sumsubStep()"
+          [class.sumsub-step--active]="i === sumsubStep()"
+        >
+          <div class="sumsub-step__dot">
+            <i *ngIf="i < sumsubStep()" class="pi pi-check"></i>
+            <span *ngIf="i >= sumsubStep()">{{ i + 1 }}</span>
+          </div>
+          <span class="sumsub-step__label">{{ s }}</span>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="sumsub-loading" *ngIf="sumsubLoading()">
+        <div class="spinner"></div>
+        <p>Procesando...</p>
+      </div>
+
+      <!-- Step content -->
+      <div class="sumsub-content" *ngIf="!sumsubLoading()">
+        <div *ngIf="sumsubStep() === 0" class="sumsub-card">
+          <div class="sumsub-card__icon">🪪</div>
+          <h3>Selecciona el tipo de documento</h3>
+          <p>Elige el documento que vas a usar para verificar tu identidad.</p>
+          <div class="doc-options">
+            <button class="doc-option">🪪 Cédula de ciudadanía</button>
+            <button class="doc-option">🛂 Pasaporte</button>
+            <button class="doc-option">📋 Licencia de conducción</button>
+          </div>
+        </div>
+
+        <div *ngIf="sumsubStep() === 1" class="sumsub-card">
+          <div class="sumsub-card__icon">📸</div>
+          <h3>Captura la parte frontal</h3>
+          <p>Asegúrate de que el documento esté bien iluminado y sea legible en su totalidad.</p>
+          <div class="camera-placeholder">
+            <i class="pi pi-camera"></i>
+            <span>Cámara / subir imagen</span>
+          </div>
+        </div>
+
+        <div *ngIf="sumsubStep() === 2" class="sumsub-card">
+          <div class="sumsub-card__icon">🔄</div>
+          <h3>Captura la parte trasera</h3>
+          <p>Gira el documento y captura el reverso con la misma calidad.</p>
+          <div class="camera-placeholder">
+            <i class="pi pi-camera"></i>
+            <span>Cámara / subir imagen</span>
+          </div>
+        </div>
+
+        <div *ngIf="sumsubStep() === 3" class="sumsub-card">
+          <div class="sumsub-card__icon">🤳</div>
+          <h3>Verificación de vida (selfie)</h3>
+          <p>Mira a la cámara con el rostro despejado. Sigue las instrucciones en pantalla.</p>
+          <div class="camera-placeholder camera-placeholder--selfie">
+            <i class="pi pi-user"></i>
+            <span>Cámara frontal</span>
+          </div>
+        </div>
+
+        <button class="btn btn--primary btn--lg sumsub-cta" (click)="avanzarSumsub()">
+          {{ sumsubStep() < 3 ? 'Continuar' : 'Finalizar' }} <i class="pi pi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ------------------------------------------------------------ -->
+<!-- Modal V12 — Solicitar revisión de bloqueo                   -->
+<!-- ------------------------------------------------------------ -->
+<div class="modal" *ngIf="isModal('v12-apelacion-modal')">
+  <div class="modal__inner">
+    <div class="modal__header">
+      <div>
+        <div class="vista-label vista-label--modal">Vista 12 · Apelación</div>
+        <h3 class="modal__title">Solicitar revisión manual</h3>
+      </div>
+      <button class="modal__close" (click)="closeModal()"><i class="pi pi-times"></i></button>
+    </div>
+    <div class="modal__body">
+      <p class="modal__intro">
+        Cuéntanos brevemente por qué consideras que la restricción de tu cuenta debe revisarse. Nuestro equipo se comunicará contigo en máximo 5 días hábiles.
+      </p>
+      <div class="form-field">
+        <label>Contexto adicional <span class="required">*</span></label>
+        <textarea
+          class="form-textarea"
+          rows="4"
+          placeholder="Describe el motivo de tu solicitud..."
+          [(ngModel)]="apelacionTexto"
+          name="apelacion"
+        ></textarea>
+      </div>
+      <div class="form-field">
+        <label>Email de contacto</label>
+        <input type="email" [value]="formNucleo.email" readonly class="input-readonly" />
+      </div>
+      <p class="appeal-disclaimer">
+        Al enviar esta solicitud confirmas que la información proporcionada es verídica. No garantizamos la reactivación de la cuenta.
+      </p>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" (click)="closeModal()">Cancelar</button>
+      <button class="btn btn--primary" (click)="enviarApelacion()" [disabled]="apelacionTexto.trim().length === 0">
+        Enviar solicitud <i class="pi pi-send"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ------------------------------------------------------------ -->
+<!-- Modal V15 — Documento de validación                         -->
+<!-- ------------------------------------------------------------ -->
+<div class="modal" *ngIf="isModal('v15-documento-modal')">
+  <div class="modal__inner">
+    <div class="modal__header">
+      <div>
+        <div class="vista-label vista-label--modal">Vista 15 · Documento de validación</div>
+        <h3 class="modal__title">Documento de validación</h3>
+      </div>
+      <button class="modal__close" (click)="closeModal()"><i class="pi pi-times"></i></button>
+    </div>
+    <div class="modal__body modal__body--center">
+      <div class="doc-preview">
+        <div class="doc-preview__placeholder">
+          <i class="pi pi-id-card"></i>
+        </div>
+        <div class="doc-preview__meta">
+          <span class="doc-meta-type">{{ formNucleo.tipoDocumento }}</span>
+          <span class="doc-meta-number">{{ formNucleo.numeroDocumento }}</span>
+          <span class="doc-meta-date">Validado el 10 de enero, 2026 con Sumsub</span>
+        </div>
+      </div>
+
+      <div *ngIf="documentoDesactualizado()" class="info-banner info-banner--warning">
+        <i class="pi pi-exclamation-triangle"></i>
+        <p>Este documento fue marcado como desactualizado. Se pedirá uno nuevo en tu próxima verificación.</p>
+      </div>
+
+      <p class="doc-readonly-note">
+        Este documento es solo de lectura — es el mismo que validó Sumsub.
+        No es posible reemplazarlo directamente para evitar inconsistencias con el resultado de validación.
+      </p>
+    </div>
+    <div class="modal__footer" *ngIf="!documentoDesactualizado()">
+      <button class="btn btn--ghost" (click)="closeModal()">Cerrar</button>
+      <button class="btn btn--secondary" (click)="marcarDesactualizado()">
+        <i class="pi pi-exclamation-triangle"></i> Marcar como desactualizado
+      </button>
+    </div>
+    <div class="modal__footer" *ngIf="documentoDesactualizado()">
+      <button class="btn btn--primary" (click)="closeModal()">Entendido</button>
+    </div>
+  </div>
+</div>
