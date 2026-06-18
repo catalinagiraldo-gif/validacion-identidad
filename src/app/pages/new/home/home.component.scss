@@ -613,6 +613,124 @@
 }
 
 // ============================================
+// Prototipos — Acceso Directo
+// ============================================
+
+.proto-section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__see-all {
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $primary-500;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.15s ease;
+
+    &:hover { color: $primary-600; }
+
+    i { font-size: 11px; }
+  }
+}
+
+.proto-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $space-3;
+}
+
+.proto-card {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  background: $neutral-white;
+  border: 1px solid $gray-100;
+  border-radius: $radius-3;
+  padding: $space-4;
+  text-decoration: none;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  animation: fadeSlideUp 0.4s ease both;
+
+  &:hover {
+    box-shadow: $shadow-medium;
+    border-color: $gray-200;
+    transform: translateY(-1px);
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  &__status {
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    padding: 2px 8px;
+    border-radius: $radius-1;
+
+    &--green  { background: rgba($success-500, 0.1); color: $success-500; }
+    &--orange { background: rgba($primary-500, 0.1); color: $primary-600; }
+    &--gray   { background: $gray-100; color: $gray-500; }
+  }
+
+  &__title {
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $gray-800;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  &__tag {
+    font-size: $font-xs;
+    color: $gray-400;
+    margin: 0;
+  }
+
+  &__desc {
+    font-size: $font-xs;
+    color: $gray-500;
+    margin: 0;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  &__cta {
+    font-size: $font-xs;
+    font-weight: $font-medium;
+    color: $primary-500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: $space-1;
+
+    i { font-size: 10px; }
+  }
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ============================================
 // Responsive Breakpoints
 // ============================================
 
@@ -660,6 +778,10 @@
     padding: $space-4;
   }
 
+  .proto-grid {
+    grid-template-columns: 1fr;
+  }
+
   .project-card {
     padding: $space-4;
     gap: $space-3;
@@ -687,6 +809,10 @@
 
   .greeting {
     font-size: $font-xl;
+  }
+
+  .proto-grid {
+    grid-template-columns: 1fr 1fr;
   }
 
   .quick-actions {

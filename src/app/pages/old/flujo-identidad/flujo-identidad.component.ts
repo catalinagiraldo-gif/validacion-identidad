@@ -13,6 +13,7 @@ type EstadoId =
   | 'incompleta'
   | 'en-revision'
   | 'aprobada'
+  | 'recien-aprobada'
   | 'rechazada-espera'
   | 'rechazada-reintentar'
   | 'baneada'
@@ -32,7 +33,8 @@ type VistaId =
   | 'v-rechazada'
   | 'v-baneada'
   | 'v-email-baneado'
-  | 'v-cross-country';
+  | 'v-cross-country'
+  | 'v-exitosa';
 type ModalId =
   | 'm-seleccionar-campos'
   | 'm-mfa'
@@ -275,6 +277,7 @@ export class FlujoIdentidadComponent implements OnDestroy {
     { id: 'incompleta',           label: 'Incompleta · puede retomar',   color: 'warning' },
     { id: 'en-revision',          label: 'En revisión',                  color: 'warning' },
     { id: 'aprobada',             label: 'Aprobada ✓',                   color: 'success' },
+    { id: 'recien-aprobada',      label: 'Recién aprobada ✓',            color: 'success' },
     { id: 'rechazada-espera',     label: 'Rechazada · espera 10 min',    color: 'error'   },
     { id: 'rechazada-reintentar', label: 'Rechazada · puede reintentar', color: 'error'   },
     { id: 'baneada',              label: 'Baneada (3 rechazos)',          color: 'error'   },
@@ -303,9 +306,17 @@ export class FlujoIdentidadComponent implements OnDestroy {
   vistaActiva = signal<VistaId>('v-nueva-bloqueada');
   modalActivo = signal<ModalId | null>(null);
 
+  // ── Demo guide ───────────────────────────────────────────────────────
+
+  demoGuideVisible = signal(false);
+
   // ── Onboarding state ─────────────────────────────────────────────────
 
   onboardingStep = signal<1 | 2 | 3>(1);
+
+  // ── Form step (2-step form) ───────────────────────────────────────────
+
+  formStep = signal<1 | 2>(1);
   onboardingTipoPersona: TipoPersona = 'natural';
 
   // ── Form data (plain objects for ngModel) ────────────────────────────
@@ -367,6 +378,35 @@ export class FlujoIdentidadComponent implements OnDestroy {
   // -----------------------------------------------------------------------
   // Computed getters
   // -----------------------------------------------------------------------
+
+  get vistaSubtitle(): string {
+    if (this.vistaActiva() === 'v-nueva-formulario') {
+      return this.formStep() === 1
+        ? 'Paso 1 de 2 · Datos personales y de contacto'
+        : 'Paso 2 de 2 · Información tributaria';
+    }
+    const map: Partial<Record<VistaId, string>> = {
+      'v-nueva-bloqueada':      'Completa tu verificación para acceder a todas las funciones',
+      'v-nueva-onboarding':     'Paso previo — revisa lo que necesitas antes de comenzar',
+      'v-validado-datos':       'Tus datos están verificados y protegidos',
+      'v-validado-campos-nuevos': 'Hay campos nuevos que necesitas completar',
+      'v-guardada-sin-comenzar': 'Guardaste tus datos — aún no enviaste la verificación',
+      'v-incompleta':           'Dejaste el proceso a medias — puedes retomarlo ahora',
+      'v-en-revision':          'Tu información está siendo validada por nuestro equipo',
+      'v-rechazada':            'Hubo un problema con tu verificación',
+      'v-baneada':              'Tu cuenta ha sido restringida permanentemente',
+      'v-email-baneado':        'Este correo no puede ser utilizado en Dropi',
+      'v-cross-country':        'Ya tienes actividad en otro país de Dropi',
+      'v-exitosa':              'Tu identidad ha sido verificada exitosamente',
+    };
+    return map[this.vistaActiva()] ?? '';
+  }
+
+  get motivoBaneo(): string {
+    return this.selectorEstado() === 'email-baneado'
+      ? `El correo ${this.mockUser.email} fue bloqueado por actividad sospechosa en otro país de Dropi.`
+      : 'Tu cuenta superó el límite de intentos de verificación fallidos (3 rechazos consecutivos).';
+  }
 
   get mockUser(): MockUserData {
     return MOCK_USERS[this.selectorPais()];
@@ -477,6 +517,8 @@ export class FlujoIdentidadComponent implements OnDestroy {
   // Selector change handlers
   // -----------------------------------------------------------------------
 
+  toggleDemoGuide(): void { this.demoGuideVisible.update(v => !v); }
+
   setUserType(type: UserType): void {
     this.selectorUsuario.set(type);
     this.modalActivo.set(null);
@@ -511,6 +553,9 @@ export class FlujoIdentidadComponent implements OnDestroy {
     }
     if (ut === 'nuevo-sin-datos' && es === 'inicial') {
       this.vistaActiva.set('v-nueva-bloqueada'); return;
+    }
+    if (es === 'recien-aprobada') {
+      this.vistaActiva.set('v-exitosa'); return;
     }
     if (es === 'aprobada') {
       this.vistaActiva.set(ut === 'antiguo-campos-nuevos' ? 'v-validado-campos-nuevos' : 'v-validado-datos');
@@ -591,6 +636,7 @@ export class FlujoIdentidadComponent implements OnDestroy {
   // -----------------------------------------------------------------------
 
   private initFormData(): void {
+    this.formStep.set(1);
     const u = this.mockUser;
     const isNew = this.selectorUsuario() === 'nuevo-sin-datos';
     this.formNucleo = {
@@ -619,6 +665,22 @@ export class FlujoIdentidadComponent implements OnDestroy {
       ar_condicionIVA:       isNew ? '' : u.ar_condicionIVA,
       ar_provincia:          isNew ? '' : u.ar_provincia,
     };
+  }
+
+  siguienteFormPaso(): void {
+    if (this.paisConFiscal) {
+      this.formStep.set(2);
+    } else {
+      this.openModal('m-confirmacion-pre-sumsub');
+    }
+  }
+
+  anteriorFormPaso(): void {
+    this.formStep.set(1);
+  }
+
+  irAContinuar(): void {
+    this.openModal('m-confirmacion-pre-sumsub');
   }
 
   continuarFormulario(): void {

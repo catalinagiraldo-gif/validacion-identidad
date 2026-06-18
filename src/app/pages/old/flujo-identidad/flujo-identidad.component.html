@@ -50,6 +50,15 @@
         </div>
       </div>
 
+      <div class="demo-divider"></div>
+
+      <div class="demo-group">
+        <span class="demo-group__label">Ayuda</span>
+        <div class="demo-chips">
+          <button class="chip chip--neutral" (click)="toggleDemoGuide()">? Guía</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -63,6 +72,7 @@
       <div class="page-header">
         <div>
           <h1 class="page-title">Datos personales</h1>
+          <p class="page-subtitle">{{ vistaSubtitle }}</p>
           <p class="page-breadcrumb">Configuraciones / Datos personales</p>
         </div>
       </div>
@@ -153,6 +163,7 @@
         </button>
         <div>
           <h1 class="page-title">Verificación de identidad</h1>
+          <p class="page-subtitle">{{ vistaSubtitle }}</p>
           <p class="page-breadcrumb">Configuraciones / Datos personales / Verificación</p>
         </div>
       </div>
@@ -278,130 +289,167 @@
     <!-- ─── V-NUEVA-FORMULARIO ────────────────────────────────── -->
     <div *ngIf="isVista('v-nueva-formulario')" class="vista vista-formulario">
       <div class="page-header">
-        <button class="btn-back" (click)="navTo('v-nueva-onboarding')">
+        <button class="btn-back" (click)="formStep() === 2 ? anteriorFormPaso() : navTo('v-nueva-onboarding')">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/></svg>
           Volver
         </button>
         <div>
           <h1 class="page-title">Datos personales</h1>
+          <p class="page-subtitle">{{ vistaSubtitle }}</p>
           <p class="page-breadcrumb">Configuraciones / Datos personales</p>
         </div>
       </div>
 
-      <div *ngIf="selectorUsuario() === 'nuevo-sin-datos'" class="info-note info-note--prefilled">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="currentColor"/></svg>
-        <span>Tu email y teléfono ya están precargados desde tu registro. Completa el resto de la información.</span>
+      <!-- Step indicator -->
+      <div class="form-steps" *ngIf="paisConFiscal">
+        <div class="form-step" [class.form-step--active]="formStep() === 1" [class.form-step--done]="formStep() > 1">
+          <span class="form-step__num">
+            <ng-container *ngIf="formStep() > 1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="currentColor"/></svg>
+            </ng-container>
+            <ng-container *ngIf="formStep() === 1">1</ng-container>
+          </span>
+          <span class="form-step__label">Datos personales</span>
+        </div>
+        <div class="form-step-line"></div>
+        <div class="form-step" [class.form-step--active]="formStep() === 2">
+          <span class="form-step__num">2</span>
+          <span class="form-step__label">Datos tributarios</span>
+        </div>
       </div>
 
-      <form class="identity-form">
-        <div class="form-section">
-          <h3 class="form-section__title">Tipo de persona</h3>
-          <div class="tipo-persona-selector">
-            <label class="radio-card" [class.radio-card--selected]="formNucleo.tipoPersona === 'natural'">
-              <input type="radio" name="tipoPersona" value="natural" [(ngModel)]="formNucleo.tipoPersona">
-              <span class="radio-card__label">Persona natural</span>
-            </label>
-            <label class="radio-card" [class.radio-card--selected]="formNucleo.tipoPersona === 'juridica'">
-              <input type="radio" name="tipoPersona" value="juridica" [(ngModel)]="formNucleo.tipoPersona">
-              <span class="radio-card__label">Persona jurídica</span>
-            </label>
-          </div>
+      <!-- ── PASO 1: Datos personales ─────────────────────────── -->
+      <ng-container *ngIf="formStep() === 1">
+        <div *ngIf="selectorUsuario() === 'nuevo-sin-datos'" class="info-note info-note--prefilled">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="currentColor"/></svg>
+          <span>Tu email y teléfono ya están precargados desde tu registro. Completa el resto de la información.</span>
         </div>
 
-        <div *ngIf="formNucleo.tipoPersona === 'juridica'" class="form-section">
-          <h3 class="form-section__title">Datos de la empresa</h3>
-          <div class="form-row">
-            <div class="form-field form-field--full">
-              <label class="form-label">Razón social</label>
-              <input type="text" class="form-input" placeholder="Nombre legal de la empresa" [(ngModel)]="formNucleo.razonSocial" name="razonSocial">
+        <form class="identity-form">
+          <div class="form-section">
+            <h3 class="form-section__title">Tipo de persona</h3>
+            <div class="tipo-persona-selector">
+              <label class="radio-card" [class.radio-card--selected]="formNucleo.tipoPersona === 'natural'">
+                <input type="radio" name="tipoPersona" value="natural" [(ngModel)]="formNucleo.tipoPersona">
+                <span class="radio-card__label">Persona natural</span>
+              </label>
+              <label class="radio-card" [class.radio-card--selected]="formNucleo.tipoPersona === 'juridica'">
+                <input type="radio" name="tipoPersona" value="juridica" [(ngModel)]="formNucleo.tipoPersona">
+                <span class="radio-card__label">Persona jurídica</span>
+              </label>
             </div>
           </div>
+
+          <div *ngIf="formNucleo.tipoPersona === 'juridica'" class="form-section">
+            <h3 class="form-section__title">Datos de la empresa</h3>
+            <div class="form-row">
+              <div class="form-field form-field--full">
+                <label class="form-label">Razón social</label>
+                <input type="text" class="form-input" placeholder="Nombre legal de la empresa" [(ngModel)]="formNucleo.razonSocial" name="razonSocial">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="form-section__title">Información personal</h3>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">Primer nombre <span class="required-mark">*</span></label>
+                <input type="text" class="form-input" placeholder="Ej. Laura" [(ngModel)]="formNucleo.primerNombre" name="primerNombre">
+              </div>
+              <div class="form-field">
+                <label class="form-label">Segundo nombre <span class="form-label--optional">(opcional)</span></label>
+                <input type="text" class="form-input" placeholder="Ej. Isabel" [(ngModel)]="formNucleo.segundoNombre" name="segundoNombre">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">Primer apellido <span class="required-mark">*</span></label>
+                <input type="text" class="form-input" placeholder="Ej. Martínez" [(ngModel)]="formNucleo.primerApellido" name="primerApellido">
+              </div>
+              <div class="form-field">
+                <label class="form-label">Segundo apellido <span class="required-mark">*</span></label>
+                <input type="text" class="form-input" placeholder="Ej. Suárez" [(ngModel)]="formNucleo.segundoApellido" name="segundoApellido">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">Fecha de nacimiento <span class="required-mark">*</span></label>
+                <input type="date" class="form-input" [(ngModel)]="formNucleo.fechaNacimiento" name="fechaNacimiento">
+              </div>
+              <div class="form-field">
+                <label class="form-label">Nacionalidad</label>
+                <input type="text" class="form-input" placeholder="Ej. Colombiana" [(ngModel)]="formNucleo.nacionalidad" name="nacionalidad">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="form-section__title">Documento de identidad</h3>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">Tipo de documento <span class="required-mark">*</span></label>
+                <select class="form-input form-select" [(ngModel)]="formNucleo.tipoDocumento" name="tipoDocumento">
+                  <option value="">Seleccionar...</option>
+                  <option *ngFor="let doc of tiposDocumento" [value]="doc">{{ doc }}</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Número de documento <span class="required-mark">*</span></label>
+                <input type="text" class="form-input" placeholder="Ej. 1.023.456.789" [(ngModel)]="formNucleo.numeroDocumento" name="numeroDocumento">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="form-section__title">Datos de contacto</h3>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input form-input--prefilled" [value]="formNucleo.email" readonly>
+                <span class="form-hint">Registrado en tu cuenta. Para cambiarlo, edita tu perfil.</span>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Número de teléfono</label>
+                <input type="tel" class="form-input form-input--prefilled" [value]="formNucleo.telefono" readonly>
+                <span class="form-hint">Registrado en tu cuenta.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="form-section__title">Dirección</h3>
+            <div class="form-row">
+              <div class="form-field form-field--full">
+                <label class="form-label">Dirección <span class="required-mark">*</span></label>
+                <input type="text" class="form-input" placeholder="Calle, número, apto..." [(ngModel)]="formNucleo.direccion" name="direccion">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">{{ campoGeografico }} <span class="required-mark">*</span></label>
+                <input type="text" class="form-input" placeholder="Ciudad" [(ngModel)]="formNucleo.ciudad" name="ciudad">
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="form-actions">
+          <button class="btn-secondary" (click)="navTo('v-nueva-onboarding')">Cancelar</button>
+          <button class="btn-primary" (click)="siguienteFormPaso()">
+            {{ paisConFiscal ? 'Continuar →' : 'Revisar antes de enviar →' }}
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- ── PASO 2: Datos tributarios ────────────────────────── -->
+      <ng-container *ngIf="formStep() === 2">
+        <div class="step2-context-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM9 13h6v2H9v-2zm0-4h3v2H9V9zm0 8h6v2H9v-2z" fill="currentColor"/></svg>
+          <span>Esta información es necesaria para facturación y cumplimiento tributario en {{ paisLabel }}.</span>
         </div>
 
-        <div class="form-section">
-          <h3 class="form-section__title">Información personal</h3>
-          <div class="form-row">
-            <div class="form-field">
-              <label class="form-label">Primer nombre</label>
-              <input type="text" class="form-input" placeholder="Ej. Laura" [(ngModel)]="formNucleo.primerNombre" name="primerNombre">
-            </div>
-            <div class="form-field">
-              <label class="form-label">Segundo nombre <span class="form-label--optional">(opcional)</span></label>
-              <input type="text" class="form-input" placeholder="Ej. Isabel" [(ngModel)]="formNucleo.segundoNombre" name="segundoNombre">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label class="form-label">Primer apellido</label>
-              <input type="text" class="form-input" placeholder="Ej. Martínez" [(ngModel)]="formNucleo.primerApellido" name="primerApellido">
-            </div>
-            <div class="form-field">
-              <label class="form-label">Segundo apellido</label>
-              <input type="text" class="form-input" placeholder="Ej. Suárez" [(ngModel)]="formNucleo.segundoApellido" name="segundoApellido">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label class="form-label">Fecha de nacimiento</label>
-              <input type="date" class="form-input" [(ngModel)]="formNucleo.fechaNacimiento" name="fechaNacimiento">
-            </div>
-            <div class="form-field">
-              <label class="form-label">Nacionalidad</label>
-              <input type="text" class="form-input" placeholder="Ej. Colombiana" [(ngModel)]="formNucleo.nacionalidad" name="nacionalidad">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h3 class="form-section__title">Documento de identidad</h3>
-          <div class="form-row">
-            <div class="form-field">
-              <label class="form-label">Tipo de documento</label>
-              <select class="form-input form-select" [(ngModel)]="formNucleo.tipoDocumento" name="tipoDocumento">
-                <option value="">Seleccionar...</option>
-                <option *ngFor="let doc of tiposDocumento" [value]="doc">{{ doc }}</option>
-              </select>
-            </div>
-            <div class="form-field">
-              <label class="form-label">Número de documento</label>
-              <input type="text" class="form-input" placeholder="Ej. 1.023.456.789" [(ngModel)]="formNucleo.numeroDocumento" name="numeroDocumento">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h3 class="form-section__title">Datos de contacto</h3>
-          <div class="form-row">
-            <div class="form-field">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-input form-input--prefilled" [value]="formNucleo.email" readonly>
-              <span class="form-hint">Registrado en tu cuenta. Para cambiarlo, edita tu perfil.</span>
-            </div>
-            <div class="form-field">
-              <label class="form-label">Número de teléfono</label>
-              <input type="tel" class="form-input form-input--prefilled" [value]="formNucleo.telefono" readonly>
-              <span class="form-hint">Registrado en tu cuenta.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h3 class="form-section__title">Dirección</h3>
-          <div class="form-row">
-            <div class="form-field form-field--full">
-              <label class="form-label">Dirección</label>
-              <input type="text" class="form-input" placeholder="Calle, número, apto..." [(ngModel)]="formNucleo.direccion" name="direccion">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label class="form-label">{{ campoGeografico }}</label>
-              <input type="text" class="form-input" placeholder="Ciudad" [(ngModel)]="formNucleo.ciudad" name="ciudad">
-            </div>
-          </div>
-        </div>
-
-        <ng-container *ngIf="paisConFiscal">
+        <form class="identity-form">
           <div *ngIf="pais === 'CO'" class="form-section">
             <h3 class="form-section__title">Información tributaria — Colombia</h3>
             <div class="form-row">
@@ -471,13 +519,13 @@
               </div>
             </div>
           </div>
-        </ng-container>
-      </form>
+        </form>
 
-      <div class="form-actions">
-        <button class="btn-secondary" (click)="navTo('v-nueva-onboarding')">Cancelar</button>
-        <button class="btn-primary" (click)="continuarFormulario()">Guardar y continuar →</button>
-      </div>
+        <div class="form-actions">
+          <button class="btn-secondary" (click)="anteriorFormPaso()">← Atrás</button>
+          <button class="btn-primary" (click)="irAContinuar()">Revisar antes de enviar →</button>
+        </div>
+      </ng-container>
     </div>
 
     <!-- ─── V-VALIDADO-DATOS ──────────────────────────────────── -->
@@ -485,6 +533,7 @@
       <div class="page-header">
         <div>
           <h1 class="page-title">Datos personales</h1>
+          <p class="page-subtitle">{{ vistaSubtitle }}</p>
           <p class="page-breadcrumb">Configuraciones / Datos personales</p>
         </div>
         <div class="page-header__actions">
@@ -559,6 +608,7 @@
       <div class="page-header">
         <div>
           <h1 class="page-title">Datos personales</h1>
+          <p class="page-subtitle">{{ vistaSubtitle }}</p>
           <p class="page-breadcrumb">Configuraciones / Datos personales</p>
         </div>
         <button class="btn-primary" (click)="completarCamposNuevos()">
@@ -634,6 +684,7 @@
       <div class="page-header">
         <div>
           <h1 class="page-title">Datos personales</h1>
+          <p class="page-subtitle">{{ vistaSubtitle }}</p>
           <p class="page-breadcrumb">Configuraciones / Datos personales</p>
         </div>
       </div>
@@ -671,6 +722,7 @@
       <div class="page-header">
         <div>
           <h1 class="page-title">Datos personales</h1>
+          <p class="page-subtitle">{{ vistaSubtitle }}</p>
           <p class="page-breadcrumb">Configuraciones / Datos personales</p>
         </div>
       </div>
@@ -714,6 +766,7 @@
       <div class="page-header">
         <div>
           <h1 class="page-title">Datos personales</h1>
+          <p class="page-subtitle">{{ vistaSubtitle }}</p>
           <p class="page-breadcrumb">Configuraciones / Datos personales</p>
         </div>
       </div>
@@ -742,6 +795,7 @@
       <div class="page-header">
         <div>
           <h1 class="page-title">Datos personales</h1>
+          <p class="page-subtitle">{{ vistaSubtitle }}</p>
           <p class="page-breadcrumb">Configuraciones / Datos personales</p>
         </div>
       </div>
@@ -807,6 +861,29 @@
             <li>Iniciar nuevos intentos de verificación</li>
           </ul>
         </div>
+        <div class="next-steps-timeline">
+          <div class="timeline-item">
+            <div class="timeline-item__dot timeline-item__dot--done">✓</div>
+            <div class="timeline-item__body">
+              <h4>Motivo del bloqueo</h4>
+              <p>{{ motivoBaneo }}</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-item__dot">2</div>
+            <div class="timeline-item__body">
+              <h4>Contacta soporte</h4>
+              <p>Nuestro equipo revisará tu caso en 3–5 días hábiles.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-item__dot">3</div>
+            <div class="timeline-item__body">
+              <h4>Resolución</h4>
+              <p>Recibirás respuesta en {{ mockUser.email }}.</p>
+            </div>
+          </div>
+        </div>
         <div class="status-screen__actions">
           <button class="btn-primary">Contactar soporte</button>
           <p class="status-screen__support-note">Un agente revisará tu caso. Tiempo de respuesta: 24-48 horas hábiles.</p>
@@ -825,6 +902,29 @@
         <div class="info-box">
           <p>Si crees que es un error, contacta a nuestro equipo de soporte con tu caso.</p>
         </div>
+        <div class="next-steps-timeline">
+          <div class="timeline-item">
+            <div class="timeline-item__dot timeline-item__dot--done">✓</div>
+            <div class="timeline-item__body">
+              <h4>Motivo del bloqueo</h4>
+              <p>{{ motivoBaneo }}</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-item__dot">2</div>
+            <div class="timeline-item__body">
+              <h4>Contacta soporte</h4>
+              <p>Nuestro equipo revisará tu caso en 3–5 días hábiles.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-item__dot">3</div>
+            <div class="timeline-item__body">
+              <h4>Resolución</h4>
+              <p>Recibirás respuesta en {{ mockUser.email }}.</p>
+            </div>
+          </div>
+        </div>
         <div class="status-screen__actions">
           <button class="btn-primary">Contactar soporte</button>
         </div>
@@ -836,6 +936,7 @@
       <div class="page-header">
         <div>
           <h1 class="page-title">Datos personales</h1>
+          <p class="page-subtitle">{{ vistaSubtitle }}</p>
           <p class="page-breadcrumb">Configuraciones / Datos personales</p>
         </div>
       </div>
@@ -887,6 +988,63 @@
             </div>
             <button class="btn-secondary btn-secondary--full" (click)="ingresarNuevosDatos()">Ingresar datos nuevos</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── V-EXITOSA ───────────────────────────────────────── -->
+    <div *ngIf="isVista('v-exitosa')" class="vista vista-exitosa">
+      <div class="success-screen">
+        <div class="success-screen__icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="#4caf50"/>
+          </svg>
+        </div>
+        <h2 class="success-screen__title">¡Tu identidad fue verificada!</h2>
+        <p class="success-screen__subtitle">Validada el {{ 'hoy' }}. Ahora tienes acceso completo a todas las funciones de Dropi.</p>
+
+        <div class="unlocked-grid">
+          <div class="unlocked-card">
+            <div class="unlocked-card__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="currentColor"/></svg>
+            </div>
+            <div class="unlocked-card__body">
+              <span class="unlocked-card__title">Retiros habilitados</span>
+              <span class="unlocked-card__desc">Retira tus ganancias cuando quieras</span>
+            </div>
+          </div>
+          <div class="unlocked-card">
+            <div class="unlocked-card__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 4H4c-1.11 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" fill="currentColor"/></svg>
+            </div>
+            <div class="unlocked-card__body">
+              <span class="unlocked-card__title">Dropicard disponible</span>
+              <span class="unlocked-card__desc">Solicita tu tarjeta virtual o física</span>
+            </div>
+          </div>
+          <div class="unlocked-card">
+            <div class="unlocked-card__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19.59 7l-7.59 7.59L7.41 10 6 11.41l6 6 9-9L19.59 7zM4 6l3.59 3.59L9 8.18 5.41 4.59 4 6zm8 8l-1.41-1.41-1.42 1.42L12 16l7-7-1.41-1.41L12 14z" fill="currentColor"/></svg>
+            </div>
+            <div class="unlocked-card__body">
+              <span class="unlocked-card__title">Transferencias entre wallets</span>
+              <span class="unlocked-card__desc">Mueve fondos entre países de Dropi</span>
+            </div>
+          </div>
+          <div class="unlocked-card">
+            <div class="unlocked-card__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" fill="currentColor"/></svg>
+            </div>
+            <div class="unlocked-card__body">
+              <span class="unlocked-card__title">Facturación automática</span>
+              <span class="unlocked-card__desc">Facturas generadas según tu régimen</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="success-screen__actions">
+          <button class="btn-primary btn-primary--lg" (click)="navTo('v-validado-datos')">Ver mis datos validados</button>
+          <button class="btn-ghost" (click)="navTo('v-nueva-bloqueada')">Volver al inicio</button>
         </div>
       </div>
     </div>
@@ -960,6 +1118,10 @@
           Demo: código <strong>123456</strong>
         </div>
       </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button class="btn-primary" (click)="verificarOtp(otpDigits.join(''))">Verificar código</button>
+      </div>
     </div>
   </div>
 
@@ -1011,7 +1173,9 @@
       <div class="sumsub-header">
         <div class="sumsub-brand">
           <span class="sumsub-brand__dot"></span>
-          <span class="sumsub-brand__name">Verificación de identidad</span>
+          <span class="sumsub-brand__name">
+            {{ pais === 'CO' && tipoPersona === 'natural' ? 'Verificación con Truora' : 'Verificación con Sumsub' }}
+          </span>
         </div>
         <button class="sumsub-close" (click)="cerrarSumsub()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="white"/></svg>
@@ -1145,6 +1309,33 @@
       </div>
       <div class="modal-footer">
         <button class="btn-secondary" (click)="closeModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEMO GUIDE OVERLAY -->
+  <div *ngIf="demoGuideVisible()" class="demo-guide-overlay" (click)="toggleDemoGuide()">
+    <div class="demo-guide-panel" (click)="$event.stopPropagation()">
+      <h3>¿Qué muestra cada combinación?</h3>
+      <table class="demo-guide-table">
+        <thead>
+          <tr><th>Tipo de usuario</th><th>Estado</th><th>Vista que aparece</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Nuevo sin datos</td><td>Inicial</td><td>Módulo bloqueado → CTA Validar</td></tr>
+          <tr><td>Nuevo sin datos</td><td>Guardado sin comenzar</td><td>Form en borrador, pendiente de envío</td></tr>
+          <tr><td>Nuevo sin datos</td><td>Incompleta</td><td>Proceso a medias → CTA Reanudar</td></tr>
+          <tr><td>Nuevo sin datos</td><td>En revisión</td><td>Estado de espera post-envío</td></tr>
+          <tr><td>Antiguo completo</td><td>Aprobada</td><td>Datos readonly + lock 6 meses</td></tr>
+          <tr><td>Antiguo campos nuevos</td><td>Aprobada</td><td>Campos nuevos requeridos resaltados</td></tr>
+          <tr><td>Cualquiera</td><td>Rechazada espera</td><td>Rechazo + countdown 10 minutos</td></tr>
+          <tr><td>Cualquiera</td><td>Rechazada reintentar</td><td>Rechazo + botón reintentar activo</td></tr>
+          <tr><td>Cualquiera</td><td>Baneada</td><td>Bloqueo permanente + timeline soporte</td></tr>
+          <tr><td>Cross-country</td><td>Inicial</td><td>Selector: datos país anterior vs nuevos</td></tr>
+        </tbody>
+      </table>
+      <div class="demo-guide-close">
+        <button class="btn-primary" (click)="toggleDemoGuide()">Entendido</button>
       </div>
     </div>
   </div>
