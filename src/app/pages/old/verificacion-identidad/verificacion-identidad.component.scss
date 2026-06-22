@@ -471,12 +471,21 @@ $sumsub-brand: #00b67a;
   margin-bottom: $size-4;
   flex-wrap: wrap;
 
-  &--warning { background: $warning-50; border: 1px solid rgba(241, 180, 76, 0.3); }
-  &--info { background: $info-50; border: 1px solid rgba(80, 165, 241, 0.3); }
-  &--error { background: $error-50; border: 1px solid rgba(244, 106, 107, 0.3); }
-  &--success { background: $success-50; border: 1px solid rgba(76, 175, 80, 0.3); }
+  &--warning { background: $warning-50; border: 1px solid rgba(241, 180, 76, 0.3); .alert__icon { color: $warning; } }
+  &--info { background: $info-50; border: 1px solid rgba(80, 165, 241, 0.3); .alert__icon { color: $info; } }
+  &--error { background: $error-50; border: 1px solid rgba(244, 106, 107, 0.3); .alert__icon { color: $error; } }
+  &--success { background: $success-50; border: 1px solid rgba(76, 175, 80, 0.3); .alert__icon { color: $success; } }
+
+  &__icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+    line-height: 1.5;
+
+    .pi { font-size: 16px; }
+  }
 
   &__text {
+    text-align: left;
     flex: 1;
     font-family: $font-primary;
     font-size: $font-sm;

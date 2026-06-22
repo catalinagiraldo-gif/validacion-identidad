@@ -37,7 +37,6 @@
       <div class="hub-status-top">
         <span class="hub-tag" [ngClass]="'hub-tag--' + vista.tagSeverity">{{ vista.tagLabel }}</span>
         <div class="hub-user-chip">
-          <span class="hub-user-flag">{{ getPaisEmoji(perfil.paisOperacion) }}</span>
           <span class="hub-user-email">{{ perfil.email }}</span>
         </div>
       </div>
@@ -48,7 +47,7 @@
     <!-- Cross-country intercept -->
     <div class="hub-cross-country" *ngIf="vista.mostrarCrossCountry">
       <div class="hub-cross-country__header">
-        <span class="hub-cross-country__globe">🌎</span>
+        <span class="hub-cross-country__globe"><i class="pi pi-globe"></i></span>
         <div>
           <strong>Tienes una verificación activa en otro país</strong>
           <p>Detectamos que ya validaste tu identidad en <strong>{{ perfil.paisValidacion }}</strong>. ¿Quieres usar esa verificación para operar en {{ perfil.paisOperacion }}?</p>
@@ -231,7 +230,7 @@
           </div>
           <div class="hub-waiting__row">
             <span class="hub-waiting__label">País</span>
-            <strong>{{ getPaisEmoji(perfil.paisOperacion) }} {{ perfil.paisOperacion }}</strong>
+            <strong>{{ perfil.paisOperacion }}</strong>
           </div>
           <div class="hub-waiting__row">
             <span class="hub-waiting__label">Notificación a</span>
@@ -248,7 +247,7 @@
           </div>
           <div class="hub-approved__hero-text">
             <strong>Verificación completada</strong>
-            <span>{{ getPaisEmoji(perfil.paisOperacion) }} {{ perfil.paisOperacion }} · {{ getProveedorLabel(perfil.proveedorKYC) }}</span>
+            <span>{{ perfil.paisOperacion }} · {{ getProveedorLabel(perfil.proveedorKYC) }}</span>
           </div>
         </div>
         <div class="hub-approved__data" *ngIf="!isEmptyObject(perfil.camposPrecargados)">

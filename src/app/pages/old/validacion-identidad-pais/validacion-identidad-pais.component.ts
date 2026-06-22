@@ -23,7 +23,6 @@ interface PasoProveedor {
 interface PaisConfig {
   codigo: Pais;
   nombre: string;
-  bandera: string;
   formularioEditable: boolean;
   notaEdicion: string;
   proveedor: { natural: Proveedor; juridica: Proveedor };
@@ -70,7 +69,6 @@ const PAISES_CONFIG: Record<Pais, PaisConfig> = {
   CO: {
     codigo: 'CO',
     nombre: 'Colombia',
-    bandera: '🇨🇴',
     formularioEditable: true,
     notaEdicion: 'En Colombia, tú llenas todos los campos directamente en Dropi antes de la verificación. Truora (persona natural) o Sumsub (persona jurídica) confirman que los datos coincidan con tu documento.',
     proveedor: { natural: 'Truora', juridica: 'Sumsub' },
@@ -87,7 +85,6 @@ const PAISES_CONFIG: Record<Pais, PaisConfig> = {
   MX: {
     codigo: 'MX',
     nombre: 'México',
-    bandera: '🇲🇽',
     formularioEditable: false,
     notaEdicion: 'En México, el formulario personal está deshabilitado. Sumsub extrae los datos de tu documento mediante OCR y los pre-carga automáticamente en Dropi después de la verificación.',
     proveedor: { natural: 'Sumsub', juridica: 'Sumsub' },
@@ -106,7 +103,6 @@ const PAISES_CONFIG: Record<Pais, PaisConfig> = {
   AR: {
     codigo: 'AR',
     nombre: 'Argentina',
-    bandera: '🇦🇷',
     formularioEditable: false,
     notaEdicion: 'En Argentina, el formulario personal está deshabilitado. Sumsub extrae los datos de tu documento mediante OCR y los pre-carga automáticamente en Dropi después de la verificación.',
     proveedor: { natural: 'Sumsub', juridica: 'Sumsub' },
@@ -124,7 +120,6 @@ const PAISES_CONFIG: Record<Pais, PaisConfig> = {
   CL: {
     codigo: 'CL',
     nombre: 'Chile',
-    bandera: '🇨🇱',
     formularioEditable: false,
     notaEdicion: 'En Chile, el formulario personal está deshabilitado. Sumsub extrae los datos de tu documento mediante OCR y los pre-carga automáticamente en Dropi después de la verificación.',
     proveedor: { natural: 'Sumsub', juridica: 'Sumsub' },
@@ -138,7 +133,6 @@ const PAISES_CONFIG: Record<Pais, PaisConfig> = {
   EC: {
     codigo: 'EC',
     nombre: 'Ecuador',
-    bandera: '🇪🇨',
     formularioEditable: false,
     notaEdicion: 'En Ecuador, el formulario personal está deshabilitado. Sumsub extrae los datos de tu documento mediante OCR y los pre-carga automáticamente en Dropi después de la verificación.',
     proveedor: { natural: 'Sumsub', juridica: 'Sumsub' },
@@ -218,10 +212,6 @@ export class ValidacionIdentidadPaisComponent {
 
   getPaisNombre(codigo: Pais): string {
     return PAISES_CONFIG[codigo].nombre;
-  }
-
-  getPaisBandera(codigo: Pais): string {
-    return PAISES_CONFIG[codigo].bandera;
   }
 
   cambiarPais(pais: Pais): void {

@@ -147,11 +147,11 @@ export class VerificacionIdentidadComponent implements OnInit {
   diffMessage = '';
 
   readonly paises = [
-    { code: 'CO', name: 'Colombia', flag: '🇨🇴' },
-    { code: 'MX', name: 'México', flag: '🇲🇽' },
-    { code: 'AR', name: 'Argentina', flag: '🇦🇷' },
-    { code: 'CL', name: 'Chile', flag: '🇨🇱' },
-    { code: 'EC', name: 'Ecuador', flag: '🇪🇨' },
+    { code: 'CO', name: 'Colombia' },
+    { code: 'MX', name: 'México' },
+    { code: 'AR', name: 'Argentina' },
+    { code: 'CL', name: 'Chile' },
+    { code: 'EC', name: 'Ecuador' },
   ];
 
   readonly journeys: { id: Journey; label: string }[] = [

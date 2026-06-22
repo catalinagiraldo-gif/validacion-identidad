@@ -177,7 +177,6 @@
             <label class="field-label" [class.field-label--disabled]="datosFieldsLocked">Teléfono celular</label>
             <div class="phone-input">
               <div class="phone-prefix">
-                <span class="flag-ar">🇦🇷</span>
                 <span class="phone-code">54</span>
               </div>
               <input type="tel" class="field-input" [class.field-input--disabled]="datosFieldsLocked" [(ngModel)]="telefonoCelular" [disabled]="datosFieldsLocked" />
@@ -289,7 +288,6 @@
         <label class="field-label" [class.field-label--disabled]="facturacionFieldsLocked">Número de teléfono</label>
         <div class="phone-input">
           <div class="phone-prefix">
-            <span class="flag-ar">🇦🇷</span>
             <span class="phone-code">54</span>
           </div>
           <input type="tel" class="field-input" [class.field-input--disabled]="facturacionFieldsLocked" placeholder="Ingresa el número de teléfono" [(ngModel)]="telefonoFacturacion" [disabled]="facturacionFieldsLocked" />
@@ -394,7 +392,7 @@
               <path d="M9.33 1.33v4h4" stroke="#69738c" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span class="uploaded-file__name">{{ slot.fileName }}</span>
-            <button class="uploaded-file__remove" *ngIf="!facturacionFieldsLocked" (click)="removeFile(i)">✕</button>
+            <button class="uploaded-file__remove" *ngIf="!facturacionFieldsLocked" (click)="removeFile(i)"><i class="pi pi-times"></i></button>
           </div>
 
           <div class="upload-area upload-area--locked" *ngIf="!slot.fileName && facturacionFieldsLocked">

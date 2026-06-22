@@ -102,6 +102,8 @@
 
 .persona-icon {
   font-size: 15px;
+
+  .pi { font-size: 15px; }
 }
 
 .country-tabs {
@@ -136,11 +138,6 @@
     background: #fff8f0;
     color: $primary-600;
   }
-}
-
-.tab-flag {
-  font-size: 17px;
-  line-height: 1;
 }
 
 .tab-code {
@@ -180,6 +177,9 @@
   font-size: 15px;
   flex-shrink: 0;
   margin-top: 1px;
+  color: $info;
+
+  .pi { font-size: 15px; }
 }
 
 .provider-badge-wrap {
@@ -242,6 +242,13 @@
   font-size: 22px;
   flex-shrink: 0;
   margin-top: 2px;
+  color: $primary-500;
+
+  .pi { font-size: 22px; }
+}
+
+.provider-zone .zone-icon {
+  color: $gray-500;
 }
 
 .zone-title {
@@ -557,6 +564,8 @@
   font-weight: 600;
   color: $gray-600;
   margin-bottom: $size-1;
+
+  .pi { font-size: 12px; }
 }
 
 .provider-req {
@@ -656,6 +665,9 @@
 .resultado-icon {
   font-size: 28px;
   flex-shrink: 0;
+  color: $success;
+
+  .pi { font-size: 28px; }
 }
 
 .resultado-title {
@@ -693,6 +705,9 @@
 
 .resultado-block-icon {
   font-size: 15px;
+  color: $gray-500;
+
+  .pi { font-size: 15px; }
 }
 
 .resultado-field-list {
@@ -758,6 +773,9 @@
 .lock-icon {
   font-size: 18px;
   flex-shrink: 0;
+  color: $warning;
+
+  .pi { font-size: 18px; }
 }
 
 .lock-text {
@@ -785,6 +803,9 @@
 
 .hab-icon {
   font-size: 14px;
+  color: $success;
+
+  .pi { font-size: 14px; }
 }
 
 .resultado-actions {

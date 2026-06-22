@@ -1,0 +1,69 @@
+@if (tour.active() && tour.currentStep(); as step) {
+  <div class="itour" role="dialog" aria-modal="true" aria-labelledby="itour-title" aria-describedby="itour-body">
+    <!-- Backdrop + spotlight cutout -->
+    <svg class="itour__mask" aria-hidden="true">
+      <defs>
+        <mask id="itour-spot-mask">
+          <rect width="100%" height="100%" fill="white" />
+          @if (spotlight(); as sp) {
+            <rect
+              [attr.x]="sp.left - pad"
+              [attr.y]="sp.top - pad"
+              [attr.width]="sp.width + pad * 2"
+              [attr.height]="sp.height + pad * 2"
+              [attr.rx]="radius"
+              fill="black"
+            />
+          }
+        </mask>
+      </defs>
+      <rect width="100%" height="100%" fill="rgba(26, 22, 18, 0.62)" mask="url(#itour-spot-mask)" />
+    </svg>
+
+    <!-- Spotlight ring -->
+    @if (spotlight(); as sp) {
+      <div
+        class="itour__ring"
+        [style.top.px]="sp.top - pad"
+        [style.left.px]="sp.left - pad"
+        [style.width.px]="sp.width + pad * 2"
+        [style.height.px]="sp.height + pad * 2"
+        aria-hidden="true"
+      ></div>
+    }
+
+    <!-- Tooltip card -->
+    <div
+      #card
+      class="itour__card"
+      [class.itour__card--center]="!spotlight()"
+      [style.top.px]="tooltip()?.top"
+      [style.left.px]="tooltip()?.left"
+      [attr.data-placement]="tooltip()?.placement ?? 'center'"
+    >
+      <header class="itour__head">
+        <span class="itour__badge">Tour · {{ tour.stepIndex() + 1 }} / {{ tour.steps().length }}</span>
+        <button type="button" class="itour__skip" (click)="tour.skip()">Saltar</button>
+      </header>
+
+      <h2 id="itour-title" class="itour__title">{{ step.title }}</h2>
+      <p id="itour-body" class="itour__body">{{ step.body }}</p>
+
+      <footer class="itour__foot">
+        <div class="itour__dots" aria-hidden="true">
+          @for (s of tour.steps(); track s.id; let i = $index) {
+            <span class="itour__dot" [class.itour__dot--on]="i === tour.stepIndex()"></span>
+          }
+        </div>
+        <div class="itour__actions">
+          @if (tour.stepIndex() > 0) {
+            <button type="button" class="itour__btn itour__btn--ghost" (click)="onPrev()">Atrás</button>
+          }
+          <button type="button" class="itour__btn itour__btn--primary" (click)="onNext()">
+            {{ isLast() ? 'Finalizar' : 'Siguiente' }}
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
+}

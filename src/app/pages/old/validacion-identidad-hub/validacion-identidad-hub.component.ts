@@ -310,13 +310,6 @@ export class ValidacionIdentidadHubComponent implements OnInit {
     return 'pending';
   }
 
-  getPaisEmoji(pais: string): string {
-    const flags: Record<string, string> = {
-      CO: '🇨🇴', MX: '🇲🇽', AR: '🇦🇷', CL: '🇨🇱', EC: '🇪🇨', PE: '🇵🇪', BR: '🇧🇷',
-    };
-    return flags[pais] ?? '🌎';
-  }
-
   getProveedorLabel(proveedor: Proveedor): string {
     return proveedor === 'truora' ? 'Truora' : 'Sumsub';
   }

@@ -53,7 +53,7 @@
       <option *ngFor="let p of filteredPerfiles" [value]="p.id">{{ p.label }}</option>
     </select>
     <select class="demo-select" [ngModel]="perfil.paisOperacion" (ngModelChange)="onPaisChange($event)">
-      <option *ngFor="let p of paises" [value]="p.code">{{ p.flag }} {{ p.name }}</option>
+      <option *ngFor="let p of paises" [value]="p.code">{{ p.name }}</option>
     </select>
     <span class="demo-bar__phase">Fase: {{ phase }}</span>
     <button class="demo-btn" [class.demo-btn--active]="simulateTimeout" (click)="toggleSimulateTimeout()">
@@ -98,7 +98,7 @@
 
   <!-- Financial blocks alert -->
   <div class="alert alert--warning" *ngIf="phase === 'entry_disabled' || phase === 'readonly_blocked'">
-    <div class="alert__icon">⚠</div>
+    <div class="alert__icon"><i class="pi pi-exclamation-triangle"></i></div>
     <p class="alert__text">
       Visualiza acciones financieras bloqueadas como: Transferencia entre wallets, Procesar en Retiros,
       Dropicard (países que lo tienen habilitado).
@@ -107,7 +107,7 @@
 
   <!-- 6 months block alert (edición) -->
   <div class="alert alert--warning" *ngIf="phase === 'readonly_blocked'">
-    <div class="alert__icon">🔒</div>
+    <div class="alert__icon"><i class="pi pi-lock"></i></div>
     <p class="alert__text">
       No podrás modificar los datos validados hasta dentro de 6 meses. ¿Dudas?
       <a class="alert__link" href="javascript:void(0)" (click)="contactarSoporte()">Escríbenos a soporte.</a>
@@ -116,19 +116,19 @@
 
   <!-- Revalid / diff -->
   <div class="alert alert--info" *ngIf="phase === 'diff_result' || phase === 'revalid_pending'">
-    <div class="alert__icon">ℹ</div>
+    <div class="alert__icon"><i class="pi pi-info-circle"></i></div>
     <p class="alert__text">{{ diffMessage }}</p>
   </div>
 
   <!-- Session interrupted -->
   <div class="alert alert--warning" *ngIf="sessionInterrupted && phase === 'wizard_post_msg'">
-    <div class="alert__icon">⚠</div>
+    <div class="alert__icon"><i class="pi pi-exclamation-triangle"></i></div>
     <p class="alert__text">No terminaste tu validación. Puedes retomarla ahora, ¡es rápido y fácil!</p>
   </div>
 
   <!-- Rejected -->
   <div class="alert alert--error" *ngIf="perfil.estadoVerificacion === 'rejected' && (phase === 'wizard_post_msg' || phase === 'entry_disabled')">
-    <div class="alert__icon">✕</div>
+    <div class="alert__icon"><i class="pi pi-times-circle"></i></div>
     <p class="alert__text">
       Visualiza un mensaje indicando que no se pudo validar y que tiene {{ perfil.intentosRestantes }} reintentos adicionales.
       <span *ngIf="!canRetry"> El botón de reintentar está deshabilitado.</span>
@@ -138,7 +138,7 @@
 
   <!-- Form saved Colombia -->
   <div class="alert alert--success" *ngIf="phase === 'form_saved'">
-    <div class="alert__icon">✓</div>
+    <div class="alert__icon"><i class="pi pi-check-circle"></i></div>
     <p class="alert__text">Visualiza guardada la información</p>
   </div>
 
@@ -151,7 +151,7 @@
           [class.stepper__item--completed]="step.state === 'completed'">
           <span class="stepper__circle">
             <span *ngIf="step.state !== 'completed'">{{ i + 1 }}</span>
-            <span *ngIf="step.state === 'completed'">✓</span>
+            <span *ngIf="step.state === 'completed'"><i class="pi pi-check"></i></span>
           </span>
           <span class="stepper__label">{{ step.label }}</span>
         </div>
@@ -448,7 +448,7 @@
   <div class="mfa-modal" (click)="$event.stopPropagation()">
     <div class="mfa-modal__header">
       <h3 class="mfa-modal__title">{{ mfaModalTitle }}</h3>
-      <button class="mfa-modal__close" (click)="cerrarMfaModal()">✕</button>
+      <button class="mfa-modal__close" (click)="cerrarMfaModal()"><i class="pi pi-times"></i></button>
     </div>
     <p class="mfa-modal__desc" *ngIf="mfaPurpose === 'mfa_setup'">
       Inicia proceso de configuración MFA. Luego inicia proceso de verificación.
@@ -474,7 +474,7 @@
     </div>
     <div class="sdk-modal__header">
       <span>WebSDK — Verificación de identidad</span>
-      <button class="sdk-modal__close" (click)="simularCancelar()">✕</button>
+      <button class="sdk-modal__close" (click)="simularCancelar()"><i class="pi pi-times"></i></button>
     </div>
     <div class="sdk-modal__progress">
       <span>{{ getModalStepLabel() }}</span>

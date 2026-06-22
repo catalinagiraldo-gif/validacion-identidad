@@ -1,1343 +1,1265 @@
-<div class="flujo-page">
+<div class="fid-page">
 
-  <!-- ═══════════════════════════════════════════════════════════════
-       DEMO TOOLBAR
-  ════════════════════════════════════════════════════════════════ -->
-  <div class="demo-toolbar">
-    <div class="demo-toolbar__inner">
+  <!-- ── Demo Toolbar (top) ──────────────────────────────────── -->
+  @if (demoMode() === 'open') {
+  <div class="fid-demo-top">
+    <div class="fid-demo-top__bar">
+      <span class="fid-demo-top__title"><i class="pi pi-sliders-h"></i> Controles de demo</span>
+      <button type="button" class="fid-demo-top__toggle fid-demo-top__close" (click)="closeDemo()"
+              aria-label="Ocultar controles demo">
+        Ocultar demo
+      </button>
+    </div>
+    <div class="fid-demo-top__inner" id="fid-demo-panel">
 
-      <div class="demo-group">
+      <div class="demo-group" data-tour="selector-usuario">
         <span class="demo-group__label">Tipo de usuario</span>
         <div class="demo-chips">
           <button *ngFor="let opt of userTypeOptions"
-                  class="chip chip--neutral"
-                  [class.chip--active]="selectorUsuario() === opt.id"
+                  class="demo-chip demo-chip--neutral"
+                  [class.demo-chip--active]="selectorUsuario() === opt.id"
                   (click)="setUserType(opt.id)">
             {{ opt.label }}
           </button>
         </div>
       </div>
 
-      <div class="demo-divider"></div>
+      <div class="demo-top-divider"></div>
 
-      <div class="demo-group">
+      <div class="demo-group" data-tour="selector-estado">
         <span class="demo-group__label">Estado de validación</span>
         <div class="demo-chips">
           <button *ngFor="let opt of estadoOptions"
-                  class="chip"
-                  [class.chip--neutral]="opt.color === 'neutral'"
-                  [class.chip--success]="opt.color === 'success'"
-                  [class.chip--warning]="opt.color === 'warning'"
-                  [class.chip--error]="opt.color === 'error'"
-                  [class.chip--active]="selectorEstado() === opt.id"
+                  class="demo-chip"
+                  [class.demo-chip--neutral]="opt.color === 'neutral'"
+                  [class.demo-chip--success]="opt.color === 'success'"
+                  [class.demo-chip--warning]="opt.color === 'warning'"
+                  [class.demo-chip--error]="opt.color === 'error'"
+                  [class.demo-chip--active]="selectorEstado() === opt.id"
                   (click)="setEstado(opt.id)">
             {{ opt.label }}
           </button>
         </div>
       </div>
 
-      <div class="demo-divider"></div>
+      <div class="demo-top-divider"></div>
 
-      <div class="demo-group">
+      <div class="demo-group" data-tour="selector-pais">
         <span class="demo-group__label">País / Persona</span>
         <div class="demo-chips">
           <button *ngFor="let opt of paisOptions"
-                  class="chip chip--neutral"
-                  [class.chip--active]="selectorPais() === opt.id"
+                  class="demo-chip demo-chip--neutral"
+                  [class.demo-chip--active]="selectorPais() === opt.id"
                   (click)="setPais(opt.id)">
             {{ opt.label }}
           </button>
         </div>
       </div>
 
-      <div class="demo-divider"></div>
+      <div class="demo-top-divider"></div>
 
-      <div class="demo-group">
-        <span class="demo-group__label">Ayuda</span>
+      <div class="demo-group" data-tour="selector-origen">
+        <span class="demo-group__label">Origen del flujo</span>
         <div class="demo-chips">
-          <button class="chip chip--neutral" (click)="toggleDemoGuide()">? Guía</button>
+          <button *ngFor="let opt of origenOptions"
+                  class="demo-chip"
+                  [class.demo-chip--neutral]="opt.color === 'neutral'"
+                  [class.demo-chip--warning]="opt.color === 'warning'"
+                  [class.demo-chip--active]="selectorOrigen() === opt.id"
+                  (click)="setOrigen(opt.id)">
+            {{ opt.label }}
+          </button>
         </div>
+      </div>
+
+      <div class="demo-top-divider"></div>
+
+      <div class="demo-group demo-group--tour">
+        <span class="demo-group__label">Demo</span>
+        <button type="button" class="demo-chip demo-chip--neutral" (click)="startTour()">
+          <i class="pi pi-compass"></i> Tour guiado
+        </button>
+        <span class="demo-otp-hint"><i class="pi pi-info-circle"></i> MFA demo: 123456</span>
       </div>
 
     </div>
   </div>
+  }
 
-  <!-- ═══════════════════════════════════════════════════════════════
-       VISTAS
-  ════════════════════════════════════════════════════════════════ -->
-  <div class="vista-content">
+  <button type="button" class="fid-demo-fab" (click)="openDemo()"
+          [hidden]="demoMode() === 'open'"
+          aria-controls="fid-demo-panel"
+          [attr.aria-expanded]="demoMode() === 'open'">
+    <i class="pi pi-sliders-h"></i> Controles demo
+  </button>
 
-    <!-- ─── V-NUEVA-BLOQUEADA ──────────────────────────────────── -->
-    <div *ngIf="isVista('v-nueva-bloqueada')" class="vista vista-bloqueada">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Datos personales</h1>
-          <p class="page-subtitle">{{ vistaSubtitle }}</p>
-          <p class="page-breadcrumb">Configuraciones / Datos personales</p>
-        </div>
+  <div class="fid-content">
+
+    <!-- ── Breadcrumb ─────────────────────────────────────────── -->
+    <nav class="fid-breadcrumb" aria-label="Ruta de navegación">
+      <i class="pi pi-cog bc-icon"></i>
+      <i class="pi pi-chevron-right bc-sep"></i>
+      <span class="bc-item">Configuraciones</span>
+      <i class="pi pi-chevron-right bc-sep"></i>
+      <span class="bc-active">Validación de identidad</span>
+    </nav>
+
+    <!-- ── Page Header ────────────────────────────────────────── -->
+    <div class="fid-page-header">
+      <div class="fid-page-header__row">
+        <h1>Validación de identidad</h1>
+        @if (estadoBadge; as badge) {
+          <span class="fid-estado-badge fid-estado-badge--{{ badge.variant }}">{{ badge.label }}</span>
+        }
       </div>
-
-      <div class="identity-banner identity-banner--warning">
-        <div class="identity-banner__icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L2 19h20L12 2zm0 3.5L19.5 18h-15L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z" fill="currentColor"/>
-          </svg>
-        </div>
-        <div class="identity-banner__body">
-          <p class="identity-banner__title">Valida tu identidad para desbloquear todas las funcionalidades</p>
-          <p class="identity-banner__desc">Dropi necesita verificar tu identidad para garantizar la seguridad de tus transacciones y el cumplimiento regulatorio en {{ paisLabel }}.</p>
-        </div>
-        <button class="btn-primary" (click)="irAValidar()">Validar identidad</button>
-      </div>
-
-      <div class="blocked-sections">
-        <h2 class="section-title">Acceso bloqueado hasta validar</h2>
-        <div class="blocked-grid">
-          <div class="blocked-card">
-            <div class="blocked-card__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" fill="currentColor"/></svg>
-            </div>
-            <div class="blocked-card__body">
-              <p class="blocked-card__title">Retiros</p>
-              <p class="blocked-card__desc">No puedes procesar retiros de tus ganancias hasta completar la verificación.</p>
-            </div>
-            <span class="badge-blocked">Bloqueado</span>
-          </div>
-          <div class="blocked-card">
-            <div class="blocked-card__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" fill="currentColor"/></svg>
-            </div>
-            <div class="blocked-card__body">
-              <p class="blocked-card__title">Dropicard</p>
-              <p class="blocked-card__desc">Solicitar y usar la tarjeta Dropicard requiere identidad verificada.</p>
-            </div>
-            <span class="badge-blocked">Bloqueado</span>
-          </div>
-          <div class="blocked-card">
-            <div class="blocked-card__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="currentColor"/></svg>
-            </div>
-            <div class="blocked-card__body">
-              <p class="blocked-card__title">Transferencia entre wallets</p>
-              <p class="blocked-card__desc">Las transferencias requieren validación de identidad para prevenir fraude.</p>
-            </div>
-            <span class="badge-blocked">Bloqueado</span>
-          </div>
-          <div class="blocked-card">
-            <div class="blocked-card__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z" fill="currentColor"/></svg>
-            </div>
-            <div class="blocked-card__body">
-              <p class="blocked-card__title">Historial de cartera completo</p>
-              <p class="blocked-card__desc">Algunas funciones del historial financiero requieren identidad verificada.</p>
-            </div>
-            <span class="badge-blocked">Bloqueado</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="validate-cta-section">
-        <div class="validate-cta-card">
-          <div class="validate-cta-card__content">
-            <h3>¿Por qué necesitamos verificar tu identidad?</h3>
-            <ul class="validate-cta-card__list">
-              <li>Protege tu cuenta contra usos no autorizados</li>
-              <li>Cumple con las regulaciones financieras de {{ paisLabel }}</li>
-              <li>Habilita todas las funciones de Dropi sin restricciones</li>
-              <li>El proceso toma aproximadamente 5 minutos</li>
-            </ul>
-          </div>
-          <button class="btn-primary btn-primary--lg" (click)="irAValidar()">
-            Comenzar verificación
-          </button>
-        </div>
-      </div>
+      <p class="fid-subtitle">{{ vistaSubtitle }}</p>
+      @if (mostrarStepMobile) {
+        <p class="fid-step-mobile">{{ globalStepLabel }}</p>
+      }
     </div>
 
-    <!-- ─── V-NUEVA-ONBOARDING ────────────────────────────────── -->
-    <div *ngIf="isVista('v-nueva-onboarding')" class="vista vista-onboarding">
-      <div class="page-header">
-        <button class="btn-back" (click)="navTo('v-nueva-bloqueada')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/></svg>
-          Volver
-        </button>
-        <div>
-          <h1 class="page-title">Verificación de identidad</h1>
-          <p class="page-subtitle">{{ vistaSubtitle }}</p>
-          <p class="page-breadcrumb">Configuraciones / Datos personales / Verificación</p>
+    <!-- ── Stepper global (3 pasos, ancho completo) ───────────── -->
+    @if (mostrarStepper) {
+      <div class="fid-layout-wide">
+      <div class="fid-steps" data-tour="fid-stepper">
+        <div class="fid-step"
+             [class.fid-step--focus]="stepState(1) === 'focus'"
+             [class.fid-step--completed]="stepState(1) === 'completed'">
+          <div class="fid-step__bubble">
+            @if (stepState(1) === 'completed') { <i class="pi pi-check"></i> } @else { 1 }
+          </div>
+          <span class="fid-step__label">Tus datos</span>
+        </div>
+        <div class="fid-step__connector" [class.fid-step__connector--done]="pasoGlobal > 1"></div>
+        <div class="fid-step"
+             [class.fid-step--focus]="stepState(2) === 'focus'"
+             [class.fid-step--completed]="stepState(2) === 'completed'"
+             [class.fid-step--error]="stepState(2) === 'error'">
+          <div class="fid-step__bubble">
+            @if (stepState(2) === 'completed') { <i class="pi pi-check"></i> }
+            @else if (stepState(2) === 'error') { <i class="pi pi-times"></i> }
+            @else { 2 }
+          </div>
+          <span class="fid-step__label">Verificación</span>
+        </div>
+        <div class="fid-step__connector" [class.fid-step__connector--done]="pasoGlobal > 2"></div>
+        <div class="fid-step"
+             [class.fid-step--focus]="stepState(3) === 'focus'"
+             [class.fid-step--completed]="stepState(3) === 'completed'">
+          <div class="fid-step__bubble">
+            @if (stepState(3) === 'completed') { <i class="pi pi-check"></i> } @else { 3 }
+          </div>
+          <span class="fid-step__label">Resultado</span>
         </div>
       </div>
+      </div>
+    }
 
-      <div class="onboarding-wrapper">
-        <div class="step-indicator">
-          <div class="step-indicator__item" [class.step-indicator__item--active]="onboardingStep() >= 1" [class.step-indicator__item--done]="onboardingStep() > 1">
-            <span class="step-indicator__num">1</span>
-            <span class="step-indicator__label">Tipo de persona</span>
+    <!-- ════════════════════════════════════════════════════════
+         VISTAS
+    ════════════════════════════════════════════════════════ -->
+
+    <!-- ── V-NUEVA-BLOQUEADA ─────────────────────────────────── -->
+    @if (isVista('v-nueva-bloqueada')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+        <div class="fid-hero fid-hero--split">
+          <div class="fid-hero__glow" aria-hidden="true"></div>
+          <div class="fid-hero__main">
+            <span class="fid-hero__badge"><i class="pi pi-lock"></i> Verificación requerida</span>
+            <h2>{{ heroEncuadre.titulo }}</h2>
+            <p>{{ heroEncuadre.descripcion }}</p>
+
+            <div class="fid-benefits">
+              @for (b of heroBenefits; track b.label) {
+                <div class="benefit-card">
+                  <span class="benefit-icon"><img [src]="b.icon" alt="" width="20" height="20" /></span>
+                  <span class="benefit-label">{{ b.label }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="fid-hero__actions">
+              <button class="fid-btn fid-btn--primary fid-btn--lg" (click)="irAValidar()" data-tour="fid-cta">
+                <i class="pi pi-shield"></i> Verificar mi identidad
+              </button>
+              @if (!esBloqueoDuro) {
+                <button type="button" class="fid-btn fid-btn--ghost fid-btn--lg" (click)="masTarde()">
+                  Más tarde
+                </button>
+              }
+            </div>
           </div>
-          <div class="step-indicator__line"></div>
-          <div class="step-indicator__item" [class.step-indicator__item--active]="onboardingStep() >= 2" [class.step-indicator__item--done]="onboardingStep() > 2">
-            <span class="step-indicator__num">2</span>
-            <span class="step-indicator__label">Requisitos</span>
-          </div>
-          <div class="step-indicator__line"></div>
-          <div class="step-indicator__item" [class.step-indicator__item--active]="onboardingStep() >= 3">
-            <span class="step-indicator__num">3</span>
-            <span class="step-indicator__label">Confirmar</span>
-          </div>
+
+          <aside class="fid-hero__aside">
+            <div class="fid-hero-time">
+              <span class="fid-hero-time__value">~5</span>
+              <span class="fid-hero-time__unit">min</span>
+              <span class="fid-hero-time__label">Tiempo estimado</span>
+              <ul class="fid-hero-time__steps">
+                <li>Formulario de datos</li>
+                <li>Verificación biométrica</li>
+                <li>Confirmación</li>
+              </ul>
+            </div>
+          </aside>
         </div>
-
-        <!-- Step 1 -->
-        <div *ngIf="onboardingStep() === 1" class="onboarding-step">
-          <h2 class="onboarding-step__title">¿Cómo actúas en Dropi?</h2>
-          <p class="onboarding-step__desc">Selecciona el tipo de persona que corresponde a tu actividad comercial.</p>
-          <div class="persona-cards">
-            <div class="persona-card" [class.persona-card--selected]="onboardingTipoPersona === 'natural'" (click)="onboardingTipoPersona = 'natural'">
-              <div class="persona-card__icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/></svg>
-              </div>
-              <div class="persona-card__body">
-                <h3>Persona natural</h3>
-                <p>Actúas como individuo a título personal.</p>
-              </div>
-              <div class="persona-card__radio" [class.selected]="onboardingTipoPersona === 'natural'"></div>
-            </div>
-            <div class="persona-card" [class.persona-card--selected]="onboardingTipoPersona === 'juridica'" (click)="onboardingTipoPersona = 'juridica'">
-              <div class="persona-card__icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10z" fill="currentColor"/></svg>
-              </div>
-              <div class="persona-card__body">
-                <h3>Persona jurídica</h3>
-                <p>Operas a través de una empresa legalmente constituida.</p>
-              </div>
-              <div class="persona-card__radio" [class.selected]="onboardingTipoPersona === 'juridica'"></div>
-            </div>
-          </div>
-          <div class="onboarding-step__actions">
-            <button class="btn-primary" (click)="siguienteOnboarding()">Continuar</button>
-          </div>
-        </div>
-
-        <!-- Step 2 -->
-        <div *ngIf="onboardingStep() === 2" class="onboarding-step">
-          <h2 class="onboarding-step__title">¿Qué necesitas tener listo?</h2>
-          <p class="onboarding-step__desc">Ten estos documentos e información a la mano antes de comenzar.</p>
-
-          <div class="checklist">
-            <div class="checklist__section">
-              <h4 class="checklist__section-title">Información personal</h4>
-              <div class="checklist__item"><svg class="checklist__icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg><span>Nombres y apellidos completos</span></div>
-              <div class="checklist__item"><svg class="checklist__icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg><span>Fecha de nacimiento</span></div>
-              <div class="checklist__item"><svg class="checklist__icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg><span>Dirección de residencia en {{ paisLabel }}</span></div>
-            </div>
-            <div class="checklist__section">
-              <h4 class="checklist__section-title">Documento de identidad</h4>
-              <div class="checklist__item"><svg class="checklist__icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg>
-                <span><ng-container *ngFor="let doc of tiposDocumento; let last = last">{{ doc }}<span *ngIf="!last"> / </span></ng-container></span>
-              </div>
-              <div class="checklist__item"><svg class="checklist__icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg><span>Foto nítida frontal y trasera</span></div>
-              <div class="checklist__item"><svg class="checklist__icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg><span>Selfie para verificación biométrica</span></div>
-            </div>
-            <div *ngIf="paisConFiscal" class="checklist__section">
-              <h4 class="checklist__section-title">Información fiscal</h4>
-              <div *ngIf="pais === 'CO'" class="checklist__item"><svg class="checklist__icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg><span>Tipo de régimen tributario (Simplificado / Gran contribuyente)</span></div>
-              <div *ngIf="pais === 'MX'" class="checklist__item"><svg class="checklist__icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg><span>RFC y régimen fiscal ante el SAT</span></div>
-              <div *ngIf="pais === 'AR'" class="checklist__item"><svg class="checklist__icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg><span>CUIL/CUIT y condición frente al IVA (AFIP)</span></div>
-            </div>
-            <div *ngIf="onboardingTipoPersona === 'juridica'" class="checklist__section">
-              <h4 class="checklist__section-title">Datos de la empresa</h4>
-              <div class="checklist__item"><svg class="checklist__icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg><span>Razón social completa de la empresa</span></div>
-              <div class="checklist__item"><svg class="checklist__icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg><span>Documentación como representante legal</span></div>
-            </div>
-          </div>
-
-          <div class="info-note">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="currentColor"/></svg>
-            <span>El proceso de verificación es realizado por Sumsub<span *ngIf="pais === 'CO'"> (Truora para personas naturales en Colombia)</span>. Tus datos están protegidos bajo estrictas normas de seguridad.</span>
-          </div>
-
-          <div class="onboarding-step__actions">
-            <button class="btn-secondary" (click)="anteriorOnboarding()">Atrás</button>
-            <button class="btn-primary" (click)="siguienteOnboarding()">Todo listo, continuar</button>
-          </div>
-        </div>
-
-        <!-- Step 3 -->
-        <div *ngIf="onboardingStep() === 3" class="onboarding-step onboarding-step--confirm">
-          <div class="confirm-icon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" fill="currentColor"/></svg>
-          </div>
-          <h2 class="onboarding-step__title">¡Todo listo para comenzar!</h2>
-          <p class="onboarding-step__desc">Vas a comenzar el proceso de verificación como <strong>persona {{ onboardingTipoPersona }}</strong> en <strong>{{ paisLabel }}</strong>. Completa el formulario y luego la verificación biométrica.</p>
-          <div class="confirm-duration">
-            <div class="confirm-duration__item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" fill="currentColor"/></svg>
-              <span>~5 minutos en total</span>
-            </div>
-            <div class="confirm-duration__item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9l-3-3 1.41-1.41L12 9.17l5.59-5.58L19 5l-7 7z" fill="currentColor"/></svg>
-              <span>Formulario + verificación biométrica</span>
-            </div>
-          </div>
-          <div class="onboarding-step__actions">
-            <button class="btn-secondary" (click)="anteriorOnboarding()">Atrás</button>
-            <button class="btn-primary" (click)="comenzarValidacion()">Comenzar ahora</button>
-          </div>
         </div>
       </div>
-    </div>
+    }
 
-    <!-- ─── V-NUEVA-FORMULARIO ────────────────────────────────── -->
-    <div *ngIf="isVista('v-nueva-formulario')" class="vista vista-formulario">
-      <div class="page-header">
-        <button class="btn-back" (click)="formStep() === 2 ? anteriorFormPaso() : navTo('v-nueva-onboarding')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/></svg>
-          Volver
-        </button>
-        <div>
-          <h1 class="page-title">Datos personales</h1>
-          <p class="page-subtitle">{{ vistaSubtitle }}</p>
-          <p class="page-breadcrumb">Configuraciones / Datos personales</p>
+    <!-- ── V-NUEVA-ONBOARDING ────────────────────────────────── -->
+    @if (isVista('v-nueva-onboarding')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+
+        <!-- Paso 1: Tipo de persona -->
+        @if (onboardingStep() === 1) {
+          <div class="fid-card">
+            <p class="section-title">¿Cómo operas en Dropi?</p>
+            <div class="persona-selector">
+              <button type="button" class="persona-card"
+                      [class.selected]="onboardingTipoPersona === 'natural'"
+                      (click)="selectOnboardingPersona('natural')">
+                <span class="persona-card__icon"><i class="pi pi-user"></i></span>
+                <p class="persona-card__title">Persona natural</p>
+                <p class="persona-card__desc">Emprendes como individuo, bajo tu nombre y documento personal.</p>
+              </button>
+              <button type="button" class="persona-card"
+                      [class.selected]="onboardingTipoPersona === 'juridica'"
+                      (click)="selectOnboardingPersona('juridica')">
+                <span class="persona-card__icon"><i class="pi pi-building"></i></span>
+                <p class="persona-card__title">Persona jurídica</p>
+                <p class="persona-card__desc">Operas como empresa o sociedad con razón social registrada.</p>
+              </button>
+            </div>
+            <div class="fid-form__actions">
+              <button class="fid-btn fid-btn--secondary" (click)="navTo('v-nueva-bloqueada')">Volver al inicio</button>
+              <button class="fid-btn fid-btn--primary" (click)="siguienteOnboarding()">
+                Siguiente: checklist <i class="pi pi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- Paso 2: Checklist -->
+        @if (onboardingStep() === 2) {
+          <div class="fid-card">
+            <p class="section-title">Antes de continuar, ten a la mano:</p>
+            <div class="fid-checklist-groups">
+              <div class="checklist-group">
+                <h4 class="checklist-group__title"><i class="pi pi-id-card"></i> Documentos</h4>
+                <ul class="checklist-group__list">
+                  <li>Documento de identidad <strong>original</strong> — no fotocopias ni capturas de pantalla</li>
+                </ul>
+              </div>
+              <div class="checklist-group">
+                <h4 class="checklist-group__title"><i class="pi pi-sun"></i> Entorno</h4>
+                <ul class="checklist-group__list">
+                  <li>Dispositivo con cámara y buena iluminación</li>
+                  <li>Rostro visible, sin sombrero ni gafas de sol</li>
+                </ul>
+              </div>
+              <div class="checklist-group">
+                <h4 class="checklist-group__title"><i class="pi pi-clock"></i> Tiempo</h4>
+                <ul class="checklist-group__list">
+                  <li><strong>5 minutos</strong> sin interrupciones para la sesión biométrica</li>
+                  <li>Fotos nítidas — evita moverte al capturar</li>
+                </ul>
+              </div>
+            </div>
+            <div class="fid-alert fid-alert--warning">
+              <i class="pi pi-exclamation-triangle fa-icon"></i>
+              <span class="fa-body"><strong>Importante:</strong> una vez validados, tus datos no podrán modificarse por <strong>6 meses</strong> (información de facturación). Tus datos biométricos los procesa Sumsub (ISO 27001); Dropi no los almacena.</span>
+            </div>
+            <div class="fid-form__actions">
+              <button class="fid-btn fid-btn--secondary" (click)="anteriorOnboarding()">
+                <i class="pi pi-arrow-left"></i> Atrás
+              </button>
+              <button class="fid-btn fid-btn--primary" (click)="comenzarValidacion()">
+                Estoy listo — abrir formulario <i class="pi pi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        }
+
         </div>
       </div>
+    }
 
-      <!-- Step indicator -->
-      <div class="form-steps" *ngIf="paisConFiscal">
-        <div class="form-step" [class.form-step--active]="formStep() === 1" [class.form-step--done]="formStep() > 1">
-          <span class="form-step__num">
-            <ng-container *ngIf="formStep() > 1">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="currentColor"/></svg>
-            </ng-container>
-            <ng-container *ngIf="formStep() === 1">1</ng-container>
-          </span>
-          <span class="form-step__label">Datos personales</span>
-        </div>
-        <div class="form-step-line"></div>
-        <div class="form-step" [class.form-step--active]="formStep() === 2">
-          <span class="form-step__num">2</span>
-          <span class="form-step__label">Datos tributarios</span>
-        </div>
-      </div>
+    <!-- ── V-NUEVA-FORMULARIO ────────────────────────────────── -->
+    @if (isVista('v-nueva-formulario')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+        <form class="fid-form fid-form-card" (ngSubmit)="onFormSubmit()" data-tour="fid-form">
 
-      <!-- ── PASO 1: Datos personales ─────────────────────────── -->
-      <ng-container *ngIf="formStep() === 1">
-        <div *ngIf="selectorUsuario() === 'nuevo-sin-datos'" class="info-note info-note--prefilled">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="currentColor"/></svg>
-          <span>Tu email y teléfono ya están precargados desde tu registro. Completa el resto de la información.</span>
-        </div>
-
-        <form class="identity-form">
-          <div class="form-section">
-            <h3 class="form-section__title">Tipo de persona</h3>
-            <div class="tipo-persona-selector">
-              <label class="radio-card" [class.radio-card--selected]="formNucleo.tipoPersona === 'natural'">
-                <input type="radio" name="tipoPersona" value="natural" [(ngModel)]="formNucleo.tipoPersona">
-                <span class="radio-card__label">Persona natural</span>
-              </label>
-              <label class="radio-card" [class.radio-card--selected]="formNucleo.tipoPersona === 'juridica'">
-                <input type="radio" name="tipoPersona" value="juridica" [(ngModel)]="formNucleo.tipoPersona">
-                <span class="radio-card__label">Persona jurídica</span>
-              </label>
+          @if (paisConFiscal) {
+            <div class="fid-form-wizard">
+              <span class="fid-form-wizard__step" [class.fid-form-wizard__step--active]="formStep() === 1">1. Datos personales</span>
+              <span class="fid-form-wizard__sep"></span>
+              <span class="fid-form-wizard__step" [class.fid-form-wizard__step--active]="formStep() === 2">2. Información tributaria</span>
             </div>
-          </div>
+          }
 
-          <div *ngIf="formNucleo.tipoPersona === 'juridica'" class="form-section">
-            <h3 class="form-section__title">Datos de la empresa</h3>
-            <div class="form-row">
-              <div class="form-field form-field--full">
-                <label class="form-label">Razón social</label>
-                <input type="text" class="form-input" placeholder="Nombre legal de la empresa" [(ngModel)]="formNucleo.razonSocial" name="razonSocial">
-              </div>
-            </div>
-          </div>
+          @if (formStep() === 1) {
+          <!-- Sección 1: Información personal -->
+          <div class="fid-form__section">
+            <h3 class="section-title">Información personal</h3>
+            <div class="form-grid form-grid--2col">
 
-          <div class="form-section">
-            <h3 class="form-section__title">Información personal</h3>
-            <div class="form-row">
-              <div class="form-field">
-                <label class="form-label">Primer nombre <span class="required-mark">*</span></label>
-                <input type="text" class="form-input" placeholder="Ej. Laura" [(ngModel)]="formNucleo.primerNombre" name="primerNombre">
+              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('primerNombre')" [class.fid-field--error]="hasFieldError('primerNombre')">
+                <label class="fid-field__label" for="field-primerNombre">Primer nombre</label>
+                <input class="fid-field__input" id="field-primerNombre" type="text" placeholder="Ej: Laura…" [(ngModel)]="formNucleo.primerNombre" name="primerNombre" autocomplete="given-name"
+                       [attr.aria-invalid]="hasFieldError('primerNombre') || null"
+                       [attr.aria-describedby]="hasFieldError('primerNombre') ? fieldDescId('primerNombre') : null"
+                       (blur)="validateField('primerNombre')" />
+                @if (hasFieldError('primerNombre')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('primerNombre')">{{ getFieldError('primerNombre') }}</span> }
               </div>
-              <div class="form-field">
-                <label class="form-label">Segundo nombre <span class="form-label--optional">(opcional)</span></label>
-                <input type="text" class="form-input" placeholder="Ej. Isabel" [(ngModel)]="formNucleo.segundoNombre" name="segundoNombre">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-field">
-                <label class="form-label">Primer apellido <span class="required-mark">*</span></label>
-                <input type="text" class="form-input" placeholder="Ej. Martínez" [(ngModel)]="formNucleo.primerApellido" name="primerApellido">
-              </div>
-              <div class="form-field">
-                <label class="form-label">Segundo apellido <span class="required-mark">*</span></label>
-                <input type="text" class="form-input" placeholder="Ej. Suárez" [(ngModel)]="formNucleo.segundoApellido" name="segundoApellido">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-field">
-                <label class="form-label">Fecha de nacimiento <span class="required-mark">*</span></label>
-                <input type="date" class="form-input" [(ngModel)]="formNucleo.fechaNacimiento" name="fechaNacimiento">
-              </div>
-              <div class="form-field">
-                <label class="form-label">Nacionalidad</label>
-                <input type="text" class="form-input" placeholder="Ej. Colombiana" [(ngModel)]="formNucleo.nacionalidad" name="nacionalidad">
-              </div>
-            </div>
-          </div>
 
-          <div class="form-section">
-            <h3 class="form-section__title">Documento de identidad</h3>
-            <div class="form-row">
-              <div class="form-field">
-                <label class="form-label">Tipo de documento <span class="required-mark">*</span></label>
-                <select class="form-input form-select" [(ngModel)]="formNucleo.tipoDocumento" name="tipoDocumento">
-                  <option value="">Seleccionar...</option>
-                  <option *ngFor="let doc of tiposDocumento" [value]="doc">{{ doc }}</option>
+              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('segundoNombre')">
+                <label class="fid-field__label" for="field-segundoNombre">Segundo nombre <span class="text-muted">(opcional)</span></label>
+                <input class="fid-field__input" id="field-segundoNombre" type="text" placeholder="Ej: Isabel…" [(ngModel)]="formNucleo.segundoNombre" name="segundoNombre" />
+              </div>
+
+              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('primerApellido')" [class.fid-field--error]="hasFieldError('primerApellido')">
+                <label class="fid-field__label" for="field-primerApellido">Primer apellido</label>
+                <input class="fid-field__input" id="field-primerApellido" type="text" placeholder="Ej: Martínez…" [(ngModel)]="formNucleo.primerApellido" name="primerApellido" autocomplete="family-name"
+                       [attr.aria-invalid]="hasFieldError('primerApellido') || null"
+                       [attr.aria-describedby]="hasFieldError('primerApellido') ? fieldDescId('primerApellido') : null"
+                       (blur)="validateField('primerApellido')" />
+                @if (hasFieldError('primerApellido')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('primerApellido')">{{ getFieldError('primerApellido') }}</span> }
+              </div>
+
+              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('segundoApellido')">
+                <label class="fid-field__label" for="field-segundoApellido">Segundo apellido</label>
+                <input class="fid-field__input" id="field-segundoApellido" type="text" placeholder="Ej: Suárez…" [(ngModel)]="formNucleo.segundoApellido" name="segundoApellido" />
+              </div>
+
+              <div class="fid-field" [class.fid-field--error]="hasFieldError('fechaNacimiento')">
+                <label class="fid-field__label" for="field-fechaNacimiento">Fecha de nacimiento</label>
+                <input class="fid-field__input" id="field-fechaNacimiento" type="date" [(ngModel)]="formNucleo.fechaNacimiento" name="fechaNacimiento" autocomplete="bday"
+                       [attr.aria-invalid]="hasFieldError('fechaNacimiento') || null"
+                       [attr.aria-describedby]="hasFieldError('fechaNacimiento') ? fieldDescId('fechaNacimiento') : null"
+                       (blur)="validateField('fechaNacimiento')" />
+                @if (hasFieldError('fechaNacimiento')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('fechaNacimiento')">{{ getFieldError('fechaNacimiento') }}</span> }
+              </div>
+
+              <div class="fid-field" [class.fid-field--error]="hasFieldError('nacionalidad')">
+                <label class="fid-field__label" for="field-nacionalidad">Nacionalidad</label>
+                <input class="fid-field__input" id="field-nacionalidad" type="text" placeholder="Ej: Colombiana…" [(ngModel)]="formNucleo.nacionalidad" name="nacionalidad"
+                       [attr.aria-invalid]="hasFieldError('nacionalidad') || null"
+                       [attr.aria-describedby]="hasFieldError('nacionalidad') ? fieldDescId('nacionalidad') : null"
+                       (blur)="validateField('nacionalidad')" />
+                @if (hasFieldError('nacionalidad')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('nacionalidad')">{{ getFieldError('nacionalidad') }}</span> }
+              </div>
+
+              <div class="fid-field" [class.fid-field--error]="hasFieldError('tipoDocumento')">
+                <label class="fid-field__label" for="field-tipoDocumento">Tipo de documento</label>
+                <select class="fid-field__select" id="field-tipoDocumento" [(ngModel)]="formNucleo.tipoDocumento" name="tipoDocumento"
+                        [attr.aria-invalid]="hasFieldError('tipoDocumento') || null"
+                        [attr.aria-describedby]="hasFieldError('tipoDocumento') ? fieldDescId('tipoDocumento') : null"
+                        (blur)="validateField('tipoDocumento')">
+                  <option value="" disabled>Seleccionar…</option>
+                  <option *ngFor="let t of tiposDocumento" [value]="t">{{ t }}</option>
                 </select>
+                @if (hasFieldError('tipoDocumento')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('tipoDocumento')">{{ getFieldError('tipoDocumento') }}</span> }
               </div>
-              <div class="form-field">
-                <label class="form-label">Número de documento <span class="required-mark">*</span></label>
-                <input type="text" class="form-input" placeholder="Ej. 1.023.456.789" [(ngModel)]="formNucleo.numeroDocumento" name="numeroDocumento">
+
+              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('numeroDocumento')" [class.fid-field--error]="hasFieldError('numeroDocumento')">
+                <label class="fid-field__label" for="field-numeroDocumento">Número de documento</label>
+                <input class="fid-field__input" id="field-numeroDocumento" type="text" placeholder="Número sin puntos ni espacios…" [(ngModel)]="formNucleo.numeroDocumento" name="numeroDocumento"
+                       [attr.aria-invalid]="hasFieldError('numeroDocumento') || null"
+                       [attr.aria-describedby]="hasFieldError('numeroDocumento') ? fieldDescId('numeroDocumento') : null"
+                       (blur)="validateField('numeroDocumento')" />
+                @if (hasFieldError('numeroDocumento')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('numeroDocumento')">{{ getFieldError('numeroDocumento') }}</span> }
               </div>
+
             </div>
           </div>
 
-          <div class="form-section">
-            <h3 class="form-section__title">Datos de contacto</h3>
-            <div class="form-row">
-              <div class="form-field">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-input form-input--prefilled" [value]="formNucleo.email" readonly>
-                <span class="form-hint">Registrado en tu cuenta. Para cambiarlo, edita tu perfil.</span>
+          <!-- Sección 2: Contacto -->
+          <div class="fid-form__section">
+            <h3 class="section-title">Información de contacto</h3>
+            <div class="form-grid form-grid--2col">
+
+              <div class="fid-field">
+                <label class="fid-field__label" for="field-email">Correo de contacto</label>
+                <input class="fid-field__input" id="field-email" type="email" [value]="mockUser.email" disabled autocomplete="email" />
+                <span class="fid-field__helper">Este campo no puede modificarse aquí.</span>
               </div>
-              <div class="form-field">
-                <label class="form-label">Número de teléfono</label>
-                <input type="tel" class="form-input form-input--prefilled" [value]="formNucleo.telefono" readonly>
-                <span class="form-hint">Registrado en tu cuenta.</span>
+
+              <div class="fid-field">
+                <label class="fid-field__label" for="field-telefono">Teléfono</label>
+                <input class="fid-field__input" id="field-telefono" type="tel" [value]="mockUser.telefono" disabled autocomplete="tel" />
+                <span class="fid-field__helper">Para cambiar tu teléfono ve a Seguridad.</span>
               </div>
+
+              <div class="fid-field full-width" [class.fid-field--error]="hasFieldError('direccion')">
+                <label class="fid-field__label" for="field-direccion">Dirección</label>
+                <input class="fid-field__input" id="field-direccion" type="text" placeholder="Ej: Calle 45 # 32-10, Apto 502…" [(ngModel)]="formNucleo.direccion" name="direccion"
+                       [attr.aria-invalid]="hasFieldError('direccion') || null"
+                       [attr.aria-describedby]="hasFieldError('direccion') ? fieldDescId('direccion') : null"
+                       (blur)="validateField('direccion')" />
+                @if (hasFieldError('direccion')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('direccion')">{{ getFieldError('direccion') }}</span> }
+              </div>
+
+              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('ciudad')" [class.fid-field--error]="hasFieldError('ciudad')">
+                <label class="fid-field__label" for="field-ciudad">{{ campoGeografico }}</label>
+                <input class="fid-field__input" id="field-ciudad" type="text" [placeholder]="'Ej: ' + paisLabel + '…'" [(ngModel)]="formNucleo.ciudad" name="ciudad"
+                       [attr.aria-invalid]="hasFieldError('ciudad') || null"
+                       [attr.aria-describedby]="hasFieldError('ciudad') ? fieldDescId('ciudad') : null"
+                       (blur)="validateField('ciudad')" />
+                @if (hasFieldError('ciudad')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('ciudad')">{{ getFieldError('ciudad') }}</span> }
+              </div>
+
             </div>
           </div>
 
-          <div class="form-section">
-            <h3 class="form-section__title">Dirección</h3>
-            <div class="form-row">
-              <div class="form-field form-field--full">
-                <label class="form-label">Dirección <span class="required-mark">*</span></label>
-                <input type="text" class="form-input" placeholder="Calle, número, apto..." [(ngModel)]="formNucleo.direccion" name="direccion">
+          <!-- Sección 3: Empresa (jurídica) -->
+          @if (tipoPersona === 'juridica') {
+            <div class="fid-form__section">
+              <h3 class="section-title">Información de empresa</h3>
+              <div class="form-grid form-grid--2col">
+                <div class="fid-field full-width" [class.fid-field--error]="hasFieldError('razonSocial')">
+                  <label class="fid-field__label" for="field-razonSocial">Razón social</label>
+                  <input class="fid-field__input" id="field-razonSocial" type="text" placeholder="Nombre legal de la empresa…" [(ngModel)]="formNucleo.razonSocial" name="razonSocial" (blur)="validateField('razonSocial')" />
+                  @if (hasFieldError('razonSocial')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('razonSocial') }}</span> }
+                </div>
+              </div>
+              <button type="button" class="fid-upload fid-upload--spaced" aria-label="Subir documento legal de la empresa">
+                <i class="pi pi-cloud-upload upload-icon"></i>
+                <span class="upload-text">Documento legal de la empresa</span>
+                <span class="upload-hint">PDF, JPG o PNG — máx. 10 MB</span>
+              </button>
+            </div>
+          }
+          }
+
+          @if (formStep() === 2 && paisConFiscal) {
+            <div class="fid-form__section">
+              <h3 class="section-title">Información tributaria</h3>
+              <div class="form-grid form-grid--2col">
+
+                @if (pais === 'CO') {
+                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('co_tipoRegimen')" [class.fid-field--error]="hasFieldError('co_tipoRegimen')">
+                    <label class="fid-field__label" for="field-co_tipoRegimen">Tipo de régimen</label>
+                    <select class="fid-field__select" id="field-co_tipoRegimen" [(ngModel)]="formFiscal.co_tipoRegimen" name="co_tipoRegimen" (blur)="validateField('co_tipoRegimen')">
+                      <option value="" disabled>Seleccionar…</option>
+                      <option *ngFor="let o of opcionesFiscalesCo" [value]="o">{{ o }}</option>
+                    </select>
+                    @if (hasFieldError('co_tipoRegimen')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('co_tipoRegimen') }}</span> }
+                  </div>
+
+                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('co_tipoResponsabilidad')" [class.fid-field--error]="hasFieldError('co_tipoResponsabilidad')">
+                    <label class="fid-field__label" for="field-co_tipoResponsabilidad">Tipo de responsabilidad</label>
+                    <select class="fid-field__select" id="field-co_tipoResponsabilidad" [(ngModel)]="formFiscal.co_tipoResponsabilidad" name="co_tipoResponsabilidad" (blur)="validateField('co_tipoResponsabilidad')">
+                      <option value="" disabled>Seleccionar…</option>
+                      <option *ngFor="let o of opcionesFiscalesCo" [value]="o">{{ o }}</option>
+                    </select>
+                    @if (hasFieldError('co_tipoResponsabilidad')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('co_tipoResponsabilidad') }}</span> }
+                  </div>
+
+                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('co_impuesto')">
+                    <label class="fid-field__label" for="field-co_impuesto">Impuesto <span class="text-muted">(opcional)</span></label>
+                    <input class="fid-field__input" id="field-co_impuesto" type="text" placeholder="Ej: IVA…" [(ngModel)]="formFiscal.co_impuesto" name="co_impuesto" />
+                  </div>
+                }
+
+                @if (pais === 'MX') {
+                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('mx_codigoPostal')" [class.fid-field--error]="hasFieldError('mx_codigoPostal')">
+                    <label class="fid-field__label" for="field-mx_codigoPostal">Código postal</label>
+                    <input class="fid-field__input" id="field-mx_codigoPostal" type="text" placeholder="Ej: 03100…" [(ngModel)]="formFiscal.mx_codigoPostal" name="mx_codigoPostal" maxlength="5" (blur)="validateField('mx_codigoPostal')" />
+                    @if (hasFieldError('mx_codigoPostal')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('mx_codigoPostal') }}</span> }
+                  </div>
+
+                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('mx_regimenFiscal')" [class.fid-field--error]="hasFieldError('mx_regimenFiscal')">
+                    <label class="fid-field__label" for="field-mx_regimenFiscal">Régimen fiscal SAT</label>
+                    <select class="fid-field__select" id="field-mx_regimenFiscal" [(ngModel)]="formFiscal.mx_regimenFiscal" name="mx_regimenFiscal" (blur)="validateField('mx_regimenFiscal')">
+                      <option value="" disabled>Seleccionar…</option>
+                      <option *ngFor="let o of opcionesFiscalesMx" [value]="o">{{ o }}</option>
+                    </select>
+                    @if (hasFieldError('mx_regimenFiscal')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('mx_regimenFiscal') }}</span> }
+                  </div>
+
+                  <div class="fid-field fid-toggle-row full-width" [class.fid-field--new]="isCampoNuevo('mx_sujetoImpuestos')">
+                    <span class="fid-toggle-row__label">¿Sujeto a impuestos?</span>
+                    <input type="checkbox" [(ngModel)]="formFiscal.mx_sujetoImpuestos" name="mx_sujetoImpuestos" />
+                  </div>
+                }
+
+                @if (pais === 'AR') {
+                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('ar_condicionIVA')" [class.fid-field--error]="hasFieldError('ar_condicionIVA')">
+                    <label class="fid-field__label" for="field-ar_condicionIVA">Condición frente al IVA</label>
+                    <select class="fid-field__select" id="field-ar_condicionIVA" [(ngModel)]="formFiscal.ar_condicionIVA" name="ar_condicionIVA" (blur)="validateField('ar_condicionIVA')">
+                      <option value="" disabled>Seleccionar…</option>
+                      <option *ngFor="let o of opcionesFiscalesAr" [value]="o">{{ o }}</option>
+                    </select>
+                    @if (hasFieldError('ar_condicionIVA')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('ar_condicionIVA') }}</span> }
+                  </div>
+
+                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('ar_provincia')" [class.fid-field--error]="hasFieldError('ar_provincia')">
+                    <label class="fid-field__label" for="field-ar_provincia">Provincia</label>
+                    <input class="fid-field__input" id="field-ar_provincia" type="text" placeholder="Ej: Buenos Aires…" [(ngModel)]="formFiscal.ar_provincia" name="ar_provincia" (blur)="validateField('ar_provincia')" />
+                    @if (hasFieldError('ar_provincia')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('ar_provincia') }}</span> }
+                  </div>
+                }
+
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-field">
-                <label class="form-label">{{ campoGeografico }} <span class="required-mark">*</span></label>
-                <input type="text" class="form-input" placeholder="Ciudad" [(ngModel)]="formNucleo.ciudad" name="ciudad">
-              </div>
-            </div>
+          }
+
+          <div class="fid-form__actions">
+            @if (formStep() === 1) {
+              <button type="button" class="fid-btn fid-btn--secondary" (click)="navTo('v-nueva-bloqueada')">Salir sin guardar</button>
+              <button type="submit" class="fid-btn fid-btn--primary">
+                @if (paisConFiscal) { Continuar <i class="pi pi-arrow-right"></i> }
+                @else { Revisar antes de enviar <i class="pi pi-arrow-right"></i> }
+              </button>
+            } @else {
+              <button type="button" class="fid-btn fid-btn--secondary" (click)="anteriorFormPaso()">
+                <i class="pi pi-arrow-left"></i> Atrás
+              </button>
+              <button type="submit" class="fid-btn fid-btn--primary">
+                Revisar antes de enviar <i class="pi pi-arrow-right"></i>
+              </button>
+            }
           </div>
         </form>
+        </div>
+      </div>
+    }
 
-        <div class="form-actions">
-          <button class="btn-secondary" (click)="navTo('v-nueva-onboarding')">Cancelar</button>
-          <button class="btn-primary" (click)="siguienteFormPaso()">
-            {{ paisConFiscal ? 'Continuar →' : 'Revisar antes de enviar →' }}
+    <!-- ── V-GUARDADA-SIN-COMENZAR ──────────────────────────── -->
+    @if (isVista('v-guardada-sin-comenzar')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+        <div class="fid-card">
+          <div class="fid-alert fid-alert--info">
+            <i class="pi pi-bookmark fa-icon"></i>
+            <span class="fa-body">Guardaste tus datos pero aún no enviaste la verificación biométrica. Cuando estés listo, continúa desde aquí.</span>
+          </div>
+          <div class="fid-readonly-header">
+            <span class="section-label">Datos guardados</span>
+          </div>
+          <div class="fid-readonly-grid">
+            <div class="readonly-field">
+              <div class="rf-label">Nombre</div>
+              <div class="rf-value">{{ mockUser.primerNombre }} {{ mockUser.primerApellido }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">Documento</div>
+              <div class="rf-value">{{ mockUser.tipoDocumento }} · {{ mockUser.numeroDocumento }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">País</div>
+              <div class="rf-value">{{ paisLabel }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">Tipo de persona</div>
+              <div class="rf-value rf-value--capitalize">{{ tipoPersona }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">Correo</div>
+              <div class="rf-value">{{ mockUser.email }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">Teléfono</div>
+              <div class="rf-value">{{ mockUser.telefono }}</div>
+            </div>
+          </div>
+          <div class="fid-form__actions">
+            <button class="fid-btn fid-btn--secondary" (click)="navTo('v-nueva-formulario')">Editar datos</button>
+            <button class="fid-btn fid-btn--primary" (click)="comenzarDesdeGuardado()">
+              <i class="pi pi-camera"></i> Comenzar verificación
+            </button>
+          </div>
+        </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── V-INCOMPLETA ──────────────────────────────────────── -->
+    @if (isVista('v-incompleta')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+          <div class="fid-card">
+            <div class="fid-emotional--left">
+              <div class="fid-status__icon fid-status__icon--warning"><i class="pi pi-exclamation-triangle"></i></div>
+              <h2 class="fid-status__title">Quedó pendiente la sesión biométrica</h2>
+              <p class="fid-status__body">{{ sumsubProgresoLabel }} Tus datos del formulario están guardados; la captura requiere una sesión continua.</p>
+            </div>
+            <div class="fid-form__actions fid-form__actions--split">
+              <div class="fid-form__actions-left">
+                <button class="fid-btn fid-btn--secondary" (click)="navTo('v-nueva-formulario')">Revisar datos</button>
+                <button class="fid-btn fid-btn--ghost" (click)="empezarDeNuevo()">Reiniciar verificación biométrica</button>
+              </div>
+              <button class="fid-btn fid-btn--primary" (click)="reanudarValidacion()">
+                <i class="pi pi-play"></i> Retomar captura
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── V-EN-REVISION ─────────────────────────────────────── -->
+    @if (isVista('v-en-revision')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+          <div class="fid-card">
+            <div class="fid-emotional--left">
+              <div class="fid-status__icon fid-status__icon--warning"><i class="pi pi-clock"></i></div>
+              <h2 class="fid-status__title">Estamos revisando tu información</h2>
+              <p class="fid-status__body">
+                Este proceso suele tomar menos de <strong>24 horas hábiles</strong>.
+              </p>
+            </div>
+            <div class="fid-form__actions fid-form__actions--solo">
+              <button class="fid-btn fid-btn--secondary" (click)="verDatosEnviados()">Ver datos enviados</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── V-RECHAZADA ───────────────────────────────────────── -->
+    @if (isVista('v-rechazada')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+          <div class="fid-card">
+            <div class="fid-emotional--left">
+              <div class="fid-status__icon fid-status__icon--error"><i class="pi pi-times-circle"></i></div>
+              <h2 class="fid-status__title">No pudimos verificar tu identidad</h2>
+              <p class="fid-status__body">Revisa el motivo a continuación y vuelve a intentarlo cuando estés listo.</p>
+            </div>
+
+            <span class="fid-attempts-tag">
+              <i class="pi pi-refresh"></i> {{ intentosRestantes() }} intento(s) restante(s) de 3
+            </span>
+
+            @if (selectorEstado() === 'rechazada-espera') {
+              <div class="fid-countdown">
+                <span class="countdown-label">Podrás reintentar en</span>
+                <span class="countdown-timer">{{ countdownLabel }}</span>
+              </div>
+            }
+
+            <div class="rechazo-card">
+              <div class="rc-header"><i class="pi pi-info-circle"></i> Motivo del rechazo</div>
+              <p class="rc-text">{{ motivoRechazo }}</p>
+            </div>
+
+            <div class="fid-form__actions">
+              <button class="fid-btn fid-btn--secondary" (click)="solicitarRevision()">
+                <i class="pi pi-headphones"></i> Contactar soporte
+              </button>
+              <button class="fid-btn fid-btn--primary" [disabled]="rechazadaButtonDisabled || intentosAgotados" (click)="reintentar()">
+                <i class="pi pi-refresh"></i>
+                @if (rechazadaButtonDisabled) { Espera {{ countdownLabel }} } @else { Reintentar }
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── V-BANEADA ─────────────────────────────────────────── -->
+    @if (isVista('v-baneada')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+          <div class="fid-card">
+            <div class="fid-emotional--left">
+              <div class="fid-status__icon fid-status__icon--error"><i class="pi pi-ban"></i></div>
+              <h2 class="fid-status__title">Cuenta restringida</h2>
+              <p class="fid-status__body">{{ motivoBaneo }}</p>
+            </div>
+
+            <div class="fid-timeline">
+              <div class="timeline-step">
+                <div class="ts-dot"><i class="pi pi-file"></i></div>
+                <div class="ts-body">
+                  <p class="ts-title">Revisa la notificación</p>
+                  <p class="ts-desc">Enviamos un correo a {{ mockUser.email }} con el detalle completo.</p>
+                </div>
+              </div>
+              <div class="timeline-step">
+                <div class="ts-dot"><i class="pi pi-comments"></i></div>
+                <div class="ts-body">
+                  <p class="ts-title">Contacta soporte</p>
+                  <p class="ts-desc">Explica tu situación. Nuestro equipo revisa cada caso individualmente.</p>
+                </div>
+              </div>
+              <div class="timeline-step">
+                <div class="ts-dot"><i class="pi pi-clock"></i></div>
+                <div class="ts-body">
+                  <p class="ts-title">Tiempo de respuesta</p>
+                  <p class="ts-desc">Las apelaciones se resuelven en un plazo de 3 a 5 días hábiles.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="fid-form__actions fid-form__actions--solo">
+              <button class="fid-btn fid-btn--primary" (click)="solicitarRevision()">
+                <i class="pi pi-headphones"></i> Contactar soporte
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── V-EMAIL-BANEADO ───────────────────────────────────── -->
+    @if (isVista('v-email-baneado')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+          <div class="fid-card">
+            <div class="fid-emotional--left">
+              <div class="fid-status__icon fid-status__icon--error"><i class="pi pi-envelope"></i></div>
+              <h2 class="fid-status__title">Correo bloqueado</h2>
+              <p class="fid-status__body">{{ motivoBaneo }}</p>
+            </div>
+
+            <div class="fid-alert fid-alert--error">
+              <i class="pi pi-times-circle fa-icon"></i>
+              <span class="fa-body">Si crees que esto es un error, contacta soporte con tu número de documento y el correo afectado.</span>
+            </div>
+
+            <div class="fid-form__actions fid-form__actions--solo">
+              <button class="fid-btn fid-btn--primary" (click)="solicitarRevision()">
+                <i class="pi pi-headphones"></i> Contactar soporte
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── V-CROSS-COUNTRY ───────────────────────────────────── -->
+    @if (isVista('v-cross-country')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+        <div class="fid-card">
+          <div class="fid-alert fid-alert--info">
+            <i class="pi pi-globe fa-icon"></i>
+            <span class="fa-body">Detectamos que ya tienes actividad verificada en <strong>{{ paisAnteriorLabel }}</strong>. Puedes reutilizar esos datos o ingresar información nueva para <strong>{{ paisLabel }}</strong>.</span>
+          </div>
+
+          @if (camposNuevosLabels.length > 0) {
+            <div class="fid-cc-new-fields">
+              <p class="fid-cc-new-fields__title"><i class="pi pi-plus-circle"></i> Campos adicionales para {{ paisLabel }}</p>
+              <ul class="fid-cc-new-fields__list">
+                @for (label of camposNuevosLabels; track label) {
+                  <li>{{ label }}</li>
+                }
+              </ul>
+            </div>
+          }
+
+          <div class="fid-cc-options">
+            <div class="fid-cc-card fid-cc-card--recommended">
+              <span class="cc-icon"><i class="pi pi-bolt"></i></span>
+              <p class="cc-title">Usar datos de {{ paisAnteriorLabel }}</p>
+              <p class="cc-desc">Pre-llena el formulario con tu información ya validada. Más rápido y sin errores.</p>
+              <button class="fid-btn fid-btn--primary fid-cc-card__btn" (click)="usarMismosDatos()">Usar estos datos</button>
+            </div>
+            <div class="fid-cc-card">
+              <span class="cc-icon"><i class="pi pi-pencil"></i></span>
+              <p class="cc-title">Ingresar datos nuevos</p>
+              <p class="cc-desc">Empieza desde cero con información actualizada para {{ paisLabel }}.</p>
+              <button class="fid-btn fid-btn--secondary fid-cc-card__btn" (click)="ingresarNuevosDatos()">Ingresar nuevos</button>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── V-EXITOSA ─────────────────────────────────────────── -->
+    @if (isVista('v-exitosa')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+          <div class="fid-card">
+            <div class="fid-emotional--left">
+              <div class="fid-status__icon fid-status__icon--success"><i class="pi pi-check-circle"></i></div>
+              <h2 class="fid-status__title">¡Identidad verificada!</h2>
+              <p class="fid-status__body">
+                Tu cuenta está completamente validada, <strong>{{ nombreCompleto }}</strong>.
+              </p>
+            </div>
+
+            <div class="fid-form__actions">
+              <button class="fid-btn fid-btn--primary" (click)="volverAlOrigen()">
+                {{ origenRetornoLabel }} <i class="pi pi-arrow-right"></i>
+              </button>
+              <button class="fid-btn fid-btn--secondary" (click)="navTo('v-validado-datos')">
+                Ver mis datos
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── V-VALIDADO-DATOS ──────────────────────────────────── -->
+    @if (isVista('v-validado-datos')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+        <div class="fid-card">
+          <div class="fid-alert fid-alert--success">
+            <i class="pi pi-verified fa-icon"></i>
+            <span class="fa-body"><strong>Identidad verificada</strong> — Tus datos están protegidos.</span>
+          </div>
+
+          <div class="fid-readonly-header">
+            <span class="section-label">Datos personales</span>
+            <div class="fid-readonly-header__actions">
+              <button class="fid-btn fid-btn--secondary" (click)="verDocumento()">
+                <i class="pi pi-id-card"></i> Ver documento
+              </button>
+              <button class="fid-btn fid-btn--ghost" (click)="solicitarActualizacion()">
+                <i class="pi pi-pencil"></i> Actualizar datos
+              </button>
+            </div>
+          </div>
+
+          <div class="fid-readonly-grid">
+            <div class="readonly-field">
+              <div class="rf-label">Nombre completo</div>
+              <div class="rf-value">{{ mockUser.primerNombre }} {{ mockUser.segundoNombre }} {{ mockUser.primerApellido }} {{ mockUser.segundoApellido }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">Fecha de nacimiento</div>
+              <div class="rf-value">{{ mockUser.fechaNacimiento }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">Documento</div>
+              <div class="rf-value">{{ mockUser.tipoDocumento }} · {{ mockUser.numeroDocumento }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">Nacionalidad</div>
+              <div class="rf-value">{{ mockUser.nacionalidad }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">Correo</div>
+              <div class="rf-value">{{ mockUser.email }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">Teléfono</div>
+              <div class="rf-value">{{ mockUser.telefono }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">Dirección</div>
+              <div class="rf-value">{{ mockUser.direccion }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">{{ campoGeografico }}</div>
+              <div class="rf-value">{{ mockUser.ciudad }}</div>
+            </div>
+            @if (tipoPersona === 'juridica') {
+              <div class="readonly-field full-width">
+                <div class="rf-label">Razón social</div>
+                <div class="rf-value">{{ mockUser.razonSocial }}</div>
+              </div>
+            }
+          </div>
+
+          @if (paisConFiscal) {
+            <div class="divider"></div>
+            <span class="section-label">Información tributaria</span>
+            <div class="fid-readonly-grid">
+              @if (pais === 'CO') {
+                <div class="readonly-field">
+                  <div class="rf-label">Tipo de régimen</div>
+                  <div class="rf-value">{{ mockUser.co_tipoRegimen || '—' }}</div>
+                </div>
+                <div class="readonly-field">
+                  <div class="rf-label">Responsabilidad</div>
+                  <div class="rf-value">{{ mockUser.co_tipoResponsabilidad || '—' }}</div>
+                </div>
+              }
+              @if (pais === 'MX') {
+                <div class="readonly-field">
+                  <div class="rf-label">Régimen fiscal SAT</div>
+                  <div class="rf-value">{{ mockUser.mx_regimenFiscal || '—' }}</div>
+                </div>
+              }
+              @if (pais === 'AR') {
+                <div class="readonly-field">
+                  <div class="rf-label">Condición IVA</div>
+                  <div class="rf-value">{{ mockUser.ar_condicionIVA || '—' }}</div>
+                </div>
+                <div class="readonly-field">
+                  <div class="rf-label">Provincia</div>
+                  <div class="rf-value">{{ mockUser.ar_provincia || '—' }}</div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── V-VALIDADO-CAMPOS-NUEVOS ──────────────────────────── -->
+    @if (isVista('v-validado-campos-nuevos')) {
+      <div class="fid-vista">
+        <div class="fid-layout-wide">
+        <div class="fid-card">
+          <div class="fid-alert fid-alert--warning">
+            <i class="pi pi-exclamation-circle fa-icon"></i>
+            <span class="fa-body">
+              Hay <strong>{{ cantidadCamposNuevos }} campos obligatorios</strong> por regulación en {{ paisLabel }}.
+            </span>
+          </div>
+
+          <div class="fid-readonly-header">
+            <span class="section-label">Tus datos — campos nuevos destacados</span>
+            <button class="fid-btn fid-btn--primary" (click)="completarCamposNuevos()">
+              <i class="pi pi-pencil"></i> Completar campos nuevos
+            </button>
+          </div>
+
+          <div class="fid-readonly-grid">
+            <div class="readonly-field">
+              <div class="rf-label">Nombre completo</div>
+              <div class="rf-value">{{ mockUser.primerNombre }} {{ mockUser.primerApellido }}</div>
+            </div>
+            <div class="readonly-field">
+              <div class="rf-label">Documento</div>
+              <div class="rf-value">{{ mockUser.tipoDocumento }} · {{ mockUser.numeroDocumento }}</div>
+            </div>
+            @if (pais === 'CO') {
+              <div class="readonly-field" [class.is-new]="isCampoNuevo('co_tipoRegimen')">
+                <div class="rf-label">Tipo de régimen</div>
+                @if (mockUser.co_tipoRegimen) { <div class="rf-value">{{ mockUser.co_tipoRegimen }}</div> }
+                @else { <div class="rf-value rf-value--pending"><i class="pi pi-exclamation-triangle"></i> Pendiente</div> }
+              </div>
+              <div class="readonly-field" [class.is-new]="isCampoNuevo('co_tipoResponsabilidad')">
+                <div class="rf-label">Responsabilidad</div>
+                @if (mockUser.co_tipoResponsabilidad) { <div class="rf-value">{{ mockUser.co_tipoResponsabilidad }}</div> }
+                @else { <div class="rf-value rf-value--pending"><i class="pi pi-exclamation-triangle"></i> Pendiente</div> }
+              </div>
+              <div class="readonly-field" [class.is-new]="isCampoNuevo('co_impuesto')">
+                <div class="rf-label">Impuesto</div>
+                @if (mockUser.co_impuesto) { <div class="rf-value">{{ mockUser.co_impuesto }}</div> }
+                @else { <div class="rf-value rf-value--pending"><i class="pi pi-exclamation-triangle"></i> Pendiente</div> }
+              </div>
+            }
+            @if (pais === 'MX') {
+              <div class="readonly-field" [class.is-new]="isCampoNuevo('mx_codigoPostal')">
+                <div class="rf-label">Código postal</div>
+                @if (mockUser.mx_codigoPostal) { <div class="rf-value">{{ mockUser.mx_codigoPostal }}</div> }
+                @else { <div class="rf-value rf-value--pending"><i class="pi pi-exclamation-triangle"></i> Pendiente</div> }
+              </div>
+              <div class="readonly-field" [class.is-new]="isCampoNuevo('mx_regimenFiscal')">
+                <div class="rf-label">Régimen fiscal</div>
+                @if (mockUser.mx_regimenFiscal) { <div class="rf-value">{{ mockUser.mx_regimenFiscal }}</div> }
+                @else { <div class="rf-value rf-value--pending"><i class="pi pi-exclamation-triangle"></i> Pendiente</div> }
+              </div>
+            }
+            @if (pais === 'AR') {
+              <div class="readonly-field" [class.is-new]="isCampoNuevo('ar_condicionIVA')">
+                <div class="rf-label">Condición IVA</div>
+                @if (mockUser.ar_condicionIVA) { <div class="rf-value">{{ mockUser.ar_condicionIVA }}</div> }
+                @else { <div class="rf-value rf-value--pending"><i class="pi pi-exclamation-triangle"></i> Pendiente</div> }
+              </div>
+              <div class="readonly-field" [class.is-new]="isCampoNuevo('ar_provincia')">
+                <div class="rf-label">Provincia</div>
+                @if (mockUser.ar_provincia) { <div class="rf-value">{{ mockUser.ar_provincia }}</div> }
+                @else { <div class="rf-value rf-value--pending"><i class="pi pi-exclamation-triangle"></i> Pendiente</div> }
+              </div>
+            }
+          </div>
+        </div>
+        </div>
+      </div>
+    }
+
+  </div><!-- /fid-content -->
+</div><!-- /fid-page -->
+
+
+<!-- ════════════════════════════════════════════════════════════
+     MODALES
+════════════════════════════════════════════════════════════ -->
+
+<!-- ── M-SELECCIONAR-CAMPOS ─────────────────────────────────── -->
+@if (isModal('m-seleccionar-campos')) {
+  <div class="fid-modal-overlay" role="presentation" (click)="onOverlayClick()">
+    <div class="fid-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-seleccionar-campos" (click)="$event.stopPropagation()">
+      <div class="fid-modal__header">
+        <h3 id="modal-title-seleccionar-campos">¿Qué datos quieres actualizar?</h3>
+        <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
+      </div>
+      <div class="fid-modal__body">
+        <p class="fid-field__helper">Selecciona los grupos de datos que deseas modificar. Los campos sensibles requerirán reverificación biométrica.</p>
+        <div class="grupos-list" role="group" aria-label="Grupos de datos a actualizar">
+          <button type="button"
+                  *ngFor="let g of gruposActualizacion"
+                  class="grupo-item"
+                  [class.selected]="isGrupoSelected(g.id)"
+                  [attr.aria-pressed]="isGrupoSelected(g.id)"
+                  (click)="toggleGrupo(g.id)">
+            <span class="gi-checkbox" aria-hidden="true"><i class="pi pi-check"></i></span>
+            <span class="gi-body">
+              <span class="gi-label">{{ g.label }}</span>
+              <span class="gi-desc">{{ g.desc }}</span>
+              @if (g.requiresRevalidation) {
+                <span class="gi-tag"><i class="pi pi-lock"></i> Requiere reverificación</span>
+              }
+            </span>
           </button>
         </div>
-      </ng-container>
-
-      <!-- ── PASO 2: Datos tributarios ────────────────────────── -->
-      <ng-container *ngIf="formStep() === 2">
-        <div class="step2-context-note">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM9 13h6v2H9v-2zm0-4h3v2H9V9zm0 8h6v2H9v-2z" fill="currentColor"/></svg>
-          <span>Esta información es necesaria para facturación y cumplimiento tributario en {{ paisLabel }}.</span>
-        </div>
-
-        <form class="identity-form">
-          <div *ngIf="pais === 'CO'" class="form-section">
-            <h3 class="form-section__title">Información tributaria — Colombia</h3>
-            <div class="form-row">
-              <div class="form-field">
-                <label class="form-label">Tipo de régimen</label>
-                <select class="form-input form-select" [(ngModel)]="formFiscal.co_tipoRegimen" name="co_tipoRegimen">
-                  <option value="">Seleccionar...</option>
-                  <option *ngFor="let op of opcionesFiscalesCo" [value]="op">{{ op }}</option>
-                </select>
-              </div>
-              <div class="form-field">
-                <label class="form-label">Responsabilidad tributaria</label>
-                <select class="form-input form-select" [(ngModel)]="formFiscal.co_tipoResponsabilidad" name="co_tipoResponsabilidad">
-                  <option value="">Seleccionar...</option>
-                  <option value="No responsable de IVA">No responsable de IVA</option>
-                  <option value="Agente retenedor IVA">Agente retenedor IVA</option>
-                  <option value="Autorretenedor">Autorretenedor</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-field">
-                <label class="form-label">Impuesto <span class="form-label--optional">(opcional)</span></label>
-                <input type="text" class="form-input" placeholder="Ej. IVA" [(ngModel)]="formFiscal.co_impuesto" name="co_impuesto">
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="pais === 'MX'" class="form-section">
-            <h3 class="form-section__title">Información fiscal — México</h3>
-            <div class="form-row">
-              <div class="form-field">
-                <label class="form-label">Código postal fiscal</label>
-                <input type="text" class="form-input" placeholder="Ej. 03100" [(ngModel)]="formFiscal.mx_codigoPostal" name="mx_codigoPostal">
-              </div>
-              <div class="form-field">
-                <label class="form-label">Régimen fiscal (SAT)</label>
-                <select class="form-input form-select" [(ngModel)]="formFiscal.mx_regimenFiscal" name="mx_regimenFiscal">
-                  <option value="">Seleccionar...</option>
-                  <option *ngFor="let op of opcionesFiscalesMx" [value]="op">{{ op }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-field form-field--full">
-                <label class="checkbox-label">
-                  <input type="checkbox" [(ngModel)]="formFiscal.mx_sujetoImpuestos" name="mx_sujetoImpuestos">
-                  <span>Sujeto a impuestos en México</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="pais === 'AR'" class="form-section">
-            <h3 class="form-section__title">Información fiscal — Argentina</h3>
-            <div class="form-row">
-              <div class="form-field">
-                <label class="form-label">Condición IVA (AFIP)</label>
-                <select class="form-input form-select" [(ngModel)]="formFiscal.ar_condicionIVA" name="ar_condicionIVA">
-                  <option value="">Seleccionar...</option>
-                  <option *ngFor="let op of opcionesFiscalesAr" [value]="op">{{ op }}</option>
-                </select>
-              </div>
-              <div class="form-field">
-                <label class="form-label">Provincia</label>
-                <input type="text" class="form-input" placeholder="Ej. Buenos Aires" [(ngModel)]="formFiscal.ar_provincia" name="ar_provincia">
-              </div>
-            </div>
-          </div>
-        </form>
-
-        <div class="form-actions">
-          <button class="btn-secondary" (click)="anteriorFormPaso()">← Atrás</button>
-          <button class="btn-primary" (click)="irAContinuar()">Revisar antes de enviar →</button>
-        </div>
-      </ng-container>
-    </div>
-
-    <!-- ─── V-VALIDADO-DATOS ──────────────────────────────────── -->
-    <div *ngIf="isVista('v-validado-datos')" class="vista vista-validado">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Datos personales</h1>
-          <p class="page-subtitle">{{ vistaSubtitle }}</p>
-          <p class="page-breadcrumb">Configuraciones / Datos personales</p>
-        </div>
-        <div class="page-header__actions">
-          <button class="btn-ghost" (click)="verDocumento()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" fill="currentColor"/></svg>
-            Ver documento
-          </button>
-          <button class="btn-secondary" (click)="solicitarActualizacion()">Solicitar actualización</button>
-        </div>
       </div>
-
-      <div class="identity-banner identity-banner--success">
-        <div class="identity-banner__icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" fill="currentColor"/></svg>
-        </div>
-        <div class="identity-banner__body">
-          <p class="identity-banner__title">Identidad verificada</p>
-          <p class="identity-banner__desc">Tus datos fueron validados el 15 de enero de 2026. Podrás solicitar modificaciones a partir del 15 de julio de 2026 (6 meses de bloqueo).</p>
-        </div>
-        <span class="badge-status badge-status--success">Verificada</span>
-      </div>
-
-      <div class="readonly-form">
-        <div *ngIf="tipoPersona === 'juridica'" class="form-section">
-          <h3 class="form-section__title">Datos de la empresa</h3>
-          <div class="readonly-grid">
-            <div class="readonly-field"><span class="readonly-field__label">Razón social</span><span class="readonly-field__value">{{ mockUser.razonSocial }}</span></div>
-          </div>
-        </div>
-        <div class="form-section">
-          <h3 class="form-section__title">Información personal</h3>
-          <div class="readonly-grid">
-            <div class="readonly-field"><span class="readonly-field__label">Tipo de persona</span><span class="readonly-field__value" style="text-transform:capitalize">{{ tipoPersona }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Nombres</span><span class="readonly-field__value">{{ mockUser.primerNombre }} {{ mockUser.segundoNombre }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Apellidos</span><span class="readonly-field__value">{{ mockUser.primerApellido }} {{ mockUser.segundoApellido }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Fecha de nacimiento</span><span class="readonly-field__value">{{ mockUser.fechaNacimiento }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Nacionalidad</span><span class="readonly-field__value">{{ mockUser.nacionalidad }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Tipo documento</span><span class="readonly-field__value">{{ mockUser.tipoDocumento }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Número documento</span><span class="readonly-field__value">{{ mockUser.numeroDocumento }}</span></div>
-          </div>
-        </div>
-        <div class="form-section">
-          <h3 class="form-section__title">Contacto y dirección</h3>
-          <div class="readonly-grid">
-            <div class="readonly-field"><span class="readonly-field__label">Email</span><span class="readonly-field__value">{{ mockUser.email }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Teléfono</span><span class="readonly-field__value">{{ mockUser.telefono }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Dirección</span><span class="readonly-field__value">{{ mockUser.direccion }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">{{ campoGeografico }}</span><span class="readonly-field__value">{{ mockUser.ciudad }}</span></div>
-          </div>
-        </div>
-        <div *ngIf="paisConFiscal" class="form-section">
-          <h3 class="form-section__title">Información tributaria</h3>
-          <div *ngIf="pais === 'CO'" class="readonly-grid">
-            <div class="readonly-field"><span class="readonly-field__label">Tipo de régimen</span><span class="readonly-field__value">{{ mockUser.co_tipoRegimen }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Responsabilidad tributaria</span><span class="readonly-field__value">{{ mockUser.co_tipoResponsabilidad }}</span></div>
-            <div *ngIf="mockUser.co_impuesto" class="readonly-field"><span class="readonly-field__label">Impuesto</span><span class="readonly-field__value">{{ mockUser.co_impuesto }}</span></div>
-          </div>
-          <div *ngIf="pais === 'MX'" class="readonly-grid">
-            <div class="readonly-field"><span class="readonly-field__label">Código postal fiscal</span><span class="readonly-field__value">{{ mockUser.mx_codigoPostal }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Régimen fiscal</span><span class="readonly-field__value">{{ mockUser.mx_regimenFiscal }}</span></div>
-          </div>
-          <div *ngIf="pais === 'AR'" class="readonly-grid">
-            <div class="readonly-field"><span class="readonly-field__label">Condición IVA</span><span class="readonly-field__value">{{ mockUser.ar_condicionIVA }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Provincia</span><span class="readonly-field__value">{{ mockUser.ar_provincia }}</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── V-VALIDADO-CAMPOS-NUEVOS ─────────────────────────── -->
-    <div *ngIf="isVista('v-validado-campos-nuevos')" class="vista vista-validado">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Datos personales</h1>
-          <p class="page-subtitle">{{ vistaSubtitle }}</p>
-          <p class="page-breadcrumb">Configuraciones / Datos personales</p>
-        </div>
-        <button class="btn-primary" (click)="completarCamposNuevos()">
-          Completar {{ cantidadCamposNuevos }} campo{{ cantidadCamposNuevos > 1 ? 's' : '' }} nuevo{{ cantidadCamposNuevos > 1 ? 's' : '' }}
-        </button>
-      </div>
-
-      <div class="identity-banner identity-banner--new-fields">
-        <div class="identity-banner__icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/></svg>
-        </div>
-        <div class="identity-banner__body">
-          <p class="identity-banner__title">Actualizamos nuestros formularios</p>
-          <p class="identity-banner__desc">Necesitamos que completes <strong>{{ cantidadCamposNuevos }} campo{{ cantidadCamposNuevos > 1 ? 's' : '' }} adicional{{ cantidadCamposNuevos > 1 ? 'es' : '' }}</strong> para mantener tu información actualizada. Los nuevos campos no requieren revalidación biométrica.</p>
-        </div>
-      </div>
-
-      <div class="readonly-form">
-        <div class="form-section">
-          <h3 class="form-section__title">Información personal</h3>
-          <div class="readonly-grid">
-            <div class="readonly-field"><span class="readonly-field__label">Nombres</span><span class="readonly-field__value">{{ mockUser.primerNombre }} {{ mockUser.primerApellido }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Documento</span><span class="readonly-field__value">{{ mockUser.tipoDocumento }} · {{ mockUser.numeroDocumento }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Email</span><span class="readonly-field__value">{{ mockUser.email }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Teléfono</span><span class="readonly-field__value">{{ mockUser.telefono }}</span></div>
-          </div>
-        </div>
-        <div *ngIf="paisConFiscal" class="form-section">
-          <h3 class="form-section__title">Información tributaria <span class="badge-new">{{ cantidadCamposNuevos }} nuevo{{ cantidadCamposNuevos > 1 ? 's' : '' }}</span></h3>
-          <div *ngIf="pais === 'CO'" class="readonly-grid">
-            <div class="readonly-field"><span class="readonly-field__label">Tipo de régimen</span><span class="readonly-field__value">{{ mockUser.co_tipoRegimen }}</span></div>
-            <div class="readonly-field" [class.readonly-field--new]="isCampoNuevo('co_tipoResponsabilidad')">
-              <span class="readonly-field__label">Responsabilidad tributaria <span *ngIf="isCampoNuevo('co_tipoResponsabilidad')" class="badge-new-inline">Nuevo</span></span>
-              <span *ngIf="isCampoNuevo('co_tipoResponsabilidad')" class="readonly-field__value readonly-field__value--empty">Pendiente de completar</span>
-              <span *ngIf="!isCampoNuevo('co_tipoResponsabilidad')" class="readonly-field__value">{{ mockUser.co_tipoResponsabilidad }}</span>
-            </div>
-            <div class="readonly-field" [class.readonly-field--new]="isCampoNuevo('co_impuesto')">
-              <span class="readonly-field__label">Impuesto <span *ngIf="isCampoNuevo('co_impuesto')" class="badge-new-inline">Nuevo</span></span>
-              <span *ngIf="isCampoNuevo('co_impuesto')" class="readonly-field__value readonly-field__value--empty">Pendiente de completar</span>
-              <span *ngIf="!isCampoNuevo('co_impuesto') && mockUser.co_impuesto" class="readonly-field__value">{{ mockUser.co_impuesto }}</span>
-            </div>
-          </div>
-          <div *ngIf="pais === 'MX'" class="readonly-grid">
-            <div class="readonly-field" [class.readonly-field--new]="isCampoNuevo('mx_codigoPostal')">
-              <span class="readonly-field__label">Código postal fiscal <span *ngIf="isCampoNuevo('mx_codigoPostal')" class="badge-new-inline">Nuevo</span></span>
-              <span *ngIf="isCampoNuevo('mx_codigoPostal')" class="readonly-field__value readonly-field__value--empty">Pendiente de completar</span>
-              <span *ngIf="!isCampoNuevo('mx_codigoPostal')" class="readonly-field__value">{{ mockUser.mx_codigoPostal }}</span>
-            </div>
-            <div class="readonly-field" [class.readonly-field--new]="isCampoNuevo('mx_regimenFiscal')">
-              <span class="readonly-field__label">Régimen fiscal <span *ngIf="isCampoNuevo('mx_regimenFiscal')" class="badge-new-inline">Nuevo</span></span>
-              <span *ngIf="isCampoNuevo('mx_regimenFiscal')" class="readonly-field__value readonly-field__value--empty">Pendiente de completar</span>
-              <span *ngIf="!isCampoNuevo('mx_regimenFiscal')" class="readonly-field__value">{{ mockUser.mx_regimenFiscal }}</span>
-            </div>
-          </div>
-          <div *ngIf="pais === 'AR'" class="readonly-grid">
-            <div class="readonly-field" [class.readonly-field--new]="isCampoNuevo('ar_condicionIVA')">
-              <span class="readonly-field__label">Condición IVA <span *ngIf="isCampoNuevo('ar_condicionIVA')" class="badge-new-inline">Nuevo</span></span>
-              <span *ngIf="isCampoNuevo('ar_condicionIVA')" class="readonly-field__value readonly-field__value--empty">Pendiente de completar</span>
-              <span *ngIf="!isCampoNuevo('ar_condicionIVA')" class="readonly-field__value">{{ mockUser.ar_condicionIVA }}</span>
-            </div>
-            <div class="readonly-field" [class.readonly-field--new]="isCampoNuevo('ar_provincia')">
-              <span class="readonly-field__label">Provincia <span *ngIf="isCampoNuevo('ar_provincia')" class="badge-new-inline">Nuevo</span></span>
-              <span *ngIf="isCampoNuevo('ar_provincia')" class="readonly-field__value readonly-field__value--empty">Pendiente de completar</span>
-              <span *ngIf="!isCampoNuevo('ar_provincia')" class="readonly-field__value">{{ mockUser.ar_provincia }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── V-GUARDADA-SIN-COMENZAR ──────────────────────────── -->
-    <div *ngIf="isVista('v-guardada-sin-comenzar')" class="vista vista-guardada">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Datos personales</h1>
-          <p class="page-subtitle">{{ vistaSubtitle }}</p>
-          <p class="page-breadcrumb">Configuraciones / Datos personales</p>
-        </div>
-      </div>
-
-      <div class="identity-banner identity-banner--primary">
-        <div class="identity-banner__icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4.25L19 8.7V11c0 3.92-2.63 7.57-7 8.87C7.63 18.57 5 14.92 5 11V8.7l7-3.45z" fill="currentColor"/></svg>
-        </div>
-        <div class="identity-banner__body">
-          <p class="identity-banner__title">Tu verificación de identidad está pendiente</p>
-          <p class="identity-banner__desc">Tus datos personales ya están guardados. Comienza la verificación biométrica ahora y desbloquea todas las funcionalidades de Dropi.</p>
-        </div>
-        <button class="btn-primary" (click)="comenzarDesdeGuardado()">Comenzar verificación</button>
-      </div>
-
-      <div class="readonly-form">
-        <div class="form-section">
-          <h3 class="form-section__title">Información personal guardada</h3>
-          <div class="readonly-grid">
-            <div class="readonly-field"><span class="readonly-field__label">Tipo de persona</span><span class="readonly-field__value" style="text-transform:capitalize">{{ tipoPersona }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Nombres</span><span class="readonly-field__value">{{ mockUser.primerNombre }} {{ mockUser.segundoNombre }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Apellidos</span><span class="readonly-field__value">{{ mockUser.primerApellido }} {{ mockUser.segundoApellido }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Fecha de nacimiento</span><span class="readonly-field__value">{{ mockUser.fechaNacimiento }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Documento</span><span class="readonly-field__value">{{ mockUser.tipoDocumento }} · {{ mockUser.numeroDocumento }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Teléfono</span><span class="readonly-field__value">{{ mockUser.telefono }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Email</span><span class="readonly-field__value">{{ mockUser.email }}</span></div>
-            <div class="readonly-field"><span class="readonly-field__label">Dirección</span><span class="readonly-field__value">{{ mockUser.direccion }}, {{ mockUser.ciudad }}</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── V-INCOMPLETA ─────────────────────────────────────── -->
-    <div *ngIf="isVista('v-incompleta')" class="vista vista-incompleta">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Datos personales</h1>
-          <p class="page-subtitle">{{ vistaSubtitle }}</p>
-          <p class="page-breadcrumb">Configuraciones / Datos personales</p>
-        </div>
-      </div>
-
-      <div class="identity-banner identity-banner--warning">
-        <div class="identity-banner__icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" fill="currentColor"/></svg>
-        </div>
-        <div class="identity-banner__body">
-          <p class="identity-banner__title">Dejaste tu verificación incompleta</p>
-          <p class="identity-banner__desc">No terminaste el proceso biométrico. Puedes retomarlo ahora sin perder los datos que ya ingresaste.</p>
-        </div>
-        <button class="btn-primary" (click)="reanudarValidacion()">Reanudar verificación</button>
-      </div>
-
-      <div class="progress-card">
-        <div class="progress-card__header">
-          <span class="progress-card__title">Progreso de verificación</span>
-          <span class="progress-card__pct">50%</span>
-        </div>
-        <div class="progress-bar"><div class="progress-bar__fill" style="width:50%"></div></div>
-        <div class="progress-card__steps">
-          <div class="progress-step progress-step--done">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg>
-            <span>Formulario de datos personales</span>
-          </div>
-          <div class="progress-step progress-step--current">
-            <div class="progress-step__dot"></div>
-            <span>Verificación biométrica (pendiente)</span>
-          </div>
-          <div class="progress-step progress-step--pending">
-            <div class="progress-step__dot progress-step__dot--empty"></div>
-            <span>Revisión y aprobación</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── V-EN-REVISION ─────────────────────────────────────── -->
-    <div *ngIf="isVista('v-en-revision')" class="vista vista-revision">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Datos personales</h1>
-          <p class="page-subtitle">{{ vistaSubtitle }}</p>
-          <p class="page-breadcrumb">Configuraciones / Datos personales</p>
-        </div>
-      </div>
-      <div class="status-screen">
-        <div class="status-screen__icon status-screen__icon--pending">
-          <div class="spinner"></div>
-          <svg class="status-screen__icon-inner" width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" fill="currentColor"/></svg>
-        </div>
-        <h2 class="status-screen__title">Tu verificación está en revisión</h2>
-        <p class="status-screen__desc">Estamos procesando tu información. Este proceso puede tomar entre <strong>5 y 30 minutos</strong>.</p>
-        <div class="status-screen__info">
-          <div class="status-info-item">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/></svg>
-            <span>Te notificaremos a <strong>{{ mockUser.email }}</strong> cuando termine</span>
-          </div>
-          <div class="status-info-item">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" fill="currentColor"/></svg>
-            <span>No necesitas hacer nada más. Puedes cerrar esta página</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── V-RECHAZADA ───────────────────────────────────────── -->
-    <div *ngIf="isVista('v-rechazada')" class="vista vista-rechazada">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Datos personales</h1>
-          <p class="page-subtitle">{{ vistaSubtitle }}</p>
-          <p class="page-breadcrumb">Configuraciones / Datos personales</p>
-        </div>
-      </div>
-      <div class="status-screen">
-        <div class="status-screen__icon status-screen__icon--error">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/></svg>
-        </div>
-        <h2 class="status-screen__title">Verificación no exitosa</h2>
-
-        <div class="rejection-reason">
-          <h4>Motivo del rechazo</h4>
-          <p>{{ motivoRechazo }}</p>
-        </div>
-
-        <div class="attempts-indicator">
-          <span class="attempts-indicator__label">Intentos restantes:</span>
-          <div class="attempts-dots">
-            <div *ngFor="let dot of [1,2,3]" class="attempt-dot" [class.attempt-dot--used]="dot > intentosRestantes()"></div>
-          </div>
-          <span class="attempts-indicator__count">{{ intentosRestantes() }} de 3</span>
-        </div>
-
-        <div *ngIf="selectorEstado() === 'rechazada-espera'" class="countdown-card">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" fill="currentColor"/></svg>
-          <div>
-            <p class="countdown-card__label">Podrás reintentar en</p>
-            <p class="countdown-card__timer">{{ countdownLabel }}</p>
-          </div>
-        </div>
-
-        <div class="rejection-tips">
-          <h4>Consejos para el siguiente intento</h4>
-          <ul>
-            <li>Asegúrate de que el documento esté vigente y en buen estado</li>
-            <li>Fotografía en lugar bien iluminado, sin reflejos ni sombras</li>
-            <li>Para la selfie, mira directamente a la cámara</li>
-          </ul>
-        </div>
-
-        <div class="status-screen__actions">
-          <button class="btn-primary" [disabled]="rechazadaButtonDisabled" (click)="reintentar()">
-            {{ rechazadaButtonDisabled ? 'Reintentar (espera ' + countdownLabel + ')' : 'Reintentar verificación' }}
-          </button>
-          <button class="btn-ghost" (click)="solicitarRevision()">Solicitar revisión manual</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── V-BANEADA ─────────────────────────────────────────── -->
-    <div *ngIf="isVista('v-baneada')" class="vista vista-baneada">
-      <div class="status-screen status-screen--full-block">
-        <div class="status-screen__icon status-screen__icon--ban">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" fill="currentColor"/></svg>
-        </div>
-        <h2 class="status-screen__title">Cuenta restringida</h2>
-        <p class="status-screen__desc">Has alcanzado el límite de 3 intentos fallidos de verificación de identidad. Por seguridad, tu cuenta ha sido temporalmente restringida en {{ paisLabel }}.</p>
-        <div class="blocked-list">
-          <h4>Acciones no disponibles:</h4>
-          <ul>
-            <li>Procesar retiros de ganancias</li>
-            <li>Usar Dropicard</li>
-            <li>Transferencias entre wallets</li>
-            <li>Iniciar nuevos intentos de verificación</li>
-          </ul>
-        </div>
-        <div class="next-steps-timeline">
-          <div class="timeline-item">
-            <div class="timeline-item__dot timeline-item__dot--done">✓</div>
-            <div class="timeline-item__body">
-              <h4>Motivo del bloqueo</h4>
-              <p>{{ motivoBaneo }}</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-item__dot">2</div>
-            <div class="timeline-item__body">
-              <h4>Contacta soporte</h4>
-              <p>Nuestro equipo revisará tu caso en 3–5 días hábiles.</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-item__dot">3</div>
-            <div class="timeline-item__body">
-              <h4>Resolución</h4>
-              <p>Recibirás respuesta en {{ mockUser.email }}.</p>
-            </div>
-          </div>
-        </div>
-        <div class="status-screen__actions">
-          <button class="btn-primary">Contactar soporte</button>
-          <p class="status-screen__support-note">Un agente revisará tu caso. Tiempo de respuesta: 24-48 horas hábiles.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── V-EMAIL-BANEADO ───────────────────────────────────── -->
-    <div *ngIf="isVista('v-email-baneado')" class="vista vista-baneada">
-      <div class="status-screen status-screen--full-block">
-        <div class="status-screen__icon status-screen__icon--ban">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M20 4H4c-1.11 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/></svg>
-        </div>
-        <h2 class="status-screen__title">No puedes ingresar a Dropi {{ paisLabel }}</h2>
-        <p class="status-screen__desc">El correo <strong>{{ mockUser.email }}</strong> fue baneado en Dropi {{ paisAnteriorLabel }} por incumplimiento de términos. Esto impide registrarte en otros países de Dropi.</p>
-        <div class="info-box">
-          <p>Si crees que es un error, contacta a nuestro equipo de soporte con tu caso.</p>
-        </div>
-        <div class="next-steps-timeline">
-          <div class="timeline-item">
-            <div class="timeline-item__dot timeline-item__dot--done">✓</div>
-            <div class="timeline-item__body">
-              <h4>Motivo del bloqueo</h4>
-              <p>{{ motivoBaneo }}</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-item__dot">2</div>
-            <div class="timeline-item__body">
-              <h4>Contacta soporte</h4>
-              <p>Nuestro equipo revisará tu caso en 3–5 días hábiles.</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-item__dot">3</div>
-            <div class="timeline-item__body">
-              <h4>Resolución</h4>
-              <p>Recibirás respuesta en {{ mockUser.email }}.</p>
-            </div>
-          </div>
-        </div>
-        <div class="status-screen__actions">
-          <button class="btn-primary">Contactar soporte</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── V-CROSS-COUNTRY ───────────────────────────────────── -->
-    <div *ngIf="isVista('v-cross-country')" class="vista vista-cross">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Datos personales</h1>
-          <p class="page-subtitle">{{ vistaSubtitle }}</p>
-          <p class="page-breadcrumb">Configuraciones / Datos personales</p>
-        </div>
-      </div>
-      <div class="cross-screen">
-        <div class="cross-screen__header">
-          <div class="cross-screen__icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/></svg>
-          </div>
-          <div>
-            <h2 class="cross-screen__title">Ya tienes verificación activa en {{ paisAnteriorLabel }}</h2>
-            <p class="cross-screen__desc">Dropi detectó que ya tienes una identidad verificada en Dropi {{ paisAnteriorLabel }}. Elige cómo quieres proceder para {{ paisLabel }}.</p>
-          </div>
-        </div>
-        <div class="cross-options">
-          <div class="cross-option">
-            <div class="cross-option__header">
-              <div class="cross-option__icon cross-option__icon--reuse">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" fill="currentColor"/></svg>
-              </div>
-              <div>
-                <h3>Usar los mismos datos</h3>
-                <p>Tus datos de {{ paisAnteriorLabel }} serán reutilizados para {{ paisLabel }}</p>
-              </div>
-            </div>
-            <div class="cross-option__preview">
-              <div class="cross-option__field"><span>{{ mockUser.primerNombre }} {{ mockUser.primerApellido }}</span></div>
-              <div class="cross-option__field"><span>{{ mockUser.tipoDocumento }} · {{ mockUser.numeroDocumento }}</span></div>
-              <div class="cross-option__field"><span>{{ mockUser.email }}</span></div>
-            </div>
-            <div class="cross-option__warning">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 19h20L12 2zm0 3.5L19.5 18h-15L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z" fill="currentColor"/></svg>
-              <span>Operarás con la misma información con la que facturas en {{ paisAnteriorLabel }}</span>
-            </div>
-            <button class="btn-primary btn-primary--full" (click)="usarMismosDatos()">Usar datos de {{ paisAnteriorLabel }}</button>
-          </div>
-
-          <div class="cross-option">
-            <div class="cross-option__header">
-              <div class="cross-option__icon cross-option__icon--new">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg>
-              </div>
-              <div>
-                <h3>Ingresar nuevos datos</h3>
-                <p>Completa un formulario desde cero con información específica para {{ paisLabel }}</p>
-              </div>
-            </div>
-            <div class="cross-option__note">
-              <p>Ideal si tienes información fiscal diferente para {{ paisLabel }}. El proceso tomará ~5 minutos y requerirá verificación biométrica.</p>
-            </div>
-            <button class="btn-secondary btn-secondary--full" (click)="ingresarNuevosDatos()">Ingresar datos nuevos</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── V-EXITOSA ───────────────────────────────────────── -->
-    <div *ngIf="isVista('v-exitosa')" class="vista vista-exitosa">
-      <div class="success-screen">
-        <div class="success-screen__icon">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
-            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="#4caf50"/>
-          </svg>
-        </div>
-        <h2 class="success-screen__title">¡Tu identidad fue verificada!</h2>
-        <p class="success-screen__subtitle">Validada el {{ 'hoy' }}. Ahora tienes acceso completo a todas las funciones de Dropi.</p>
-
-        <div class="unlocked-grid">
-          <div class="unlocked-card">
-            <div class="unlocked-card__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="currentColor"/></svg>
-            </div>
-            <div class="unlocked-card__body">
-              <span class="unlocked-card__title">Retiros habilitados</span>
-              <span class="unlocked-card__desc">Retira tus ganancias cuando quieras</span>
-            </div>
-          </div>
-          <div class="unlocked-card">
-            <div class="unlocked-card__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 4H4c-1.11 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" fill="currentColor"/></svg>
-            </div>
-            <div class="unlocked-card__body">
-              <span class="unlocked-card__title">Dropicard disponible</span>
-              <span class="unlocked-card__desc">Solicita tu tarjeta virtual o física</span>
-            </div>
-          </div>
-          <div class="unlocked-card">
-            <div class="unlocked-card__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19.59 7l-7.59 7.59L7.41 10 6 11.41l6 6 9-9L19.59 7zM4 6l3.59 3.59L9 8.18 5.41 4.59 4 6zm8 8l-1.41-1.41-1.42 1.42L12 16l7-7-1.41-1.41L12 14z" fill="currentColor"/></svg>
-            </div>
-            <div class="unlocked-card__body">
-              <span class="unlocked-card__title">Transferencias entre wallets</span>
-              <span class="unlocked-card__desc">Mueve fondos entre países de Dropi</span>
-            </div>
-          </div>
-          <div class="unlocked-card">
-            <div class="unlocked-card__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" fill="currentColor"/></svg>
-            </div>
-            <div class="unlocked-card__body">
-              <span class="unlocked-card__title">Facturación automática</span>
-              <span class="unlocked-card__desc">Facturas generadas según tu régimen</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="success-screen__actions">
-          <button class="btn-primary btn-primary--lg" (click)="navTo('v-validado-datos')">Ver mis datos validados</button>
-          <button class="btn-ghost" (click)="navTo('v-nueva-bloqueada')">Volver al inicio</button>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /vista-content -->
-
-  <!-- ═══════════════════════════════════════════════════════════════
-       MODALES
-  ════════════════════════════════════════════════════════════════ -->
-
-  <!-- M-SELECCIONAR-CAMPOS -->
-  <div *ngIf="isModal('m-seleccionar-campos')" class="modal-overlay" (click)="closeModal()">
-    <div class="modal modal--md" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3 class="modal-title">¿Qué datos deseas actualizar?</h3>
-        <button class="modal-close" (click)="closeModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg></button>
-      </div>
-      <div class="modal-body">
-        <p class="modal-subtitle">Selecciona los grupos de datos que necesitas modificar.</p>
-        <div class="grupos-list">
-          <label *ngFor="let grupo of gruposActualizacion" class="grupo-item" [class.grupo-item--selected]="isGrupoSelected(grupo.id)">
-            <input type="checkbox" [checked]="isGrupoSelected(grupo.id)" (change)="toggleGrupo(grupo.id)">
-            <div class="grupo-item__body">
-              <div class="grupo-item__header">
-                <span class="grupo-item__label">{{ grupo.label }}</span>
-                <span *ngIf="grupo.requiresRevalidation" class="badge-revalidate">Requiere re-validación</span>
-              </div>
-              <span class="grupo-item__desc">{{ grupo.desc }}</span>
-            </div>
-          </label>
-        </div>
-        <div *ngIf="requiresRevalidation" class="modal-warning">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 19h20L12 2zm0 3.5L19.5 18h-15L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z" fill="currentColor"/></svg>
-          <span>Los grupos seleccionados incluyen datos de identidad. Deberás repetir la verificación biométrica.</span>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
-        <button class="btn-primary" [disabled]="gruposSeleccionados().length === 0" (click)="continuarConGrupos()">
-          Continuar ({{ gruposSeleccionados().length }} seleccionado{{ gruposSeleccionados().length !== 1 ? 's' : '' }})
+      <div class="fid-modal__footer">
+        <button class="fid-btn fid-btn--secondary" (click)="closeModal()">Cerrar</button>
+        <button class="fid-btn fid-btn--primary"
+                [disabled]="gruposSeleccionados().length === 0"
+                (click)="continuarConGrupos()">
+          Continuar <i class="pi pi-arrow-right"></i>
         </button>
       </div>
     </div>
   </div>
+}
 
-  <!-- M-MFA -->
-  <div *ngIf="isModal('m-mfa')" class="modal-overlay" (click)="closeModal()">
-    <div class="modal modal--sm" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3 class="modal-title">Verificación de seguridad</h3>
-        <button class="modal-close" (click)="closeModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg></button>
+<!-- ── M-MFA ──────────────────────────────────────────────────── -->
+@if (isModal('m-mfa')) {
+  <div class="fid-modal-overlay" role="presentation">
+    <div class="fid-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-mfa" (click)="$event.stopPropagation()">
+      <div class="fid-modal__header">
+        <h3 id="modal-title-mfa">Confirma con SMS</h3>
+        <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
       </div>
-      <div class="modal-body modal-body--center">
-        <div class="mfa-phone-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5S10.67 19 11.5 19s1.5.67 1.5 1.5S12.33 22 11.5 22zm4.5-4H7V4h9v14z" fill="currentColor"/></svg>
-        </div>
-        <p class="mfa-title">Ingresa el código de verificación</p>
-        <p class="mfa-desc">Enviamos un SMS a <strong>{{ mockUser.telefono }}</strong></p>
+      <div class="fid-modal__body fid-mfa-body">
+        <div class="fid-mfa-icon"><i class="pi pi-mobile"></i></div>
+        <p class="fid-mfa-title">Ingresa el código de 6 dígitos</p>
+        <p class="fid-mfa-subtitle">Enviamos un SMS al <strong>{{ telefonoEnmascarado }}</strong></p>
+        <p class="fid-mfa-hint">El código vence en 10 min</p>
+
         <div class="otp-row">
-          <input *ngFor="let digit of otpDigits; let i = index"
-                 [id]="'otp-' + i"
-                 type="text" inputmode="numeric"
+          <input *ngFor="let d of otpDigits; let i = index"
                  class="otp-input"
-                 [value]="digit"
+                 [class.has-value]="otpDigits[i] !== ''"
+                 [id]="'otp-' + i"
+                 type="text"
+                 inputmode="numeric"
                  maxlength="1"
-                 (input)="onOtpInput(i, $event)">
+                 [value]="otpDigits[i]"
+                 (input)="onOtpInput(i, $event)"
+                 [attr.aria-label]="'Dígito ' + (i + 1) + ' de 6'" />
         </div>
-        <p *ngIf="otpError()" class="otp-error">{{ otpError() }}</p>
-        <div class="mfa-demo-hint">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="currentColor"/></svg>
-          Demo: código <strong>123456</strong>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
-        <button class="btn-primary" (click)="verificarOtp(otpDigits.join(''))">Verificar código</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- M-CONFIRMACION-PRE-SUMSUB -->
-  <div *ngIf="isModal('m-confirmacion-pre-sumsub')" class="modal-overlay" (click)="closeModal()">
-    <div class="modal modal--md" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3 class="modal-title">Confirmar datos antes de la verificación</h3>
-        <button class="modal-close" (click)="closeModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg></button>
+        @if (otpError()) {
+          <p class="otp-error">{{ otpError() }}</p>
+        }
       </div>
-      <div class="modal-body">
-        <div class="confirm-warning">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 19h20L12 2zm0 3.5L19.5 18h-15L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z" fill="currentColor"/></svg>
-          <span>Verifica que los datos estén correctos. Una vez iniciada la verificación biométrica, estos datos no podrán modificarse sin un nuevo proceso.</span>
-        </div>
-        <div class="confirm-data">
-          <div class="confirm-data__section">
-            <h4>Datos personales</h4>
-            <div class="confirm-row"><span>Nombre</span><strong>{{ formNucleo.primerNombre }} {{ formNucleo.primerApellido }}</strong></div>
-            <div class="confirm-row"><span>Tipo de persona</span><strong style="text-transform:capitalize">{{ formNucleo.tipoPersona }}</strong></div>
-            <div class="confirm-row"><span>Documento</span><strong>{{ formNucleo.tipoDocumento }} · {{ formNucleo.numeroDocumento }}</strong></div>
-            <div class="confirm-row"><span>Email</span><strong>{{ formNucleo.email }}</strong></div>
-          </div>
-          <div *ngIf="paisConFiscal" class="confirm-data__section">
-            <h4>Información fiscal</h4>
-            <div *ngIf="pais === 'CO'">
-              <div class="confirm-row"><span>Régimen</span><strong>{{ formFiscal.co_tipoRegimen || '—' }}</strong></div>
-            </div>
-            <div *ngIf="pais === 'MX'">
-              <div class="confirm-row"><span>CP Fiscal</span><strong>{{ formFiscal.mx_codigoPostal || '—' }}</strong></div>
-              <div class="confirm-row"><span>Régimen SAT</span><strong>{{ formFiscal.mx_regimenFiscal || '—' }}</strong></div>
-            </div>
-            <div *ngIf="pais === 'AR'">
-              <div class="confirm-row"><span>Condición IVA</span><strong>{{ formFiscal.ar_condicionIVA || '—' }}</strong></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" (click)="closeModal()">Editar datos</button>
-        <button class="btn-primary" (click)="confirmarYValidar()">Confirmar e iniciar verificación</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- M-SUMSUB -->
-  <div *ngIf="isModal('m-sumsub')" class="modal-overlay modal-overlay--dark">
-    <div class="modal-sumsub">
-      <div class="sumsub-header">
-        <div class="sumsub-brand">
-          <span class="sumsub-brand__dot"></span>
-          <span class="sumsub-brand__name">
-            {{ pais === 'CO' && tipoPersona === 'natural' ? 'Verificación con Truora' : 'Verificación con Sumsub' }}
-          </span>
-        </div>
-        <button class="sumsub-close" (click)="cerrarSumsub()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="white"/></svg>
+      <div class="fid-modal__footer fid-modal__footer--center">
+        <button class="fid-btn fid-btn--ghost" (click)="closeModal()">Cerrar sin verificar</button>
+        <button type="button" class="fid-btn fid-btn--secondary" (click)="reenviarCodigo()">
+          <i class="pi pi-refresh"></i> Reenviar código
         </button>
       </div>
-      <div class="sumsub-steps">
-        <div *ngFor="let step of sumsubSteps; let i = index"
-             class="sumsub-step"
-             [class.sumsub-step--done]="i < sumsubStep()"
-             [class.sumsub-step--active]="i === sumsubStep()">
-          <div class="sumsub-step__num">
-            <svg *ngIf="i < sumsubStep()" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg>
-            <span *ngIf="i >= sumsubStep()">{{ i + 1 }}</span>
+    </div>
+  </div>
+}
+
+<!-- ── M-CONFIRMACION-PRE-SUMSUB ─────────────────────────────── -->
+@if (isModal('m-confirmacion-pre-sumsub')) {
+  <div class="fid-modal-overlay" role="presentation" (click)="onOverlayClick()">
+    <div class="fid-modal fid-modal--wide" role="dialog" aria-modal="true" aria-labelledby="modal-title-pre-sumsub" (click)="$event.stopPropagation()">
+      <div class="fid-modal__header">
+        <h3 id="modal-title-pre-sumsub">Revisar antes de enviar</h3>
+        <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
+      </div>
+      <div class="fid-modal__body">
+        <div class="fid-alert fid-alert--warning fid-alert--flush">
+          <i class="pi pi-exclamation-triangle fa-icon"></i>
+          <span class="fa-body">Revisa que todo sea correcto antes de iniciar la sesión biométrica.</span>
+        </div>
+
+        <div class="confirm-section">
+          <h4>Información personal</h4>
+          <div class="confirm-grid">
+            <div class="cf-pair"><div class="cf-label">Nombre completo</div><div class="cf-value">{{ formNucleo.primerNombre }} {{ formNucleo.primerApellido }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Documento</div><div class="cf-value">{{ formNucleo.tipoDocumento }} · {{ formNucleo.numeroDocumento }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Fecha de nacimiento</div><div class="cf-value">{{ formNucleo.fechaNacimiento }}</div></div>
+            <div class="cf-pair"><div class="cf-label">País</div><div class="cf-value">{{ paisLabel }}</div></div>
           </div>
-          <span class="sumsub-step__label">{{ step }}</span>
+        </div>
+
+        <div class="confirm-section">
+          <h4>Contacto</h4>
+          <div class="confirm-grid">
+            <div class="cf-pair"><div class="cf-label">Correo</div><div class="cf-value">{{ mockUser.email }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Teléfono</div><div class="cf-value">{{ mockUser.telefono }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Dirección</div><div class="cf-value">{{ formNucleo.direccion }}</div></div>
+            <div class="cf-pair"><div class="cf-label">{{ campoGeografico }}</div><div class="cf-value">{{ formNucleo.ciudad }}</div></div>
+          </div>
         </div>
       </div>
-      <div class="sumsub-content">
-        <div *ngIf="sumsubLoading()" class="sumsub-loading">
-          <div class="sumsub-spinner"></div>
-          <p>Procesando...</p>
-        </div>
-        <ng-container *ngIf="!sumsubLoading()">
-          <div *ngIf="sumsubStep() === 0" class="sumsub-step-content">
-            <div class="sumsub-icon">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="rgba(255,255,255,0.2)"/><rect x="4" y="9" width="6" height="6" rx="3" fill="rgba(255,255,255,0.4)"/><rect x="12" y="9" width="6" height="2" fill="rgba(255,255,255,0.3)"/><rect x="12" y="13" width="4" height="2" fill="rgba(255,255,255,0.2)"/></svg>
-            </div>
-            <h3>Selecciona tu documento</h3>
-            <p>Elige el tipo de documento que vas a presentar</p>
-            <div class="sumsub-doc-options">
-              <button class="sumsub-doc-btn" *ngFor="let doc of tiposDocumento">{{ doc }}</button>
-            </div>
-          </div>
-          <div *ngIf="sumsubStep() === 1" class="sumsub-step-content">
-            <div class="sumsub-camera-frame">
-              <div class="camera-placeholder">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" fill="rgba(255,255,255,0.5)"/></svg>
-                <p>Captura la parte frontal de tu documento</p>
-                <p class="camera-hint">Bien iluminado, sin reflejos</p>
-              </div>
-            </div>
-          </div>
-          <div *ngIf="sumsubStep() === 2" class="sumsub-step-content">
-            <div class="sumsub-camera-frame">
-              <div class="camera-placeholder">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" fill="rgba(255,255,255,0.5)"/></svg>
-                <p>Captura la parte trasera de tu documento</p>
-              </div>
-            </div>
-          </div>
-          <div *ngIf="sumsubStep() === 3" class="sumsub-step-content">
-            <div class="sumsub-camera-frame sumsub-camera-frame--selfie">
-              <div class="camera-placeholder">
-                <div class="face-outline"></div>
-                <p>Selfie de verificación</p>
-                <p class="camera-hint">Mira directamente a la cámara</p>
-              </div>
-            </div>
-          </div>
-          <button class="sumsub-cta" (click)="avanzarSumsub()">
-            {{ sumsubStep() < sumsubSteps.length - 1 ? 'Capturar y continuar' : 'Finalizar verificación' }}
-          </button>
-        </ng-container>
+      <div class="fid-modal__footer">
+        <button class="fid-btn fid-btn--secondary" (click)="closeModal()">
+          <i class="pi pi-arrow-left"></i> Editar datos
+        </button>
+        <button class="fid-btn fid-btn--primary" (click)="confirmarYValidar()">
+          <i class="pi pi-shield"></i> Confirmar e iniciar validación
+        </button>
       </div>
     </div>
   </div>
+}
 
-  <!-- M-APELACION -->
-  <div *ngIf="isModal('m-apelacion')" class="modal-overlay" (click)="closeModal()">
-    <div class="modal modal--md" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3 class="modal-title">Solicitar revisión manual</h3>
-        <button class="modal-close" (click)="closeModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg></button>
+<!-- ── M-SUMSUB ───────────────────────────────────────────────── -->
+@if (isModal('m-sumsub')) {
+  <div class="fid-modal-overlay" role="presentation">
+    <div class="fid-modal fid-modal--fullscreen" role="dialog" aria-modal="true" aria-labelledby="modal-title-sumsub" (click)="$event.stopPropagation()">
+      <div class="fid-modal__header">
+        <h3 id="modal-title-sumsub">Captura de documento y selfie</h3>
+        <button class="modal-close" (click)="cerrarSumsub()" aria-label="Cerrar sesión biométrica"><i class="pi pi-times"></i></button>
       </div>
-      <div class="modal-body">
-        <p class="modal-subtitle">Explica el motivo por el cual crees que tu verificación fue rechazada incorrectamente.</p>
-        <div class="apelacion-rechazo">
-          <h5>Motivo del rechazo automático:</h5>
-          <p>{{ motivoRechazo }}</p>
-        </div>
-        <div class="form-field form-field--full">
-          <label class="form-label">Explicación</label>
-          <textarea class="form-input form-textarea" rows="5" placeholder="Explica qué crees que salió mal o por qué tus documentos son válidos..." [(ngModel)]="apelacionTexto" name="apelacion"></textarea>
-          <span class="form-hint">Mínimo 30 caracteres ({{ apelacionTexto.length }}/30)</span>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
-        <button class="btn-primary" [disabled]="apelacionTexto.length < 30" (click)="enviarApelacion()">Enviar solicitud</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- M-DOCUMENTO -->
-  <div *ngIf="isModal('m-documento')" class="modal-overlay" (click)="closeModal()">
-    <div class="modal modal--md" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3 class="modal-title">Documento de identidad validado</h3>
-        <button class="modal-close" (click)="closeModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg></button>
-      </div>
-      <div class="modal-body">
-        <div class="documento-viewer">
-          <div class="documento-card">
-            <div class="documento-card__header">
-              <span>{{ tipoPersona === 'juridica' ? 'Representante legal' : 'Titular' }}</span>
-              <span class="badge-status badge-status--success">Verificado</span>
-            </div>
-            <div class="documento-card__body">
-              <div class="documento-field"><span>Nombre</span><strong>{{ nombreCompleto }}</strong></div>
-              <div class="documento-field"><span>Documento</span><strong>{{ mockUser.tipoDocumento }}</strong></div>
-              <div class="documento-field"><span>Número</span><strong>{{ mockUser.numeroDocumento }}</strong></div>
-              <div class="documento-field"><span>País emisor</span><strong>{{ paisLabel }}</strong></div>
-              <div class="documento-field"><span>Verificado el</span><strong>15 de enero de 2026</strong></div>
-            </div>
-          </div>
-          <div class="documento-images">
-            <div class="documento-image-side">
-              <div class="doc-img-placeholder">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="rgba(0,0,0,0.06)"/><rect x="5" y="9" width="6" height="6" rx="3" fill="rgba(0,0,0,0.1)"/><rect x="13" y="9" width="5" height="1.5" fill="rgba(0,0,0,0.08)"/><rect x="13" y="12" width="3" height="1.5" fill="rgba(0,0,0,0.06)"/></svg>
+      <div class="fid-sumsub-header">
+        <div class="fid-steps fid-steps--compact">
+          @for (s of sumsubSteps; track s; let i = $index) {
+            <div class="fid-step"
+                 [class.fid-step--focus]="sumsubStep() === i"
+                 [class.fid-step--completed]="sumsubStep() > i">
+              <div class="fid-step__bubble">
+                @if (sumsubStep() > i) { <i class="pi pi-check"></i> } @else { {{ i + 1 }} }
               </div>
-              <p>Frontal</p>
+              <span class="fid-step__label">{{ s }}</span>
             </div>
-            <div class="documento-image-side">
-              <div class="doc-img-placeholder">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="rgba(0,0,0,0.06)"/><rect x="4" y="13" width="16" height="1.5" fill="rgba(0,0,0,0.08)"/><rect x="4" y="16" width="10" height="1.5" fill="rgba(0,0,0,0.06)"/></svg>
-              </div>
-              <p>Trasera</p>
-            </div>
-          </div>
+            @if (i < sumsubSteps.length - 1) {
+              <div class="fid-step__connector" [class.fid-step__connector--done]="sumsubStep() > i"></div>
+            }
+          }
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" (click)="closeModal()">Cerrar</button>
+
+      <div class="fid-modal__body">
+        @if (sumsubLoading()) {
+          <div class="sumsub-loading">
+            <div class="spinner"></div>
+            <span>Procesando…</span>
+          </div>
+        } @else {
+          <div class="sumsub-body">
+            @switch (sumsubStep()) {
+              @case (0) {
+                <span class="sumsub-icon"><i class="pi pi-id-card"></i></span>
+                <p class="sumsub-title">Selecciona tu documento</p>
+                <p class="sumsub-desc">Vamos a verificar tu {{ formNucleo.tipoDocumento || 'documento de identidad' }}. Asegúrate de tenerlo disponible.</p>
+              }
+              @case (1) {
+                <span class="sumsub-icon"><i class="pi pi-camera"></i></span>
+                <p class="sumsub-title">Captura la parte frontal</p>
+                <p class="sumsub-desc">Coloca el documento sobre una superficie plana, bien iluminado y sin reflejos. El texto debe ser legible.</p>
+              }
+              @case (2) {
+                <span class="sumsub-icon"><i class="pi pi-refresh"></i></span>
+                <p class="sumsub-title">Captura la parte trasera</p>
+                <p class="sumsub-desc">Gira tu documento y repite el proceso. Algunos documentos no tienen reverso — puedes omitir este paso.</p>
+              }
+              @case (3) {
+                <span class="sumsub-icon"><i class="pi pi-user"></i></span>
+                <p class="sumsub-title">Selfie de verificación</p>
+                <p class="sumsub-desc">Mira directamente a la cámara, rostro descubierto, en un lugar bien iluminado. No uses gafas de sol ni mascarilla.</p>
+              }
+            }
+          </div>
+        }
+      </div>
+
+      <div class="fid-modal__footer">
+        <button class="fid-btn fid-btn--ghost" (click)="cerrarSumsub()">Salir de la sesión biométrica</button>
+        <button class="fid-btn fid-btn--primary" [disabled]="sumsubLoading()" (click)="avanzarSumsub()">
+          @if (sumsubStep() === sumsubSteps.length - 1) { <i class="pi pi-check"></i> Finalizar verificación }
+          @else { Siguiente <i class="pi pi-arrow-right"></i> }
+        </button>
       </div>
     </div>
   </div>
+}
 
-  <!-- DEMO GUIDE OVERLAY -->
-  <div *ngIf="demoGuideVisible()" class="demo-guide-overlay" (click)="toggleDemoGuide()">
-    <div class="demo-guide-panel" (click)="$event.stopPropagation()">
-      <h3>¿Qué muestra cada combinación?</h3>
-      <table class="demo-guide-table">
-        <thead>
-          <tr><th>Tipo de usuario</th><th>Estado</th><th>Vista que aparece</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Nuevo sin datos</td><td>Inicial</td><td>Módulo bloqueado → CTA Validar</td></tr>
-          <tr><td>Nuevo sin datos</td><td>Guardado sin comenzar</td><td>Form en borrador, pendiente de envío</td></tr>
-          <tr><td>Nuevo sin datos</td><td>Incompleta</td><td>Proceso a medias → CTA Reanudar</td></tr>
-          <tr><td>Nuevo sin datos</td><td>En revisión</td><td>Estado de espera post-envío</td></tr>
-          <tr><td>Antiguo completo</td><td>Aprobada</td><td>Datos readonly + lock 6 meses</td></tr>
-          <tr><td>Antiguo campos nuevos</td><td>Aprobada</td><td>Campos nuevos requeridos resaltados</td></tr>
-          <tr><td>Cualquiera</td><td>Rechazada espera</td><td>Rechazo + countdown 10 minutos</td></tr>
-          <tr><td>Cualquiera</td><td>Rechazada reintentar</td><td>Rechazo + botón reintentar activo</td></tr>
-          <tr><td>Cualquiera</td><td>Baneada</td><td>Bloqueo permanente + timeline soporte</td></tr>
-          <tr><td>Cross-country</td><td>Inicial</td><td>Selector: datos país anterior vs nuevos</td></tr>
-        </tbody>
-      </table>
-      <div class="demo-guide-close">
-        <button class="btn-primary" (click)="toggleDemoGuide()">Entendido</button>
+<!-- ── M-APELACION ───────────────────────────────────────────── -->
+@if (isModal('m-apelacion')) {
+  <div class="fid-modal-overlay" role="presentation" (click)="onOverlayClick()">
+    <div class="fid-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-apelacion" (click)="$event.stopPropagation()">
+      <div class="fid-modal__header">
+        <h3 id="modal-title-apelacion">Solicitar revisión manual</h3>
+        <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
+      </div>
+      <div class="fid-modal__body">
+        <p class="fid-field__helper">Describe por qué crees que tu verificación fue rechazada incorrectamente. Te responderemos en 3 a 5 días hábiles.</p>
+        <div class="fid-field">
+          <label class="fid-field__label">Descripción de tu caso</label>
+          <textarea class="fid-textarea"
+                    placeholder="Describe qué ocurrió y por qué crees que fue un error…"
+                    [(ngModel)]="apelacionTexto"
+                    name="apelacionTexto"
+                    maxlength="500"></textarea>
+          <div class="char-counter">{{ apelacionTexto.length }} / 500</div>
+        </div>
+      </div>
+      <div class="fid-modal__footer">
+        <button class="fid-btn fid-btn--secondary" (click)="closeModal()">Cerrar</button>
+        <button class="fid-btn fid-btn--primary"
+                [disabled]="apelacionTexto.trim().length < 20 || apelacionEnviada()"
+                (click)="enviarApelacion()">
+          <i class="pi pi-send"></i>
+          @if (apelacionEnviada()) { Enviada } @else { Enviar solicitud }
+        </button>
       </div>
     </div>
   </div>
+}
 
-</div>
+<!-- ── M-DOCUMENTO ───────────────────────────────────────────── -->
+@if (isModal('m-documento')) {
+  <div class="fid-modal-overlay" role="presentation" (click)="onOverlayClick()">
+    <div class="fid-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-documento" (click)="$event.stopPropagation()">
+      <div class="fid-modal__header">
+        <h3 id="modal-title-documento">Documento de identidad verificado</h3>
+        <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
+      </div>
+      <div class="fid-modal__body">
+        <div class="confirm-section">
+          <h4>Datos del documento</h4>
+          <div class="confirm-grid">
+            <div class="cf-pair"><div class="cf-label">Tipo</div><div class="cf-value">{{ mockUser.tipoDocumento }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Número</div><div class="cf-value">{{ mockUser.numeroDocumento }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Titular</div><div class="cf-value">{{ mockUser.primerNombre }} {{ mockUser.primerApellido }}</div></div>
+            <div class="cf-pair"><div class="cf-label">País</div><div class="cf-value">{{ paisLabel }}</div></div>
+          </div>
+        </div>
+
+        <div class="fid-doc-preview-grid">
+          <div class="fid-doc-preview">
+            <i class="pi pi-image"></i>
+            <span>Frente del documento</span>
+          </div>
+          <div class="fid-doc-preview">
+            <i class="pi pi-image"></i>
+            <span>Reverso del documento</span>
+          </div>
+        </div>
+
+        <div class="fid-alert fid-alert--success">
+          <i class="pi pi-verified fa-icon"></i>
+          <span class="fa-body">Documento verificado y autenticado por Sumsub · Válido</span>
+        </div>
+      </div>
+      <div class="fid-modal__footer">
+        <button class="fid-btn fid-btn--primary" (click)="closeModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ── Toast host (shared notifications) ──────────────────────── -->
+<app-dropi-toast />
+
+<!-- ── Stakeholder guided tour overlay ───────────────────────── -->
+<app-identidad-tour />
+

@@ -74,7 +74,7 @@
   max-width: 680px;
   width: 100%;
   margin: 0 auto;
-  padding: $size-8 $size-6;
+  padding: $size-8;
   display: flex;
   flex-direction: column;
   gap: $size-5;
@@ -201,8 +201,6 @@
   padding: 3px $size-2;
 }
 
-.hub-user-flag { font-size: 13px; }
-
 .hub-title {
   font-family: $font-primary;
   font-size: $font-xl;
@@ -272,6 +270,9 @@
   font-size: 24px;
   flex-shrink: 0;
   margin-top: 2px;
+  color: $secondary-500;
+
+  .pi { font-size: 24px; }
 }
 
 .hub-cross-country__actions {

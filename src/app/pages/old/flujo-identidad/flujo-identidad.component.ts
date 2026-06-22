@@ -1,11 +1,16 @@
-import { Component, signal, OnDestroy } from '@angular/core';
+import { Component, signal, OnDestroy, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../../common/services/toast.service';
+import { DropiToastComponent } from '../../../common/components/dropi-toast/dropi-toast.component';
+import { IdentidadTourService, TourStep } from '../../../common/services/identidad-tour.service';
+import { IdentidadTourComponent } from '../../../common/components/identidad-tour/identidad-tour.component';
 
 // -----------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------
 
+type OrigenValidacion = 'configuraciones' | 'retiro' | 'dropicard';
 type UserType = 'nuevo-sin-datos' | 'antiguo-completo' | 'antiguo-campos-nuevos' | 'cross-country';
 type EstadoId =
   | 'inicial'
@@ -256,13 +261,108 @@ const MOCK_USERS: Record<PaisPersona, MockUserData> = {
 @Component({
   selector: 'app-flujo-identidad',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DropiToastComponent, IdentidadTourComponent],
   templateUrl: './flujo-identidad.component.html',
   styleUrls: ['./flujo-identidad.component.scss'],
 })
 export class FlujoIdentidadComponent implements OnDestroy {
 
+  private toast = inject(ToastService);
+  private tour = inject(IdentidadTourService);
+
+  constructor() {
+    this.tour.setSteps(this.buildTourSteps());
+    const saved = sessionStorage.getItem('fid-demo-mode');
+    if (saved === 'open' || saved === 'hidden') {
+      this.demoMode.set(saved);
+    }
+  }
+
+  // ── Stakeholder guided tour ───────────────────────────────────────────
+
+  private buildTourSteps(): TourStep[] {
+    return [
+      {
+        id: 'bienvenida',
+        title: 'Prototipo de Validación de Identidad',
+        body: 'Este es el flujo KYC/KYB con el que un usuario verifica su identidad para desbloquear Dropi. Recorre los 9 pasos para ver cada estado del proceso. Usa la barra superior para explorar combinaciones por tu cuenta.',
+        placement: 'center',
+      },
+      {
+        id: 'selector-usuario',
+        title: '1 · Tipo de usuario',
+        body: 'Simula distintos perfiles: un usuario nuevo sin datos, uno antiguo con datos completos, uno con campos nuevos pendientes o un caso cross-country (ya activo en otro país).',
+        target: '[data-tour="selector-usuario"]',
+        placement: 'bottom',
+        onEnter: () => this.setUserType('nuevo-sin-datos'),
+      },
+      {
+        id: 'selector-estado',
+        title: '2 · Estado de validación',
+        body: 'Desde aquí saltamos a cualquier estado del proceso: en revisión, aprobada, rechazada o baneada. Es el control principal para demostrar el flujo completo.',
+        target: '[data-tour="selector-estado"]',
+        placement: 'bottom',
+        onEnter: () => this.setEstado('inicial'),
+      },
+      {
+        id: 'selector-pais',
+        title: '3 · País y tipo de persona',
+        body: 'Cada país (CO, MX, AR, CL, EC) y tipo de persona (natural o jurídica) cambia los documentos, campos fiscales y la copia. El formulario se adapta automáticamente.',
+        target: '[data-tour="selector-pais"]',
+        placement: 'bottom',
+      },
+      {
+        id: 'stepper',
+        title: 'Los 3 pasos del proceso',
+        body: 'Tus datos · Verificación · Resultado. El formulario se divide en 2 pasos (datos personales + fiscal) antes de la verificación biométrica Sumsub.',
+        target: '[data-tour="fid-stepper"]',
+        placement: 'bottom',
+        onEnter: () => { this.setEstado('inicial'); this.navTo('v-nueva-formulario'); this.formStep.set(1); },
+      },
+      {
+        id: 'formulario-dos-pasos',
+        title: 'Formulario en 2 pasos',
+        body: 'Paso 1: datos personales y contacto. Paso 2: información tributaria según el país. La validación inline evita enviar campos vacíos.',
+        target: '[data-tour="fid-form"]',
+        placement: 'bottom',
+        onEnter: () => { this.setEstado('inicial'); this.navTo('v-nueva-formulario'); this.formStep.set(1); },
+      },
+      {
+        id: 'estado-revision',
+        title: 'Así espera el usuario',
+        body: 'Tras enviar sus documentos, el usuario ve esta pantalla de espera mientras el equipo valida su identidad. Estado: paso 2 "Verificación".',
+        placement: 'center',
+        onEnter: () => this.setEstado('en-revision'),
+      },
+      {
+        id: 'estado-aprobada',
+        title: 'Activación y beneficios',
+        body: 'Cuando la verificación es exitosa, este es el momento de activación: identidad verificada y todo Dropi desbloqueado. Es el resultado que buscamos para cada usuario.',
+        placement: 'center',
+        onEnter: () => this.setEstado('recien-aprobada'),
+      },
+      {
+        id: 'estado-rechazada',
+        title: 'Motivo, reintento y apelación',
+        body: 'Si algo falla, el usuario ve el motivo claro, sus intentos restantes y puede reintentar o contactar a soporte. Con esto cierras el recorrido — explora el resto desde la barra superior.',
+        placement: 'center',
+        onEnter: () => this.setEstado('rechazada-reintentar'),
+      },
+    ];
+  }
+
+  startTour(): void {
+    if (this.demoMode() === 'hidden') this.openDemo();
+    this.tour.start();
+  }
+
   // ── Selector options ──────────────────────────────────────────────────
+
+  readonly origenOptions: SelectorOption<OrigenValidacion>[] = [
+    { id: 'configuraciones', label: 'Origen: Configuraciones', color: 'neutral' },
+    { id: 'retiro',          label: 'Origen: Retiro (bloqueo)', color: 'warning' },
+    { id: 'dropicard',       label: 'Origen: Dropicard', color: 'neutral' },
+  ];
 
   readonly userTypeOptions: SelectorOption<UserType>[] = [
     { id: 'nuevo-sin-datos',       label: 'Nuevo sin datos',             color: 'neutral' },
@@ -276,8 +376,8 @@ export class FlujoIdentidadComponent implements OnDestroy {
     { id: 'guardado-sin-comenzar',label: 'Datos guardados · sin comenzar', color: 'neutral' },
     { id: 'incompleta',           label: 'Incompleta · puede retomar',   color: 'warning' },
     { id: 'en-revision',          label: 'En revisión',                  color: 'warning' },
-    { id: 'aprobada',             label: 'Aprobada ✓',                   color: 'success' },
-    { id: 'recien-aprobada',      label: 'Recién aprobada ✓',            color: 'success' },
+    { id: 'recien-aprobada',      label: 'Recién aprobada · celebración', color: 'success' },
+    { id: 'aprobada',             label: 'Aprobada · estado estable',     color: 'success' },
     { id: 'rechazada-espera',     label: 'Rechazada · espera 10 min',    color: 'error'   },
     { id: 'rechazada-reintentar', label: 'Rechazada · puede reintentar', color: 'error'   },
     { id: 'baneada',              label: 'Baneada (3 rechazos)',          color: 'error'   },
@@ -300,24 +400,26 @@ export class FlujoIdentidadComponent implements OnDestroy {
   selectorUsuario = signal<UserType>('nuevo-sin-datos');
   selectorEstado  = signal<EstadoId>('inicial');
   selectorPais    = signal<PaisPersona>('co-natural');
+  selectorOrigen  = signal<OrigenValidacion>('configuraciones');
 
   // ── Navigation state ─────────────────────────────────────────────────
 
   vistaActiva = signal<VistaId>('v-nueva-bloqueada');
   modalActivo = signal<ModalId | null>(null);
 
-  // ── Demo guide ───────────────────────────────────────────────────────
-
-  demoGuideVisible = signal(false);
-
   // ── Onboarding state ─────────────────────────────────────────────────
 
-  onboardingStep = signal<1 | 2 | 3>(1);
+  onboardingStep = signal<1 | 2>(1);
+  demoMode = signal<'hidden' | 'open'>('hidden');
+  private demoFabReturn: HTMLElement | null = null;
+  private modalFocusReturn: HTMLElement | null = null;
 
   // ── Form step (2-step form) ───────────────────────────────────────────
 
   formStep = signal<1 | 2>(1);
   onboardingTipoPersona: TipoPersona = 'natural';
+  fieldErrors = signal<Record<string, string>>({});
+  sumsubStepGuardado = signal<number>(0);
 
   // ── Form data (plain objects for ngModel) ────────────────────────────
 
@@ -379,25 +481,149 @@ export class FlujoIdentidadComponent implements OnDestroy {
   // Computed getters
   // -----------------------------------------------------------------------
 
+  get globalStepLabel(): string {
+    const labels: Record<1 | 2 | 3, string> = {
+      1: 'Tus datos',
+      2: 'Verificación',
+      3: 'Resultado',
+    };
+    const paso = this.pasoGlobal;
+    return `Paso ${paso} de 3 · ${labels[paso]}`;
+  }
+
+  get estadoBadge(): { label: string; variant: 'neutral' | 'success' | 'warning' | 'error' } | null {
+    const es = this.selectorEstado();
+    const map: Partial<Record<EstadoId, { label: string; variant: 'neutral' | 'success' | 'warning' | 'error' }>> = {
+      'inicial':               { label: 'Sin iniciar', variant: 'neutral' },
+      'guardado-sin-comenzar': { label: 'Datos guardados', variant: 'neutral' },
+      'incompleta':            { label: 'Incompleta', variant: 'warning' },
+      'en-revision':           { label: 'En revisión', variant: 'warning' },
+      'recien-aprobada':       { label: 'Recién aprobada', variant: 'success' },
+      'aprobada':              { label: 'Validada', variant: 'success' },
+      'rechazada-espera':      { label: 'Rechazada', variant: 'error' },
+      'rechazada-reintentar':  { label: 'Rechazada', variant: 'error' },
+      'baneada':               { label: 'Cuenta restringida', variant: 'error' },
+      'email-baneado':         { label: 'Email bloqueado', variant: 'error' },
+    };
+    return map[es] ?? null;
+  }
+
+  get sumsubProgresoLabel(): string {
+    const step = this.sumsubStepGuardado();
+    if (step <= 0) {
+      return 'Aún no iniciaste la verificación biométrica.';
+    }
+    const completado = this.sumsubSteps[step - 1];
+    const pendientes = this.sumsubSteps.slice(step);
+    if (pendientes.length === 0) {
+      return 'Completaste todos los pasos biométricos.';
+    }
+    return `Completaste "${completado}". Falta: ${pendientes.join(', ')}.`;
+  }
+
+  get camposNuevosLabels(): string[] {
+    const labelMap: Record<string, string> = {
+      co_impuesto: 'Impuesto (Colombia)',
+      co_tipoRegimen: 'Tipo de régimen (Colombia)',
+      co_tipoResponsabilidad: 'Responsabilidad tributaria (Colombia)',
+      mx_codigoPostal: 'Código postal (México)',
+      mx_regimenFiscal: 'Régimen fiscal SAT (México)',
+      mx_sujetoImpuestos: 'Sujeto a impuestos (México)',
+      ar_condicionIVA: 'Condición IVA (Argentina)',
+      ar_provincia: 'Provincia (Argentina)',
+    };
+    return this.camposNuevos.map(c => labelMap[c] ?? c);
+  }
+
+  get esBloqueoDuro(): boolean {
+    return this.selectorOrigen() === 'retiro';
+  }
+
+  get heroEncuadre(): { titulo: string; descripcion: string } {
+    const map: Record<OrigenValidacion, { titulo: string; descripcion: string }> = {
+      configuraciones: {
+        titulo: 'Activa retiros, Dropicard y facturación',
+        descripcion: 'Verifica tu identidad una sola vez para usar todas las funciones de tu cuenta.',
+      },
+      retiro: {
+        titulo: 'Verifica tu identidad para retirar',
+        descripcion: 'Necesitamos confirmar quién eres antes de procesar tu retiro de saldo.',
+      },
+      dropicard: {
+        titulo: 'Activa tu Dropicard',
+        descripcion: 'Completa la verificación de identidad para solicitar y usar tu tarjeta sin restricciones.',
+      },
+    };
+    return map[this.selectorOrigen()];
+  }
+
+  get heroBenefits(): { icon: string; label: string }[] {
+    const all: Record<OrigenValidacion, { icon: string; label: string }[]> = {
+      configuraciones: [
+        { icon: 'assets/icons/sidebar/gali-v5/wallet.svg', label: 'Retiros habilitados' },
+        { icon: 'assets/icons/sidebar/receipt.svg', label: 'Facturación automática' },
+      ],
+      retiro: [
+        { icon: 'assets/icons/sidebar/gali-v5/wallet.svg', label: 'Retiros habilitados' },
+        { icon: 'assets/icons/sidebar/gali-v5/money-coin.svg', label: 'Transferencias' },
+      ],
+      dropicard: [
+        { icon: 'assets/icons/sidebar/card.svg', label: 'Dropicard disponible' },
+        { icon: 'assets/icons/sidebar/gali-v5/money-coin.svg', label: 'Transferencias' },
+      ],
+    };
+    return all[this.selectorOrigen()];
+  }
+
+  get telefonoEnmascarado(): string {
+    const t = this.mockUser.telefono.replace(/\D/g, '');
+    return t.length >= 4 ? `***${t.slice(-4)}` : this.mockUser.telefono;
+  }
+
+  get origenRetornoLabel(): string {
+    const map: Record<OrigenValidacion, string> = {
+      configuraciones: 'Volver a Configuraciones',
+      retiro: 'Continuar con mi retiro',
+      dropicard: 'Volver a Dropicard',
+    };
+    return map[this.selectorOrigen()];
+  }
+
+  get beneficioDesbloqueado(): string {
+    const map: Record<OrigenValidacion, string> = {
+      configuraciones: 'usar todas las funciones de tu cuenta',
+      retiro: 'procesar retiros de saldo',
+      dropicard: 'solicitar tu Dropicard',
+    };
+    return map[this.selectorOrigen()];
+  }
+
+  get intentosAgotados(): boolean {
+    return this.intentosRestantes() <= 0;
+  }
+
   get vistaSubtitle(): string {
     if (this.vistaActiva() === 'v-nueva-formulario') {
-      return this.formStep() === 1
-        ? 'Paso 1 de 2 · Datos personales y de contacto'
-        : 'Paso 2 de 2 · Información tributaria';
+      if (this.paisConFiscal) {
+        return this.formStep() === 1
+          ? 'Datos personales y de contacto'
+          : 'Información tributaria';
+      }
+      return 'Datos personales y de contacto';
     }
     const map: Partial<Record<VistaId, string>> = {
-      'v-nueva-bloqueada':      'Completa tu verificación para acceder a todas las funciones',
-      'v-nueva-onboarding':     'Paso previo — revisa lo que necesitas antes de comenzar',
+      'v-nueva-bloqueada':      'Verifica tu identidad para desbloquear tu cuenta',
+      'v-nueva-onboarding':     'Revisa lo que necesitas antes de abrir el formulario',
       'v-validado-datos':       'Tus datos están verificados y protegidos',
-      'v-validado-campos-nuevos': 'Hay campos nuevos que necesitas completar',
-      'v-guardada-sin-comenzar': 'Guardaste tus datos — aún no enviaste la verificación',
-      'v-incompleta':           'Dejaste el proceso a medias — puedes retomarlo ahora',
-      'v-en-revision':          'Tu información está siendo validada por nuestro equipo',
-      'v-rechazada':            'Hubo un problema con tu verificación',
-      'v-baneada':              'Tu cuenta ha sido restringida permanentemente',
-      'v-email-baneado':        'Este correo no puede ser utilizado en Dropi',
-      'v-cross-country':        'Ya tienes actividad en otro país de Dropi',
-      'v-exitosa':              'Tu identidad ha sido verificada exitosamente',
+      'v-validado-campos-nuevos': 'Completa los campos obligatorios por regulación',
+      'v-guardada-sin-comenzar': 'Tus datos están guardados — falta la verificación biométrica',
+      'v-incompleta':           'Quedó pendiente la sesión biométrica',
+      'v-en-revision':          `Te avisaremos a ${this.mockUser.email} en menos de 24 h hábiles`,
+      'v-rechazada':            'Revisa el motivo y vuelve a intentarlo',
+      'v-baneada':              'Contacta soporte para revisar tu caso',
+      'v-email-baneado':        'Este correo no puede usarse en Dropi',
+      'v-cross-country':        'Reutiliza tus datos o ingresa información para este país',
+      'v-exitosa':              `Ya puedes ${this.beneficioDesbloqueado}`,
     };
     return map[this.vistaActiva()] ?? '';
   }
@@ -513,11 +739,48 @@ export class FlujoIdentidadComponent implements OnDestroy {
     return `${u.primerNombre} ${u.primerApellido}`;
   }
 
+  // ── Global stepper (3 pasos: Tus datos · Verificación · Resultado) ────────
+
+  get mostrarStepper(): boolean {
+    const v = this.vistaActiva();
+    return v !== 'v-baneada'
+      && v !== 'v-email-baneado'
+      && v !== 'v-nueva-formulario'
+      && v !== 'v-nueva-onboarding';
+  }
+
+  get mostrarStepMobile(): boolean {
+    return this.mostrarStepper;
+  }
+
+  get pasoGlobal(): 1 | 2 | 3 {
+    switch (this.vistaActiva()) {
+      case 'v-en-revision':
+      case 'v-rechazada':
+        return 2;
+      case 'v-exitosa':
+      case 'v-validado-datos':
+      case 'v-validado-campos-nuevos':
+        return 3;
+      default:
+        return 1;
+    }
+  }
+
+  stepState(n: 1 | 2 | 3): 'pending' | 'focus' | 'completed' | 'error' {
+    const current = this.pasoGlobal;
+    if (n < current) return 'completed';
+    if (n === current) {
+      if (n === 2 && this.vistaActiva() === 'v-rechazada') return 'error';
+      if (n === 3) return 'completed';
+      return 'focus';
+    }
+    return 'pending';
+  }
+
   // -----------------------------------------------------------------------
   // Selector change handlers
   // -----------------------------------------------------------------------
-
-  toggleDemoGuide(): void { this.demoGuideVisible.update(v => !v); }
 
   setUserType(type: UserType): void {
     this.selectorUsuario.set(type);
@@ -533,6 +796,18 @@ export class FlujoIdentidadComponent implements OnDestroy {
     } else {
       this.stopCountdown();
     }
+    if (estado === 'incompleta') {
+      if (this.sumsubStepGuardado() === 0) {
+        this.sumsubStepGuardado.set(2);
+      }
+      this.sumsubStep.set(this.sumsubStepGuardado());
+    }
+    if (estado === 'recien-aprobada') {
+      this.toast.success(
+        `Tu identidad fue verificada. Ya puedes ${this.beneficioDesbloqueado}.`,
+        '¡Verificación exitosa!',
+      );
+    }
     this.resolveVista();
   }
 
@@ -540,6 +815,10 @@ export class FlujoIdentidadComponent implements OnDestroy {
     this.selectorPais.set(pais);
     this.modalActivo.set(null);
     this.resolveVista();
+  }
+
+  setOrigen(origen: OrigenValidacion): void {
+    this.selectorOrigen.set(origen);
   }
 
   resolveVista(): void {
@@ -598,9 +877,70 @@ export class FlujoIdentidadComponent implements OnDestroy {
 
   isVista(v: VistaId): boolean  { return this.vistaActiva() === v; }
   isModal(m: ModalId): boolean  { return this.modalActivo() === m; }
-  navTo(v: VistaId): void       { this.vistaActiva.set(v); this.modalActivo.set(null); }
-  openModal(m: ModalId): void   { this.modalActivo.set(m); }
-  closeModal(): void            { this.modalActivo.set(null); }
+  navTo(v: VistaId): void       { this.vistaActiva.set(v); this.closeModal(true); }
+
+  fieldDescId(field: string): string {
+    return `err-${field}`;
+  }
+
+  openDemo(): void {
+    this.demoFabReturn = document.activeElement as HTMLElement;
+    this.demoMode.set('open');
+    sessionStorage.setItem('fid-demo-mode', 'open');
+    setTimeout(() => document.querySelector<HTMLElement>('.fid-demo-top__close')?.focus(), 0);
+  }
+
+  closeDemo(): void {
+    this.demoMode.set('hidden');
+    sessionStorage.setItem('fid-demo-mode', 'hidden');
+    setTimeout(() => this.demoFabReturn?.focus(), 0);
+    this.demoFabReturn = null;
+  }
+
+  openModal(m: ModalId): void {
+    this.modalFocusReturn = document.activeElement as HTMLElement;
+    this.modalActivo.set(m);
+    setTimeout(() => this.focusModalEntry(), 0);
+  }
+
+  closeModal(force = false): void {
+    if (!force && !this.confirmModalClose()) return;
+    this.modalActivo.set(null);
+    setTimeout(() => this.modalFocusReturn?.focus(), 0);
+    this.modalFocusReturn = null;
+  }
+
+  onOverlayClick(): void {
+    this.closeModal();
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.demoMode() === 'open') {
+      this.closeDemo();
+      return;
+    }
+    if (this.modalActivo()) this.closeModal();
+  }
+
+  private confirmModalClose(): boolean {
+    const m = this.modalActivo();
+    if (m === 'm-mfa' && this.otpDigits.some(d => d !== '')) {
+      return confirm('¿Salir sin verificar? Perderás el código ingresado.');
+    }
+    if (m === 'm-sumsub' && this.sumsubStep() > 0) {
+      return confirm('¿Salir de la sesión biométrica? Podrás retomarla después.');
+    }
+    return true;
+  }
+
+  private focusModalEntry(): void {
+    const root = document.querySelector('.fid-modal[role="dialog"]');
+    const focusable = root?.querySelector<HTMLElement>(
+      'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex="0"]',
+    );
+    focusable?.focus();
+  }
 
   // -----------------------------------------------------------------------
   // v-nueva-bloqueada
@@ -612,31 +952,150 @@ export class FlujoIdentidadComponent implements OnDestroy {
     this.navTo('v-nueva-onboarding');
   }
 
+  masTarde(): void {
+    if (this.esBloqueoDuro) return;
+    const origen = this.selectorOrigen();
+    const msg = origen === 'retiro'
+      ? 'Puedes retomar la verificación cuando quieras desde Retiros.'
+      : origen === 'dropicard'
+        ? 'Puedes retomar la verificación cuando quieras desde Dropicard.'
+        : 'Puedes retomar la verificación cuando quieras desde Configuraciones.';
+    this.toast.info(msg, 'Verificación pendiente');
+  }
+
+  volverAlOrigen(): void {
+    this.selectorEstado.set('aprobada');
+    this.resolveVista();
+    this.toast.success(
+      `Regresaste al flujo de ${this.origenRetornoLabel.replace('Volver a ', '').replace('Continuar con ', '')}.`,
+      'Listo para continuar',
+    );
+  }
+
   // -----------------------------------------------------------------------
   // v-nueva-onboarding
   // -----------------------------------------------------------------------
 
   siguienteOnboarding(): void {
-    const s = this.onboardingStep();
-    if (s < 3) this.onboardingStep.set((s + 1) as 1 | 2 | 3);
+    if (this.onboardingStep() === 1) this.onboardingStep.set(2);
   }
 
   anteriorOnboarding(): void {
-    const s = this.onboardingStep();
-    if (s > 1) this.onboardingStep.set((s - 1) as 1 | 2 | 3);
+    if (this.onboardingStep() === 2) this.onboardingStep.set(1);
   }
 
   comenzarValidacion(): void {
+    this.syncPaisFromOnboarding();
     this.initFormData();
+    this.formNucleo.tipoPersona = this.onboardingTipoPersona;
     this.navTo('v-nueva-formulario');
+  }
+
+  selectOnboardingPersona(tipo: TipoPersona): void {
+    this.onboardingTipoPersona = tipo;
+  }
+
+  private syncPaisFromOnboarding(): void {
+    const pais = this.mockUser.pais;
+    const map: Record<Pais, { natural: PaisPersona; juridica: PaisPersona }> = {
+      CO: { natural: 'co-natural', juridica: 'co-juridica' },
+      MX: { natural: 'mx-natural', juridica: 'mx-juridica' },
+      AR: { natural: 'ar-natural', juridica: 'ar-juridica' },
+      CL: { natural: 'cl', juridica: 'cl' },
+      EC: { natural: 'ec', juridica: 'ec' },
+    };
+    this.selectorPais.set(map[pais][this.onboardingTipoPersona]);
   }
 
   // -----------------------------------------------------------------------
   // v-nueva-formulario
   // -----------------------------------------------------------------------
 
+  getFieldError(field: string): string {
+    return this.fieldErrors()[field] ?? '';
+  }
+
+  hasFieldError(field: string): boolean {
+    return !!this.fieldErrors()[field];
+  }
+
+  validateField(field: string): void {
+    const msg = this.getValidationMessage(field);
+    this.fieldErrors.update(errors => {
+      const next = { ...errors };
+      if (msg) {
+        next[field] = msg;
+      } else {
+        delete next[field];
+      }
+      return next;
+    });
+  }
+
+  private getValidationMessage(field: string): string {
+    const n = this.formNucleo;
+    const f = this.formFiscal;
+    switch (field) {
+      case 'primerNombre':    return n.primerNombre.trim() ? '' : 'Ingresa tu primer nombre';
+      case 'primerApellido':  return n.primerApellido.trim() ? '' : 'Ingresa tu primer apellido';
+      case 'fechaNacimiento': return n.fechaNacimiento ? '' : 'Selecciona tu fecha de nacimiento';
+      case 'nacionalidad':    return n.nacionalidad.trim() ? '' : 'Ingresa tu nacionalidad';
+      case 'tipoDocumento':   return n.tipoDocumento ? '' : 'Selecciona el tipo de documento';
+      case 'numeroDocumento': return n.numeroDocumento.trim() ? '' : 'Ingresa el número de documento';
+      case 'direccion':       return n.direccion.trim() ? '' : 'Ingresa tu dirección';
+      case 'ciudad':          return n.ciudad.trim() ? '' : `Ingresa tu ${this.campoGeografico.toLowerCase()}`;
+      case 'razonSocial':     return this.tipoPersona !== 'juridica' || n.razonSocial.trim() ? '' : 'Ingresa la razón social';
+      case 'co_tipoRegimen':        return f.co_tipoRegimen ? '' : 'Selecciona el tipo de régimen';
+      case 'co_tipoResponsabilidad': return f.co_tipoResponsabilidad ? '' : 'Selecciona la responsabilidad tributaria';
+      case 'mx_codigoPostal':       return f.mx_codigoPostal.trim().length >= 5 ? '' : 'Usa 5 dígitos, sin espacios ni guiones';
+      case 'mx_regimenFiscal':      return f.mx_regimenFiscal ? '' : 'Selecciona el régimen fiscal';
+      case 'ar_condicionIVA':       return f.ar_condicionIVA ? '' : 'Selecciona la condición frente al IVA';
+      case 'ar_provincia':          return f.ar_provincia.trim() ? '' : 'Ingresa la provincia';
+      default: return '';
+    }
+  }
+
+  private validateFields(fields: string[]): boolean {
+    const errors: Record<string, string> = { ...this.fieldErrors() };
+    let firstInvalid: string | null = null;
+    for (const field of fields) {
+      const msg = this.getValidationMessage(field);
+      if (msg) {
+        errors[field] = msg;
+        if (!firstInvalid) firstInvalid = field;
+      } else {
+        delete errors[field];
+      }
+    }
+    this.fieldErrors.set(errors);
+    if (firstInvalid) {
+      setTimeout(() => document.getElementById(`field-${firstInvalid}`)?.focus(), 0);
+      return false;
+    }
+    return true;
+  }
+
+  validateStep1(): boolean {
+    const fields = [
+      'primerNombre', 'primerApellido', 'fechaNacimiento', 'nacionalidad',
+      'tipoDocumento', 'numeroDocumento', 'direccion', 'ciudad',
+    ];
+    if (this.tipoPersona === 'juridica') fields.push('razonSocial');
+    return this.validateFields(fields);
+  }
+
+  validateStep2(): boolean {
+    if (!this.paisConFiscal) return true;
+    const fields: string[] = [];
+    if (this.pais === 'CO') fields.push('co_tipoRegimen', 'co_tipoResponsabilidad');
+    if (this.pais === 'MX') fields.push('mx_codigoPostal', 'mx_regimenFiscal');
+    if (this.pais === 'AR') fields.push('ar_condicionIVA', 'ar_provincia');
+    return this.validateFields(fields);
+  }
+
   private initFormData(): void {
     this.formStep.set(1);
+    this.fieldErrors.set({});
     const u = this.mockUser;
     const isNew = this.selectorUsuario() === 'nuevo-sin-datos';
     this.formNucleo = {
@@ -668,6 +1127,7 @@ export class FlujoIdentidadComponent implements OnDestroy {
   }
 
   siguienteFormPaso(): void {
+    if (!this.validateStep1()) return;
     if (this.paisConFiscal) {
       this.formStep.set(2);
     } else {
@@ -679,12 +1139,22 @@ export class FlujoIdentidadComponent implements OnDestroy {
     this.formStep.set(1);
   }
 
+  onFormSubmit(): void {
+    if (this.formStep() === 1) {
+      this.siguienteFormPaso();
+      return;
+    }
+    if (this.validateStep2()) {
+      this.openModal('m-confirmacion-pre-sumsub');
+    }
+  }
+
   irAContinuar(): void {
-    this.openModal('m-confirmacion-pre-sumsub');
+    this.onFormSubmit();
   }
 
   continuarFormulario(): void {
-    this.openModal('m-confirmacion-pre-sumsub');
+    this.onFormSubmit();
   }
 
   // -----------------------------------------------------------------------
@@ -697,8 +1167,19 @@ export class FlujoIdentidadComponent implements OnDestroy {
   }
 
   reanudarValidacion(): void {
-    this.sumsubStep.set(1);
+    this.sumsubStep.set(this.sumsubStepGuardado());
     this.openModal('m-sumsub');
+  }
+
+  empezarDeNuevo(): void {
+    this.sumsubStep.set(0);
+    this.sumsubStepGuardado.set(0);
+    this.openModal('m-sumsub');
+  }
+
+  verDatosEnviados(): void {
+    this.selectorEstado.set('aprobada');
+    this.resolveVista();
   }
 
   // -----------------------------------------------------------------------
@@ -741,6 +1222,8 @@ export class FlujoIdentidadComponent implements OnDestroy {
 
   usarMismosDatos(): void {
     this.initFormDataFromMock();
+    this.formStep.set(1);
+    this.fieldErrors.set({});
     this.navTo('v-nueva-formulario');
   }
 
@@ -772,8 +1255,23 @@ export class FlujoIdentidadComponent implements OnDestroy {
   // -----------------------------------------------------------------------
 
   reintentar(): void {
+    const restantes = this.intentosRestantes();
+    if (restantes <= 0) {
+      this.toast.error('Alcanzaste el límite de 3 intentos. Contacta soporte para revisión manual.', 'Sin intentos disponibles');
+      this.selectorEstado.set('baneada');
+      this.resolveVista();
+      return;
+    }
+    this.intentosRestantes.set(restantes - 1);
     this.sumsubStep.set(0);
     this.openModal('m-sumsub');
+    const quedan = restantes - 1;
+    this.toast.info(
+      quedan > 0
+        ? `Te quedan ${quedan} intento(s) después de este.`
+        : 'Este es tu último intento. Si falla, la cuenta quedará restringida.',
+      'Nuevo intento',
+    );
   }
 
   solicitarRevision(): void {
@@ -822,12 +1320,19 @@ export class FlujoIdentidadComponent implements OnDestroy {
     }
   }
 
+  reenviarCodigo(): void {
+    this.otpDigits = ['', '', '', '', '', ''];
+    this.otpError.set('');
+    this.toast.info('Te enviamos un nuevo código por SMS.', 'Código reenviado');
+  }
+
   verificarOtp(code: string): void {
     if (code === '123456') {
       this.otpError.set('');
       this.initFormDataFromMock();
-      this.closeModal();
+      this.closeModal(true);
       this.navTo('v-nueva-formulario');
+      this.toast.success('Identidad confirmada. Ya puedes editar los campos seleccionados.', 'Verificación exitosa');
     } else {
       this.otpError.set('Código incorrecto. Verifica e intenta de nuevo.');
       this.otpDigits = ['', '', '', '', '', ''];
@@ -839,8 +1344,10 @@ export class FlujoIdentidadComponent implements OnDestroy {
   // -----------------------------------------------------------------------
 
   confirmarYValidar(): void {
-    this.closeModal();
+    this.closeModal(true);
     this.sumsubStep.set(0);
+    this.sumsubStepGuardado.set(0);
+    this.toast.success('Tus datos quedaron guardados. Continúa con la verificación biométrica.', 'Datos guardados');
     this.openModal('m-sumsub');
   }
 
@@ -852,16 +1359,25 @@ export class FlujoIdentidadComponent implements OnDestroy {
     const next = this.sumsubStep() + 1;
     if (next < this.sumsubSteps.length) {
       this.sumsubLoading.set(true);
-      setTimeout(() => { this.sumsubLoading.set(false); this.sumsubStep.set(next); }, 800);
+      setTimeout(() => {
+        this.sumsubLoading.set(false);
+        this.sumsubStep.set(next);
+        this.sumsubStepGuardado.set(next);
+      }, 800);
     } else {
-      this.closeModal();
+      this.closeModal(true);
       this.selectorEstado.set('en-revision');
       this.vistaActiva.set('v-en-revision');
+      this.toast.success('Documentos enviados. Te avisaremos por correo cuando termine la revisión.', 'Verificación enviada');
     }
   }
 
   cerrarSumsub(): void {
-    this.closeModal();
+    if (!this.confirmModalClose()) return;
+    this.sumsubStepGuardado.set(this.sumsubStep());
+    this.modalActivo.set(null);
+    this.modalFocusReturn?.focus();
+    this.modalFocusReturn = null;
     this.selectorEstado.set('incompleta');
     this.vistaActiva.set('v-incompleta');
   }
@@ -873,7 +1389,11 @@ export class FlujoIdentidadComponent implements OnDestroy {
   enviarApelacion(): void {
     if (this.apelacionTexto.trim()) {
       this.apelacionEnviada.set(true);
-      setTimeout(() => this.closeModal(), 400);
+      this.closeModal(true);
+      this.toast.success(
+        'Tu solicitud fue enviada a soporte. Te contactaremos en un plazo de 3 a 5 días hábiles.',
+        'Solicitud enviada',
+      );
     }
   }
 }

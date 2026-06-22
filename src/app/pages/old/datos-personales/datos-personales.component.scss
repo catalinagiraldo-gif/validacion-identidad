@@ -56,6 +56,10 @@ $link-color: #50a5f1;
   overflow-y: auto;
   overflow-x: hidden;
   padding: $size-4 $size-8;
+
+  @media (max-width: $bp-sm) {
+    padding: $size-4;
+  }
 }
 
 // Toast notification
@@ -544,11 +548,6 @@ $link-color: #50a5f1;
   flex-shrink: 0;
   width: 82px;
   box-sizing: border-box;
-
-  .flag-ar {
-    font-size: 18px;
-    line-height: 1;
-  }
 
   .phone-code {
     font-family: $font-primary;

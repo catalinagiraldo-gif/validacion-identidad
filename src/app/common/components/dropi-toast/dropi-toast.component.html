@@ -1,0 +1,14 @@
+<div class="dropi-toast-stack" role="region" aria-live="polite">
+  @for (t of toasts(); track t.id) {
+    <div class="dropi-toast" [class]="'dropi-toast--' + t.severity">
+      <span class="dropi-toast__icon"><i class="pi" [ngClass]="iconFor(t.severity)"></i></span>
+      <div class="dropi-toast__body">
+        @if (t.title) { <p class="dropi-toast__title">{{ t.title }}</p> }
+        <p class="dropi-toast__message">{{ t.message }}</p>
+      </div>
+      <button class="dropi-toast__close" (click)="dismiss(t.id)" aria-label="Cerrar notificación">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+  }
+</div>

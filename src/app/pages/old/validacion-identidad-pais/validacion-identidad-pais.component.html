@@ -22,7 +22,7 @@
         [class.persona-btn--active]="tipoPersona === 'natural'"
         (click)="tipoPersona = 'natural'"
       >
-        <span class="persona-icon">👤</span>
+        <span class="persona-icon"><i class="pi pi-user"></i></span>
         Persona natural
       </button>
       <button
@@ -30,7 +30,7 @@
         [class.persona-btn--active]="tipoPersona === 'juridica'"
         (click)="tipoPersona = 'juridica'"
       >
-        <span class="persona-icon">🏢</span>
+        <span class="persona-icon"><i class="pi pi-building"></i></span>
         Persona jurídica
       </button>
     </div>
@@ -43,7 +43,6 @@
         [class.country-tab--active]="paisActual === pais"
         (click)="cambiarPais(pais)"
       >
-        <span class="tab-flag">{{ getPaisBandera(pais) }}</span>
         <span class="tab-code">{{ pais }}</span>
       </button>
     </div>
@@ -52,7 +51,7 @@
   <!-- Provider banner -->
   <div class="provider-banner">
     <div class="provider-note">
-      <span class="provider-note-icon">ℹ️</span>
+      <span class="provider-note-icon"><i class="pi pi-info-circle"></i></span>
       {{ config.notaEdicion }}
     </div>
     <div class="provider-badge-wrap">
@@ -69,7 +68,7 @@
     <!-- LEFT: Dropi form zone -->
     <div class="dropi-zone">
       <div class="zone-header">
-        <div class="zone-icon">📋</div>
+        <div class="zone-icon"><i class="pi pi-list"></i></div>
         <div class="zone-header-text">
           <h2 class="zone-title">Lo que llenas en Dropi</h2>
           <p class="zone-subtitle" *ngIf="config.formularioEditable">
@@ -151,7 +150,7 @@
     <!-- RIGHT: Provider zone -->
     <div class="provider-zone" [class.provider-zone--truora]="proveedor === 'Truora'">
       <div class="zone-header">
-        <div class="zone-icon">🔒</div>
+        <div class="zone-icon"><i class="pi pi-lock"></i></div>
         <div class="zone-header-text">
           <h2 class="zone-title">Lo que verifica <span [class.name-truora]="proveedor === 'Truora'" [class.name-sumsub]="proveedor === 'Sumsub'">{{ proveedor }}</span></h2>
           <p class="zone-subtitle">Proceso obligatorio para activar transferencias y retiros.</p>
@@ -182,7 +181,7 @@
 
       <!-- Provider info footer -->
       <div class="provider-footer">
-        <div class="provider-time">⏱️ Tiempo estimado: ~5 minutos</div>
+        <div class="provider-time"><i class="pi pi-clock"></i> Tiempo estimado: ~5 minutos</div>
         <div class="provider-req">Necesitas: buena iluminación, cámara y tu documento a mano.</div>
       </div>
     </div>
@@ -200,7 +199,7 @@
   <div class="resultado-section" *ngIf="mostrarResultado">
 
     <div class="resultado-header">
-      <div class="resultado-icon">✅</div>
+      <div class="resultado-icon"><i class="pi pi-check-circle"></i></div>
       <div>
         <h2 class="resultado-title">Verificación exitosa</h2>
         <p class="resultado-sub">{{ proveedor }} confirmó tu identidad. Tu cuenta está activa.</p>
@@ -210,7 +209,7 @@
     <!-- Campos pre-cargados por SDK (solo países donde el form estaba deshabilitado) -->
     <div class="resultado-block" *ngIf="camposAutocompletados.length > 0">
       <div class="resultado-block-title">
-        <span class="resultado-block-icon">🤖</span>
+        <span class="resultado-block-icon"><i class="pi pi-cog"></i></span>
         Campos completados automáticamente por {{ proveedor }}
       </div>
       <div class="resultado-field-list">
@@ -225,7 +224,7 @@
     <!-- Para CO: nota de que Dropi pre-cargó los datos -->
     <div class="resultado-block" *ngIf="config.formularioEditable">
       <div class="resultado-block-title">
-        <span class="resultado-block-icon">✔️</span>
+        <span class="resultado-block-icon"><i class="pi pi-check"></i></span>
         Datos enviados a {{ proveedor }} para verificación
       </div>
       <p class="resultado-text">
@@ -235,7 +234,7 @@
 
     <!-- Lock 6 meses -->
     <div class="lock-alert">
-      <div class="lock-icon">🔒</div>
+      <div class="lock-icon"><i class="pi pi-lock"></i></div>
       <div class="lock-text">
         <strong>Datos bloqueados por 6 meses.</strong>
         No podrás modificar los datos validados hasta el 17/12/2026.
@@ -246,15 +245,15 @@
     <!-- Habilitaciones -->
     <div class="habilitaciones">
       <div class="habilitacion-item">
-        <span class="hab-icon">✅</span>
+        <span class="hab-icon"><i class="pi pi-check-circle"></i></span>
         <span>Transferencias a wallets habilitadas</span>
       </div>
       <div class="habilitacion-item">
-        <span class="hab-icon">✅</span>
+        <span class="hab-icon"><i class="pi pi-check-circle"></i></span>
         <span>Retiros disponibles</span>
       </div>
       <div class="habilitacion-item">
-        <span class="hab-icon">✅</span>
+        <span class="hab-icon"><i class="pi pi-check-circle"></i></span>
         <span>Límites de operación aumentados</span>
       </div>
     </div>
