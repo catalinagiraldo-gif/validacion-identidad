@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import transactionsData from '../../../../../mocks/historial-cartera.json';
 
@@ -27,18 +28,25 @@ export class HistorialCarteraComponent implements OnInit {
   filteredTransactions: Transaction[] = [];
   activeTab: 'billetera' | 'depositos' = 'billetera';
 
+  private router = inject(Router);
+
   demoIdentityStatus = 'sin_validar';
   readonly identityStatusOptions = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
+  readonly blockedAction = 'retirar fondos';
 
-  private readonly alertsMap: Record<string, { type: string; icon: string; text: string; cta: string }> = {
-    sin_validar: { type: 'warning', icon: 'pi-shield',                text: 'Para retirar fondos y ver tu historial completo, verifica tu identidad. Sin validar, solo puedes consultar movimientos.', cta: 'Verificar identidad' },
-    pendiente:   { type: 'warning', icon: 'pi-exclamation-triangle',  text: 'Tienes una verificación incompleta. Termínala para desbloquear retiros desde tu historial.', cta: 'Continuar verificación' },
-    en_revision: { type: 'info',    icon: 'pi-clock',                 text: 'Tus datos están en revisión. Los retiros quedan habilitados en cuanto aprobemos tu validación.', cta: 'Ver estado' },
-    rechazado:   { type: 'error',   icon: 'pi-times-circle',          text: 'Tu verificación fue rechazada. Reintenta para recuperar el acceso a retiros y extractos.', cta: 'Reintentar' },
+  private readonly alertsMap: Record<string, { type: string; icon: string; text: string; cta: string; step: number; stateLabel: string }> = {
+    sin_validar: { type: 'warning', icon: 'pi-shield',                step: 1, stateLabel: 'Sin validar',             text: 'Para retirar fondos y ver tu historial completo, verifica tu identidad. Sin validar, solo puedes consultar movimientos.', cta: 'Verificar identidad' },
+    pendiente:   { type: 'warning', icon: 'pi-exclamation-triangle',  step: 2, stateLabel: 'Verificación incompleta', text: 'Tienes una verificación incompleta. Termínala para desbloquear retiros desde tu historial.', cta: 'Continuar verificación' },
+    en_revision: { type: 'info',    icon: 'pi-clock',                 step: 3, stateLabel: 'En revisión',             text: 'Tus datos están en revisión. Los retiros quedan habilitados en cuanto aprobemos tu validación.', cta: 'Ver estado' },
+    rechazado:   { type: 'error',   icon: 'pi-times-circle',          step: 2, stateLabel: 'Verificación rechazada',  text: 'Tu verificación fue rechazada. Reintenta para recuperar el acceso a retiros y extractos.', cta: 'Reintentar' },
   };
 
   get identityAlert() {
     return this.demoIdentityStatus !== 'aprobado' ? this.alertsMap[this.demoIdentityStatus] : null;
+  }
+
+  irAValidar(): void {
+    this.router.navigate(['/old/configuraciones/flujo-identidad-2026-06-18']);
   }
 
   fechaDesde = '23/1/2025';

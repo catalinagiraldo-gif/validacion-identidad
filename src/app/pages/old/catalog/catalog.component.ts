@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { OrdersManualComponent } from '../orders-manual/orders-manual.component';
 
 interface Product {
@@ -39,29 +40,27 @@ export class CatalogComponent implements OnInit {
   selectedProduct: Product | null = null;
 
   demoIdentityStatus = 'sin_validar';
+  readonly identityStatusOptions = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
+  readonly blockedAction = 'crear órdenes';
 
-  readonly identityAlerts: Record<string, { type: string; icon: string; text: string; cta: string }> = {
+  readonly identityAlerts: Record<string, { type: string; icon: string; text: string; cta: string; step: number; stateLabel: string }> = {
     sin_validar: {
-      type: 'warning',
-      icon: 'pi-shield',
+      type: 'warning', icon: 'pi-shield', step: 1, stateLabel: 'Sin validar',
       text: 'Para crear órdenes, verifica tu identidad primero. Es un proceso rápido que activa todas tus operaciones.',
       cta: 'Verificar mi identidad',
     },
     pendiente: {
-      type: 'warning',
-      icon: 'pi-exclamation-triangle',
+      type: 'warning', icon: 'pi-exclamation-triangle', step: 2, stateLabel: 'Verificación incompleta',
       text: 'Tu verificación está incompleta. Ya guardaste tus datos — solo falta el paso biométrico para terminar.',
       cta: 'Continuar verificación',
     },
     en_revision: {
-      type: 'info',
-      icon: 'pi-clock',
+      type: 'info', icon: 'pi-clock', step: 3, stateLabel: 'En revisión',
       text: 'Tu identidad está en revisión. Mientras tanto algunas funciones están pausadas — te avisamos cuando esté aprobada.',
       cta: 'Ver estado',
     },
     rechazado: {
-      type: 'error',
-      icon: 'pi-times-circle',
+      type: 'error', icon: 'pi-times-circle', step: 2, stateLabel: 'Verificación rechazada',
       text: 'Tu verificación fue rechazada. Puedes intentarlo de nuevo — revisa la guía para asegurarte el éxito esta vez.',
       cta: 'Reintentar verificación',
     },
@@ -82,7 +81,7 @@ export class CatalogComponent implements OnInit {
     { name: 'Punto barato', initials: 'PB', productsCount: 545, categories: 'Moda, Deporte, Hogar, Salud, Belleza, Tecnología', color: '#14b8a6' },
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.http.get<Product[]>('/api/products').subscribe((data) => {
@@ -117,6 +116,10 @@ export class CatalogComponent implements OnInit {
     this.selectedProduct = product;
     this.showOrderModal = true;
     document.body.style.overflow = 'hidden';
+  }
+
+  irAValidar(): void {
+    this.router.navigate(['/old/configuraciones/flujo-identidad-2026-06-18']);
   }
 
   closeBlockModal(): void {

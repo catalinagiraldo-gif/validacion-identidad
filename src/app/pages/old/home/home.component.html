@@ -1,0 +1,251 @@
+<div class="home-page">
+
+  <!-- ── Demo bar identidad ─────────────────────────────────────── -->
+  <div class="identity-demo-bar">
+    <span class="identity-demo-bar__label"><i class="pi pi-sliders-h"></i> Estado demo identidad:</span>
+    <div class="identity-demo-chips">
+      <button *ngFor="let s of identityStatusOptions"
+              class="identity-demo-chip"
+              [class.active]="demoIdentityStatus === s"
+              (click)="onStatusChange(s)">{{ s }}</button>
+    </div>
+  </div>
+
+  <!-- ── Shell ─────────────────────────────────────────────────── -->
+  <div class="home-shell">
+
+    <!-- Sidebar -->
+    <aside class="home-sidebar">
+      <div class="sidebar-logo">
+        <span class="sidebar-logo__text">dropi</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-item sidebar-item--active">
+          <i class="pi pi-home sidebar-item__icon"></i>
+          <span>Inicio</span>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-chart-bar sidebar-item__icon"></i>
+          <span>Dashboard</span>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-search sidebar-item__icon"></i>
+          <span>Productos</span>
+          <i class="pi pi-chevron-down sidebar-item__arrow"></i>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-shopping-cart sidebar-item__icon"></i>
+          <span>Mis pedidos</span>
+          <i class="pi pi-chevron-down sidebar-item__arrow"></i>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-verified sidebar-item__icon"></i>
+          <span>Mis Garantías</span>
+          <i class="pi pi-chevron-down sidebar-item__arrow"></i>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-user sidebar-item__icon"></i>
+          <span>Clientes</span>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-shop sidebar-item__icon"></i>
+          <span>Mis integraciones</span>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-wallet sidebar-item__icon"></i>
+          <span>Historial de cartera</span>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-users sidebar-item__icon"></i>
+          <span>Mis usuarios</span>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-share-alt sidebar-item__icon"></i>
+          <span>Mis referidos</span>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-cog sidebar-item__icon"></i>
+          <span>Configuraciones</span>
+          <i class="pi pi-chevron-down sidebar-item__arrow"></i>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-calendar sidebar-item__icon"></i>
+          <span>Calendario</span>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-megaphone sidebar-item__icon"></i>
+          <span>Marketing</span>
+          <i class="pi pi-chevron-down sidebar-item__arrow"></i>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-chart-line sidebar-item__icon"></i>
+          <span>Reportes</span>
+          <i class="pi pi-chevron-down sidebar-item__arrow"></i>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-file sidebar-item__icon"></i>
+          <span>Facturas</span>
+          <i class="pi pi-chevron-down sidebar-item__arrow"></i>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-truck sidebar-item__icon"></i>
+          <span>Transportadora</span>
+          <i class="pi pi-chevron-down sidebar-item__arrow"></i>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-credit-card sidebar-item__icon"></i>
+          <span>Dropi Card</span>
+          <i class="pi pi-chevron-down sidebar-item__arrow"></i>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-comments sidebar-item__icon"></i>
+          <span>CAS</span>
+          <i class="pi pi-chevron-down sidebar-item__arrow"></i>
+        </div>
+        <div class="sidebar-item">
+          <i class="pi pi-book sidebar-item__icon"></i>
+          <span>Academy</span>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main area -->
+    <div class="home-main">
+
+      <!-- Header -->
+      <header class="home-header">
+        <div class="home-header__community">
+          <div class="community-avatar">D</div>
+          <span>Miembro De: COMUNIDAD MARIA OSSA</span>
+        </div>
+        <div class="home-header__right">
+          <div class="home-header__item">
+            <span class="flag-emoji">🇨🇴</span>
+            <span>Español</span>
+          </div>
+          <div class="home-header__item">
+            <i class="pi pi-wallet"></i>
+            <span>$2.717.360.700</span>
+          </div>
+          <div class="home-header__item home-header__item--bell">
+            <i class="pi pi-bell"></i>
+            <span class="bell-badge">1</span>
+          </div>
+          <div class="home-header__item home-header__item--user">
+            <div class="user-avatar">CH</div>
+            <span>CAROLINA HERRERA</span>
+            <i class="pi pi-chevron-down"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="home-content">
+        <h1 class="home-greeting">¡Hola, Carolina!</h1>
+
+        <div class="home-grid">
+
+          <!-- Left: event banner -->
+          <div class="home-banner">
+            <div class="home-banner__overlay"></div>
+            <div class="home-banner__deco home-banner__deco--1"></div>
+            <div class="home-banner__deco home-banner__deco--2"></div>
+            <div class="home-banner__content">
+              <p class="home-banner__tag">Evento exclusivo</p>
+              <h2 class="home-banner__title">ecomwom<br><strong>OTRO NIVEL</strong></h2>
+              <p class="home-banner__subtitle">El primer evento de ecommerce<br>exclusivo para mujeres</p>
+              <p class="home-banner__date">09 MARZO · CALI</p>
+              <button class="home-banner__btn">QUIERO MI ENTRADA</button>
+            </div>
+          </div>
+
+          <!-- Right: aside column -->
+          <div class="home-aside-col">
+
+            <!-- Anuncio card -->
+            <div class="home-anuncio">
+              <div class="home-anuncio__icon">
+                <i class="pi pi-megaphone"></i>
+              </div>
+              <p class="home-anuncio__text">Tu satisfacción es muy importante para nosotros, por eso, recientemente estuvimos generando actualizaciones para mejorar tu experiencia en la Plataforma. ¡Dropi, tu lugar seguro!</p>
+            </div>
+
+            <!-- Eventos + Capacitaciones -->
+            <div class="home-sections">
+
+              <!-- Eventos -->
+              <div class="home-section">
+                <h3 class="home-section__title">Eventos</h3>
+                <div class="home-evento">
+                  <div class="home-evento__img">
+                    <span>PROVEEDOR PREMIUM</span>
+                  </div>
+                  <h4 class="home-evento__title">Proveedor premium</h4>
+                  <p class="home-evento__desc">Conéctate este Jueves 7 de Febrero a las 7 p.m. en nuestro Instagram Live. Descubre lo último en productos, conoce la política de garantía y obtén detalles sobre los envíos de Distrishop, nuestro proveedor premium.</p>
+                  <button class="btn-primary-sm">Unirme al evento</button>
+                </div>
+              </div>
+
+              <!-- Capacitaciones -->
+              <div class="home-section">
+                <h3 class="home-section__title">Capacitaciones</h3>
+                <div class="home-cap-list">
+                  <div class="home-cap-item" *ngFor="let cap of capacitaciones">
+                    <div class="home-cap-item__icon">
+                      <i class="pi {{ cap.icon }}"></i>
+                    </div>
+                    <span class="home-cap-item__name">{{ cap.nombre }}</span>
+                    <button class="btn-ver-sm">Ver</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="home-footer">
+        <span>2025 © Dropi</span>
+        <span>Creado con <i class="pi pi-heart-fill" style="color:#f46a6b; font-size:14px;"></i></span>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ── Activation Popover ─────────────────────────────────────── -->
+  <div class="ia-popover ia-popover--{{ pop.type }}" *ngIf="activePopover as pop">
+    <button class="ia-popover__close" (click)="closePopover()" aria-label="Cerrar">
+      <i class="pi pi-times"></i>
+    </button>
+    <div class="ia-popover__body">
+      <div class="ia-popover__icon-wrap">
+        <i class="pi {{ pop.icon }} ia-popover__icon"></i>
+        <div class="ia-popover__pulse"
+             *ngIf="demoIdentityStatus === 'sin_validar' || demoIdentityStatus === 'pendiente'"></div>
+      </div>
+      <div class="ia-popover__content">
+        <div class="ia-popover__top">
+          <span class="ia-popover__label">{{ pop.stateLabel }}</span>
+          <div class="ia-card__steps">
+            <div class="ia-step" [class.ia-step--done]="1 < pop.step" [class.ia-step--current]="pop.step === 1"></div>
+            <div class="ia-step" [class.ia-step--done]="2 < pop.step" [class.ia-step--current]="pop.step === 2"></div>
+            <div class="ia-step" [class.ia-step--done]="3 < pop.step" [class.ia-step--current]="pop.step === 3"></div>
+            <div class="ia-step" [class.ia-step--current]="pop.step === 4"></div>
+          </div>
+        </div>
+        <p class="ia-popover__headline">{{ pop.headline }}</p>
+        <p class="ia-popover__text">{{ pop.text }}</p>
+        <div class="ia-popover__footer">
+          <button class="ia-popover__cta" (click)="irAValidar()">
+            <ng-container *ngIf="demoIdentityStatus !== 'en_revision'">Verificar mi identidad</ng-container>
+            <ng-container *ngIf="demoIdentityStatus === 'en_revision'">Ver estado de revisión</ng-container>
+            <i class="pi pi-arrow-right"></i>
+          </button>
+          <span class="ia-popover__time"><i class="pi pi-clock"></i> 5 min · Solo una vez</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

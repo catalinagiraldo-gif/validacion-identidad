@@ -11,11 +11,41 @@
   </div>
 </div>
 
-<!-- ── Alerta de identidad ────────────────────────────────────── -->
-<div class="identity-alert identity-alert--{{ alert.type }}" *ngIf="identityAlert as alert">
-  <i class="pi {{ alert.icon }} ia-icon"></i>
-  <span class="ia-text">{{ alert.text }}</span>
-  <button class="ia-cta">{{ alert.cta }} <i class="pi pi-arrow-right"></i></button>
+<!-- Activation Card — identidad -->
+<div class="ia-card ia-card--{{ alert.type }}" *ngIf="identityAlert as alert">
+  <div class="ia-card__header">
+    <div class="ia-card__icon-wrap">
+      <i class="pi {{ alert.icon }} ia-card__icon"></i>
+      <div class="ia-card__pulse"
+           *ngIf="demoIdentityStatus === 'sin_validar' || demoIdentityStatus === 'pendiente'"></div>
+    </div>
+    <div class="ia-card__info">
+      <div class="ia-card__top-row">
+        <span class="ia-card__label">{{ alert.stateLabel }}</span>
+        <div class="ia-card__steps">
+          <div class="ia-step" [class.ia-step--done]="1 < alert.step" [class.ia-step--current]="alert.step === 1"></div>
+          <div class="ia-step" [class.ia-step--done]="2 < alert.step" [class.ia-step--current]="alert.step === 2"></div>
+          <div class="ia-step" [class.ia-step--done]="3 < alert.step" [class.ia-step--current]="alert.step === 3"></div>
+          <div class="ia-step" [class.ia-step--current]="alert.step === 4"></div>
+        </div>
+      </div>
+      <p class="ia-card__text">{{ alert.text }}</p>
+    </div>
+    <button class="ia-card__cta" (click)="irAValidar()">
+      <ng-container *ngIf="demoIdentityStatus !== 'en_revision'">Desbloquear {{ blockedAction }}</ng-container>
+      <ng-container *ngIf="demoIdentityStatus === 'en_revision'">Ver estado de revisión</ng-container>
+      <i class="pi pi-arrow-right"></i>
+    </button>
+  </div>
+  <div class="ia-card__footer">
+    <span class="ia-card__loss" *ngIf="demoIdentityStatus !== 'en_revision'">
+      <i class="pi pi-lock"></i> Sin validación no puedes {{ blockedAction }}
+    </span>
+    <span class="ia-card__loss" *ngIf="demoIdentityStatus === 'en_revision'">
+      <i class="pi pi-clock"></i> Revisando tu documentación — te avisamos por correo
+    </span>
+    <span class="ia-card__time"><i class="pi pi-clock"></i> 5 min · Solo una vez</span>
+  </div>
 </div>
 
 <!-- Breadcrumb: Home > Label > Label -->

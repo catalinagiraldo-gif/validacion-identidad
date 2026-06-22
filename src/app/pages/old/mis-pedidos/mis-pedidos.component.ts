@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 interface PedidoClient {
   name: string;
@@ -42,19 +43,24 @@ export class MisPedidosComponent implements OnInit {
 
   demoIdentityStatus = 'sin_validar';
   readonly identityStatusOptions = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
+  readonly blockedAction = 'gestionar pedidos';
 
-  private readonly alertsMap: Record<string, { type: string; icon: string; text: string; cta: string }> = {
-    sin_validar: { type: 'warning', icon: 'pi-shield',       text: 'Aún no puedes gestionar pagos de pedidos. Valida tu identidad para activar el procesamiento.', cta: 'Validar identidad' },
-    pendiente:   { type: 'warning', icon: 'pi-exclamation-triangle', text: 'Terminaste a medias tu verificación. Un paso más y los pagos de tus pedidos quedan activos.', cta: 'Continuar verificación' },
-    en_revision: { type: 'info',    icon: 'pi-clock',        text: 'Tu identidad está en revisión. Te avisamos en cuanto esté aprobada para activar el procesamiento.', cta: 'Ver estado' },
-    rechazado:   { type: 'error',   icon: 'pi-times-circle', text: 'Tu verificación fue rechazada. Reintenta para desbloquear el procesamiento de tus pedidos.', cta: 'Reintentar verificación' },
+  private readonly alertsMap: Record<string, { type: string; icon: string; text: string; cta: string; step: number; stateLabel: string }> = {
+    sin_validar: { type: 'warning', icon: 'pi-shield',                step: 1, stateLabel: 'Sin validar',                text: 'Aún no puedes gestionar pagos de pedidos. Valida tu identidad para activar el procesamiento.', cta: 'Validar identidad' },
+    pendiente:   { type: 'warning', icon: 'pi-exclamation-triangle',  step: 2, stateLabel: 'Verificación incompleta',    text: 'Terminaste a medias tu verificación. Un paso más y los pagos de tus pedidos quedan activos.', cta: 'Continuar verificación' },
+    en_revision: { type: 'info',    icon: 'pi-clock',                 step: 3, stateLabel: 'En revisión',                text: 'Tu identidad está en revisión. Te avisamos en cuanto esté aprobada para activar el procesamiento.', cta: 'Ver estado' },
+    rechazado:   { type: 'error',   icon: 'pi-times-circle',          step: 2, stateLabel: 'Verificación rechazada',     text: 'Tu verificación fue rechazada. Reintenta para desbloquear el procesamiento de tus pedidos.', cta: 'Reintentar verificación' },
   };
 
   get identityAlert() {
     return this.demoIdentityStatus !== 'aprobado' ? this.alertsMap[this.demoIdentityStatus] : null;
   }
 
-  constructor(private http: HttpClient) {}
+  irAValidar(): void {
+    this.router.navigate(['/old/configuraciones/flujo-identidad-2026-06-18']);
+  }
+
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.http.get<Pedido[]>('/api/pedidos').subscribe(data => {

@@ -40,6 +40,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'inicio',
+        loadComponent: () =>
+          import('./pages/old/home/home.component').then(
+            m => m.HomeComponent,
+          ),
+      },
+      {
         path: 'productos/catalogo',
         loadComponent: () =>
           import('./pages/old/catalog/catalog.component').then(
