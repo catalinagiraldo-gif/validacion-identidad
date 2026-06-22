@@ -131,11 +131,20 @@
       <button class="btn btn--primary btn--sm" (click)="navTo('v13-incompleta')">Continuar</button>
     </div>
 
+    <!-- Banner 6 meses bloqueo -->
+    <div *ngIf="perfilActivo().estado === 'aprobado-bloqueado'" class="status-banner status-banner--warning">
+      <i class="pi pi-clock"></i>
+      <div>
+        <strong>Edición temporalmente bloqueada</strong>
+        <p>Tus datos fueron validados el <strong>{{ fechaAprobacionLabel }}</strong>. Podrás solicitar cambios a partir del <strong>{{ fechaDesbloqueoLabel }}</strong>.</p>
+      </div>
+    </div>
+
     <!-- Datos readonly -->
     <div class="data-card">
       <div class="data-card__header">
         <h3>Identidad</h3>
-        <button class="btn btn--ghost btn--sm" (click)="abrirActualizacion()">
+        <button *ngIf="canEditData()" class="btn btn--ghost btn--sm" (click)="abrirActualizacion()">
           <i class="pi pi-pencil"></i> Solicitar actualización
         </button>
       </div>
@@ -360,7 +369,7 @@
       </div>
 
       <div class="form-actions">
-        <button type="button" class="btn btn--ghost" (click)="navTo('v2-datos')">
+        <button type="button" class="btn btn--ghost" (click)="openSalirSinGuardar()">
           <i class="pi pi-arrow-left"></i> Cancelar
         </button>
         <button type="button" class="btn btn--primary" (click)="continuarFormulario()">
@@ -569,6 +578,20 @@
           <i class="pi pi-camera"></i> Problema con el documento
         </div>
         <p class="rejection-reason__detail">{{ motivoRechazo }}</p>
+      </div>
+
+      <!-- Accordion: motivos de rechazo más comunes -->
+      <div class="fid-rejection-reasons">
+        <button type="button" class="rr-toggle" (click)="toggleReasonsExpanded()">
+          <span><i class="pi pi-list"></i> ¿Cuáles son los motivos de rechazo más comunes?</span>
+          <i class="pi" [class.pi-chevron-down]="!reasonsExpanded()" [class.pi-chevron-up]="reasonsExpanded()"></i>
+        </button>
+        <div class="rr-list" *ngIf="reasonsExpanded()">
+          <div class="rr-item" *ngFor="let r of rejectionReasonsList">
+            <span class="rr-label">{{ r.label }}</span>
+            <span class="rr-desc">{{ r.description }}</span>
+          </div>
+        </div>
       </div>
 
       <div class="attempts-bar" *ngIf="intentosRestantes() > 0">
@@ -1022,6 +1045,25 @@
     </div>
     <div class="modal__footer" *ngIf="documentoDesactualizado()">
       <button class="btn btn--primary" (click)="closeModal()">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<!-- ------------------------------------------------------------ -->
+<!-- Modal: ¿Salir sin guardar?                                   -->
+<!-- ------------------------------------------------------------ -->
+<div class="modal modal--compact" *ngIf="showSalirModal()">
+  <div class="modal__inner" (click)="$event.stopPropagation()">
+    <div class="modal__header">
+      <h3 class="modal__title">¿Salir sin guardar?</h3>
+      <button class="modal__close" (click)="showSalirModal.set(false)"><i class="pi pi-times"></i></button>
+    </div>
+    <div class="modal__body">
+      <p class="modal__text">Los cambios que hiciste en tus datos personales no se guardarán. La próxima vez que quieras editar, tendrás que empezar de nuevo.</p>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--primary" (click)="showSalirModal.set(false)">Seguir editando</button>
+      <button class="btn btn--ghost" (click)="confirmarSalir()">Salir</button>
     </div>
   </div>
 </div>

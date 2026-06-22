@@ -1,4 +1,23 @@
 <div class="page-wrapper">
+
+<!-- ── Demo bar identidad ─────────────────────────────────────── -->
+<div class="identity-demo-bar">
+  <span class="identity-demo-bar__label"><i class="pi pi-sliders-h"></i> Estado demo identidad:</span>
+  <div class="identity-demo-chips">
+    <button *ngFor="let s of identityStatusOptions"
+            class="identity-demo-chip"
+            [class.active]="demoIdentityStatus === s"
+            (click)="demoIdentityStatus = s">{{ s }}</button>
+  </div>
+</div>
+
+<!-- ── Alerta de identidad ────────────────────────────────────── -->
+<div class="identity-alert identity-alert--{{ alert.type }}" *ngIf="identityAlert as alert">
+  <i class="pi {{ alert.icon }} ia-icon"></i>
+  <span class="ia-text">{{ alert.text }}</span>
+  <button class="ia-cta">{{ alert.cta }} <i class="pi pi-arrow-right"></i></button>
+</div>
+
 <!-- Breadcrumb: Card icon > Dropicard > Tarjetas -->
 <div class="breadcrumb">
   <span class="breadcrumb-icon">

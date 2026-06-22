@@ -82,6 +82,54 @@
         <span class="demo-otp-hint"><i class="pi pi-info-circle"></i> MFA demo: 123456</span>
       </div>
 
+      @if (selectorEstado() === 'rechazada-espera') {
+        <div class="demo-top-divider"></div>
+        <div class="demo-group">
+          <span class="demo-group__label">Simulación</span>
+          <button type="button" class="demo-chip demo-chip--warning" (click)="simularEsperaFinalizada()">
+            <i class="pi pi-fast-forward"></i> Liberar espera
+          </button>
+        </div>
+      }
+
+      <div class="demo-top-divider"></div>
+      <div class="demo-group">
+        <span class="demo-group__label">Pantalla de inicio</span>
+        <div class="demo-chips">
+          <button type="button" class="demo-chip demo-chip--neutral" (click)="navegarAModulo('/old/identidad/hub')">
+            <i class="pi pi-home"></i> Hub de identidad
+          </button>
+        </div>
+      </div>
+
+      <div class="demo-top-divider"></div>
+      <div class="demo-group">
+        <span class="demo-group__label">Ver alertas en módulos</span>
+        <div class="demo-chips">
+          <button type="button" class="demo-chip demo-chip--neutral" (click)="navegarAModulo('/old/productos/catalogo')">
+            <i class="pi pi-shopping-bag"></i> Catálogo
+          </button>
+          <button type="button" class="demo-chip demo-chip--neutral" (click)="navegarAModulo('/old/mis-pedidos/mis-pedidos')">
+            <i class="pi pi-box"></i> Mis pedidos
+          </button>
+          <button type="button" class="demo-chip demo-chip--neutral" (click)="navegarAModulo('/old/productos/proveedores')">
+            <i class="pi pi-building"></i> Proveedores
+          </button>
+          <button type="button" class="demo-chip demo-chip--neutral" (click)="navegarAModulo('/old/historial-de-cartera')">
+            <i class="pi pi-wallet"></i> Historial
+          </button>
+          <button type="button" class="demo-chip demo-chip--neutral" (click)="navegarAModulo('/old/dropi-card/cards')">
+            <i class="pi pi-credit-card"></i> Dropicard
+          </button>
+          <button type="button" class="demo-chip demo-chip--neutral" (click)="navegarAModulo('/old/configuraciones/datos-bancarios')">
+            <i class="pi pi-bank"></i> Datos bancarios
+          </button>
+          <button type="button" class="demo-chip demo-chip--neutral" (click)="navegarAModulo('/old/configuraciones/retiros-de-saldo')">
+            <i class="pi pi-arrow-up-right"></i> Retiro saldo
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
   }
@@ -163,46 +211,38 @@
     @if (isVista('v-nueva-bloqueada')) {
       <div class="fid-vista">
         <div class="fid-layout-wide">
-        <div class="fid-hero fid-hero--split">
+        <div class="fid-hero fid-hero--bloqueada">
           <div class="fid-hero__glow" aria-hidden="true"></div>
-          <div class="fid-hero__main">
-            <span class="fid-hero__badge"><i class="pi pi-lock"></i> Verificación requerida</span>
+
+          <div class="fid-hero__col fid-hero__col--left">
+            <span class="fid-hero__badge">
+              <i class="pi pi-shield"></i> Un solo proceso · Datos protegidos
+            </span>
             <h2>{{ heroEncuadre.titulo }}</h2>
             <p>{{ heroEncuadre.descripcion }}</p>
+          </div>
 
-            <div class="fid-benefits">
-              @for (b of heroBenefits; track b.label) {
-                <div class="benefit-card">
-                  <span class="benefit-icon"><img [src]="b.icon" alt="" width="20" height="20" /></span>
-                  <span class="benefit-label">{{ b.label }}</span>
+          <div class="fid-hero__col fid-hero__col--right">
+            <div class="fid-unlock-list">
+              @for (b of heroBenefits; track b.label; let i = $index) {
+                <div class="unlock-item" [style.animation-delay]="(i * 0.08) + 's'">
+                  <span class="unlock-item__icon">
+                    <img [src]="b.icon" [alt]="b.label" width="18" height="18" />
+                  </span>
+                  <span class="unlock-item__text">
+                    <span class="unlock-item__label">{{ b.label }}</span>
+                    <span class="unlock-item__desc">{{ b.desc }}</span>
+                  </span>
                 </div>
               }
             </div>
-
             <div class="fid-hero__actions">
               <button class="fid-btn fid-btn--primary fid-btn--lg" (click)="irAValidar()" data-tour="fid-cta">
-                <i class="pi pi-shield"></i> Verificar mi identidad
+                Comenzar <i class="pi pi-arrow-right"></i>
               </button>
-              @if (!esBloqueoDuro) {
-                <button type="button" class="fid-btn fid-btn--ghost fid-btn--lg" (click)="masTarde()">
-                  Más tarde
-                </button>
-              }
             </div>
           </div>
 
-          <aside class="fid-hero__aside">
-            <div class="fid-hero-time">
-              <span class="fid-hero-time__value">~5</span>
-              <span class="fid-hero-time__unit">min</span>
-              <span class="fid-hero-time__label">Tiempo estimado</span>
-              <ul class="fid-hero-time__steps">
-                <li>Formulario de datos</li>
-                <li>Verificación biométrica</li>
-                <li>Confirmación</li>
-              </ul>
-            </div>
-          </aside>
         </div>
         </div>
       </div>
@@ -277,7 +317,7 @@
                 <i class="pi pi-arrow-left"></i> Atrás
               </button>
               <button class="fid-btn fid-btn--primary" (click)="comenzarValidacion()">
-                Estoy listo — abrir formulario <i class="pi pi-arrow-right"></i>
+                Comenzar <i class="pi pi-arrow-right"></i>
               </button>
             </div>
           </div>
@@ -292,6 +332,11 @@
       <div class="fid-vista">
         <div class="fid-layout-wide">
         <form class="fid-form fid-form-card" (ngSubmit)="onFormSubmit()" data-tour="fid-form">
+
+          <div class="fid-alert fid-alert--warning">
+            <i class="pi pi-lock fa-icon"></i>
+            <span class="fa-body"><strong>Recuerda:</strong> una vez validados, estos datos no podrán modificarse por <strong>6 meses</strong> y se usarán para tu facturación.</span>
+          </div>
 
           @if (paisConFiscal) {
             <div class="fid-form-wizard">
@@ -346,10 +391,13 @@
 
               <div class="fid-field" [class.fid-field--error]="hasFieldError('nacionalidad')">
                 <label class="fid-field__label" for="field-nacionalidad">Nacionalidad</label>
-                <input class="fid-field__input" id="field-nacionalidad" type="text" placeholder="Ej: Colombiana…" [(ngModel)]="formNucleo.nacionalidad" name="nacionalidad"
-                       [attr.aria-invalid]="hasFieldError('nacionalidad') || null"
-                       [attr.aria-describedby]="hasFieldError('nacionalidad') ? fieldDescId('nacionalidad') : null"
-                       (blur)="validateField('nacionalidad')" />
+                <select class="fid-field__select" id="field-nacionalidad" [(ngModel)]="formNucleo.nacionalidad" name="nacionalidad" autocomplete="country-name"
+                        [attr.aria-invalid]="hasFieldError('nacionalidad') || null"
+                        [attr.aria-describedby]="hasFieldError('nacionalidad') ? fieldDescId('nacionalidad') : null"
+                        (blur)="validateField('nacionalidad')">
+                  <option value="" disabled>Seleccionar…</option>
+                  <option *ngFor="let n of nacionalidades" [value]="n">{{ n }}</option>
+                </select>
                 @if (hasFieldError('nacionalidad')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('nacionalidad')">{{ getFieldError('nacionalidad') }}</span> }
               </div>
 
@@ -447,7 +495,11 @@
                       <option value="" disabled>Seleccionar…</option>
                       <option *ngFor="let o of opcionesFiscalesCo" [value]="o">{{ o }}</option>
                     </select>
-                    @if (hasFieldError('co_tipoRegimen')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('co_tipoRegimen') }}</span> }
+                    @if (hasFieldError('co_tipoRegimen')) {
+                      <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('co_tipoRegimen') }}</span>
+                    } @else {
+                      <span class="fid-field__helper">Ej: "Simplificado" si tus ventas anuales son menores a 3.500 UVT.</span>
+                    }
                   </div>
 
                   <div class="fid-field" [class.fid-field--new]="isCampoNuevo('co_tipoResponsabilidad')" [class.fid-field--error]="hasFieldError('co_tipoResponsabilidad')">
@@ -456,7 +508,11 @@
                       <option value="" disabled>Seleccionar…</option>
                       <option *ngFor="let o of opcionesFiscalesCo" [value]="o">{{ o }}</option>
                     </select>
-                    @if (hasFieldError('co_tipoResponsabilidad')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('co_tipoResponsabilidad') }}</span> }
+                    @if (hasFieldError('co_tipoResponsabilidad')) {
+                      <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('co_tipoResponsabilidad') }}</span>
+                    } @else {
+                      <span class="fid-field__helper">Indica qué obligaciones tributarias tienes ante la DIAN.</span>
+                    }
                   </div>
 
                   <div class="fid-field" [class.fid-field--new]="isCampoNuevo('co_impuesto')">
@@ -478,12 +534,16 @@
                       <option value="" disabled>Seleccionar…</option>
                       <option *ngFor="let o of opcionesFiscalesMx" [value]="o">{{ o }}</option>
                     </select>
-                    @if (hasFieldError('mx_regimenFiscal')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('mx_regimenFiscal') }}</span> }
+                    @if (hasFieldError('mx_regimenFiscal')) {
+                      <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('mx_regimenFiscal') }}</span>
+                    } @else {
+                      <span class="fid-field__helper">Encuéntralo en tu Constancia de Situación Fiscal del SAT.</span>
+                    }
                   </div>
 
                   <div class="fid-field fid-toggle-row full-width" [class.fid-field--new]="isCampoNuevo('mx_sujetoImpuestos')">
-                    <span class="fid-toggle-row__label">¿Sujeto a impuestos?</span>
-                    <input type="checkbox" [(ngModel)]="formFiscal.mx_sujetoImpuestos" name="mx_sujetoImpuestos" />
+                    <label class="fid-toggle-row__label" for="field-mx_sujetoImpuestos">¿Sujeto a impuestos?</label>
+                    <input type="checkbox" id="field-mx_sujetoImpuestos" [(ngModel)]="formFiscal.mx_sujetoImpuestos" name="mx_sujetoImpuestos" />
                   </div>
                 }
 
@@ -510,7 +570,7 @@
 
           <div class="fid-form__actions">
             @if (formStep() === 1) {
-              <button type="button" class="fid-btn fid-btn--secondary" (click)="navTo('v-nueva-bloqueada')">Salir sin guardar</button>
+              <button type="button" class="fid-btn fid-btn--secondary" (click)="openSalirSinGuardar()">Cancelar</button>
               <button type="submit" class="fid-btn fid-btn--primary">
                 @if (paisConFiscal) { Continuar <i class="pi pi-arrow-right"></i> }
                 @else { Revisar antes de enviar <i class="pi pi-arrow-right"></i> }
@@ -588,11 +648,13 @@
               <h2 class="fid-status__title">Quedó pendiente la sesión biométrica</h2>
               <p class="fid-status__body">{{ sumsubProgresoLabel }} Tus datos del formulario están guardados; la captura requiere una sesión continua.</p>
             </div>
-            <div class="fid-form__actions fid-form__actions--split">
-              <div class="fid-form__actions-left">
-                <button class="fid-btn fid-btn--secondary" (click)="navTo('v-nueva-formulario')">Revisar datos</button>
-                <button class="fid-btn fid-btn--ghost" (click)="empezarDeNuevo()">Reiniciar verificación biométrica</button>
-              </div>
+            <div class="fid-form__actions">
+              <button class="fid-btn fid-btn--ghost fid-btn--sm" (click)="empezarDeNuevo()">
+                Reiniciar sesión biométrica
+              </button>
+              <button class="fid-btn fid-btn--secondary" (click)="navTo('v-nueva-formulario')">
+                Revisar datos del formulario
+              </button>
               <button class="fid-btn fid-btn--primary" (click)="reanudarValidacion()">
                 <i class="pi pi-play"></i> Retomar captura
               </button>
@@ -614,7 +676,25 @@
                 Este proceso suele tomar menos de <strong>24 horas hábiles</strong>.
               </p>
             </div>
-            <div class="fid-form__actions fid-form__actions--solo">
+            <div class="fid-review-timeline">
+              <div class="rt-step rt-step--done">
+                <i class="pi pi-check-circle"></i>
+                <span>Datos y verificación biométrica enviados</span>
+              </div>
+              <div class="rt-step rt-step--active">
+                <i class="pi pi-spinner"></i>
+                <span>Revisión en proceso <em>(menos de 24 horas hábiles)</em></span>
+              </div>
+              <div class="rt-step">
+                <i class="pi pi-bell"></i>
+                <span>Recibirás notificación a <strong>{{ mockUser.email }}</strong></span>
+              </div>
+            </div>
+
+            <div class="fid-form__actions">
+              <button class="fid-btn fid-btn--ghost" (click)="solicitarRevision()">
+                <i class="pi pi-headphones"></i> ¿Necesitas ayuda?
+              </button>
               <button class="fid-btn fid-btn--secondary" (click)="verDatosEnviados()">Ver datos enviados</button>
             </div>
           </div>
@@ -638,15 +718,34 @@
             </span>
 
             @if (selectorEstado() === 'rechazada-espera') {
-              <div class="fid-countdown">
-                <span class="countdown-label">Podrás reintentar en</span>
-                <span class="countdown-timer">{{ countdownLabel }}</span>
+              <div class="fid-wait-bar">
+                <div class="fid-wait-bar__track">
+                  <div class="fid-wait-bar__fill" [style.width.%]="waitPercent"></div>
+                </div>
+                <span class="fid-wait-bar__label">Podrás reintentar en {{ countdownLabel }}</span>
               </div>
             }
 
             <div class="rechazo-card">
               <div class="rc-header"><i class="pi pi-info-circle"></i> Motivo del rechazo</div>
               <p class="rc-text">{{ motivoRechazo }}</p>
+            </div>
+
+            <div class="fid-rejection-reasons">
+              <button type="button" class="rr-toggle" (click)="toggleReasonsExpanded()">
+                <span><i class="pi pi-list"></i> ¿Cuáles son los motivos de rechazo más comunes?</span>
+                <i class="pi" [class.pi-chevron-down]="!reasonsExpanded()" [class.pi-chevron-up]="reasonsExpanded()"></i>
+              </button>
+              @if (reasonsExpanded()) {
+                <div class="rr-list">
+                  @for (r of rejectionReasonsList; track r.code) {
+                    <div class="rr-item">
+                      <span class="rr-label">{{ r.label }}</span>
+                      <span class="rr-desc">{{ r.description }}</span>
+                    </div>
+                  }
+                </div>
+              }
             </div>
 
             <div class="fid-form__actions">
@@ -760,12 +859,14 @@
               <span class="cc-icon"><i class="pi pi-bolt"></i></span>
               <p class="cc-title">Usar datos de {{ paisAnteriorLabel }}</p>
               <p class="cc-desc">Pre-llena el formulario con tu información ya validada. Más rápido y sin errores.</p>
+              <p class="cc-note">El período de 6 meses inicia desde esta nueva validación.</p>
               <button class="fid-btn fid-btn--primary fid-cc-card__btn" (click)="usarMismosDatos()">Usar estos datos</button>
             </div>
             <div class="fid-cc-card">
               <span class="cc-icon"><i class="pi pi-pencil"></i></span>
               <p class="cc-title">Ingresar datos nuevos</p>
               <p class="cc-desc">Empieza desde cero con información actualizada para {{ paisLabel }}.</p>
+              <p class="cc-note">El período de 6 meses inicia desde esta nueva validación.</p>
               <button class="fid-btn fid-btn--secondary fid-cc-card__btn" (click)="ingresarNuevosDatos()">Ingresar nuevos</button>
             </div>
           </div>
@@ -778,17 +879,15 @@
     @if (isVista('v-exitosa')) {
       <div class="fid-vista">
         <div class="fid-layout-wide">
-          <div class="fid-card">
-            <div class="fid-emotional--left">
-              <div class="fid-status__icon fid-status__icon--success"><i class="pi pi-check-circle"></i></div>
-              <h2 class="fid-status__title">¡Identidad verificada!</h2>
-              <p class="fid-status__body">
-                Tu cuenta está completamente validada, <strong>{{ nombreCompleto }}</strong>.
-              </p>
+          <div class="fid-hero fid-hero--success">
+            <div class="fid-hero__glow" aria-hidden="true"></div>
+            <div class="fid-status__icon fid-status__icon--success">
+              <i class="pi pi-check-circle"></i>
             </div>
-
+            <h2>¡Identidad verificada!</h2>
+            <p>Tu cuenta está completamente validada, <strong>{{ nombreCompleto }}</strong>. Ya puedes acceder a retiros, facturación y Dropicard.</p>
             <div class="fid-form__actions">
-              <button class="fid-btn fid-btn--primary" (click)="volverAlOrigen()">
+              <button class="fid-btn fid-btn--primary fid-btn--lg" (click)="volverAlOrigen()">
                 {{ origenRetornoLabel }} <i class="pi pi-arrow-right"></i>
               </button>
               <button class="fid-btn fid-btn--secondary" (click)="navTo('v-validado-datos')">
@@ -810,15 +909,24 @@
             <span class="fa-body"><strong>Identidad verificada</strong> — Tus datos están protegidos.</span>
           </div>
 
+          @if (!canEditData) {
+            <div class="fid-alert fid-alert--warning">
+              <i class="pi pi-clock fa-icon"></i>
+              <span class="fa-body">Tus datos fueron validados el <strong>{{ fechaAprobacionLabel }}</strong>. Por políticas de facturación, podrás solicitar cambios a partir del <strong>{{ fechaDesbloqueoLabel }}</strong>.</span>
+            </div>
+          }
+
           <div class="fid-readonly-header">
             <span class="section-label">Datos personales</span>
             <div class="fid-readonly-header__actions">
               <button class="fid-btn fid-btn--secondary" (click)="verDocumento()">
                 <i class="pi pi-id-card"></i> Ver documento
               </button>
-              <button class="fid-btn fid-btn--ghost" (click)="solicitarActualizacion()">
-                <i class="pi pi-pencil"></i> Actualizar datos
-              </button>
+              @if (canEditData) {
+                <button class="fid-btn fid-btn--ghost" (click)="solicitarActualizacion()">
+                  <i class="pi pi-pencil"></i> Actualizar datos
+                </button>
+              }
             </div>
           </div>
 
@@ -983,6 +1091,25 @@
      MODALES
 ════════════════════════════════════════════════════════════ -->
 
+<!-- ── M-SALIR-SIN-GUARDAR ────────────────────────────────────── -->
+@if (isModal('m-salir-sin-guardar')) {
+  <div class="fid-modal-overlay" role="presentation" (click)="onOverlayClick()">
+    <div class="fid-modal fid-modal--compact" role="dialog" aria-modal="true" aria-labelledby="modal-title-salir" (click)="$event.stopPropagation()">
+      <div class="fid-modal__header">
+        <h3 id="modal-title-salir">¿Salir sin guardar?</h3>
+        <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
+      </div>
+      <div class="fid-modal__body">
+        <p class="fid-modal__text">Los cambios que hiciste en tus datos personales no se guardarán. La próxima vez que quieras editar, tendrás que empezar de nuevo.</p>
+      </div>
+      <div class="fid-modal__footer">
+        <button class="fid-btn fid-btn--primary" (click)="closeModal()">Seguir editando</button>
+        <button class="fid-btn fid-btn--secondary" (click)="confirmarSalir()">Salir</button>
+      </div>
+    </div>
+  </div>
+}
+
 <!-- ── M-SELECCIONAR-CAMPOS ─────────────────────────────────── -->
 @if (isModal('m-seleccionar-campos')) {
   <div class="fid-modal-overlay" role="presentation" (click)="onOverlayClick()">
@@ -1077,6 +1204,13 @@
           <i class="pi pi-exclamation-triangle fa-icon"></i>
           <span class="fa-body">Revisa que todo sea correcto antes de iniciar la sesión biométrica.</span>
         </div>
+
+        @if (isEditMode()) {
+          <div class="fid-alert fid-alert--info fid-camera-reminder">
+            <i class="pi pi-camera fa-icon"></i>
+            <span class="fa-body"><strong>Antes de verificar:</strong> ten tu documento original a la mano, buena iluminación y cámara disponible.</span>
+          </div>
+        }
 
         <div class="confirm-section">
           <h4>Información personal</h4>

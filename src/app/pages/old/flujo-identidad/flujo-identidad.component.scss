@@ -11,7 +11,7 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  background: $gray-50;
+  background: linear-gradient(160deg, #f7f8fa 0%, #f0f2f5 100%);
 }
 
 
@@ -117,7 +117,7 @@
   gap: $size-2;
   margin-bottom: $size-4;
   font-size: $font-xs;
-  color: $gray-400;
+  color: $gray-500;
 
   .bc-sep  { color: $gray-300; font-size: $font-xs; }
   .bc-active { color: $gray-700; font-weight: $font-medium; }
@@ -137,16 +137,17 @@
 
   h1 {
     font-family: $font-primary;
-    font-size: $font-2xl;
-    font-weight: $font-bold;
+    font-size: $font-3xl;
+    font-weight: $font-extrabold;
     color: $gray-800;
     margin: 0;
+    letter-spacing: -0.5px;
   }
 
   .fid-subtitle {
     font-family: $font-primary;
     font-size: $font-sm;
-    color: $gray-400;
+    color: $gray-500;
     margin: 0;
   }
 }
@@ -172,7 +173,11 @@
   font-weight: $font-semibold;
 
   &--neutral  { background: $gray-100; color: $gray-600; }
-  &--success  { background: rgba($success, 0.12); color: $success; }
+  &--success  {
+    background: rgba($success, 0.12);
+    color: $success;
+    box-shadow: 0 2px 8px rgba($success, 0.2);
+  }
   &--warning  { background: rgba($warning, 0.12); color: $warning; }
   &--error    { background: rgba($error, 0.1); color: $error; }
 }
@@ -182,7 +187,7 @@
 .fid-steps {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   width: 100%;
   margin-bottom: $size-5;
 }
@@ -193,8 +198,8 @@
   gap: $size-2;
 
   &__bubble {
-    width: 28px;
-    height: 28px;
+    width: 34px;
+    height: 34px;
     border-radius: $radius-full;
     display: flex;
     align-items: center;
@@ -206,7 +211,7 @@
     border: 2px solid $gray-200;
     background: $white;
     color: $gray-400;
-    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   }
 
   &__label {
@@ -216,23 +221,28 @@
     white-space: nowrap;
     transition: color 0.2s ease;
 
-    @media (max-width: $bp-sm) { display: none; }
+    @media (max-width: $bp-md) { display: none; }
   }
 
   &__connector {
-    flex: 1 1 80px;
-    max-width: 120px;
+    flex: 1 1 0;
     min-width: 24px;
     height: 2px;
     background: $gray-200;
     margin: 0 $size-2;
-    transition: background 0.2s ease;
+    transition: background 0.3s ease;
 
-    &--done { background: $success; }
+    &--done     { background: $success; }
+    &--progress { background: linear-gradient(90deg, $success, $gray-200); }
   }
 
   &--focus {
-    .fid-step__bubble { border-color: $primary-500; background: $primary-500; color: $white; }
+    .fid-step__bubble {
+      border-color: $primary-500;
+      background: $primary-500;
+      color: $white;
+      box-shadow: 0 0 0 4px rgba($primary-500, 0.15);
+    }
     .fid-step__label  { color: $gray-700; font-weight: $font-medium; }
   }
 
@@ -253,11 +263,18 @@
 
 .fid-emotional--left {
   display: grid;
-  grid-template-columns: 56px 1fr;
-  gap: $size-1 $size-4;
+  grid-template-columns: 64px 1fr;
+  gap: $size-2 $size-5;
   text-align: left;
 
-  .fid-status__icon { grid-row: span 2; width: 56px; height: 56px; font-size: 24px; align-self: start; }
+  .fid-status__icon {
+    grid-row: span 2;
+    width: 64px;
+    height: 64px;
+    font-size: 28px;
+    align-self: start;
+    box-shadow: none;
+  }
   .fid-status__title, .fid-status__body { grid-column: 2; margin: 0; }
 }
 
@@ -279,10 +296,10 @@
 .fid-card,
 .fid-form-card {
   background: $white;
-  border: 1px solid $gray-100;
+  border: 1px solid rgba($gray-200, 0.7);
   border-radius: $radius-xl;
   padding: $size-6;
-  box-shadow: $shadow-small;
+  box-shadow: $shadow-medium;
 
   @media (max-width: $bp-sm) { padding: $size-4; }
 }
@@ -311,14 +328,15 @@
   position: relative;
   overflow: hidden;
   text-align: center;
-  padding: $size-8 $size-8;
+  padding: $size-10 $size-8;
   background:
-    radial-gradient(120% 90% at 50% -10%, rgba(244, 154, 61, 0.08) 0%, rgba(244, 154, 61, 0) 60%),
-    linear-gradient(180deg, $white 0%, mix($white, $primary-500, 92%) 100%);
-  border: 1px solid rgba($primary-500, 0.18);
+    radial-gradient(120% 90% at 50% -10%, rgba(244, 154, 61, 0.14) 0%, rgba(244, 154, 61, 0) 60%),
+    linear-gradient(180deg, $white 0%, mix($white, $primary-500, 90%) 100%);
+  border: 1px solid rgba($primary-500, 0.22);
   border-radius: $radius-xl;
-  box-shadow: $shadow-medium;
+  box-shadow: $shadow-medium, 0 4px 28px rgba($primary-500, 0.12);
 
+  @media (max-width: $bp-lg) { padding: $size-6 $size-6; }
   @media (max-width: $bp-sm) { padding: $size-8 $size-4; }
 
   &--split {
@@ -327,6 +345,8 @@
     gap: $size-6;
     text-align: left;
     align-items: stretch;
+
+    .fid-hero__actions { justify-content: flex-start; }
 
     @media (max-width: $bp-lg) {
       grid-template-columns: 1fr;
@@ -352,7 +372,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: $size-3;
-    justify-content: flex-start;
+    justify-content: center;
     margin-top: $size-4;
 
     @media (max-width: $bp-sm) {
@@ -363,15 +383,16 @@
 
   &__glow {
     position: absolute;
-    top: -140px;
+    top: -160px;
     left: 50%;
     transform: translateX(-50%);
-    width: 520px;
-    height: 320px;
-    max-width: 90%;
-    background: radial-gradient(circle, rgba(244, 154, 61, 0.18) 0%, rgba(244, 154, 61, 0) 70%);
+    width: 640px;
+    height: 380px;
+    max-width: 95%;
+    background: radial-gradient(circle, rgba(244, 154, 61, 0.22) 0%, rgba(244, 154, 61, 0) 70%);
     pointer-events: none;
     z-index: 0;
+    animation: fidGlowPulse 4s ease-in-out infinite;
   }
 
   &__content {
@@ -385,53 +406,181 @@
     align-items: center;
     gap: $size-1;
     background: rgba(244, 154, 61, 0.1);
-    border: 1px solid rgba(244, 154, 61, 0.25);
+    border: 1px solid rgba(244, 154, 61, 0.28);
     color: $primary-600;
     font-family: $font-primary;
-    font-size: $font-xs;
+    font-size: $font-sm;
     font-weight: $font-semibold;
     border-radius: $radius-pill;
     padding: $size-1 $size-3;
     margin-bottom: $size-4;
+    letter-spacing: 0.3px;
 
     .pi { font-size: 11px; }
+
   }
 
   h2 {
     font-family: $font-primary;
-    font-size: $font-2xl;
-    font-weight: $font-bold;
-    line-height: 1.2;
-    color: $gray-800;
+    font-size: $font-3xl;
+    font-weight: $font-extrabold;
+    line-height: 1.15;
+    color: $gray-700;
     margin: 0 0 $size-2;
+    letter-spacing: -1px;
 
     .accent { color: $primary-500; }
 
-    @media (max-width: $bp-sm) { font-size: $font-xl; }
+    @media (max-width: $bp-sm) { font-size: $font-2xl; }
   }
 
   p {
     font-family: $font-primary;
     font-size: $font-md;
-    color: $gray-500;
+    color: $gray-600;
     max-width: 480px;
-    margin: 0 0 $size-6;
+    margin: 0 auto $size-4;
     line-height: 1.6;
 
     .fid-hero--split & {
       max-width: none;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+}
+
+// ─── Hero bloqueada — two-column desktop layout ──────────────────────────────
+
+.fid-hero--bloqueada {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $size-10;
+  align-items: start;
+  text-align: left;
+  padding: $size-10 $size-10;
+
+  p {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: 1fr;
+    gap: $size-6;
+    text-align: center;
+    padding: $size-8 $size-6;
+
+    p {
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: $size-4;
     }
   }
 
-  &__note {
-    display: inline-flex;
+  @media (max-width: $bp-sm) {
+    padding: $size-6 $size-4;
+  }
+}
+
+.fid-hero__col {
+  position: relative;
+  z-index: 1;
+  animation: fidFadeIn 0.35s ease both;
+
+  &--right {
+    display: flex;
+    flex-direction: column;
+    gap: $size-5;
+    padding-left: $size-8;
+    border-left: 1px solid rgba($primary-500, 0.14);
+
+    .fid-unlock-list {
+      max-width: none;
+      margin: 0;
+    }
+
+    .fid-hero__actions {
+      justify-content: flex-start;
+      margin-top: $size-2;
+    }
+
+    @media (max-width: $bp-lg) {
+      padding-left: 0;
+      border-left: none;
+      gap: $size-5;
+
+      .fid-unlock-list {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .fid-hero__actions {
+        justify-content: center;
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+
+.fid-hero--success {
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba($success, 0.14) 0%, rgba($success, 0) 60%),
+    linear-gradient(180deg, $white 0%, mix($white, $success, 94%) 100%);
+  border-color: rgba($success, 0.25);
+  box-shadow: $shadow-medium, 0 4px 24px rgba($success, 0.08);
+  text-align: center;
+  padding: $size-10 $size-8;
+
+  @media (max-width: $bp-lg) { padding: $size-8 $size-6; }
+  @media (max-width: $bp-sm) { padding: $size-8 $size-4; }
+
+  .fid-hero__glow { background: radial-gradient(circle, rgba($success, 0.2) 0%, rgba($success, 0) 70%); }
+
+  .fid-status__icon {
+    width: 80px;
+    height: 80px;
+    font-size: 36px;
+    margin: 0 auto $size-5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-full;
+    box-shadow: 0 0 0 14px rgba($success, 0.1), 0 0 0 28px rgba($success, 0.05);
+  }
+
+  h2 {
+    font-size: $font-3xl;
+    margin-bottom: $size-3;
+
+    @media (max-width: $bp-sm) { font-size: $font-2xl; }
+  }
+
+  p { max-width: 420px; margin: 0 auto $size-5; }
+
+  .fid-form__actions { justify-content: center; }
+}
+
+.fid-hero__stats {
+  display: flex;
+  gap: $size-4;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: $size-4;
+
+  span {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-500;
+    display: flex;
     align-items: center;
     gap: $size-1;
-    margin: $size-4 0 0 !important;
-    font-size: $font-xs !important;
-    color: $gray-400 !important;
 
-    .pi { font-size: 12px; }
+    .pi { font-size: 12px; color: $primary-500; }
   }
 }
 
@@ -493,7 +642,14 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: $size-3;
-  margin: $size-4 0 0;
+  margin: $size-4 auto 0;
+  max-width: 520px;
+
+  .fid-hero--split & {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+  }
 
   @media (max-width: $bp-sm) { grid-template-columns: 1fr; }
 }
@@ -502,18 +658,23 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: $size-5 $size-3;
-  background: rgba($white, 0.7);
-  border: 1px solid rgba(244, 154, 61, 0.18);
+  padding: $size-4 $size-3;
+  background: rgba($white, 0.75);
+  border: 1px solid rgba(244, 154, 61, 0.2);
   border-radius: $radius-lg;
   text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  animation: fidSlideUp 0.35s ease both;
+
+  &:nth-child(1) { animation-delay: 0.10s; }
+  &:nth-child(2) { animation-delay: 0.18s; }
+  &:nth-child(3) { animation-delay: 0.26s; }
+  &:nth-child(4) { animation-delay: 0.34s; }
 
   @media (hover: hover) {
     &:hover {
-      transform: translateY(-3px);
-      border-color: rgba(244, 154, 61, 0.4);
-      box-shadow: $shadow-small;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba($primary-500, 0.12), 0 0 0 3px rgba($primary-500, 0.08);
     }
   }
 
@@ -523,14 +684,16 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    margin-bottom: $size-3;
+    margin-bottom: $size-2;
     border-radius: $radius-full;
     background: rgba(244, 154, 61, 0.12);
     color: $primary-600;
+    box-shadow: 0 2px 8px rgba($primary-500, 0.15);
 
     .pi { font-size: 20px; }
     img { width: 20px; height: 20px; object-fit: contain; }
   }
+
   .benefit-label { font-family: $font-primary; font-size: $font-xs; font-weight: $font-medium; color: $gray-700; }
 }
 
@@ -555,23 +718,28 @@
   width: 100%;
   font: inherit;
   color: inherit;
+  box-shadow: $shadow-small;
 
   &:focus-visible {
     outline: 2px solid $primary-500;
     outline-offset: 2px;
   }
 
-  &__icon  { font-size: 32px; margin-bottom: $size-3; display: block; color: $primary-500; }
-  &__title { font-family: $font-primary; font-size: $font-base; font-weight: $font-semibold; color: $gray-800; margin: 0 0 $size-1; }
+  &__icon  { font-size: 40px; margin-bottom: $size-3; display: block; color: $primary-500; }
+  &__title { font-family: $font-primary; font-size: $font-lg; font-weight: $font-semibold; color: $gray-800; margin: 0 0 $size-1; }
   &__desc  { font-family: $font-primary; font-size: $font-sm; color: $gray-500; margin: 0; line-height: 1.5; }
 
   &.selected {
     border-color: $primary-500;
     background: rgba(244, 154, 61, 0.04);
-    box-shadow: 0 0 0 4px rgba(244, 154, 61, 0.1);
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.15), 0 4px 16px rgba($primary-500, 0.10);
   }
 
-  &:hover:not(.selected) { border-color: $primary-500; background: rgba(244, 154, 61, 0.02); }
+  &:hover:not(.selected) {
+    border-color: rgba($primary-500, 0.5);
+    background: rgba(244, 154, 61, 0.02);
+    box-shadow: $shadow-medium;
+  }
 }
 
 // ─── Checklist ───────────────────────────────────────────────────────────────
@@ -588,11 +756,12 @@
     gap: $size-3;
     padding: $size-3 $size-4;
     background: $gray-50;
+    border: 1px solid $gray-100;
     border-radius: $radius-md;
 
     .ci-check {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       border-radius: $radius-full;
       background: rgba($success, 0.12);
       color: $success;
@@ -602,6 +771,7 @@
       font-size: 11px;
       flex-shrink: 0;
       margin-top: 1px;
+      box-shadow: 0 0 0 3px rgba($success, 0.1);
     }
 
     .ci-text {
@@ -629,10 +799,10 @@
   .fa-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
   .fa-body  { flex: 1; color: $gray-700; text-align: left; }
 
-  &--info    { background: rgba($info, 0.08);    border: 1px solid rgba($info, 0.2);    .fa-icon { color: $info; } }
-  &--warning { background: rgba($warning, 0.08); border: 1px solid rgba($warning, 0.2); .fa-icon { color: $warning; } }
-  &--success { background: rgba($success, 0.08); border: 1px solid rgba($success, 0.2); .fa-icon { color: $success; } }
-  &--error   { background: rgba($error, 0.08);   border: 1px solid rgba($error, 0.2);   .fa-icon { color: $error; } }
+  &--info    { background: rgba($info, 0.07);    border-left: 3px solid $info;    .fa-icon { color: $info; } }
+  &--warning { background: rgba($warning, 0.07); border-left: 3px solid $warning; .fa-icon { color: $warning; } }
+  &--success { background: rgba($success, 0.07); border-left: 3px solid $success; .fa-icon { color: $success; } }
+  &--error   { background: rgba($error, 0.07);   border-left: 3px solid $error;   .fa-icon { color: $error; } }
 }
 
 
@@ -641,11 +811,12 @@
 
 .fid-form__section {
   background: $white;
-  border: 1px solid $gray-100;
+  border: 1px solid rgba($gray-200, 0.7);
   border-radius: $radius-xl;
-  padding: $size-6;
-  box-shadow: $shadow-small;
+  padding: $size-8;
+  box-shadow: $shadow-medium;
 
+  @media (max-width: $bp-md) { padding: $size-6; }
   @media (max-width: $bp-sm) { padding: $size-4; }
 }
 
@@ -654,9 +825,12 @@
   font-size: $font-base;
   font-weight: $font-semibold;
   color: $gray-800;
-  margin: 0;
-  padding-bottom: $size-3;
-  border-bottom: 1px solid $gray-100;
+  margin: 0 0 $size-4;
+  padding: $size-3 $size-4;
+  border-left: 3px solid $primary-500;
+  border-bottom: none;
+  background: rgba($primary-500, 0.025);
+  border-radius: 0 $radius-sm $radius-sm 0;
 }
 
 .section-label {
@@ -670,9 +844,15 @@
   display: block;
 }
 
+.fid-form-card .fid-form__section:not(:first-of-type) {
+  margin-top: $size-6;
+  padding-top: $size-6;
+  border-top: 1px solid $gray-100;
+}
+
 .form-grid {
   display: grid;
-  gap: $size-4;
+  gap: $size-3;
 
   &--2col { grid-template-columns: 1fr 1fr; }
   &--3col { grid-template-columns: 1fr 1fr 1fr; }
@@ -692,8 +872,8 @@
   &__label {
     font-family: $font-primary;
     font-size: $font-sm;
-    font-weight: $font-regular;
-    color: $gray-600;
+    font-weight: $font-medium;
+    color: $gray-700;
   }
 
   &__input,
@@ -716,7 +896,11 @@
 
     &::placeholder { color: $gray-300; }
     &:focus:not(:focus-visible) { outline: none; }
-    &:focus-visible { border-color: $primary-500; box-shadow: 0 0 0 3px rgba($primary-500, 0.12); }
+    &:focus-visible {
+      border-color: $primary-500;
+      box-shadow: 0 0 0 3px rgba($primary-500, 0.12);
+      background: rgba($primary-500, 0.015);
+    }
     &:disabled { background: $gray-50; color: $gray-400; cursor: not-allowed; }
   }
 
@@ -728,6 +912,7 @@
     &--error { color: $error; }
   }
 
+
   &--error {
     .fid-field__input, .fid-field__select { border-color: $error; }
     .fid-field__helper { color: $error; }
@@ -735,14 +920,41 @@
 
   &--new .fid-field__label::after {
     content: ' Nuevo';
-    font-size: 10px;
+    font-size: $font-xs;
     font-weight: $font-semibold;
     color: $warning;
     background: rgba($warning, 0.1);
-    padding: 1px 5px;
+    padding: 2px 6px;
     border-radius: $radius-sm;
-    margin-left: 4px;
+    margin-left: $size-2;
   }
+}
+
+// ─── Date input — DS-aligned (no dropi-datepicker spec; native + DS tokens) ──
+
+input[type="date"].fid-field__input {
+  padding-right: $size-5;
+  color-scheme: light;
+
+  &::-webkit-calendar-picker-indicator {
+    opacity: 0.55;
+    cursor: pointer;
+    filter: invert(64%) sepia(55%) saturate(600%) hue-rotate(338deg) brightness(0.95);
+    transition: opacity 0.15s ease;
+  }
+  &::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+  &::-webkit-datetime-edit-fields-wrapper { padding: 0; }
+
+  &::-webkit-datetime-edit-month-field,
+  &::-webkit-datetime-edit-day-field,
+  &::-webkit-datetime-edit-year-field {
+    color: $gray-700;
+    border-radius: 2px;
+    &:focus { background: rgba($primary-500, 0.1); outline: none; }
+  }
+
+  &::-webkit-datetime-edit-text { color: $gray-300; }
 }
 
 // ─── Toggle ───────────────────────────────────────────────────────────────────
@@ -753,7 +965,7 @@
   justify-content: space-between;
   padding: $size-3 $size-4;
   background: $gray-50;
-  border: 1px solid $gray-100;
+  border: 1px solid $gray-200;
   border-radius: $radius-md;
   height: 40px;
 
@@ -832,7 +1044,7 @@
   gap: $size-3;
   flex-wrap: wrap;
   margin-top: $size-4;
-  padding-top: $size-4;
+  padding-top: $size-5;
   border-top: 1px solid $gray-100;
 
   @media (max-width: $bp-sm) {
@@ -892,7 +1104,9 @@
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 
   &--primary  {
-    background: $primary-500; color: $white; border-color: $primary-500;
+    background: linear-gradient(135deg, $primary-500, $primary-600);
+    color: $white;
+    border-color: $primary-600;
     @media (hover: hover) { &:hover:not(:disabled) { background: $primary-600; } }
   }
   &--secondary {
@@ -908,11 +1122,19 @@
     @media (hover: hover) { &:hover:not(:disabled) { background: rgba($error, 0.06); } }
   }
   &--full     { width: 100%; }
+  &--sm {
+    height: 32px;
+    padding: 0 $size-3;
+    font-size: $font-xs;
+    border-radius: $radius-md;
+  }
+
   &--lg {
     height: 48px;
     padding: 0 $size-6;
     font-size: $font-md;
     border-radius: $radius-md;
+    letter-spacing: -0.2px;
     box-shadow: 0 6px 16px rgba($primary-500, 0.28);
 
     @media (hover: hover) {
@@ -925,31 +1147,49 @@
 
 
 .fid-status__icon {
-  width: 80px;
-  height: 80px;
+  width: 96px;
+  height: 96px;
   border-radius: $radius-full;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
+  font-size: 36px;
+  flex-shrink: 0;
 
-  &--success { background: rgba($success, 0.12); color: $success; }
-  &--warning { background: rgba($warning, 0.12); color: $warning; }
-  &--error   { background: rgba($error, 0.12); color: $error; }
-  &--primary { background: rgba(244, 154, 61, 0.12); color: $primary-600; }
+  &--success {
+    background: rgba($success, 0.12);
+    color: $success;
+    box-shadow: 0 0 0 12px rgba($success, 0.08), 0 0 0 24px rgba($success, 0.04);
+  }
+  &--warning {
+    background: rgba($warning, 0.12);
+    color: $warning;
+    box-shadow: 0 0 0 12px rgba($warning, 0.08), 0 0 0 24px rgba($warning, 0.04);
+  }
+  &--error {
+    background: rgba($error, 0.12);
+    color: $error;
+    box-shadow: 0 0 0 12px rgba($error, 0.08), 0 0 0 24px rgba($error, 0.04);
+  }
+  &--primary {
+    background: rgba($primary-500, 0.12);
+    color: $primary-600;
+    box-shadow: 0 0 0 12px rgba($primary-500, 0.08), 0 0 0 24px rgba($primary-500, 0.04);
+  }
 }
 
 .fid-status__title {
-  font-size: $font-xl;
-  font-weight: $font-bold;
+  font-size: $font-2xl;
+  font-weight: $font-extrabold;
   color: $gray-800;
   margin: 0;
+  letter-spacing: -0.3px;
 }
 
 .fid-status__body {
-  font-size: $font-sm;
+  font-size: $font-base;
   color: $gray-500;
-  line-height: 1.6;
+  line-height: 1.7;
   margin: 0;
 }
 
@@ -961,7 +1201,7 @@
   padding: $size-1 $size-3;
   border-radius: $radius-pill;
   background: rgba($error, 0.08);
-  border: 1px solid rgba($error, 0.2);
+  border: 1px solid rgba($error, 0.3);
   color: $error;
   font-family: $font-primary;
   font-size: $font-xs;
@@ -971,22 +1211,31 @@
 }
 
 
-.fid-countdown {
+.fid-wait-bar {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: $size-1;
+  gap: $size-2;
+  margin: $size-3 0;
 
-  .countdown-label { font-family: $font-primary; font-size: $font-xs; color: $gray-400; }
+  &__track {
+    height: 4px;
+    background: $gray-100;
+    border-radius: $radius-pill;
+    overflow: hidden;
+  }
 
-  .countdown-timer {
+  &__fill {
+    height: 100%;
+    background: $primary-500;
+    transition: width 1s linear;
+    border-radius: $radius-pill;
+  }
+
+  &__label {
     font-family: $font-primary;
-    font-size: 40px;
-    font-weight: $font-bold;
-    color: $primary-500;
+    font-size: $font-xs;
+    color: $gray-500;
     font-variant-numeric: tabular-nums;
-    animation: fidPulse 1s ease infinite;
-    line-height: 1;
   }
 }
 
@@ -1012,22 +1261,25 @@
 .fid-readonly-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: $size-3 $size-6;
+  gap: $size-4 $size-6;
 
   @media (max-width: $bp-sm) { grid-template-columns: 1fr; }
 
-  & + & { margin-top: $size-3; }
+  & + & { margin-top: $size-4; }
 }
 
 // Acciones de formulario dentro de tarjeta: separación superior consistente
 .fid-card .fid-form__actions { margin-top: $size-4; }
 
 .readonly-field {
+  padding-bottom: $size-2;
+  border-bottom: 1px solid $gray-100;
+
   .rf-label {
     font-family: $font-primary;
     font-size: 11px;
     font-weight: $font-medium;
-    color: $gray-300;
+    color: $gray-400;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: $size-1;
@@ -1053,7 +1305,7 @@
 
   &.is-new {
     background: rgba($warning, 0.06);
-    border: 1px dashed rgba($warning, 0.4);
+    border: 1px dashed rgba($warning, 0.5);
     padding: $size-2 $size-3;
     border-radius: $radius-md;
     .rf-label { color: $warning; }
@@ -1076,20 +1328,36 @@
   padding: $size-5;
   border: 2px solid $gray-200;
   border-radius: $radius-xl;
-  transition: border-color 0.18s ease, background 0.18s ease;
+  transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
   background: $white;
   display: flex;
   flex-direction: column;
   gap: $size-2;
+  box-shadow: $shadow-small;
 
-  .cc-icon  { font-size: 28px; color: $primary-600; }
+  .cc-icon  { font-size: 36px; color: $primary-600; }
   .cc-title { font-family: $font-primary; font-size: $font-sm; font-weight: $font-semibold; color: $gray-800; margin: 0; }
-  .cc-desc  { font-family: $font-primary; font-size: $font-xs; color: $gray-500; margin: 0; line-height: 1.5; }
+  .cc-desc  { font-family: $font-primary; font-size: $font-xs; color: $gray-500; margin: 0; line-height: 1.5; flex: 1; }
 
-  &:hover        { border-color: $primary-500; background: rgba(244, 154, 61, 0.02); }
-  &--recommended { border-color: $primary-500; }
+  &:hover {
+    border-color: $primary-500;
+    background: rgba(244, 154, 61, 0.02);
+    box-shadow: $shadow-medium;
+  }
+  &--recommended {
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.1), $shadow-small;
+  }
 
-  &__btn { margin-top: $size-2; align-self: flex-start; }
+  .cc-note {
+    font-family: $font-primary;
+    font-size: 11px;
+    color: $gray-400;
+    margin: 0;
+    font-style: italic;
+  }
+
+  &__btn { margin-top: auto; align-self: flex-start; }
 }
 
 // ─── Grupo selector (m-seleccionar-campos) ────────────────────────────────────
@@ -1158,7 +1426,7 @@
 
 .otp-row {
   display: flex;
-  gap: $size-2;
+  gap: $size-3;
   justify-content: center;
   margin: $size-4 0;
 }
@@ -1178,7 +1446,7 @@
 
   &:focus:not(:focus-visible) { outline: none; }
   &:focus-visible { border-color: $primary-500; box-shadow: 0 0 0 3px rgba($primary-500, 0.12); }
-  &.has-value { border-color: $primary-300; }
+  &.has-value { border-color: $primary-500; background: rgba($primary-500, 0.02); }
 
   @media (max-width: $bp-sm) { width: 40px; height: 48px; font-size: $font-base; }
 }
@@ -1193,11 +1461,11 @@
   flex-direction: column;
   align-items: center;
   gap: $size-4;
-  padding: $size-6 $size-4;
+  padding: $size-8 $size-4;
   text-align: center;
 
-  .sumsub-icon  { font-size: 48px; color: $primary-500; }
-  .sumsub-title { font-family: $font-primary; font-size: $font-base; font-weight: $font-semibold; color: $gray-800; margin: 0; }
+  .sumsub-icon  { font-size: 64px; color: $primary-500; }
+  .sumsub-title { font-family: $font-primary; font-size: $font-lg; font-weight: $font-semibold; color: $gray-800; margin: 0; }
   .sumsub-desc  { font-family: $font-primary; font-size: $font-sm; color: $gray-500; max-width: 340px; line-height: 1.6; margin: 0; }
 }
 
@@ -1206,15 +1474,15 @@
   flex-direction: column;
   align-items: center;
   gap: $size-3;
-  padding: $size-6;
+  padding: $size-8;
   color: $gray-400;
   font-family: $font-primary;
   font-size: $font-sm;
 
   .spinner {
-    width: 32px;
-    height: 32px;
-    border: 3px solid $gray-100;
+    width: 40px;
+    height: 40px;
+    border: 4px solid $gray-100;
     border-top-color: $primary-500;
     border-radius: $radius-full;
     animation: fidSpin 0.7s linear infinite;
@@ -1226,8 +1494,8 @@
 .fid-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba($gray-900, 0.45);
-  backdrop-filter: blur(2px);
+  background: rgba($gray-900, 0.52);
+  backdrop-filter: blur(3px);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -1247,7 +1515,7 @@
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 24px 72px rgba(0, 0, 0, 0.22);
   animation: fidModalIn 0.22s ease;
 
   @media (max-width: $bp-sm) {
@@ -1273,11 +1541,18 @@
   border-bottom: 1px solid $gray-100;
   flex-shrink: 0;
 
-  h3 { font-family: $font-primary; font-size: $font-base; font-weight: $font-semibold; color: $gray-800; margin: 0; }
+  h3 {
+    font-family: $font-primary;
+    font-size: $font-lg;
+    font-weight: $font-bold;
+    color: $gray-800;
+    margin: 0;
+    letter-spacing: -0.2px;
+  }
 
   .modal-close {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: $radius-md;
     border: none;
     background: transparent;
@@ -1350,6 +1625,7 @@
   flex-direction: column;
   width: 100%;
   text-align: left;
+  padding-left: $size-4;
 }
 
 .timeline-step {
@@ -1372,7 +1648,8 @@
     width: 32px;
     height: 32px;
     border-radius: $radius-full;
-    background: $gray-100;
+    background: $white;
+    border: 2px solid $gray-200;
     color: $gray-500;
     display: flex;
     align-items: center;
@@ -1388,6 +1665,62 @@
   }
 }
 
+
+// ─── Review timeline (v-en-revision) ─────────────────────────────────────────
+
+.fid-review-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: $size-5;
+  padding: $size-5;
+  background: $gray-50;
+  border-radius: $radius-lg;
+  border: 1px solid $gray-100;
+}
+
+.rt-step {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-3;
+  padding: $size-3 0;
+  position: relative;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $gray-100;
+    padding-bottom: $size-3;
+  }
+
+  .pi {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: $gray-300;
+    width: 22px;
+  }
+
+  span {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-500;
+    line-height: 1.5;
+
+    em { font-style: normal; color: $gray-400; font-size: $font-xs; }
+    strong { font-weight: $font-medium; color: $gray-700; }
+  }
+
+  &--done {
+    .pi { color: $success; }
+    span { color: $gray-700; }
+  }
+
+  &--active {
+    .pi { color: $primary-500; animation: fidSpin 1.2s linear infinite; }
+    span { color: $gray-800; font-weight: $font-medium; }
+  }
+}
+
+.fid-spin { animation: fidSpin 1.2s linear infinite; }
 
 .confirm-section {
   margin-bottom: $size-4;
@@ -1499,16 +1832,50 @@
   align-items: center;
   gap: $size-3;
   margin-bottom: $size-6;
-  padding-bottom: $size-4;
+  padding-bottom: $size-5;
   border-bottom: 1px solid $gray-100;
 
   &__step {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
     font-family: $font-primary;
     font-size: $font-sm;
     color: $gray-400;
     font-weight: $font-medium;
 
-    &--active { color: $primary-600; font-weight: $font-semibold; }
+    &--active {
+      color: $primary-600;
+      font-weight: $font-semibold;
+    }
+
+    &-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: $radius-full;
+      font-size: $font-xs;
+      font-weight: $font-bold;
+      border: 2px solid $gray-200;
+      background: $white;
+      color: $gray-400;
+      flex-shrink: 0;
+    }
+
+    &--active &-num {
+      border-color: $primary-500;
+      background: $primary-500;
+      color: $white;
+      box-shadow: 0 0 0 3px rgba($primary-500, 0.15);
+    }
+
+    &--done &-num {
+      border-color: $success;
+      background: $success;
+      color: $white;
+    }
   }
 
   &__sep {
@@ -1516,6 +1883,9 @@
     height: 2px;
     background: $gray-100;
     max-width: 48px;
+    transition: background 0.2s ease;
+
+    &--done { background: $success; }
   }
 }
 
@@ -1604,14 +1974,14 @@
 }
 
 .fid-mfa-icon {
-  font-size: 32px;
-  margin-bottom: $size-3;
+  font-size: 48px;
+  margin-bottom: $size-4;
   color: $primary-500;
 }
 
 .fid-mfa-title {
   font-family: $font-primary;
-  font-size: $font-md;
+  font-size: $font-lg;
   color: $gray-700;
   font-weight: $font-semibold;
   margin: 0 0 $size-2;
@@ -1666,6 +2036,240 @@
   span { font-family: $font-primary; font-size: $font-xs; }
 }
 
+// ─── Benefit Items (fila horizontal) ────────────────────────────────────────
+
+.fid-benefits--row {
+  display: flex;
+  gap: $size-6;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: $size-4 auto $size-2;
+
+  @media (max-width: $bp-sm) { gap: $size-5; }
+}
+
+.benefit-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $size-2;
+  min-width: 72px;
+
+  &__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-full;
+    background: rgba($primary-500, 0.1);
+    border: 1px solid rgba($primary-500, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba($primary-500, 0.1);
+    animation: fidSlideUp 0.35s ease both;
+
+    img { width: 20px; height: 20px; object-fit: contain; }
+  }
+
+  &:nth-child(1) .benefit-item__icon { animation-delay: 0.10s; }
+  &:nth-child(2) .benefit-item__icon { animation-delay: 0.20s; }
+  &:nth-child(3) .benefit-item__icon { animation-delay: 0.30s; }
+
+  &__label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $gray-600;
+    text-align: center;
+    line-height: 1.3;
+  }
+}
+
+
+// ─── Hero trust line & time ──────────────────────────────────────────────────
+
+.fid-hero__trust {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  color: $gray-300;
+  text-align: center;
+  margin: $size-4 auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $size-1;
+  max-width: 400px;
+
+  .pi { font-size: 10px; }
+}
+
+.fid-hero__time {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  color: $gray-500;
+  text-align: center;
+  margin: $size-2 0 0;
+}
+
+
+// ─── Unlock list — narrativa de desbloqueo (v-nueva-bloqueada) ───────────────
+
+.fid-unlock-list {
+  max-width: 360px;
+  margin: $size-4 auto $size-2;
+  text-align: left;
+}
+
+.unlock-item {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-4;
+  padding: $size-3 $size-1;
+  animation: fidSlideUp 0.3s ease both;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-md;
+    background: white;
+    border: 1.5px solid rgba($primary-500, 0.28);
+    box-shadow: 0 1px 4px rgba($primary-500, 0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+
+    img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      filter: brightness(0) invert(73%) sepia(80%) saturate(350%) hue-rotate(343deg) brightness(95%);
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $gray-700;
+    line-height: 1.3;
+  }
+
+  &__desc {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-500;
+    line-height: 1.4;
+  }
+}
+
+
+// ─── Keyframes ──────────────────────────────────────────────────────────────
+
+@keyframes fidGlowPulse {
+  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+  50%       { opacity: 1;   transform: translateX(-50%) scale(1.08); }
+}
+
+@keyframes fidSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+// ─── Rejection reasons accordion ────────────────────────────────────────────
+
+.fid-rejection-reasons {
+  margin-top: $size-3;
+  border: 1px solid $gray-200;
+  border-radius: $radius-sm;
+  overflow: hidden;
+
+  .rr-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: $size-3 $size-4;
+    background: $gray-50;
+    border: none;
+    cursor: pointer;
+    font-size: $font-sm;
+    font-weight: 500;
+    color: $gray-700;
+    text-align: left;
+    transition: background 0.15s;
+    gap: $size-2;
+
+    &:hover { background: $gray-100; }
+
+    span { display: flex; align-items: center; gap: $size-2; }
+
+    i.pi-list { color: $gray-500; }
+    i.pi-chevron-down, i.pi-chevron-up { color: $gray-400; font-size: $font-xs; flex-shrink: 0; }
+  }
+
+  .rr-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid $gray-200;
+    animation: fidSlideUp 0.18s ease;
+  }
+
+  .rr-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: $size-2 $size-4;
+    border-bottom: 1px solid $gray-100;
+
+    &:last-child { border-bottom: none; }
+  }
+
+  .rr-label {
+    font-size: $font-sm;
+    font-weight: 600;
+    color: $gray-800;
+  }
+
+  .rr-desc {
+    font-size: $font-xs;
+    color: $gray-500;
+    line-height: 1.45;
+  }
+}
+
+// ─── Modal compact ───────────────────────────────────────────────────────────
+
+.fid-modal--compact {
+  max-width: 440px !important;
+
+  .fid-modal__text {
+    font-size: $font-sm;
+    color: $gray-600;
+    line-height: 1.55;
+    margin: 0;
+  }
+}
+
+// ─── Camera reminder banner (edit mode) ─────────────────────────────────────
+
+.fid-camera-reminder {
+  margin-top: $size-3;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .benefit-card,
   .fid-hero__content,
@@ -1683,4 +2287,5 @@
   }
 
   .countdown-timer { animation: none !important; }
+  .fid-hero__glow  { animation: none !important; }
 }

@@ -35,7 +35,37 @@ export class CatalogComponent implements OnInit {
   viewMode: 'grid' | 'list' = 'grid';
   sortBy = 'Aleatorio';
   showOrderModal = false;
+  showBlockModal = false;
   selectedProduct: Product | null = null;
+
+  demoIdentityStatus = 'sin_validar';
+
+  readonly identityAlerts: Record<string, { type: string; icon: string; text: string; cta: string }> = {
+    sin_validar: {
+      type: 'warning',
+      icon: 'pi-shield',
+      text: 'Para crear órdenes, verifica tu identidad primero. Es un proceso rápido que activa todas tus operaciones.',
+      cta: 'Verificar mi identidad',
+    },
+    pendiente: {
+      type: 'warning',
+      icon: 'pi-exclamation-triangle',
+      text: 'Tu verificación está incompleta. Ya guardaste tus datos — solo falta el paso biométrico para terminar.',
+      cta: 'Continuar verificación',
+    },
+    en_revision: {
+      type: 'info',
+      icon: 'pi-clock',
+      text: 'Tu identidad está en revisión. Mientras tanto algunas funciones están pausadas — te avisamos cuando esté aprobada.',
+      cta: 'Ver estado',
+    },
+    rechazado: {
+      type: 'error',
+      icon: 'pi-times-circle',
+      text: 'Tu verificación fue rechazada. Puedes intentarlo de nuevo — revisa la guía para asegurarte el éxito esta vez.',
+      cta: 'Reintentar verificación',
+    },
+  };
 
   filterToggles = {
     favoritos: false,
@@ -75,10 +105,22 @@ export class CatalogComponent implements OnInit {
     return '$ ' + value.toLocaleString('es-CO');
   }
 
+  get identityAlert() {
+    return this.demoIdentityStatus !== 'aprobado' ? this.identityAlerts[this.demoIdentityStatus] : null;
+  }
+
   enviarACliente(product: Product): void {
+    if (this.demoIdentityStatus !== 'aprobado') {
+      this.showBlockModal = true;
+      return;
+    }
     this.selectedProduct = product;
     this.showOrderModal = true;
     document.body.style.overflow = 'hidden';
+  }
+
+  closeBlockModal(): void {
+    this.showBlockModal = false;
   }
 
   closeOrderModal(): void {

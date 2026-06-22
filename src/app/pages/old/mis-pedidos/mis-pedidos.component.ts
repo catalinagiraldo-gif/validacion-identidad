@@ -40,6 +40,20 @@ export class MisPedidosComponent implements OnInit {
   searchQuery = '';
   showActionsDropdown = false;
 
+  demoIdentityStatus = 'sin_validar';
+  readonly identityStatusOptions = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
+
+  private readonly alertsMap: Record<string, { type: string; icon: string; text: string; cta: string }> = {
+    sin_validar: { type: 'warning', icon: 'pi-shield',       text: 'Aún no puedes gestionar pagos de pedidos. Valida tu identidad para activar el procesamiento.', cta: 'Validar identidad' },
+    pendiente:   { type: 'warning', icon: 'pi-exclamation-triangle', text: 'Terminaste a medias tu verificación. Un paso más y los pagos de tus pedidos quedan activos.', cta: 'Continuar verificación' },
+    en_revision: { type: 'info',    icon: 'pi-clock',        text: 'Tu identidad está en revisión. Te avisamos en cuanto esté aprobada para activar el procesamiento.', cta: 'Ver estado' },
+    rechazado:   { type: 'error',   icon: 'pi-times-circle', text: 'Tu verificación fue rechazada. Reintenta para desbloquear el procesamiento de tus pedidos.', cta: 'Reintentar verificación' },
+  };
+
+  get identityAlert() {
+    return this.demoIdentityStatus !== 'aprobado' ? this.alertsMap[this.demoIdentityStatus] : null;
+  }
+
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {

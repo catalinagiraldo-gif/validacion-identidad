@@ -30,6 +30,20 @@ export class ProveedoresComponent implements OnInit {
   ciudad = 'Todas';
   categoria = 'Todas';
 
+  demoIdentityStatus = 'sin_validar';
+  readonly identityStatusOptions = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
+
+  private readonly alertsMap: Record<string, { type: string; icon: string; text: string; cta: string }> = {
+    sin_validar: { type: 'warning', icon: 'pi-shield',       text: 'Para operar con proveedores y contratar catálogos, verifica tu identidad. Solo toma unos minutos.', cta: 'Verificar identidad' },
+    pendiente:   { type: 'warning', icon: 'pi-exclamation-triangle', text: 'Casi listo. Completa tu verificación de identidad para contratar con proveedores sin restricciones.', cta: 'Completar verificación' },
+    en_revision: { type: 'info',    icon: 'pi-clock',        text: 'Tu identidad está en revisión. Puedes explorar proveedores — te avisamos cuando puedas contratar.', cta: 'Ver estado' },
+    rechazado:   { type: 'error',   icon: 'pi-times-circle', text: 'Tu verificación fue rechazada. Reintenta para desbloquear la contratación de proveedores.', cta: 'Reintentar verificación' },
+  };
+
+  get identityAlert() {
+    return this.demoIdentityStatus !== 'aprobado' ? this.alertsMap[this.demoIdentityStatus] : null;
+  }
+
   tiposProveedor = ['Todos', 'premium', 'verificado', 'estándar'];
   ciudades = ['Todas', 'Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga'];
   categorias = ['Todas', 'Moda', 'Deporte', 'Hogar', 'Salud', 'Belleza', 'Tecnología', 'Cocina', 'Vaporizadores', 'Mascotas'];

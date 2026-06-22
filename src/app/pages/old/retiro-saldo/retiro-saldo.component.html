@@ -1,0 +1,93 @@
+<div class="rs-page">
+
+  <!-- ── Demo bar identidad ─────────────────────────────────────── -->
+  <div class="identity-demo-bar">
+    <span class="identity-demo-bar__label"><i class="pi pi-sliders-h"></i> Estado demo identidad:</span>
+    <div class="identity-demo-chips">
+      <button *ngFor="let s of identityStatusOptions"
+              class="identity-demo-chip"
+              [class.active]="demoIdentityStatus === s"
+              (click)="demoIdentityStatus = s">{{ s }}</button>
+    </div>
+  </div>
+
+  <!-- ── Alerta de identidad ────────────────────────────────────── -->
+  <div class="identity-alert identity-alert--{{ alert.type }}" *ngIf="identityAlert as alert">
+    <i class="pi {{ alert.icon }} ia-icon"></i>
+    <span class="ia-text">{{ alert.text }}</span>
+    <button class="ia-cta">{{ alert.cta }} <i class="pi pi-arrow-right"></i></button>
+  </div>
+
+  <!-- ── Breadcrumb ─────────────────────────────────────────────── -->
+  <div class="breadcrumb">
+    <span class="bc-item">Configuraciones</span>
+    <i class="pi pi-chevron-right bc-sep"></i>
+    <span class="bc-item bc-item--active">Retiros de Saldo</span>
+  </div>
+
+  <!-- ── Page title ────────────────────────────────────────────── -->
+  <h1 class="page-title">Retiro de saldo</h1>
+
+  <!-- ── Saldo disponible ───────────────────────────────────────── -->
+  <div class="rs-saldo-badge">
+    <span class="rs-saldo-badge__label">Saldo disponible:</span>
+    <span class="rs-saldo-badge__amount">{{ formatSaldo(saldoDisponible) }}</span>
+  </div>
+
+  <!-- ── Form card ─────────────────────────────────────────────── -->
+  <div class="rs-card">
+    <div class="rs-form">
+      <div class="rs-field">
+        <label class="rs-field__label">Monto a Retirar</label>
+        <input
+          type="text"
+          class="rs-field__input"
+          [(ngModel)]="monto"
+          placeholder="$ 0"
+          [disabled]="demoIdentityStatus !== 'aprobado'"
+        />
+      </div>
+      <div class="rs-field">
+        <label class="rs-field__label">Banco</label>
+        <select class="rs-field__select" [(ngModel)]="bancoSeleccionado" [disabled]="demoIdentityStatus !== 'aprobado'">
+          <option value="">Seleccionar banco</option>
+          <option *ngFor="let b of bancos" [value]="b">{{ b }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="rs-card__footer">
+      <button class="btn-historial">
+        <i class="pi pi-history"></i> Historial de Retiros
+      </button>
+      <button class="btn-procesar" (click)="procesarRetiro()">
+        Procesar
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Modal bloqueador ───────────────────────────────────────── -->
+  <div class="fid-block-overlay" *ngIf="showBlockModal" (click)="closeBlockModal()">
+    <div class="fid-block-modal" (click)="$event.stopPropagation()">
+      <button class="fid-block-modal__close" (click)="closeBlockModal()"><i class="pi pi-times"></i></button>
+      <div class="fid-block-modal__header">
+        <i class="pi pi-lock fid-block-modal__icon"></i>
+      </div>
+      <h3 class="fid-block-modal__title">Retiro no disponible</h3>
+      <p class="fid-block-modal__body">Para retirar saldo a tu cuenta bancaria necesitas validar tu identidad. Este paso protege tu dinero y cumple con los requisitos de facturación.</p>
+      <ul class="fid-block-modal__list">
+        <li><i class="pi pi-circle-fill"></i> Retiros a cuenta bancaria</li>
+        <li><i class="pi pi-circle-fill"></i> Transferencia entre wallets</li>
+        <li><i class="pi pi-circle-fill"></i> Historial de transacciones completo</li>
+      </ul>
+      <div class="fid-block-modal__actions">
+        <button class="fid-block-btn fid-block-btn--primary">
+          Verificar mi identidad <i class="pi pi-arrow-right"></i>
+        </button>
+        <button class="fid-block-btn fid-block-btn--secondary" (click)="closeBlockModal()">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

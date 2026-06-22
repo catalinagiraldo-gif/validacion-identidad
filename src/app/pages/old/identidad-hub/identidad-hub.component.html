@@ -1,0 +1,127 @@
+<div class="hub-page">
+
+  <!-- ── Demo bar ─────────────────────────────────────────────── -->
+  <div class="identity-demo-bar">
+    <span class="identity-demo-bar__label"><i class="pi pi-sliders-h"></i> Estado demo:</span>
+    <div class="identity-demo-chips">
+      <button *ngFor="let s of identityStatusOptions"
+              class="identity-demo-chip"
+              [class.active]="demoIdentityStatus === s"
+              (click)="setStatus(s)">{{ s }}</button>
+    </div>
+  </div>
+
+  <!-- ── Hero ─────────────────────────────────────────────────── -->
+  <section class="hub-hero">
+    <div class="hub-hero__bg-orbs">
+      <div class="orb orb--1"></div>
+      <div class="orb orb--2"></div>
+      <div class="orb orb--3"></div>
+    </div>
+
+    <div class="hub-hero__content">
+      <div class="hub-hero__shield-wrap">
+        <i class="pi pi-shield hub-hero__shield-icon" [class.hub-hero__shield-icon--ok]="!isBlocked"></i>
+        <div class="hub-hero__shield-ring"></div>
+      </div>
+
+      <div class="hub-hero__text">
+        <div class="hub-hero__badge" *ngIf="isBlocked">
+          <i class="pi pi-lock"></i> {{ demoIdentityStatus === 'en_revision' ? 'En revisión' : demoIdentityStatus === 'rechazado' ? 'Validación rechazada' : '7 funciones limitadas' }}
+        </div>
+        <div class="hub-hero__badge hub-hero__badge--ok" *ngIf="!isBlocked">
+          <i class="pi pi-check-circle"></i> Identidad verificada
+        </div>
+
+        <h1 class="hub-hero__title" *ngIf="isBlocked">Activa tu identidad.<br><span>Desbloquea Dropi.</span></h1>
+        <h1 class="hub-hero__title hub-hero__title--ok" *ngIf="!isBlocked">Tu identidad está verificada.<br><span>Todo Dropi es tuyo.</span></h1>
+
+        <p class="hub-hero__sub" *ngIf="isBlocked">7 módulos clave están limitados sin validación. Con ella, puedes crear órdenes, retirar saldo y activar tu Dropicard.</p>
+        <p class="hub-hero__sub" *ngIf="!isBlocked">Accede a todos los módulos de Dropi sin restricciones. Tu cuenta está completamente operativa.</p>
+
+        <div class="hub-hero__actions">
+          <button class="btn-cta-hero" (click)="irAValidar()" *ngIf="isBlocked">
+            <i class="pi pi-arrow-right"></i>
+            {{ demoIdentityStatus === 'pendiente' ? 'Continuar verificación' : demoIdentityStatus === 'en_revision' ? 'Ver estado de revisión' : demoIdentityStatus === 'rechazado' ? 'Reintentar verificación' : 'Comenzar verificación' }}
+          </button>
+          <button class="btn-cta-hero btn-cta-hero--ok" (click)="irAModulo('/old/productos/catalogo')" *ngIf="!isBlocked">
+            <i class="pi pi-shopping-bag"></i> Ir al Catálogo
+          </button>
+        </div>
+
+        <div class="hub-hero__stat" *ngIf="isBlocked">
+          <i class="pi pi-bolt"></i> Usuarios validados generan <strong>3x más ingresos</strong> en Dropi
+        </div>
+      </div>
+    </div>
+
+    <!-- Popover persuasivo -->
+    <div class="hub-popover" *ngIf="showPopover && isBlocked">
+      <button class="hub-popover__close" (click)="closePopover()"><i class="pi pi-times"></i></button>
+      <i class="pi pi-lock hub-popover__icon"></i>
+      <p class="hub-popover__text">Sin validar, no puedes retirar saldo ni crear órdenes. <strong>¡Toma 5 minutos!</strong></p>
+      <button class="hub-popover__cta" (click)="irAValidar()">Verificar ahora <i class="pi pi-arrow-right"></i></button>
+    </div>
+  </section>
+
+  <!-- ── Grid de módulos ───────────────────────────────────────── -->
+  <section class="hub-modules">
+    <h2 class="hub-modules__title">Estado de módulos</h2>
+    <p class="hub-modules__sub" *ngIf="isBlocked">Estos módulos están limitados hasta que completes tu verificación de identidad.</p>
+    <p class="hub-modules__sub" *ngIf="!isBlocked">Todos los módulos están activos. Haz clic en cualquiera para acceder directamente.</p>
+
+    <div class="hub-modules__grid">
+      <div class="module-card" *ngFor="let mod of modules"
+           [class.module-card--blocked]="isBlocked"
+           [class.module-card--ok]="!isBlocked"
+           (click)="irAModulo(mod.route)">
+        <div class="module-card__header">
+          <div class="module-card__icon-wrap" [class.module-card__icon-wrap--ok]="!isBlocked">
+            <i class="pi {{ mod.icon }}"></i>
+          </div>
+          <div class="module-card__status" [ngClass]="getModuleStatus(mod).cssClass">
+            {{ getModuleStatus(mod).label }}
+          </div>
+        </div>
+        <h3 class="module-card__name">{{ mod.name }}</h3>
+        <p class="module-card__desc" *ngIf="!isBlocked">{{ mod.description }}</p>
+        <p class="module-card__blocked-desc" *ngIf="isBlocked">
+          <i class="pi pi-lock"></i> No puedes {{ mod.blockedFeature }}
+        </p>
+        <div class="module-card__footer">
+          <span class="module-card__link">Ver módulo <i class="pi pi-arrow-right"></i></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Beneficios ────────────────────────────────────────────── -->
+  <section class="hub-benefits">
+    <h2 class="hub-benefits__title">¿Qué desbloqueas al verificarte?</h2>
+    <div class="hub-benefits__grid">
+      <div class="benefit-card">
+        <div class="benefit-card__icon"><i class="pi pi-arrow-up-right"></i></div>
+        <h3>Retiros sin límites</h3>
+        <p>Transfiere tu saldo a cualquier cuenta bancaria de Colombia, México, Argentina, Chile o Ecuador.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-card__icon"><i class="pi pi-file-check"></i></div>
+        <h3>Facturación habilitada</h3>
+        <p>Emite facturas electrónicas y cumple con los requisitos tributarios de cada país sin fricciones.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-card__icon"><i class="pi pi-credit-card"></i></div>
+        <h3>Dropicard activa</h3>
+        <p>Solicita tu tarjeta física Dropi para pagar inventario y retiro directo desde tu saldo de cartera.</p>
+      </div>
+    </div>
+
+    <div class="hub-benefits__cta-row" *ngIf="isBlocked">
+      <button class="btn-cta-bottom" (click)="irAValidar()">
+        <i class="pi pi-shield"></i> Verificar mi identidad ahora
+      </button>
+      <span class="hub-benefits__time"><i class="pi pi-clock"></i> Proceso de 5 minutos</span>
+    </div>
+  </section>
+
+</div>

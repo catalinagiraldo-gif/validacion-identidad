@@ -1,0 +1,275 @@
+@import 'styles/variables';
+
+:host { display: block; width: 100%; height: 100%; overflow: hidden; }
+
+.hub-page {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: $gray-50;
+}
+
+// ── Demo bar ───────────────────────────────────────────────────
+.identity-demo-bar {
+  display: flex; align-items: center; gap: $size-3; flex-wrap: wrap;
+  background: $gray-800; padding: $size-2 $size-8; position: sticky; top: 0; z-index: 50;
+  @media (max-width: $bp-sm) { padding: $size-2 $size-4; }
+  &__label { font-family: $font-primary; font-size: $font-xs; color: $gray-300; display: flex; align-items: center; gap: $size-2; white-space: nowrap; }
+}
+.identity-demo-chips { display: flex; gap: $size-2; flex-wrap: wrap; }
+.identity-demo-chip {
+  font-family: $font-primary; font-size: $font-xs; font-weight: $font-medium;
+  padding: 3px 10px; border-radius: $radius-pill; border: 1px solid rgba($white, 0.18);
+  background: rgba($white, 0.06); color: $gray-300; cursor: pointer; transition: all 0.15s;
+  &:hover { background: rgba($white, 0.12); }
+  &.active { background: $primary-500; color: white; border-color: $primary-500; }
+}
+
+// ── Hero ───────────────────────────────────────────────────────
+.hub-hero {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #3d1f00 0%, $primary-600 35%, $primary-500 65%, #fff8f0 100%);
+  padding: $size-10 $size-8 48px;
+  @media (max-width: $bp-sm) { padding: $size-8 $size-4 $size-10; }
+}
+
+.hub-hero__bg-orbs {
+  position: absolute; inset: 0; pointer-events: none;
+  .orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(60px); opacity: 0.25;
+  }
+  .orb--1 { width: 400px; height: 400px; background: $primary-300; top: -100px; right: -80px; }
+  .orb--2 { width: 300px; height: 300px; background: white; bottom: -60px; left: 10%; opacity: 0.08; }
+  .orb--3 { width: 200px; height: 200px; background: $warning; top: 40%; left: -40px; opacity: 0.15; }
+}
+
+.hub-hero__content {
+  position: relative; z-index: 1; max-width: 680px;
+  display: flex; align-items: flex-start; gap: $size-6;
+  @media (max-width: $bp-md) { flex-direction: column; gap: $size-4; }
+}
+
+.hub-hero__shield-wrap {
+  flex-shrink: 0; position: relative; width: 80px; height: 80px;
+  display: flex; align-items: center; justify-content: center;
+}
+.hub-hero__shield-icon {
+  font-size: 48px; color: rgba(white, 0.4);
+  animation: shieldPulse 2.5s ease-in-out infinite;
+  &--ok { color: rgba(white, 0.9); animation: shieldGlow 3s ease-in-out infinite; }
+}
+.hub-hero__shield-ring {
+  position: absolute; inset: -8px; border-radius: 50%;
+  border: 2px solid rgba(white, 0.2);
+  animation: ringExpand 2.5s ease-in-out infinite;
+}
+
+@keyframes shieldPulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%       { opacity: 0.7; transform: scale(1.06); }
+}
+@keyframes shieldGlow {
+  0%, 100% { opacity: 0.9; filter: drop-shadow(0 0 8px rgba(white, 0.3)); }
+  50%       { opacity: 1;   filter: drop-shadow(0 0 20px rgba(white, 0.6)); }
+}
+@keyframes ringExpand {
+  0%   { transform: scale(1);   opacity: 0.5; }
+  50%  { transform: scale(1.2); opacity: 0.2; }
+  100% { transform: scale(1);   opacity: 0.5; }
+}
+
+.hub-hero__text { flex: 1; }
+
+.hub-hero__badge {
+  display: inline-flex; align-items: center; gap: $size-2;
+  font-family: $font-primary; font-size: $font-xs; font-weight: 600;
+  padding: 4px 12px; border-radius: $radius-pill;
+  background: rgba(white, 0.15); color: rgba(white, 0.9);
+  border: 1px solid rgba(white, 0.25); margin-bottom: $size-3;
+  backdrop-filter: blur(8px);
+  &--ok { background: rgba(#16a34a, 0.2); border-color: rgba(#16a34a, 0.4); color: #bbf7d0; }
+}
+
+.hub-hero__title {
+  font-family: $font-primary; font-size: 36px; font-weight: 800; line-height: 1.15;
+  color: white; margin: 0 0 $size-3; letter-spacing: -0.5px;
+  span { color: rgba(white, 0.65); }
+  &--ok { span { color: #bbf7d0; } }
+  @media (max-width: $bp-sm) { font-size: 26px; }
+}
+
+.hub-hero__sub {
+  font-family: $font-primary; font-size: $font-base; color: rgba(white, 0.78);
+  line-height: 1.55; margin: 0 0 $size-5; max-width: 520px;
+}
+
+.hub-hero__actions { margin-bottom: $size-4; }
+
+.btn-cta-hero {
+  display: inline-flex; align-items: center; gap: $size-2;
+  padding: $size-3 $size-6; border-radius: $radius-pill; border: none;
+  background: white; color: $primary-600; font-family: $font-primary;
+  font-size: $font-base; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25); transition: all 0.2s;
+  &:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.35); }
+  &--ok { background: #16a34a; color: white; }
+  i { transition: transform 0.2s; }
+  &:hover i { transform: translateX(3px); }
+}
+
+.hub-hero__stat {
+  display: inline-flex; align-items: center; gap: $size-2;
+  font-family: $font-primary; font-size: $font-sm; color: rgba(white, 0.6);
+  strong { color: rgba(white, 0.9); }
+}
+
+// ── Popover ────────────────────────────────────────────────────
+.hub-popover {
+  position: absolute; right: $size-8; top: $size-10; z-index: 20;
+  background: white; border-radius: $radius-md; padding: $size-4 $size-5;
+  max-width: 280px; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  border-top: 3px solid $primary-500;
+  animation: popoverSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  @media (max-width: $bp-md) { right: $size-4; top: auto; bottom: $size-4; }
+
+  &__close {
+    position: absolute; top: $size-2; right: $size-2;
+    background: none; border: none; cursor: pointer; color: $gray-400; font-size: 14px;
+    padding: 2px; &:hover { color: $gray-700; }
+  }
+  &__icon { font-size: 20px; color: $primary-500; display: block; margin-bottom: $size-2; }
+  &__text { font-family: $font-primary; font-size: $font-sm; color: $gray-700; line-height: 1.45; margin: 0 0 $size-3; }
+  &__cta {
+    display: flex; align-items: center; gap: $size-1; justify-content: center;
+    padding: 6px 14px; border-radius: $radius-pill; border: none;
+    background: $primary-500; color: white; font-size: $font-xs; font-weight: 600; cursor: pointer;
+    transition: opacity 0.15s; &:hover { opacity: 0.88; }
+  }
+}
+@keyframes popoverSlide {
+  from { opacity: 0; transform: translateY(-12px) scale(0.94); }
+  to   { opacity: 1; transform: none; }
+}
+
+// ── Module grid ────────────────────────────────────────────────
+.hub-modules {
+  padding: $size-8 $size-8;
+  @media (max-width: $bp-sm) { padding: $size-6 $size-4; }
+
+  &__title {
+    font-family: $font-primary; font-size: $font-xl; font-weight: 700;
+    color: $gray-800; margin: 0 0 $size-2;
+  }
+  &__sub { font-family: $font-primary; font-size: $font-sm; color: $gray-500; margin: 0 0 $size-5; }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $size-4;
+    @media (max-width: $bp-lg) { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: $bp-md) { grid-template-columns: 1fr; }
+  }
+}
+
+.module-card {
+  background: white; border-radius: $radius-md;
+  box-shadow: 0 2px 4px rgba(15, 34, 58, 0.06);
+  padding: $size-4; cursor: pointer;
+  transition: all 0.2s; border: 1.5px solid transparent;
+  display: flex; flex-direction: column; gap: $size-2;
+
+  &:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15, 34, 58, 0.12); }
+
+  &--blocked {
+    border-color: rgba($error, 0.12);
+    background: linear-gradient(135deg, white 70%, rgba($error, 0.02) 100%);
+    &:hover { border-color: rgba($error, 0.25); }
+  }
+  &--ok {
+    border-color: rgba(#16a34a, 0.15);
+    &:hover { border-color: rgba(#16a34a, 0.35); }
+  }
+
+  &__header { display: flex; align-items: center; justify-content: space-between; }
+
+  &__icon-wrap {
+    width: 40px; height: 40px; border-radius: $radius-sm;
+    background: rgba($primary-500, 0.08); display: flex; align-items: center; justify-content: center;
+    i { font-size: 18px; color: $primary-600; }
+    &--ok { background: rgba(#16a34a, 0.08); i { color: #16a34a; } }
+  }
+
+  &__status {
+    font-family: $font-primary; font-size: 11px; font-weight: 600;
+    padding: 2px 9px; border-radius: $radius-pill;
+  }
+
+  &__name {
+    font-family: $font-primary; font-size: $font-base; font-weight: 600;
+    color: $gray-800; margin: 0;
+  }
+  &__desc { font-family: $font-primary; font-size: $font-sm; color: $gray-500; margin: 0; }
+  &__blocked-desc {
+    display: flex; align-items: center; gap: $size-1;
+    font-family: $font-primary; font-size: $font-sm; color: $error; opacity: 0.7;
+    margin: 0; i { font-size: 11px; }
+  }
+  &__footer { margin-top: auto; padding-top: $size-2; }
+  &__link {
+    font-family: $font-primary; font-size: $font-xs; font-weight: 600;
+    color: $primary-600; display: flex; align-items: center; gap: 4px;
+    i { transition: transform 0.15s; }
+  }
+  &:hover &__link i { transform: translateX(3px); }
+}
+
+// Status badge variants
+.status--blocked { background: rgba($error, 0.1);   color: #c0392b; }
+.status--warning { background: rgba($warning, 0.12); color: #b45309; }
+.status--review  { background: rgba(#0d6efd, 0.1);  color: #1d4ed8; }
+.status--error   { background: rgba($error, 0.1);   color: #c0392b; }
+.status--active  { background: rgba(#16a34a, 0.1);  color: #15803d; }
+
+// ── Benefits ───────────────────────────────────────────────────
+.hub-benefits {
+  padding: $size-6 $size-8 $size-10;
+  background: white; border-top: 1px solid $gray-100;
+  @media (max-width: $bp-sm) { padding: $size-6 $size-4; }
+
+  &__title {
+    font-family: $font-primary; font-size: $font-xl; font-weight: 700;
+    color: $gray-800; margin: 0 0 $size-5; text-align: center;
+  }
+  &__grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: $size-5;
+    max-width: 900px; margin: 0 auto $size-6;
+    @media (max-width: $bp-md) { grid-template-columns: 1fr; max-width: 440px; }
+  }
+  &__cta-row {
+    display: flex; align-items: center; justify-content: center; gap: $size-4;
+    flex-wrap: wrap;
+  }
+  &__time { font-family: $font-primary; font-size: $font-sm; color: $gray-500; display: flex; align-items: center; gap: $size-2; }
+}
+
+.benefit-card {
+  text-align: center; padding: $size-5;
+  &__icon {
+    width: 52px; height: 52px; border-radius: $radius-md;
+    background: $primary-600; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto $size-3;
+    i { font-size: 22px; color: white; }
+  }
+  h3 { font-family: $font-primary; font-size: $font-base; font-weight: 700; color: $gray-800; margin: 0 0 $size-2; }
+  p  { font-family: $font-primary; font-size: $font-sm; color: $gray-500; line-height: 1.55; margin: 0; }
+}
+
+.btn-cta-bottom {
+  display: inline-flex; align-items: center; gap: $size-2;
+  padding: $size-3 $size-6; border-radius: $radius-pill; border: none;
+  background: $primary-500; color: white; font-family: $font-primary;
+  font-size: $font-base; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 16px rgba($primary-500, 0.35); transition: all 0.2s;
+  &:hover { background: $primary-600; transform: translateY(-1px); box-shadow: 0 8px 24px rgba($primary-500, 0.4); }
+}

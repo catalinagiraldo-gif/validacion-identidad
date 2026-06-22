@@ -1,5 +1,37 @@
 @import 'styles/variables';
 
+// ── Identity demo bar ──────────────────────────────────────────
+.identity-demo-bar {
+  display: flex; align-items: center; gap: $size-3; flex-wrap: wrap;
+  background: $gray-800; border-radius: $radius-md; padding: $size-2 $size-4;
+  margin-bottom: $size-1;
+  &__label { font-family: $font-primary; font-size: $font-xs; color: $gray-300; display: flex; align-items: center; gap: $size-2; white-space: nowrap; }
+}
+.identity-demo-chips { display: flex; gap: $size-2; flex-wrap: wrap; }
+.identity-demo-chip {
+  font-family: $font-primary; font-size: $font-xs; font-weight: $font-medium;
+  padding: 3px 10px; border-radius: $radius-pill; border: 1px solid rgba($white, 0.18);
+  background: rgba($white, 0.06); color: $gray-300; cursor: pointer; transition: all 0.15s;
+  &:hover { background: rgba($white, 0.12); }
+  &.active { background: $primary-500; color: white; border-color: $primary-500; }
+}
+
+// ── Identity alert ─────────────────────────────────────────────
+.identity-alert {
+  display: flex; align-items: center; gap: $size-3; padding: $size-3 $size-4;
+  border-radius: $radius-md; border-left: 3px solid transparent; margin-bottom: $size-1;
+  .ia-icon { flex-shrink: 0; font-size: 16px; color: $primary-600; }
+  .ia-text { flex: 1; font-family: $font-primary; font-size: $font-sm; line-height: 1.45; }
+  .ia-cta {
+    flex-shrink: 0; font-family: $font-primary; font-size: $font-xs; font-weight: 600;
+    padding: 5px 12px; border-radius: $radius-pill; border: none; cursor: pointer;
+    white-space: nowrap; display: flex; align-items: center; gap: 4px;
+  }
+  &--warning { background: rgba($warning, 0.08); border-left-color: $warning; .ia-icon { color: $primary-600; } .ia-cta { background: $warning; color: white; } }
+  &--info    { background: rgba(#0d6efd, 0.06); border-left-color: #0d6efd; .ia-icon { color: $primary-600; } .ia-cta { background: #0d6efd; color: white; } }
+  &--error   { background: rgba($error, 0.08);   border-left-color: $error;   .ia-icon { color: $primary-600; } .ia-cta { background: $error; color: white; } }
+}
+
 :host {
   display: block;
   width: 100%;

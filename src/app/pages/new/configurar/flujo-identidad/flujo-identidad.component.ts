@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -23,7 +23,7 @@ type VistaId =
   | 'v14-exitosa'
   | 'v15-documento-modal';
 
-type EstadoValidacion = 'sin_iniciar' | 'pendiente' | 'rechazado' | 'baneado' | 'validado' | 'incompleta';
+type EstadoValidacion = 'sin_iniciar' | 'pendiente' | 'rechazado' | 'baneado' | 'validado' | 'incompleta' | 'aprobado-bloqueado' | 'aprobado-listo-editar';
 type TipoPersona = 'natural' | 'juridica';
 type Pais = 'CO' | 'CL' | 'MX' | 'AR' | 'EC';
 
@@ -88,8 +88,10 @@ export class FlujoIdentidadComponent {
     { id: 'p2', label: 'Pendiente — MX Jurídica',     estado: 'pendiente',   tipo_persona: 'juridica',  pais: 'MX', nombre: 'Inversiones XYZ',   documento: 'ABC200501XY3' },
     { id: 'p3', label: 'Rechazado — AR Natural',      estado: 'rechazado',   tipo_persona: 'natural',   pais: 'AR', nombre: 'Nicolás Fernández', documento: '32.456.789' },
     { id: 'p4', label: 'Baneado — CL Natural',        estado: 'baneado',     tipo_persona: 'natural',   pais: 'CL', nombre: 'Javiera Pino',      documento: '18.234.567-K' },
-    { id: 'p5', label: 'Validado — CO Jurídica',      estado: 'validado',    tipo_persona: 'juridica',  pais: 'CO', nombre: 'TechStore SAS',     documento: '900.123.456-1' },
-    { id: 'p6', label: 'Incompleta — EC Natural',     estado: 'incompleta',  tipo_persona: 'natural',   pais: 'EC', nombre: 'Andrés Vega',       documento: '1705345678' },
+    { id: 'p5', label: 'Validado — CO Jurídica',              estado: 'validado',            tipo_persona: 'juridica',  pais: 'CO', nombre: 'TechStore SAS',     documento: '900.123.456-1' },
+    { id: 'p6', label: 'Incompleta — EC Natural',             estado: 'incompleta',          tipo_persona: 'natural',   pais: 'EC', nombre: 'Andrés Vega',       documento: '1705345678' },
+    { id: 'p7', label: 'Aprobado · bloqueo 6 meses — CO',    estado: 'aprobado-bloqueado',  tipo_persona: 'natural',   pais: 'CO', nombre: 'Laura Martínez',    documento: '1.023.456.789' },
+    { id: 'p8', label: 'Aprobado · puede actualizar — CO',   estado: 'aprobado-listo-editar', tipo_persona: 'natural', pais: 'CO', nombre: 'Laura Martínez',    documento: '1.023.456.789' },
   ];
 
   perfilActivo = signal<MockPerfil>(this.perfiles[0]);
@@ -148,6 +150,26 @@ export class FlujoIdentidadComponent {
     { id: 'facturacion', label: 'Email de facturación', desc: 'Email usado para facturas electrónicas' },
   ];
 
+  // --- Edit mode & rejection reasons ---
+  isEditMode = signal<boolean>(false);
+  showSalirModal = signal<boolean>(false);
+  reasonsExpanded = signal<boolean>(false);
+
+  readonly rejectionReasonsList = [
+    { code: 'DOCUMENT_BLURRY',       label: 'Documento borroso',           description: 'La imagen del documento no es legible. Ubícate en un lugar bien iluminado y sin reflejos.' },
+    { code: 'FACE_NOT_VISIBLE',      label: 'Rostro no visible',           description: 'Tu rostro no aparece claramente en la selfie o está cubierto parcialmente.' },
+    { code: 'DOCUMENT_EXPIRED',      label: 'Documento vencido',           description: 'El documento que usaste ya no está vigente. Solo aceptamos documentos en vigencia.' },
+    { code: 'DOCUMENT_COPY',         label: 'No se aceptan copias',        description: 'Solo documentos originales. No fotocopias ni capturas de pantalla del documento.' },
+    { code: 'FACE_COVERED',          label: 'Rostro cubierto',             description: 'Retira gafas de sol, gorras o cualquier elemento que cubra tu cara.' },
+    { code: 'SELFIE_MISMATCH',       label: 'Selfie no coincide',          description: 'La selfie no corresponde a la persona en el documento de identidad.' },
+    { code: 'DOCUMENT_NOT_READABLE', label: 'Datos ilegibles',             description: 'La información en el documento no se puede leer con claridad.' },
+    { code: 'LIGHTING_ISSUE',        label: 'Mala iluminación',            description: 'Ubícate donde haya luz directa, sin sombras sobre el documento o tu rostro.' },
+    { code: 'DOCUMENT_FRONT_MISSING',label: 'Falta cara frontal',          description: 'No se cargó la parte delantera del documento.' },
+    { code: 'DOCUMENT_BACK_MISSING', label: 'Falta reverso del documento', description: 'No se cargó el reverso del documento.' },
+    { code: 'MULTIPLE_FACES',        label: 'Más de un rostro',            description: 'En la selfie solo debe aparecer la persona que se está validando.' },
+    { code: 'DOCUMENT_INVALID',      label: 'Tipo de documento inválido',  description: 'El tipo de documento seleccionado no es válido para tu país de residencia.' },
+  ];
+
   // --- Apelación ---
   apelacionTexto = '';
   apelacionEnviada = signal<boolean>(false);
@@ -185,27 +207,48 @@ export class FlujoIdentidadComponent {
 
   readonly estadoClase = computed<string>(() => {
     const e = this.perfilActivo().estado;
-    return {
-      sin_iniciar: 'badge--neutral',
-      pendiente:   'badge--warning',
-      rechazado:   'badge--error',
-      baneado:     'badge--error',
-      validado:    'badge--success',
-      incompleta:  'badge--warning',
-    }[e] ?? 'badge--neutral';
+    return ({
+      sin_iniciar:          'badge--neutral',
+      pendiente:            'badge--warning',
+      rechazado:            'badge--error',
+      baneado:              'badge--error',
+      validado:             'badge--success',
+      incompleta:           'badge--warning',
+      'aprobado-bloqueado':    'badge--warning',
+      'aprobado-listo-editar': 'badge--success',
+    } as Record<string, string>)[e] ?? 'badge--neutral';
   });
 
   readonly estadoLabel = computed<string>(() => {
-    const map: Record<EstadoValidacion, string> = {
-      sin_iniciar: 'Sin iniciar',
-      pendiente:   'En revisión',
-      rechazado:   'Rechazado',
-      baneado:     'Cuenta restringida',
-      validado:    'Identidad validada',
-      incompleta:  'Validación incompleta',
+    const map: Record<string, string> = {
+      sin_iniciar:          'Sin iniciar',
+      pendiente:            'En revisión',
+      rechazado:            'Rechazado',
+      baneado:              'Cuenta restringida',
+      validado:             'Identidad validada',
+      incompleta:           'Validación incompleta',
+      'aprobado-bloqueado':    'Validada · en espera',
+      'aprobado-listo-editar': 'Validada',
     };
-    return map[this.perfilActivo().estado];
+    return map[this.perfilActivo().estado] ?? '';
   });
+
+  readonly canEditData = computed<boolean>(() => {
+    const e = this.perfilActivo().estado;
+    return e === 'validado' || e === 'aprobado-listo-editar';
+  });
+
+  get fechaAprobacionLabel(): string {
+    const d = new Date();
+    d.setMonth(d.getMonth() - 1);
+    return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  get fechaDesbloqueoLabel(): string {
+    const d = new Date();
+    d.setMonth(d.getMonth() + 5);
+    return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
 
   // -----------------------------------------------------------------------
   // Navigation helpers
@@ -240,15 +283,17 @@ export class FlujoIdentidadComponent {
     this.perfilActivo.set(p);
     this.modalActivo.set(null);
     // Route to the appropriate start view based on estado
-    const routes: Record<EstadoValidacion, VistaId> = {
-      sin_iniciar: 'v1-entrada',
-      pendiente:   'v9-pendiente',
-      rechazado:   'v10-rechazado',
-      baneado:     'v11-baneado',
-      validado:    'v2-datos',
-      incompleta:  'v13-incompleta',
+    const routes: Record<string, VistaId> = {
+      sin_iniciar:          'v1-entrada',
+      pendiente:            'v9-pendiente',
+      rechazado:            'v10-rechazado',
+      baneado:              'v11-baneado',
+      validado:             'v2-datos',
+      incompleta:           'v13-incompleta',
+      'aprobado-bloqueado':    'v2-datos',
+      'aprobado-listo-editar': 'v2-datos',
     };
-    this.navTo(routes[p.estado]);
+    this.navTo(routes[p.estado] ?? 'v1-entrada');
   }
 
   // -----------------------------------------------------------------------
@@ -286,8 +331,39 @@ export class FlujoIdentidadComponent {
   }
 
   abrirActualizacion(): void {
-    this.gruposSeleccionados.set([]);
-    this.openModal('v3-solicitud-modal');
+    this.gruposSeleccionados.set(this.gruposActualizacion.map(g => g.id));
+    this.isEditMode.set(false);
+    this.otpDigits.set(['', '', '', '', '', '']);
+    this.otpError.set('');
+    this.openModal('v4-mfa-modal');
+  }
+
+  openSalirSinGuardar(): void {
+    this.showSalirModal.set(true);
+  }
+
+  confirmarSalir(): void {
+    const wasEditing = this.isEditMode();
+    this.isEditMode.set(false);
+    this.showSalirModal.set(false);
+    if (wasEditing) {
+      this.navTo('v2-datos');
+    } else {
+      this.navTo('v1-entrada');
+    }
+  }
+
+  toggleReasonsExpanded(): void {
+    this.reasonsExpanded.set(!this.reasonsExpanded());
+  }
+
+  @HostListener('window:popstate')
+  onPopstate(): void {
+    const v = this.vistaActiva();
+    if (v === 'v5-formulario-nucleo' || v === 'v6-formulario-fiscal') {
+      history.pushState(null, '', window.location.href);
+      this.openSalirSinGuardar();
+    }
   }
 
   // -----------------------------------------------------------------------
@@ -334,8 +410,10 @@ export class FlujoIdentidadComponent {
   verificarOtp(code: string): void {
     if (code === '123456') {
       this.otpError.set('');
+      this.isEditMode.set(true);
       this.closeModal();
       this.navTo('v5-formulario-nucleo');
+      history.pushState(null, '', window.location.href);
     } else {
       this.otpError.set('Código incorrecto. Verifica e intenta de nuevo.');
       this.otpDigits.set(['', '', '', '', '', '']);

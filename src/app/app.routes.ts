@@ -152,6 +152,27 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'identidad/hub',
+        loadComponent: () =>
+          import('./pages/old/identidad-hub/identidad-hub.component').then(
+            m => m.IdentidadHubComponent,
+          ),
+      },
+      {
+        path: 'configuraciones/datos-bancarios',
+        loadComponent: () =>
+          import('./pages/old/datos-bancarios/datos-bancarios.component').then(
+            m => m.DatosBancariosComponent,
+          ),
+      },
+      {
+        path: 'configuraciones/retiros-de-saldo',
+        loadComponent: () =>
+          import('./pages/old/retiro-saldo/retiro-saldo.component').then(
+            m => m.RetiroSaldoComponent,
+          ),
+      },
+      {
         path: 'parametrizar-tarifas',
         loadComponent: () =>
           import('./pages/old/parametrizar-tarifas/parametrizar-tarifas.component').then(

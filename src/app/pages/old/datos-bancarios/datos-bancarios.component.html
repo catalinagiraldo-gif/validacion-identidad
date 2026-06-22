@@ -1,0 +1,87 @@
+<div class="db-page">
+
+  <!-- ── Demo bar identidad ─────────────────────────────────────── -->
+  <div class="identity-demo-bar">
+    <span class="identity-demo-bar__label"><i class="pi pi-sliders-h"></i> Estado demo identidad:</span>
+    <div class="identity-demo-chips">
+      <button *ngFor="let s of identityStatusOptions"
+              class="identity-demo-chip"
+              [class.active]="demoIdentityStatus === s"
+              (click)="demoIdentityStatus = s">{{ s }}</button>
+    </div>
+  </div>
+
+  <!-- ── Alerta de identidad ────────────────────────────────────── -->
+  <div class="identity-alert identity-alert--{{ alert.type }}" *ngIf="identityAlert as alert">
+    <i class="pi {{ alert.icon }} ia-icon"></i>
+    <span class="ia-text">{{ alert.text }}</span>
+    <button class="ia-cta">{{ alert.cta }} <i class="pi pi-arrow-right"></i></button>
+  </div>
+
+  <!-- ── Breadcrumb ─────────────────────────────────────────────── -->
+  <div class="breadcrumb">
+    <span class="bc-item">Configuraciones</span>
+    <i class="pi pi-chevron-right bc-sep"></i>
+    <span class="bc-item bc-item--active">Datos Bancarios</span>
+  </div>
+
+  <!-- ── Page title ────────────────────────────────────────────── -->
+  <h1 class="page-title">Cuentas Bancarias</h1>
+
+  <!-- ── Main card ─────────────────────────────────────────────── -->
+  <div class="db-card">
+    <div class="db-card__actions">
+      <button class="btn-agregar" (click)="agregarCuenta()">
+        <i class="pi pi-plus"></i> Agregar
+      </button>
+    </div>
+
+    <table class="db-table">
+      <thead>
+        <tr>
+          <th>País</th>
+          <th>Banco</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cuenta of cuentas">
+          <td>{{ cuenta.pais }}</td>
+          <td>{{ cuenta.banco }}</td>
+          <td class="db-table__actions">
+            <button class="db-action-btn db-action-btn--edit" title="Editar" (click)="agregarCuenta()">
+              <i class="pi pi-user-edit"></i>
+            </button>
+            <button class="db-action-btn db-action-btn--delete" title="Eliminar" (click)="eliminarCuenta(cuenta.id)">
+              <i class="pi pi-trash"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="cuentas.length === 0">
+          <td colspan="3" class="db-table__empty">No tienes cuentas bancarias registradas.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Modal bloqueador ───────────────────────────────────────── -->
+  <div class="fid-block-overlay" *ngIf="showBlockModal" (click)="closeBlockModal()">
+    <div class="fid-block-modal" (click)="$event.stopPropagation()">
+      <button class="fid-block-modal__close" (click)="closeBlockModal()"><i class="pi pi-times"></i></button>
+      <div class="fid-block-modal__header">
+        <i class="pi pi-lock fid-block-modal__icon"></i>
+      </div>
+      <h3 class="fid-block-modal__title">Acción no disponible</h3>
+      <p class="fid-block-modal__body">Para gestionar tus cuentas bancarias necesitas completar tu validación de identidad. Es un proceso rápido que protege tu dinero.</p>
+      <div class="fid-block-modal__actions">
+        <button class="fid-block-btn fid-block-btn--primary">
+          Verificar mi identidad <i class="pi pi-arrow-right"></i>
+        </button>
+        <button class="fid-block-btn fid-block-btn--secondary" (click)="closeBlockModal()">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -11,4 +11,5 @@ export interface PrototypeMeta {
   architecture: 'old' | 'new';
   folder?: string;
   absoluteRoute?: string;
+  badge?: string;
 }

@@ -5,6 +5,29 @@
   </div>
 </div>
 
+<!-- Modal: Verificación requerida para crear orden -->
+<div class="fid-block-overlay" *ngIf="showBlockModal" (click)="closeBlockModal()">
+  <div class="fid-block-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <button class="fid-block-modal__close" (click)="closeBlockModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
+    <div class="fid-block-modal__header">
+      <i class="pi pi-lock fid-block-modal__icon"></i>
+    </div>
+    <h3 class="fid-block-modal__title">Esta acción requiere verificación</h3>
+    <p class="fid-block-modal__body">Para crear órdenes, procesar retiros y hacer transferencias, tu identidad debe estar verificada. Complétala una sola vez y desbloqueas todo permanentemente.</p>
+    <ul class="fid-block-modal__list">
+      <li><i class="pi pi-circle-fill"></i> Crear y gestionar órdenes</li>
+      <li><i class="pi pi-circle-fill"></i> Retiros de saldo</li>
+      <li><i class="pi pi-circle-fill"></i> Transferencia entre wallets</li>
+    </ul>
+    <div class="fid-block-modal__actions">
+      <button class="fid-block-btn fid-block-btn--secondary" (click)="closeBlockModal()">Ahora no</button>
+      <button class="fid-block-btn fid-block-btn--primary" (click)="closeBlockModal()">
+        Verificar mi identidad <i class="pi pi-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Breadcrumb: icon search > Productos > Catalogo -->
 <div class="breadcrumb">
   <span class="breadcrumb-icon"><i class="pi pi-search"></i></span>
@@ -12,6 +35,22 @@
   <span class="breadcrumb-item">Productos</span>
   <i class="pi pi-chevron-right breadcrumb-chevron"></i>
   <span class="breadcrumb-item active">Catalogo</span>
+</div>
+
+<!-- Demo: selector estado identidad -->
+<div class="identity-demo-bar">
+  <span class="identity-demo-bar__label"><i class="pi pi-sliders-h"></i> Estado demo identidad:</span>
+  <button *ngFor="let s of ['sin_validar','pendiente','en_revision','rechazado','aprobado']"
+          class="identity-demo-chip"
+          [class.active]="demoIdentityStatus === s"
+          (click)="demoIdentityStatus = s">{{ s }}</button>
+</div>
+
+<!-- Alerta de identidad (si no aprobado) -->
+<div class="identity-alert identity-alert--{{ alert.type }}" *ngIf="identityAlert as alert">
+  <i class="pi {{ alert.icon }} ia-icon"></i>
+  <span class="ia-text">{{ alert.text }}</span>
+  <button class="ia-cta">{{ alert.cta }} <i class="pi pi-arrow-right"></i></button>
 </div>
 
 <!-- Proveedores Carousel -->

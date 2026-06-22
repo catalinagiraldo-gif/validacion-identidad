@@ -7,6 +7,62 @@
   overflow: hidden;
 }
 
+// ─── Identity demo bar & alert ────────────────────────────────────────────────
+
+.identity-demo-bar {
+  display: flex;
+  align-items: center;
+  gap: $size-2;
+  padding: 6px $size-3;
+  background: $gray-100;
+  border-radius: $radius-sm;
+  margin: $size-3 0;
+  flex-wrap: wrap;
+  font-size: $font-xs;
+  &__label { color: $gray-500; font-weight: 500; }
+}
+
+.identity-demo-chip {
+  padding: 3px 10px;
+  border-radius: $radius-pill;
+  border: 1px solid $gray-200;
+  background: white;
+  font-size: 11px;
+  cursor: pointer;
+  color: $gray-600;
+  &.active { background: $primary-500; color: white; border-color: $primary-500; }
+  &:hover:not(.active) { background: $gray-50; }
+}
+
+.identity-alert {
+  display: flex;
+  align-items: center;
+  gap: $size-3;
+  padding: $size-3 $size-4;
+  border-radius: $radius-md;
+  border-left: 3px solid transparent;
+  margin-bottom: $size-4;
+  font-size: $font-sm;
+  .ia-icon { flex-shrink: 0; font-size: 16px; }
+  .ia-text { flex: 1; color: $gray-700; line-height: 1.4; }
+  .ia-cta {
+    flex-shrink: 0;
+    padding: 6px $size-3;
+    border-radius: $radius-pill;
+    border: none;
+    cursor: pointer;
+    font-size: $font-xs;
+    font-weight: 600;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  &--warning { background: rgba($warning, 0.08); border-left-color: $warning; .ia-icon { color: $primary-600; } .ia-cta { background: $warning; color: white; } }
+  &--info    { background: rgba(#0d6efd, 0.06); border-left-color: #0d6efd; .ia-icon { color: $primary-600; } .ia-cta { background: #0d6efd; color: white; } }
+  &--error   { background: rgba($error, 0.08);   border-left-color: $error;   .ia-icon { color: $primary-600; }   .ia-cta { background: $error; color: white; } }
+}
+
 // Figma-exact colors for this view
 $text-header: #495057;
 $text-paragraph: #7B8190;

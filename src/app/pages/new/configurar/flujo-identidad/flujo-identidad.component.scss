@@ -1,4 +1,4 @@
-@import 'styles/variables-new';
+﻿@import 'styles/variables-new';
 
 // ============================================================
 // Host & shell
@@ -209,14 +209,14 @@
     pointer-events: none;
   }
 
-  // Primary — naranja DS
+  // Primary â€” naranja DS
   &--primary {
     background: $primary-500;
     color: $neutral-white;
     &:hover { background: $primary-600; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(255, 97, 2, 0.25); }
   }
 
-  // Secondary — outline naranja
+  // Secondary â€” outline naranja
   &--secondary {
     background: transparent;
     border: 1.5px solid $primary-500;
@@ -224,7 +224,7 @@
     &:hover { background: $primary-50; }
   }
 
-  // Error — outline rojo
+  // Error â€” outline rojo
   &--error {
     background: transparent;
     border: 1.5px solid $error-500;
@@ -232,7 +232,7 @@
     &:hover { background: $error-50; }
   }
 
-  // Ghost — texto plano
+  // Ghost â€” texto plano
   &--ghost {
     background: transparent;
     color: $gray-500;
@@ -245,7 +245,7 @@
 }
 
 // ============================================================
-// Vista 1 — Entrada
+// Vista 1 â€” Entrada
 // ============================================================
 
 .vista--entry {
@@ -1091,7 +1091,7 @@
 }
 
 // ============================================================
-// Vista 3 — Group list
+// Vista 3 â€” Group list
 // ============================================================
 
 .group-list {
@@ -1131,7 +1131,7 @@
 }
 
 // ============================================================
-// Vista 4 — MFA
+// Vista 4 â€” MFA
 // ============================================================
 
 .mfa-icon { font-size: 48px; line-height: 1; }
@@ -1196,7 +1196,7 @@
 }
 
 // ============================================================
-// Vista 7 — Review
+// Vista 7 â€” Review
 // ============================================================
 
 .review-section {
@@ -1247,7 +1247,7 @@
 }
 
 // ============================================================
-// Vista 8 — Sumsub mock fullscreen
+// Vista 8 â€” Sumsub mock fullscreen
 // ============================================================
 
 .sumsub-overlay {
@@ -1467,7 +1467,7 @@
 }
 
 // ============================================================
-// Vista 12 — Apelación
+// Vista 12 â€” ApelaciÃ³n
 // ============================================================
 
 .appeal-disclaimer {
@@ -1478,7 +1478,7 @@
 }
 
 // ============================================================
-// Vista 15 — Documento
+// Vista 15 â€” Documento
 // ============================================================
 
 .doc-preview {
@@ -1562,4 +1562,63 @@
 
   .stepper { padding: $space-3; }
   .step__label { display: none; }
+}
+
+// ─── Rejection reasons accordion (new arch) ──────────────────────────────────
+
+.fid-rejection-reasons {
+  margin-top: $space-3;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  overflow: hidden;
+  margin-bottom: $space-4;
+
+  .rr-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: $space-3 $space-4;
+    background: $gray-50;
+    border: none;
+    cursor: pointer;
+    font-size: $font-md;
+    font-weight: 500;
+    color: $gray-700;
+    text-align: left;
+    gap: $space-2;
+    transition: background 0.15s;
+    &:hover { background: $gray-100; }
+    span { display: flex; align-items: center; gap: $space-2; }
+  }
+
+  .rr-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid $gray-200;
+  }
+
+  .rr-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: $space-2 $space-4;
+    border-bottom: 1px solid $gray-100;
+    &:last-child { border-bottom: none; }
+  }
+
+  .rr-label { font-size: $font-md; font-weight: 600; color: $gray-800; }
+  .rr-desc  { font-size: $font-sm; color: $gray-500; line-height: 1.45; }
+}
+
+// ─── Modal compact (salir sin guardar) ───────────────────────────────────────
+
+.modal--compact {
+  .modal__inner { max-width: 440px !important; }
+  .modal__text {
+    font-size: $font-md;
+    color: $gray-600;
+    line-height: 1.55;
+    margin: 0;
+  }
 }

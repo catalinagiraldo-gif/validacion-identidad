@@ -1,4 +1,21 @@
 <div class="proveedores-page">
+
+<!-- Demo: selector estado identidad -->
+<div class="identity-demo-bar">
+  <span class="identity-demo-bar__label"><i class="pi pi-sliders-h"></i> Estado demo identidad:</span>
+  <button *ngFor="let s of identityStatusOptions"
+          class="identity-demo-chip"
+          [class.active]="demoIdentityStatus === s"
+          (click)="demoIdentityStatus = s">{{ s }}</button>
+</div>
+
+<!-- Alerta de identidad (si no aprobado) -->
+<div class="identity-alert identity-alert--{{ alert.type }}" *ngIf="identityAlert as alert">
+  <i class="pi {{ alert.icon }} ia-icon"></i>
+  <span class="ia-text">{{ alert.text }}</span>
+  <button class="ia-cta">{{ alert.cta }} <i class="pi pi-arrow-right"></i></button>
+</div>
+
 <!-- Breadcrumb -->
 <div class="breadcrumb">
   <span class="breadcrumb-icon"><i class="pi pi-shopping-cart"></i></span>
