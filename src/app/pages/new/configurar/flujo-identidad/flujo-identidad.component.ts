@@ -1,6 +1,14 @@
-import { Component, signal, computed, HostListener } from '@angular/core';
+import { Component, signal, computed, HostListener, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  SUMSUB_CAPTURE_STEPS,
+  DEFAULT_SUMSUB_CUSTOMIZATION,
+  SumsubCustomizationConfig,
+  SumsubScreenPhase,
+  ACTIVIDAD_ECONOMICA_OPTIONS,
+} from '../../../../common/models/identity-flow.models';
 
 // -----------------------------------------------------------------------
 // Types
@@ -9,7 +17,6 @@ import { FormsModule } from '@angular/forms';
 type VistaId =
   | 'v1-entrada'
   | 'v2-datos'
-  | 'v3-solicitud-modal'
   | 'v4-mfa-modal'
   | 'v5-formulario-nucleo'
   | 'v6-formulario-fiscal'
@@ -80,7 +87,7 @@ interface FormFiscal {
   templateUrl: './flujo-identidad.component.html',
   styleUrls: ['./flujo-identidad.component.scss'],
 })
-export class FlujoIdentidadComponent {
+export class FlujoIdentidadComponent implements OnInit {
 
   // --- Demo switcher ---
   readonly perfiles: MockPerfil[] = [
@@ -132,23 +139,20 @@ export class FlujoIdentidadComponent {
 
   // --- Sumsub mock state ---
   sumsubStep = signal<number>(0);
-  sumsubSteps = ['Seleccionar documento', 'Captura frontal', 'Captura trasera', 'Selfie / Verificación'];
+  sumsubSteps = SUMSUB_CAPTURE_STEPS;
   sumsubLoading = signal<boolean>(false);
+  confirmacionAceptada = signal<boolean>(false);
+  sumsubPhase = signal<SumsubScreenPhase>('warning');
+  sumsubCustomization = signal<SumsubCustomizationConfig>({ ...DEFAULT_SUMSUB_CUSTOMIZATION });
+  sumsubDemoExpanded = signal(false);
+  readonly actividadEconomicaOptions = ACTIVIDAD_ECONOMICA_OPTIONS;
+
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   // --- Rechazo mock ---
   motivoRechazo = 'La foto de tu documento no se ve con suficiente claridad. Asegúrate de que el documento esté bien iluminado y sin reflejos.';
   intentosRestantes = signal<number>(2);
-
-  // --- Campo selección para actualización ---
-  gruposSeleccionados = signal<string[]>([]);
-  gruposActualizacion = [
-    { id: 'contacto', label: 'Datos de contacto', desc: 'Teléfono, email de contacto' },
-    { id: 'direccion', label: 'Dirección', desc: 'Dirección, ciudad, municipio' },
-    { id: 'documento', label: 'Documento de identidad', desc: 'Tipo y número de documento' },
-    { id: 'fiscal',   label: 'Datos fiscales',     desc: 'Régimen, responsabilidad tributaria' },
-    { id: 'empresa',  label: 'Datos de empresa',   desc: 'Razón social, tipo de empresa (solo jurídica)' },
-    { id: 'facturacion', label: 'Email de facturación', desc: 'Email usado para facturas electrónicas' },
-  ];
 
   // --- Edit mode & rejection reasons ---
   isEditMode = signal<boolean>(false);
@@ -234,6 +238,13 @@ export class FlujoIdentidadComponent {
   });
 
   readonly canEditData = computed<boolean>(() => {
+    const e = this.perfilActivo().estado;
+    return e === 'validado' || e === 'aprobado-listo-editar';
+  });
+
+  /** En v2-datos con banner de estado, ocultar badge duplicado en header */
+  readonly showHeaderEstadoBadge = computed<boolean>(() => {
+    if (this.vistaActiva() !== 'v2-datos') return true;
     const e = this.perfilActivo().estado;
     return e === 'validado' || e === 'aprobado-listo-editar';
   });
@@ -331,7 +342,6 @@ export class FlujoIdentidadComponent {
   }
 
   abrirActualizacion(): void {
-    this.gruposSeleccionados.set(this.gruposActualizacion.map(g => g.id));
     this.isEditMode.set(false);
     this.otpDigits.set(['', '', '', '', '', '']);
     this.otpError.set('');
@@ -365,33 +375,6 @@ export class FlujoIdentidadComponent {
       this.openSalirSinGuardar();
     }
   }
-
-  // -----------------------------------------------------------------------
-  // Vista 3 — Solicitud de actualización
-  // -----------------------------------------------------------------------
-
-  toggleGrupo(id: string): void {
-    const current = this.gruposSeleccionados();
-    if (current.includes(id)) {
-      this.gruposSeleccionados.set(current.filter(g => g !== id));
-    } else {
-      this.gruposSeleccionados.set([...current, id]);
-    }
-  }
-
-  isGrupoSelected(id: string): boolean {
-    return this.gruposSeleccionados().includes(id);
-  }
-
-  continuarActualizacion(): void {
-    if (this.gruposSeleccionados().length > 0) {
-      this.openModal('v4-mfa-modal');
-    }
-  }
-
-  // -----------------------------------------------------------------------
-  // Vista 4 — MFA
-  // -----------------------------------------------------------------------
 
   onOtpInput(index: number, event: Event): void {
     const val = (event.target as HTMLInputElement).value.replace(/\D/g, '').slice(-1);
@@ -436,7 +419,21 @@ export class FlujoIdentidadComponent {
   // Vista 6 — Formulario fiscal
   // -----------------------------------------------------------------------
 
+  ngOnInit(): void {
+    const p = this.route.snapshot.queryParamMap.get('perfil');
+    if (p) {
+      const found = this.perfiles.find(x => x.id === p);
+      if (found) this.seleccionarPerfil(found);
+    }
+  }
+
+  copyDemoLink(): void {
+    const url = `${window.location.origin}${window.location.pathname}?perfil=${this.perfilActivo().id}`;
+    navigator.clipboard?.writeText(url);
+  }
+
   revisarAntesDeEnviar(): void {
+    this.confirmacionAceptada.set(false);
     this.openModal('v7-confirmacion-modal');
   }
 
@@ -445,9 +442,41 @@ export class FlujoIdentidadComponent {
   // -----------------------------------------------------------------------
 
   confirmarYValidar(): void {
+    if (!this.confirmacionAceptada()) return;
     this.closeModal();
     this.sumsubStep.set(0);
+    this.sumsubPhase.set('warning');
     this.openModal('v8-sumsub-modal');
+  }
+
+  avanzarSumsubPhase(): void {
+    const phase = this.sumsubPhase();
+    const c = this.sumsubCustomization();
+    if (phase === 'warning') {
+      this.sumsubPhase.set(c.skipWelcome ? (c.skipInstructions ? 'document' : 'instructions') : 'welcome');
+    } else if (phase === 'welcome') {
+      this.sumsubPhase.set(c.skipInstructions ? 'document' : 'instructions');
+    } else if (phase === 'instructions') {
+      this.sumsubPhase.set('document');
+    } else if (phase === 'document') {
+      this.sumsubPhase.set('capture-front');
+    } else if (phase === 'capture-front') {
+      this.sumsubPhase.set('capture-back');
+    } else if (phase === 'capture-back') {
+      this.sumsubPhase.set('selfie');
+    } else if (phase === 'selfie') {
+      this.sumsubLoading.set(true);
+      setTimeout(() => {
+        this.sumsubLoading.set(false);
+        this.closeModal();
+        this.vistaActiva.set('v9-pendiente');
+        this.perfilActivo.update(p => ({ ...p, estado: 'pendiente' }));
+      }, 1000);
+    }
+  }
+
+  toggleSumsubCustomization(key: keyof SumsubCustomizationConfig): void {
+    this.sumsubCustomization.update(cfg => ({ ...cfg, [key]: !cfg[key] }));
   }
 
   // -----------------------------------------------------------------------

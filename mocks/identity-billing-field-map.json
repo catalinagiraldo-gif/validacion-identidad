@@ -1,0 +1,30 @@
+{
+  "description": "Mapeo 1:1 entre campos del flujo de identidad y columnas del Excel de Datos Facturación LATAM (orders-provider)",
+  "exportSource": "orders-provider.buildExportRow",
+  "fields": [
+    { "excelColumn": "ID", "flowField": "billingId", "countries": ["ALL"], "origin": "system" },
+    { "excelColumn": "País", "flowField": "pais", "countries": ["ALL"], "origin": "usuario" },
+    { "excelColumn": "Nombre", "flowField": "primerNombre", "countries": ["ALL"], "origin": "usuario/sdk" },
+    { "excelColumn": "Apellido", "flowField": "primerApellido + segundoApellido", "countries": ["ALL"], "origin": "usuario/sdk" },
+    { "excelColumn": "Razón social", "flowField": "razonSocial", "countries": ["ALL"], "origin": "usuario/sdk" },
+    { "excelColumn": "Tipo documento", "flowField": "tipoDocumento", "countries": ["ALL"], "origin": "usuario/sdk" },
+    { "excelColumn": "Número documento", "flowField": "numeroDocumento", "countries": ["ALL"], "origin": "usuario/sdk" },
+    { "excelColumn": "Email", "flowField": "emailFacturacion", "countries": ["ALL"], "origin": "usuario" },
+    { "excelColumn": "Teléfono", "flowField": "telefono", "countries": ["ALL"], "origin": "usuario" },
+    { "excelColumn": "Ciudad", "flowField": "ciudad", "countries": ["ALL"], "origin": "usuario" },
+    { "excelColumn": "Departamento/Estado", "flowField": "departamento", "countries": ["CO", "MX", "AR"], "origin": "usuario" },
+    { "excelColumn": "Dirección", "flowField": "direccion", "countries": ["ALL"], "origin": "usuario" },
+    { "excelColumn": "Régimen tributario", "flowField": "co_tipoRegimen | mx_regimenFiscal | ar_condicionIVA", "countries": ["CO", "MX", "AR"], "origin": "usuario" },
+    { "excelColumn": "Actividad económica", "flowField": "actividadEconomica", "countries": ["CO"], "origin": "usuario" },
+    { "excelColumn": "Código actividad", "flowField": "codigoActividadEconomica", "countries": ["CO"], "origin": "usuario" },
+    { "excelColumn": "Responsable IVA", "flowField": "derived from co_tipoResponsabilidad / mx_sujetoImpuestos", "countries": ["CO", "MX"], "origin": "derived" }
+  ],
+  "actividadEconomicaOptions": [
+    { "label": "Comercio al por menor por internet", "codigo": "4791" },
+    { "label": "Comercio al por menor de productos diversos", "codigo": "4799" },
+    { "label": "Comercio al por mayor de productos diversos", "codigo": "4690" },
+    { "label": "Comercio al por menor de prendas de vestir", "codigo": "4771" },
+    { "label": "Comercio al por menor de productos cosméticos", "codigo": "4772" },
+    { "label": "Actividades de intermediación comercial", "codigo": "4610" }
+  ]
+}

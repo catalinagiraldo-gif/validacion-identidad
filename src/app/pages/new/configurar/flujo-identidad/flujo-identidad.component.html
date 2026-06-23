@@ -20,6 +20,7 @@
         (click)="seleccionarPerfil(p)"
       >{{ p.label }}</button>
     </div>
+    <button type="button" class="demo-chip" (click)="copyDemoLink()"><i class="pi pi-link"></i> Copiar enlace</button>
   </div>
 
   <!-- -------------------------------------------------------- -->
@@ -33,7 +34,7 @@
     </div>
     <div class="proto-header__title-row">
       <h1 class="proto-header__title">Validación de identidad</h1>
-      <span class="estado-badge" [ngClass]="estadoClase()">{{ estadoLabel() }}</span>
+      <span class="estado-badge" *ngIf="showHeaderEstadoBadge()" [ngClass]="estadoClase()">{{ estadoLabel() }}</span>
     </div>
     <p class="proto-header__subtitle">
       Gestiona tu identidad verificada para acceder a retiros, facturación y beneficios exclusivos.
@@ -725,52 +726,6 @@
 ></div>
 
 <!-- ------------------------------------------------------------ -->
-<!-- Modal V3 — Solicitar actualización de datos                  -->
-<!-- ------------------------------------------------------------ -->
-<div class="modal" *ngIf="isModal('v3-solicitud-modal')">
-  <div class="modal__inner">
-    <div class="modal__header">
-      <div>
-        <div class="vista-label vista-label--modal">Vista 3 · Solicitar actualización de datos</div>
-        <h3 class="modal__title">¿Qué datos deseas actualizar?</h3>
-      </div>
-      <button class="modal__close" (click)="closeModal()"><i class="pi pi-times"></i></button>
-    </div>
-    <div class="modal__body">
-      <p class="modal__intro">
-        Por seguridad, te pediremos verificar tu identidad antes de habilitar la edición.
-      </p>
-      <div class="group-list">
-        <label
-          class="group-item"
-          *ngFor="let g of gruposActualizacion"
-          [class.group-item--selected]="isGrupoSelected(g.id)"
-          (click)="toggleGrupo(g.id)"
-        >
-          <div class="group-item__check">
-            <i class="pi" [class.pi-check-square]="isGrupoSelected(g.id)" [class.pi-stop]="!isGrupoSelected(g.id)"></i>
-          </div>
-          <div class="group-item__info">
-            <strong>{{ g.label }}</strong>
-            <span>{{ g.desc }}</span>
-          </div>
-        </label>
-      </div>
-    </div>
-    <div class="modal__footer">
-      <button class="btn btn--ghost" (click)="closeModal()">Cancelar</button>
-      <button
-        class="btn btn--primary"
-        [disabled]="gruposSeleccionados().length === 0"
-        (click)="continuarActualizacion()"
-      >
-        Continuar <i class="pi pi-arrow-right"></i>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ------------------------------------------------------------ -->
 <!-- Modal V4 — Verificación de seguridad MFA                    -->
 <!-- ------------------------------------------------------------ -->
 <div class="modal" *ngIf="isModal('v4-mfa-modal')">
@@ -823,8 +778,10 @@
       <button class="modal__close" (click)="closeModal()"><i class="pi pi-times"></i></button>
     </div>
     <div class="modal__body">
-      <p class="modal__intro">
-        Verifica que todos tus datos sean correctos. Un error en el número de documento puede invalidar el intento.
+      <p class="modal__intro modal__intro--critical">
+        Los datos que ingresaste deben <strong>coincidir exactamente</strong> con los de tu documento de identidad.
+        Si el nombre, número o fecha no corresponden, la verificación biométrica fallará y consumirás uno de tus intentos.
+        Al confirmar, validaremos tu identidad con nuestro proveedor de verificación — puede tardar unos minutos.
       </p>
 
       <div class="review-section">
@@ -858,14 +815,14 @@
         </div>
       </div>
 
-      <div class="confirm-notice">
-        <i class="pi pi-info-circle"></i>
-        Al confirmar, validaremos tu identidad con nuestro proveedor de verificación. Esto puede tardar unos minutos.
-      </div>
+      <label class="confirm-checkbox">
+        <input type="checkbox" [checked]="confirmacionAceptada()" (change)="confirmacionAceptada.set($any($event.target).checked)" />
+        <span>Confirmo que revisé mis datos y coinciden con mi documento oficial.</span>
+      </label>
     </div>
     <div class="modal__footer">
       <button class="btn btn--ghost" (click)="closeModal()">Volver a editar</button>
-      <button class="btn btn--primary" (click)="confirmarYValidar()">
+      <button class="btn btn--primary" [disabled]="!confirmacionAceptada()" (click)="confirmarYValidar()">
         Confirmar y validar <i class="pi pi-arrow-right"></i>
       </button>
     </div>

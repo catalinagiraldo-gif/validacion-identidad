@@ -510,7 +510,7 @@
           "roles": ["dropshipper"],
           "prototype": "/configuraciones/flujo-identidad-2026-06-18",
           "jira": "PROD-761",
-          "description": "Prototipo v5 spec Plan1.md — 15 vistas end-to-end con formulario 2 pasos (núcleo + fiscal), validación inline, toasts en hitos, MFA reenvío, progreso Sumsub específico, badge de estado, checklist onboarding agrupado y cross-country con campos nuevos destacados.",
+          "description": "Prototipo v5 spec Plan1.md — 15 vistas end-to-end: formulario 2 pasos alineado con Excel LATAM (actividad económica CO), confirmación pre-Sumsub con checkbox de coincidencia documento, mock WebSDK 2.0 customizado Dropi, deep links demo, tour ampliado, ia-card sincronizada cross-módulo.",
           "origin_points": ["home.nuevo-proyecto", "gallery.verificacion-identidad"]
         },
         "verificacion-identidad": {

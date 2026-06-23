@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
@@ -136,11 +136,33 @@ export class OrdersProviderComponent implements OnInit {
 
   constructor(private http: HttpClient) {}
 
+  private route = inject(ActivatedRoute);
+  highlightBillingId = '';
+
   ngOnInit(): void {
     this.habeasDataAccepted = localStorage.getItem(HABEAS_STORAGE_KEY) === 'true';
     this.http.get<OrderProvider[]>('/api/orders-provider').subscribe(data => {
       this.orders = data;
     });
+
+    const params = this.route.snapshot.queryParamMap;
+    if (params.get('tab') === 'facturacion') {
+      if (this.habeasDataAccepted) {
+        this.activeTab = 1;
+        this.loadBillingData();
+      } else {
+        this.showHabeasModal = true;
+      }
+    }
+    const pais = params.get('pais');
+    if (pais && pais in COUNTRY_CONFIGS) {
+      this.filtersTab2 = { ...this.filtersTab2, pais: pais as CountryCode };
+      this.selectedCountry = pais as CountryCode;
+    }
+    this.highlightBillingId = params.get('billingId') ?? '';
+    if (this.highlightBillingId && this.dropshippers.length === 0 && this.habeasDataAccepted) {
+      this.loadBillingData();
+    }
   }
 
   // ===== Tab switching =====

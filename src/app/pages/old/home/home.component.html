@@ -143,6 +143,41 @@
       <div class="home-content">
         <h1 class="home-greeting">¡Hola, Carolina!</h1>
 
+        <!-- Activation card — visible tras cerrar popover de 1ª visita -->
+        <div class="ia-card ia-card--{{ alert.type }} home-ia-card" *ngIf="showInlineCard && identityAlert as alert">
+          <div class="ia-card__header">
+            <div class="ia-card__icon-wrap">
+              <i class="pi {{ alert.icon }} ia-card__icon"></i>
+              <div class="ia-card__pulse"
+                   *ngIf="demoIdentityStatus === 'sin_validar' || demoIdentityStatus === 'pendiente'"></div>
+            </div>
+            <div class="ia-card__info">
+              <div class="ia-card__top-row">
+                <span class="ia-card__label">{{ alert.stateLabel }}</span>
+                <div class="ia-card__steps">
+                  <div class="ia-step" [class.ia-step--done]="1 < alert.step" [class.ia-step--current]="alert.step === 1"></div>
+                  <div class="ia-step" [class.ia-step--done]="2 < alert.step" [class.ia-step--current]="alert.step === 2"></div>
+                  <div class="ia-step" [class.ia-step--done]="3 < alert.step" [class.ia-step--current]="alert.step === 3"></div>
+                  <div class="ia-step" [class.ia-step--current]="alert.step === 4"></div>
+                </div>
+              </div>
+              <p class="ia-card__text">{{ alert.text }}</p>
+            </div>
+            <button class="ia-card__cta" (click)="irAValidar()">
+              {{ alert.cta }} <i class="pi pi-arrow-right"></i>
+            </button>
+          </div>
+          <div class="ia-card__footer">
+            <span class="ia-card__loss" *ngIf="demoIdentityStatus !== 'en_revision'">
+              <i class="pi pi-lock"></i> Cuenta limitada hasta verificar
+            </span>
+            <span class="ia-card__loss" *ngIf="demoIdentityStatus === 'en_revision'">
+              <i class="pi pi-hourglass"></i> Revisión en curso — funciones pausadas
+            </span>
+            <span class="ia-card__time"><i class="pi pi-clock"></i> 5 min · Solo una vez</span>
+          </div>
+        </div>
+
         <div class="home-grid">
 
           <!-- Left: event banner -->

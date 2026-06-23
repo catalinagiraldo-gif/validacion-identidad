@@ -1,34 +1,39 @@
-import { Component, signal, OnDestroy, inject, HostListener } from '@angular/core';
+import { Component, signal, OnDestroy, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../../common/services/toast.service';
 import { DropiToastComponent } from '../../../common/components/dropi-toast/dropi-toast.component';
 import { IdentidadTourService, TourStep } from '../../../common/services/identidad-tour.service';
 import { IdentidadTourComponent } from '../../../common/components/identidad-tour/identidad-tour.component';
+import { IdentityDemoStateService } from '../../../common/services/identity-demo-state.service';
+import {
+  OrigenValidacion,
+  UserType,
+  EstadoId,
+  PaisPersona,
+  Pais,
+  TipoPersona,
+  SelectorOption,
+  FormNucleo,
+  FormFiscal,
+  MockUserData,
+  MOCK_USERS,
+  DEMO_SCENARIO_PRESETS,
+  DemoScenarioPreset,
+  ACTIVIDAD_ECONOMICA_OPTIONS,
+  DEFAULT_SUMSUB_CUSTOMIZATION,
+  SumsubCustomizationConfig,
+  SumsubScreenPhase,
+  SUMSUB_CAPTURE_STEPS,
+  emptyFormNucleo,
+  emptyFormFiscal,
+  deriveResponsableIVA,
+} from '../../../common/models/identity-flow.models';
 
 // -----------------------------------------------------------------------
-// Types
+// Local view types
 // -----------------------------------------------------------------------
-
-type OrigenValidacion = 'configuraciones' | 'retiro' | 'dropicard';
-type UserType = 'nuevo-sin-datos' | 'antiguo-completo' | 'antiguo-campos-nuevos' | 'cross-country';
-type EstadoId =
-  | 'inicial'
-  | 'guardado-sin-comenzar'
-  | 'incompleta'
-  | 'en-revision'
-  | 'aprobada'
-  | 'recien-aprobada'
-  | 'aprobado-bloqueado'
-  | 'aprobado-listo-editar'
-  | 'rechazada-espera'
-  | 'rechazada-reintentar'
-  | 'baneada'
-  | 'email-baneado';
-type PaisPersona = 'co-natural' | 'co-juridica' | 'mx-natural' | 'mx-juridica' | 'ar-natural' | 'ar-juridica' | 'cl' | 'ec';
-type Pais = 'CO' | 'MX' | 'AR' | 'CL' | 'EC';
-type TipoPersona = 'natural' | 'juridica';
 type VistaId =
   | 'v-nueva-bloqueada'
   | 'v-nueva-onboarding'
@@ -44,7 +49,6 @@ type VistaId =
   | 'v-cross-country'
   | 'v-exitosa';
 type ModalId =
-  | 'm-seleccionar-campos'
   | 'm-mfa'
   | 'm-confirmacion-pre-sumsub'
   | 'm-sumsub'
@@ -55,208 +59,6 @@ type ModalId =
 // -----------------------------------------------------------------------
 // Interfaces
 // -----------------------------------------------------------------------
-
-interface SelectorOption<T> {
-  id: T;
-  label: string;
-  color: 'neutral' | 'success' | 'warning' | 'error';
-}
-
-interface GrupoActualizacion {
-  id: string;
-  label: string;
-  desc: string;
-  requiresRevalidation: boolean;
-}
-
-// Form fields as plain objects for ngModel compatibility
-interface FormNucleo {
-  primerNombre: string;
-  segundoNombre: string;
-  primerApellido: string;
-  segundoApellido: string;
-  fechaNacimiento: string;
-  nacionalidad: string;
-  tipoPersona: TipoPersona;
-  tipoDocumento: string;
-  numeroDocumento: string;
-  email: string;
-  telefono: string;
-  direccion: string;
-  ciudad: string;
-  razonSocial: string;
-}
-
-interface FormFiscal {
-  // Colombia
-  co_tipoRegimen: string;
-  co_tipoResponsabilidad: string;
-  co_impuesto: string;
-  // México
-  mx_codigoPostal: string;
-  mx_regimenFiscal: string;
-  mx_sujetoImpuestos: boolean;
-  // Argentina
-  ar_condicionIVA: string;
-  ar_provincia: string;
-}
-
-// -----------------------------------------------------------------------
-// Mock data — 8 users, one per PaisPersona
-// -----------------------------------------------------------------------
-
-interface MockUserData {
-  pais: Pais;
-  tipoPersona: TipoPersona;
-  primerNombre: string;
-  segundoNombre: string;
-  primerApellido: string;
-  segundoApellido: string;
-  fechaNacimiento: string;
-  nacionalidad: string;
-  tipoDocumento: string;
-  numeroDocumento: string;
-  razonSocial: string;
-  email: string;
-  telefono: string;
-  direccion: string;
-  ciudad: string;
-  // Fiscal
-  co_tipoRegimen: string;
-  co_tipoResponsabilidad: string;
-  co_impuesto: string;
-  mx_codigoPostal: string;
-  mx_regimenFiscal: string;
-  mx_sujetoImpuestos: boolean;
-  ar_condicionIVA: string;
-  ar_provincia: string;
-  // New fields marker
-  camposNuevos: string[];
-  paisAnterior: Pais;
-}
-
-const MOCK_USERS: Record<PaisPersona, MockUserData> = {
-  'co-natural': {
-    pais: 'CO', tipoPersona: 'natural',
-    primerNombre: 'Laura', segundoNombre: 'Isabel',
-    primerApellido: 'Martínez', segundoApellido: 'Suárez',
-    fechaNacimiento: '1992-04-15', nacionalidad: 'Colombiana',
-    tipoDocumento: 'Cédula de ciudadanía', numeroDocumento: '1.023.456.789',
-    razonSocial: '',
-    email: 'laura.martinez@gmail.com', telefono: '+57 300 123 4567',
-    direccion: 'Calle 45 # 32-10, Apto 502', ciudad: 'Bogotá D.C.',
-    co_tipoRegimen: 'Simplificado', co_tipoResponsabilidad: 'No responsable de IVA', co_impuesto: '',
-    mx_codigoPostal: '', mx_regimenFiscal: '', mx_sujetoImpuestos: false,
-    ar_condicionIVA: '', ar_provincia: '',
-    camposNuevos: ['co_impuesto'],
-    paisAnterior: 'MX',
-  },
-  'co-juridica': {
-    pais: 'CO', tipoPersona: 'juridica',
-    primerNombre: 'Carlos', segundoNombre: 'Andrés',
-    primerApellido: 'Gómez', segundoApellido: 'Ríos',
-    fechaNacimiento: '1985-07-22', nacionalidad: 'Colombiana',
-    tipoDocumento: 'Cédula de ciudadanía', numeroDocumento: '80.234.567',
-    razonSocial: 'TechStore SAS',
-    email: 'admin@techstore.co', telefono: '+57 311 456 7890',
-    direccion: 'Carrera 7 # 71-21, Piso 3', ciudad: 'Bogotá D.C.',
-    co_tipoRegimen: 'Gran contribuyente', co_tipoResponsabilidad: 'Agente retenedor IVA', co_impuesto: 'IVA',
-    mx_codigoPostal: '', mx_regimenFiscal: '', mx_sujetoImpuestos: false,
-    ar_condicionIVA: '', ar_provincia: '',
-    camposNuevos: ['co_tipoResponsabilidad'],
-    paisAnterior: 'EC',
-  },
-  'mx-natural': {
-    pais: 'MX', tipoPersona: 'natural',
-    primerNombre: 'Sofía', segundoNombre: 'Valentina',
-    primerApellido: 'Hernández', segundoApellido: 'Torres',
-    fechaNacimiento: '1995-11-03', nacionalidad: 'Mexicana',
-    tipoDocumento: 'INE', numeroDocumento: 'HETS951103MDFRRN09',
-    razonSocial: '',
-    email: 'sofia.hernandez@gmail.com', telefono: '+52 55 1234 5678',
-    direccion: 'Av. Insurgentes Sur 1234, Col. Del Valle', ciudad: 'Ciudad de México',
-    co_tipoRegimen: '', co_tipoResponsabilidad: '', co_impuesto: '',
-    mx_codigoPostal: '03100', mx_regimenFiscal: 'Régimen simplificado de confianza', mx_sujetoImpuestos: false,
-    ar_condicionIVA: '', ar_provincia: '',
-    camposNuevos: ['mx_codigoPostal'],
-    paisAnterior: 'CO',
-  },
-  'mx-juridica': {
-    pais: 'MX', tipoPersona: 'juridica',
-    primerNombre: 'Miguel', segundoNombre: 'Ángel',
-    primerApellido: 'López', segundoApellido: 'Mendoza',
-    fechaNacimiento: '1980-03-15', nacionalidad: 'Mexicana',
-    tipoDocumento: 'INE', numeroDocumento: 'LOMM800315HDFPDN07',
-    razonSocial: 'Inversiones XYZ SA de CV',
-    email: 'miguel.lopez@inversionesxyz.mx', telefono: '+52 33 9876 5432',
-    direccion: 'Blvd. Manuel Ávila Camacho 88, Lomas de Chapultepec', ciudad: 'Ciudad de México',
-    co_tipoRegimen: '', co_tipoResponsabilidad: '', co_impuesto: '',
-    mx_codigoPostal: '11000', mx_regimenFiscal: 'General de ley personas morales', mx_sujetoImpuestos: true,
-    ar_condicionIVA: '', ar_provincia: '',
-    camposNuevos: ['mx_regimenFiscal'],
-    paisAnterior: 'AR',
-  },
-  'ar-natural': {
-    pais: 'AR', tipoPersona: 'natural',
-    primerNombre: 'Nicolás', segundoNombre: 'Rodrigo',
-    primerApellido: 'Fernández', segundoApellido: 'Díaz',
-    fechaNacimiento: '1990-08-28', nacionalidad: 'Argentina',
-    tipoDocumento: 'DNI', numeroDocumento: '32.456.789',
-    razonSocial: '',
-    email: 'nico.fernandez@hotmail.com', telefono: '+54 11 3456 7890',
-    direccion: 'Av. Corrientes 1234, Piso 2', ciudad: 'Buenos Aires',
-    co_tipoRegimen: '', co_tipoResponsabilidad: '', co_impuesto: '',
-    mx_codigoPostal: '', mx_regimenFiscal: '', mx_sujetoImpuestos: false,
-    ar_condicionIVA: 'Responsable Monotributo', ar_provincia: 'Buenos Aires',
-    camposNuevos: ['ar_provincia'],
-    paisAnterior: 'CL',
-  },
-  'ar-juridica': {
-    pais: 'AR', tipoPersona: 'juridica',
-    primerNombre: 'María', segundoNombre: 'José',
-    primerApellido: 'Rodríguez', segundoApellido: 'Pereyra',
-    fechaNacimiento: '1978-12-05', nacionalidad: 'Argentina',
-    tipoDocumento: 'DNI', numeroDocumento: '26.789.012',
-    razonSocial: 'E-Commerce Argentina SRL',
-    email: 'mrodriguez@ecommerce-ar.com', telefono: '+54 11 5678 9012',
-    direccion: 'Calle Florida 234, Piso 5', ciudad: 'Buenos Aires',
-    co_tipoRegimen: '', co_tipoResponsabilidad: '', co_impuesto: '',
-    mx_codigoPostal: '', mx_regimenFiscal: '', mx_sujetoImpuestos: false,
-    ar_condicionIVA: 'IVA Responsable Inscripto', ar_provincia: 'CABA',
-    camposNuevos: ['ar_condicionIVA'],
-    paisAnterior: 'EC',
-  },
-  'cl': {
-    pais: 'CL', tipoPersona: 'natural',
-    primerNombre: 'Javiera', segundoNombre: 'Alejandra',
-    primerApellido: 'Pino', segundoApellido: 'Araya',
-    fechaNacimiento: '1993-02-14', nacionalidad: 'Chilena',
-    tipoDocumento: 'Cédula de identidad', numeroDocumento: '18.234.567-K',
-    razonSocial: '',
-    email: 'javiera.pino@gmail.com', telefono: '+56 9 8765 4321',
-    direccion: 'Av. Providencia 2345, Depto 104', ciudad: 'Santiago, Región Metropolitana',
-    co_tipoRegimen: '', co_tipoResponsabilidad: '', co_impuesto: '',
-    mx_codigoPostal: '', mx_regimenFiscal: '', mx_sujetoImpuestos: false,
-    ar_condicionIVA: '', ar_provincia: '',
-    camposNuevos: [],
-    paisAnterior: 'CO',
-  },
-  'ec': {
-    pais: 'EC', tipoPersona: 'natural',
-    primerNombre: 'Andrés', segundoNombre: 'Felipe',
-    primerApellido: 'Vega', segundoApellido: 'Castillo',
-    fechaNacimiento: '1997-06-19', nacionalidad: 'Ecuatoriana',
-    tipoDocumento: 'Cédula de identidad', numeroDocumento: '1705345678',
-    razonSocial: '',
-    email: 'andres.vega@gmail.com', telefono: '+593 99 123 4567',
-    direccion: 'Av. 6 de Diciembre N25-12 y Foch, Of. 301', ciudad: 'Quito, Pichincha',
-    co_tipoRegimen: '', co_tipoResponsabilidad: '', co_impuesto: '',
-    mx_codigoPostal: '', mx_regimenFiscal: '', mx_sujetoImpuestos: false,
-    ar_condicionIVA: '', ar_provincia: '',
-    camposNuevos: [],
-    paisAnterior: 'MX',
-  },
-};
 
 // -----------------------------------------------------------------------
 // Component
@@ -269,11 +71,43 @@ const MOCK_USERS: Record<PaisPersona, MockUserData> = {
   templateUrl: './flujo-identidad.component.html',
   styleUrls: ['./flujo-identidad.component.scss'],
 })
-export class FlujoIdentidadComponent implements OnDestroy {
+export class FlujoIdentidadComponent implements OnDestroy, OnInit {
 
   private toast = inject(ToastService);
   private tour = inject(IdentidadTourService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private identityDemo = inject(IdentityDemoStateService);
+
+  readonly actividadEconomicaOptions = ACTIVIDAD_ECONOMICA_OPTIONS;
+  readonly demoPresets = DEMO_SCENARIO_PRESETS;
+  readonly vistaMap: { id: VistaId; label: string }[] = [
+    { id: 'v-nueva-bloqueada', label: 'Entrada bloqueada' },
+    { id: 'v-nueva-onboarding', label: 'Onboarding' },
+    { id: 'v-nueva-formulario', label: 'Formulario' },
+    { id: 'v-guardada-sin-comenzar', label: 'Guardada sin comenzar' },
+    { id: 'v-incompleta', label: 'Incompleta' },
+    { id: 'v-en-revision', label: 'En revisión' },
+    { id: 'v-rechazada', label: 'Rechazada' },
+    { id: 'v-baneada', label: 'Baneada' },
+    { id: 'v-email-baneado', label: 'Email baneado' },
+    { id: 'v-cross-country', label: 'Cross-country' },
+    { id: 'v-exitosa', label: 'Exitosa' },
+    { id: 'v-validado-datos', label: 'Validado · datos' },
+    { id: 'v-validado-campos-nuevos', label: 'Validado · campos nuevos' },
+  ];
+  vistaMapOpen = signal(false);
+  copyLinkFeedback = signal(false);
+  confirmacionAceptada = signal(false);
+  sumsubPhase = signal<SumsubScreenPhase>('warning');
+  sumsubCustomization = signal<SumsubCustomizationConfig>({ ...DEFAULT_SUMSUB_CUSTOMIZATION });
+  sumsubDemoExpanded = signal(false);
+
+  ngOnInit(): void {
+    this.applyQueryParams(this.route.snapshot.queryParamMap);
+    this.route.queryParamMap.subscribe(params => this.applyQueryParams(params));
+    this.syncIdentityDemoState();
+  }
 
   constructor() {
     this.tour.setSteps(this.buildTourSteps());
@@ -290,7 +124,7 @@ export class FlujoIdentidadComponent implements OnDestroy {
       {
         id: 'bienvenida',
         title: 'Prototipo de Validación de Identidad',
-        body: 'Este es el flujo KYC/KYB con el que un usuario verifica su identidad para desbloquear Dropi. Recorre los 9 pasos para ver cada estado del proceso. Usa la barra superior para explorar combinaciones por tu cuenta.',
+        body: 'Este es el flujo KYC/KYB con el que un usuario verifica su identidad para desbloquear Dropi. Recorre los pasos para ver cada estado del proceso. Usa la barra superior para explorar combinaciones por tu cuenta.',
         placement: 'center',
       },
       {
@@ -333,6 +167,38 @@ export class FlujoIdentidadComponent implements OnDestroy {
         onEnter: () => { this.setEstado('inicial'); this.navTo('v-nueva-formulario'); this.formStep.set(1); },
       },
       {
+        id: 'formulario-fiscal',
+        title: 'Paso 2 · Información tributaria',
+        body: 'Colombia, México y Argentina tienen campos fiscales alineados con el Excel de facturación LATAM del proveedor.',
+        target: '[data-tour="fid-form"]',
+        placement: 'bottom',
+        onEnter: () => { this.setEstado('inicial'); this.navTo('v-nueva-formulario'); this.formStep.set(2); this.initFormData(); },
+      },
+      {
+        id: 'confirmacion-pre-sumsub',
+        title: 'Confirmación antes de Sumsub',
+        body: 'El usuario debe confirmar que sus datos coinciden con el documento antes de la verificación biométrica — evita quemar intentos.',
+        placement: 'center',
+        onEnter: () => {
+          this.setEstado('inicial');
+          this.navTo('v-nueva-formulario');
+          this.initFormData();
+          this.formStep.set(this.paisConFiscal ? 2 : 1);
+          this.confirmacionAceptada.set(false);
+          this.openModal('m-confirmacion-pre-sumsub');
+        },
+      },
+      {
+        id: 'sumsub-mock',
+        title: 'Sumsub WebSDK (mock customizado Dropi)',
+        body: 'Simula warning, welcome, instrucciones y captura con branding Dropi según la customización del Dashboard Sumsub.',
+        placement: 'center',
+        onEnter: () => {
+          this.confirmacionAceptada.set(true);
+          this.openSumsubMock();
+        },
+      },
+      {
         id: 'estado-revision',
         title: 'Así espera el usuario',
         body: 'Tras enviar sus documentos, el usuario ve esta pantalla de espera mientras el equipo valida su identidad. Estado: paso 2 "Verificación".',
@@ -349,9 +215,23 @@ export class FlujoIdentidadComponent implements OnDestroy {
       {
         id: 'estado-rechazada',
         title: 'Motivo, reintento y apelación',
-        body: 'Si algo falla, el usuario ve el motivo claro, sus intentos restantes y puede reintentar o contactar a soporte. Con esto cierras el recorrido — explora el resto desde la barra superior.',
+        body: 'Si algo falla, el usuario ve el motivo claro, sus intentos restantes y puede reintentar o contactar a soporte.',
         placement: 'center',
         onEnter: () => this.setEstado('rechazada-reintentar'),
+      },
+      {
+        id: 'activacion-modulos',
+        title: 'Activación cross-módulo',
+        body: 'La ia-card en catálogo, retiros y otros módulos refleja el mismo estado demo. Usa los enlaces del panel para verlo.',
+        target: '[data-tour="demo-nav-catalogo"]',
+        placement: 'bottom',
+      },
+      {
+        id: 'copiar-enlace',
+        title: 'Compartir demo',
+        body: 'Copia un enlace con el estado actual para que otro stakeholder vea exactamente la misma pantalla.',
+        target: '[data-tour="demo-copy-link"]',
+        placement: 'bottom',
       },
     ];
   }
@@ -430,37 +310,19 @@ export class FlujoIdentidadComponent implements OnDestroy {
 
   // ── Form data (plain objects for ngModel) ────────────────────────────
 
-  formNucleo: FormNucleo = {
-    primerNombre: '', segundoNombre: '',
-    primerApellido: '', segundoApellido: '',
-    fechaNacimiento: '', nacionalidad: '',
-    tipoPersona: 'natural', tipoDocumento: '', numeroDocumento: '',
-    email: '', telefono: '',
-    direccion: '', ciudad: '',
-    razonSocial: '',
-  };
-
-  formFiscal: FormFiscal = {
-    co_tipoRegimen: '', co_tipoResponsabilidad: '', co_impuesto: '',
-    mx_codigoPostal: '', mx_regimenFiscal: '', mx_sujetoImpuestos: false,
-    ar_condicionIVA: '', ar_provincia: '',
-  };
-
-  // ── MFA / OTP ─────────────────────────────────────────────────────────
-
-  otpDigits: string[] = ['', '', '', '', '', ''];
-  otpError = signal<string>('');
+  formNucleo: FormNucleo = emptyFormNucleo();
+  formFiscal: FormFiscal = emptyFormFiscal();
 
   // ── Sumsub mock ───────────────────────────────────────────────────────
 
   sumsubStep = signal<number>(0);
   sumsubLoading = signal<boolean>(false);
-  readonly sumsubSteps = [
-    'Seleccionar documento',
-    'Captura frontal',
-    'Captura trasera',
-    'Selfie / Verificación',
-  ];
+  readonly sumsubSteps = SUMSUB_CAPTURE_STEPS;
+
+  // ── MFA / OTP ─────────────────────────────────────────────────────────
+
+  otpDigits: string[] = ['', '', '', '', '', ''];
+  otpError = signal<string>('');
 
   // ── Countdown (rechazada-espera) ──────────────────────────────────────
 
@@ -474,7 +336,6 @@ export class FlujoIdentidadComponent implements OnDestroy {
   apelacionEnviada = signal<boolean>(false);
   isEditMode = signal<boolean>(false);
   reasonsExpanded = signal<boolean>(false);
-  gruposSeleccionados = signal<string[]>([]);
 
   readonly rejectionReasonsList = [
     { code: 'DOCUMENT_BLURRY',       label: 'Documento borroso',           description: 'La imagen del documento no es legible. Ubícate en un lugar bien iluminado y sin reflejos.' },
@@ -491,15 +352,6 @@ export class FlujoIdentidadComponent implements OnDestroy {
     { code: 'DOCUMENT_INVALID',      label: 'Tipo de documento inválido',  description: 'El tipo de documento seleccionado no es válido para tu país de residencia.' },
   ];
   camposNuevosEditables = signal<string[]>([]);
-
-  readonly gruposActualizacion: GrupoActualizacion[] = [
-    { id: 'nombre',      label: 'Nombre completo',        desc: 'Primer nombre, segundo nombre, apellidos',          requiresRevalidation: true  },
-    { id: 'documento',   label: 'Documento de identidad', desc: 'Tipo y número de documento',                       requiresRevalidation: true  },
-    { id: 'contacto',    label: 'Datos de contacto',      desc: 'Teléfono, email de contacto',                      requiresRevalidation: false },
-    { id: 'direccion',   label: 'Dirección',              desc: 'Dirección, ciudad, municipio',                     requiresRevalidation: false },
-    { id: 'fiscal',      label: 'Datos fiscales',         desc: 'Régimen, responsabilidad tributaria',              requiresRevalidation: false },
-    { id: 'empresa',     label: 'Datos de empresa',       desc: 'Razón social (solo personas jurídicas)',            requiresRevalidation: false },
-  ];
 
   // -----------------------------------------------------------------------
   // Computed getters
@@ -646,8 +498,8 @@ export class FlujoIdentidadComponent implements OnDestroy {
       'v-validado-datos':       'Tus datos están verificados y protegidos',
       'v-validado-campos-nuevos': 'Completa los campos obligatorios por regulación',
       'v-guardada-sin-comenzar': 'Tus datos están guardados — falta la verificación biométrica',
-      'v-incompleta':           'Quedó pendiente la sesión biométrica',
-      'v-en-revision':          `Te avisaremos a ${this.mockUser.email} en menos de 24 h hábiles`,
+      'v-incompleta':           'Retoma la captura o revisa los datos guardados',
+      'v-en-revision':          `Notificación a ${this.mockUser.email} · menos de 24 h hábiles`,
       'v-rechazada':            'Revisa el motivo y vuelve a intentarlo',
       'v-baneada':              'Contacta soporte para revisar tu caso',
       'v-email-baneado':        'Este correo no puede usarse en Dropi',
@@ -740,12 +592,6 @@ export class FlujoIdentidadComponent implements OnDestroy {
 
   get cantidadCamposNuevos(): number {
     return this.camposNuevos.length;
-  }
-
-  get requiresRevalidation(): boolean {
-    return this.gruposSeleccionados().some(id => {
-      return this.gruposActualizacion.find(g => g.id === id)?.requiresRevalidation ?? false;
-    });
   }
 
   get countdownLabel(): string {
@@ -850,6 +696,8 @@ export class FlujoIdentidadComponent implements OnDestroy {
     this.selectorUsuario.set(type);
     this.modalActivo.set(null);
     this.resolveVista();
+    this.syncUrlParams();
+    this.syncIdentityDemoState();
   }
 
   setEstado(estado: EstadoId): void {
@@ -873,16 +721,218 @@ export class FlujoIdentidadComponent implements OnDestroy {
       );
     }
     this.resolveVista();
+    this.syncUrlParams();
+    this.syncIdentityDemoState();
   }
 
   setPais(pais: PaisPersona): void {
     this.selectorPais.set(pais);
     this.modalActivo.set(null);
     this.resolveVista();
+    this.syncUrlParams();
+    this.syncIdentityDemoState();
   }
 
   setOrigen(origen: OrigenValidacion): void {
     this.selectorOrigen.set(origen);
+    this.syncUrlParams();
+  }
+
+  applyPreset(preset: DemoScenarioPreset): void {
+    if (preset.id === 'excel-proveedor') {
+      this.router.navigate(['/old/pedidos-proveedor'], {
+        queryParams: { tab: 'facturacion', pais: MOCK_USERS[preset.pais].pais, billingId: MOCK_USERS[preset.pais].billingId },
+      });
+      return;
+    }
+    this.setUserType(preset.userType);
+    this.setPais(preset.pais);
+    this.setOrigen(preset.origen);
+    this.setEstado(preset.estado);
+    if (preset.vista) {
+      this.navTo(preset.vista as VistaId);
+    }
+  }
+
+  irAVista(vista: VistaId): void {
+    this.modalActivo.set(null);
+    this.vistaActiva.set(vista);
+  }
+
+  toggleVistaMap(): void {
+    this.vistaMapOpen.update(v => !v);
+  }
+
+  copyDemoLink(): void {
+    const q = new URLSearchParams({
+      tipo: this.selectorUsuario(),
+      estado: this.selectorEstado(),
+      pais: this.selectorPais(),
+      origen: this.selectorOrigen(),
+    });
+    const url = `${window.location.origin}${window.location.pathname}?${q.toString()}`;
+    navigator.clipboard?.writeText(url).then(() => {
+      this.copyLinkFeedback.set(true);
+      setTimeout(() => this.copyLinkFeedback.set(false), 2500);
+      this.toast.success('Enlace copiado al portapapeles.', 'Listo para compartir');
+    }).catch(() => {
+      this.toast.info(url, 'Copia este enlace');
+    });
+  }
+
+  private applyQueryParams(params: { get: (k: string) => string | null }): void {
+    const tipo = params.get('tipo') as UserType | null;
+    const estado = params.get('estado') as EstadoId | null;
+    const pais = params.get('pais') as PaisPersona | null;
+    const origen = params.get('origen') as OrigenValidacion | null;
+    if (tipo && this.userTypeOptions.some(o => o.id === tipo)) this.selectorUsuario.set(tipo);
+    if (estado && this.estadoOptions.some(o => o.id === estado)) {
+      this.selectorEstado.set(estado);
+      if (estado === 'rechazada-espera') this.startCountdown();
+    }
+    if (pais && this.paisOptions.some(o => o.id === pais)) this.selectorPais.set(pais);
+    if (origen && this.origenOptions.some(o => o.id === origen)) this.selectorOrigen.set(origen);
+    this.resolveVista();
+    this.syncIdentityDemoState();
+  }
+
+  private syncUrlParams(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        tipo: this.selectorUsuario(),
+        estado: this.selectorEstado(),
+        pais: this.selectorPais(),
+        origen: this.selectorOrigen(),
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+
+  private syncIdentityDemoState(): void {
+    this.identityDemo.setFromEstado(this.selectorEstado(), this.selectorPais());
+  }
+
+  get responsableIVALabel(): string {
+    return deriveResponsableIVA({ ...this.formFiscal, pais: this.pais } as MockUserData, this.pais) ? 'Sí' : 'No';
+  }
+
+  onActividadEconomicaChange(): void {
+    const match = ACTIVIDAD_ECONOMICA_OPTIONS.find(o => o.label === this.formFiscal.actividadEconomica);
+    if (match) {
+      this.formFiscal.codigoActividadEconomica = match.codigo;
+    }
+  }
+
+  editarSeccionConfirmacion(seccion: 'personal' | 'contacto' | 'empresa' | 'fiscal'): void {
+    this.closeModal(true);
+    this.navTo('v-nueva-formulario');
+    if (seccion === 'fiscal' && this.paisConFiscal) {
+      this.formStep.set(2);
+      setTimeout(() => document.getElementById('field-co_tipoRegimen')?.focus(), 0);
+    } else {
+      this.formStep.set(1);
+      const focusMap: Record<string, string> = {
+        personal: 'field-primerNombre',
+        contacto: 'field-emailFacturacion',
+        empresa: 'field-razonSocial',
+        fiscal: 'field-primerNombre',
+      };
+      setTimeout(() => document.getElementById(focusMap[seccion])?.focus(), 0);
+    }
+  }
+
+  openSumsubMock(): void {
+    this.sumsubPhase.set(this.getInitialSumsubPhase());
+    this.sumsubStep.set(0);
+    this.openModal('m-sumsub');
+  }
+
+  private getInitialSumsubPhase(): SumsubScreenPhase {
+    const c = this.sumsubCustomization();
+    if (!c.skipWarning) return 'warning';
+    if (!c.skipWelcome) return 'welcome';
+    if (!c.skipInstructions) return 'instructions';
+    if (this.tipoPersona === 'juridica') return 'kyb-empresa';
+    return 'document';
+  }
+
+  get sumsubPhaseLabel(): string {
+    const labels: Record<SumsubScreenPhase, string> = {
+      warning: 'Confirmación de seguridad',
+      welcome: 'Bienvenida',
+      instructions: 'Instrucciones',
+      'kyb-empresa': 'Datos de empresa',
+      'kyb-rep': 'Representante legal',
+      document: 'Seleccionar documento',
+      'capture-front': 'Captura frontal',
+      'capture-back': 'Captura trasera',
+      selfie: 'Selfie',
+      processing: 'Procesando',
+    };
+    return labels[this.sumsubPhase()];
+  }
+
+  avanzarSumsubPhase(): void {
+    const phase = this.sumsubPhase();
+    const c = this.sumsubCustomization();
+    const goCapture = (): void => {
+      this.sumsubPhase.set(this.tipoPersona === 'juridica' ? 'kyb-empresa' : 'document');
+    };
+
+    if (phase === 'warning') {
+      this.sumsubPhase.set(c.skipWelcome ? (c.skipInstructions ? (this.tipoPersona === 'juridica' ? 'kyb-empresa' : 'document') : 'instructions') : 'welcome');
+      return;
+    }
+    if (phase === 'welcome') {
+      this.sumsubPhase.set(c.skipInstructions ? (this.tipoPersona === 'juridica' ? 'kyb-empresa' : 'document') : 'instructions');
+      return;
+    }
+    if (phase === 'instructions') {
+      goCapture();
+      return;
+    }
+    if (phase === 'kyb-empresa') {
+      this.sumsubPhase.set('kyb-rep');
+      return;
+    }
+    if (phase === 'kyb-rep') {
+      this.sumsubPhase.set('document');
+      return;
+    }
+    if (phase === 'document') {
+      this.sumsubPhase.set('capture-front');
+      return;
+    }
+    if (phase === 'capture-front') {
+      this.sumsubPhase.set('capture-back');
+      return;
+    }
+    if (phase === 'capture-back') {
+      this.sumsubPhase.set('selfie');
+      return;
+    }
+    if (phase === 'selfie') {
+      this.sumsubPhase.set('processing');
+      this.sumsubLoading.set(true);
+      setTimeout(() => {
+        this.sumsubLoading.set(false);
+        this.finalizarSumsub();
+      }, 1200);
+    }
+  }
+
+  toggleSumsubCustomization(key: keyof SumsubCustomizationConfig): void {
+    this.sumsubCustomization.update(cfg => ({ ...cfg, [key]: !cfg[key] }));
+  }
+
+  private finalizarSumsub(): void {
+    this.closeModal(true);
+    this.selectorEstado.set('en-revision');
+    this.vistaActiva.set('v-en-revision');
+    this.syncIdentityDemoState();
+    this.toast.success('Documentos enviados. Te avisaremos por correo cuando termine la revisión.', 'Verificación enviada');
   }
 
   resolveVista(): void {
@@ -1121,9 +1171,13 @@ export class FlujoIdentidadComponent implements OnDestroy {
       case 'numeroDocumento': return n.numeroDocumento.trim() ? '' : 'Ingresa el número de documento';
       case 'direccion':       return n.direccion.trim() ? '' : 'Ingresa tu dirección';
       case 'ciudad':          return n.ciudad.trim() ? '' : `Ingresa tu ${this.campoGeografico.toLowerCase()}`;
+      case 'departamento':    return n.departamento.trim() ? '' : 'Ingresa departamento o estado';
+      case 'emailFacturacion': return n.emailFacturacion.trim() ? '' : 'Ingresa el email de facturación';
       case 'razonSocial':     return this.tipoPersona !== 'juridica' || n.razonSocial.trim() ? '' : 'Ingresa la razón social';
       case 'co_tipoRegimen':        return f.co_tipoRegimen ? '' : 'Selecciona el tipo de régimen';
       case 'co_tipoResponsabilidad': return f.co_tipoResponsabilidad ? '' : 'Selecciona la responsabilidad tributaria';
+      case 'actividadEconomica':    return f.actividadEconomica ? '' : 'Selecciona la actividad económica';
+      case 'codigoActividadEconomica': return f.codigoActividadEconomica ? '' : 'Ingresa el código de actividad';
       case 'mx_codigoPostal':       return f.mx_codigoPostal.trim().length >= 5 ? '' : 'Usa 5 dígitos, sin espacios ni guiones';
       case 'mx_regimenFiscal':      return f.mx_regimenFiscal ? '' : 'Selecciona el régimen fiscal';
       case 'ar_condicionIVA':       return f.ar_condicionIVA ? '' : 'Selecciona la condición frente al IVA';
@@ -1155,7 +1209,7 @@ export class FlujoIdentidadComponent implements OnDestroy {
   validateStep1(): boolean {
     const fields = [
       'primerNombre', 'primerApellido', 'fechaNacimiento', 'nacionalidad',
-      'tipoDocumento', 'numeroDocumento', 'direccion', 'ciudad',
+      'tipoDocumento', 'numeroDocumento', 'direccion', 'ciudad', 'departamento', 'emailFacturacion',
     ];
     if (this.tipoPersona === 'juridica') fields.push('razonSocial');
     return this.validateFields(fields);
@@ -1164,7 +1218,7 @@ export class FlujoIdentidadComponent implements OnDestroy {
   validateStep2(): boolean {
     if (!this.paisConFiscal) return true;
     const fields: string[] = [];
-    if (this.pais === 'CO') fields.push('co_tipoRegimen', 'co_tipoResponsabilidad');
+    if (this.pais === 'CO') fields.push('co_tipoRegimen', 'co_tipoResponsabilidad', 'actividadEconomica', 'codigoActividadEconomica');
     if (this.pais === 'MX') fields.push('mx_codigoPostal', 'mx_regimenFiscal');
     if (this.pais === 'AR') fields.push('ar_condicionIVA', 'ar_provincia');
     return this.validateFields(fields);
@@ -1186,15 +1240,19 @@ export class FlujoIdentidadComponent implements OnDestroy {
       tipoDocumento:  isNew ? '' : u.tipoDocumento,
       numeroDocumento: isNew ? '' : u.numeroDocumento,
       email:    u.email,
+      emailFacturacion: isNew ? '' : u.emailFacturacion,
       telefono: u.telefono,
       direccion: isNew ? '' : u.direccion,
       ciudad:    isNew ? '' : u.ciudad,
+      departamento: isNew ? '' : u.departamento,
       razonSocial: isNew ? '' : u.razonSocial,
     };
     this.formFiscal = {
       co_tipoRegimen:        isNew ? '' : u.co_tipoRegimen,
       co_tipoResponsabilidad: isNew ? '' : u.co_tipoResponsabilidad,
       co_impuesto:           isNew ? '' : u.co_impuesto,
+      actividadEconomica:    isNew ? '' : u.actividadEconomica,
+      codigoActividadEconomica: isNew ? '' : u.codigoActividadEconomica,
       mx_codigoPostal:       isNew ? '' : u.mx_codigoPostal,
       mx_regimenFiscal:      isNew ? '' : u.mx_regimenFiscal,
       mx_sujetoImpuestos:    isNew ? false : u.mx_sujetoImpuestos,
@@ -1222,6 +1280,7 @@ export class FlujoIdentidadComponent implements OnDestroy {
       return;
     }
     if (this.validateStep2()) {
+      this.confirmacionAceptada.set(false);
       this.openModal('m-confirmacion-pre-sumsub');
     }
   }
@@ -1239,19 +1298,19 @@ export class FlujoIdentidadComponent implements OnDestroy {
   // -----------------------------------------------------------------------
 
   comenzarDesdeGuardado(): void {
-    this.sumsubStep.set(0);
-    this.openModal('m-sumsub');
+    this.openSumsubMock();
   }
 
   reanudarValidacion(): void {
     this.sumsubStep.set(this.sumsubStepGuardado());
+    this.sumsubPhase.set('document');
     this.openModal('m-sumsub');
   }
 
   empezarDeNuevo(): void {
     this.sumsubStep.set(0);
     this.sumsubStepGuardado.set(0);
-    this.openModal('m-sumsub');
+    this.openSumsubMock();
   }
 
   verDatosEnviados(): void {
@@ -1264,11 +1323,7 @@ export class FlujoIdentidadComponent implements OnDestroy {
   // -----------------------------------------------------------------------
 
   solicitarActualizacion(): void {
-    this.gruposSeleccionados.set(this.gruposActualizacion.map(g => g.id));
-    this.isEditMode.set(false);
-    this.otpDigits = ['', '', '', '', '', ''];
-    this.otpError.set('');
-    this.openModal('m-mfa');
+    this.iniciarActualizacionConMfa();
   }
 
   verDocumento(): void {
@@ -1280,16 +1335,14 @@ export class FlujoIdentidadComponent implements OnDestroy {
   // -----------------------------------------------------------------------
 
   completarCamposNuevos(): void {
-    const mappedGrupos = this.camposNuevos.map(c => {
-      if (['co_tipoRegimen','co_tipoResponsabilidad','co_impuesto','mx_codigoPostal','mx_regimenFiscal','mx_sujetoImpuestos','ar_condicionIVA','ar_provincia'].includes(c)) return 'fiscal';
-      if (['primerNombre','segundoNombre','primerApellido','segundoApellido'].includes(c)) return 'nombre';
-      if (['tipoDocumento','numeroDocumento'].includes(c)) return 'documento';
-      if (['email','telefono'].includes(c)) return 'contacto';
-      if (['direccion','ciudad'].includes(c)) return 'direccion';
-      return 'empresa';
-    });
-    this.gruposSeleccionados.set([...new Set(mappedGrupos)]);
-    this.openModal('m-seleccionar-campos');
+    this.iniciarActualizacionConMfa();
+  }
+
+  private iniciarActualizacionConMfa(): void {
+    this.isEditMode.set(false);
+    this.otpDigits = ['', '', '', '', '', ''];
+    this.otpError.set('');
+    this.openModal('m-mfa');
   }
 
   isCampoNuevo(campo: string): boolean {
@@ -1319,12 +1372,16 @@ export class FlujoIdentidadComponent implements OnDestroy {
       primerApellido: u.primerApellido, segundoApellido: u.segundoApellido,
       fechaNacimiento: u.fechaNacimiento, nacionalidad: u.nacionalidad,
       tipoPersona: u.tipoPersona, tipoDocumento: u.tipoDocumento,
-      numeroDocumento: u.numeroDocumento, email: u.email, telefono: u.telefono,
-      direccion: u.direccion, ciudad: u.ciudad, razonSocial: u.razonSocial,
+      numeroDocumento: u.numeroDocumento, email: u.email,
+      emailFacturacion: u.emailFacturacion, telefono: u.telefono,
+      direccion: u.direccion, ciudad: u.ciudad, departamento: u.departamento,
+      razonSocial: u.razonSocial,
     };
     this.formFiscal = {
       co_tipoRegimen: u.co_tipoRegimen, co_tipoResponsabilidad: u.co_tipoResponsabilidad,
-      co_impuesto: u.co_impuesto, mx_codigoPostal: u.mx_codigoPostal,
+      co_impuesto: u.co_impuesto, actividadEconomica: u.actividadEconomica,
+      codigoActividadEconomica: u.codigoActividadEconomica,
+      mx_codigoPostal: u.mx_codigoPostal,
       mx_regimenFiscal: u.mx_regimenFiscal, mx_sujetoImpuestos: u.mx_sujetoImpuestos,
       ar_condicionIVA: u.ar_condicionIVA, ar_provincia: u.ar_provincia,
     };
@@ -1343,8 +1400,7 @@ export class FlujoIdentidadComponent implements OnDestroy {
       return;
     }
     this.intentosRestantes.set(restantes - 1);
-    this.sumsubStep.set(0);
-    this.openModal('m-sumsub');
+    this.openSumsubMock();
     const quedan = restantes - 1;
     this.toast.info(
       quedan > 0
@@ -1384,31 +1440,6 @@ export class FlujoIdentidadComponent implements OnDestroy {
     if (this.vistaActiva() === 'v-nueva-formulario') {
       history.pushState(null, '', window.location.href);
       this.openSalirSinGuardar();
-    }
-  }
-
-  // -----------------------------------------------------------------------
-  // Modal: m-seleccionar-campos
-  // -----------------------------------------------------------------------
-
-  toggleGrupo(id: string): void {
-    const curr = this.gruposSeleccionados();
-    if (curr.includes(id)) {
-      this.gruposSeleccionados.set(curr.filter(g => g !== id));
-    } else {
-      this.gruposSeleccionados.set([...curr, id]);
-    }
-  }
-
-  isGrupoSelected(id: string): boolean {
-    return this.gruposSeleccionados().includes(id);
-  }
-
-  continuarConGrupos(): void {
-    if (this.gruposSeleccionados().length > 0) {
-      this.otpDigits = ['', '', '', '', '', ''];
-      this.otpError.set('');
-      this.openModal('m-mfa');
     }
   }
 
@@ -1453,11 +1484,12 @@ export class FlujoIdentidadComponent implements OnDestroy {
   // -----------------------------------------------------------------------
 
   confirmarYValidar(): void {
+    if (!this.confirmacionAceptada()) return;
     this.closeModal(true);
     this.sumsubStep.set(0);
     this.sumsubStepGuardado.set(0);
     this.toast.success('Tus datos quedaron guardados. Continúa con la verificación biométrica.', 'Datos guardados');
-    this.openModal('m-sumsub');
+    this.openSumsubMock();
   }
 
   // -----------------------------------------------------------------------
@@ -1465,30 +1497,21 @@ export class FlujoIdentidadComponent implements OnDestroy {
   // -----------------------------------------------------------------------
 
   avanzarSumsub(): void {
-    const next = this.sumsubStep() + 1;
-    if (next < this.sumsubSteps.length) {
-      this.sumsubLoading.set(true);
-      setTimeout(() => {
-        this.sumsubLoading.set(false);
-        this.sumsubStep.set(next);
-        this.sumsubStepGuardado.set(next);
-      }, 800);
-    } else {
-      this.closeModal(true);
-      this.selectorEstado.set('en-revision');
-      this.vistaActiva.set('v-en-revision');
-      this.toast.success('Documentos enviados. Te avisaremos por correo cuando termine la revisión.', 'Verificación enviada');
-    }
+    this.avanzarSumsubPhase();
   }
 
   cerrarSumsub(): void {
     if (!this.confirmModalClose()) return;
-    this.sumsubStepGuardado.set(this.sumsubStep());
+    const phase = this.sumsubPhase();
+    if (['capture-front', 'capture-back', 'selfie', 'document'].includes(phase)) {
+      this.sumsubStepGuardado.set(Math.max(1, this.sumsubStep()));
+    }
     this.modalActivo.set(null);
     this.modalFocusReturn?.focus();
     this.modalFocusReturn = null;
     this.selectorEstado.set('incompleta');
     this.vistaActiva.set('v-incompleta');
+    this.syncIdentityDemoState();
   }
 
   // -----------------------------------------------------------------------

@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { IdentityDemoStateService } from '../../../common/services/identity-demo-state.service';
+import { IdentitySatelliteStatus } from '../../../common/models/identity-flow.models';
 
 interface ModuleCard {
   icon: string;
@@ -20,8 +22,13 @@ interface ModuleCard {
 export class IdentidadHubComponent implements OnInit, OnDestroy {
   private router = inject(Router);
 
-  demoIdentityStatus = 'sin_validar';
-  readonly identityStatusOptions = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
+  private identityDemo = inject(IdentityDemoStateService);
+
+  get demoIdentityStatus(): IdentitySatelliteStatus {
+    return this.identityDemo.status();
+  }
+
+  readonly identityStatusOptions: IdentitySatelliteStatus[] = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
 
   showPopover = false;
   private popoverTimer: ReturnType<typeof setTimeout> | null = null;
@@ -79,8 +86,8 @@ export class IdentidadHubComponent implements OnInit, OnDestroy {
     this.router.navigate([route]);
   }
 
-  setStatus(s: string): void {
-    this.demoIdentityStatus = s;
+  setStatus(s: IdentitySatelliteStatus): void {
+    this.identityDemo.setStatus(s);
     if (s !== 'aprobado' && !this.showPopover) {
       this.showPopover = true;
       if (this.closeTimer) clearTimeout(this.closeTimer);

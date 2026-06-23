@@ -1,0 +1,129 @@
+@import 'styles/variables';
+
+// Bridge: fid-* classes → Dropi DS tokens (dropi-button, dropi-input, dropi-alert)
+
+.fid-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $size-2;
+  font-family: $font-primary;
+  font-weight: $font-semibold;
+  border-radius: $radius-md;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &--primary {
+    background: $primary-500;
+    color: $white;
+    &:hover:not(:disabled) { background: $primary-600; }
+  }
+
+  &--secondary {
+    background: transparent;
+    border-color: $primary-500;
+    color: $primary-500;
+    &:hover:not(:disabled) { background: rgba($primary-500, 0.06); }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: $gray-600;
+    &:hover:not(:disabled) { background: $gray-100; }
+  }
+
+  &--lg { min-height: 48px; padding: 0 $size-5; font-size: $font-md; }
+  &:not(.fid-btn--lg) { min-height: 40px; padding: 0 $size-4; font-size: $font-sm; }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.fid-field__input,
+.fid-field__select,
+.fid-field__textarea {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  border: 1px solid $gray-200;
+  border-radius: $radius-md;
+  padding: $size-2 $size-3;
+  color: $gray-700;
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.15);
+  }
+}
+
+.fid-field--error .fid-field__input,
+.fid-field--error .fid-field__select {
+  border-color: $error;
+}
+
+.fid-alert {
+  display: flex;
+  gap: $size-3;
+  padding: $size-3 $size-4;
+  border-radius: $radius-md;
+  font-size: $font-sm;
+  line-height: 1.5;
+
+  &--warning {
+    background: rgba($warning, 0.12);
+    border: 1px solid rgba($warning, 0.35);
+    color: $gray-700;
+    .fa-icon { color: $warning; }
+  }
+
+  &--info {
+    background: rgba($info, 0.1);
+    border: 1px solid rgba($info, 0.25);
+    color: $gray-700;
+    .fa-icon { color: $info; }
+  }
+
+  &--critical {
+    background: rgba($error, 0.08);
+    border: 1px solid rgba($error, 0.3);
+    color: $gray-800;
+    .fa-icon { color: $error; }
+  }
+}
+
+.confirm-section {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $size-3;
+    h4 { margin: 0; font-size: $font-md; }
+  }
+}
+
+.confirm-edit-link {
+  background: none;
+  border: none;
+  color: $primary-500;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  padding: 0;
+  &:hover { text-decoration: underline; }
+}
+
+.confirm-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-3;
+  margin-top: $size-4;
+  padding: $size-3;
+  background: $gray-50;
+  border-radius: $radius-md;
+  border: 1px solid $gray-100;
+  cursor: pointer;
+  input { margin-top: 3px; accent-color: $primary-500; }
+  span { font-size: $font-sm; color: $gray-700; line-height: 1.45; }
+}

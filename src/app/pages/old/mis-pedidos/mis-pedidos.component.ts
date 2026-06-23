@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { IdentityDemoStateService } from '../../../common/services/identity-demo-state.service';
+import { IdentitySatelliteStatus } from '../../../common/models/identity-flow.models';
 
 interface PedidoClient {
   name: string;
@@ -41,8 +43,17 @@ export class MisPedidosComponent implements OnInit {
   searchQuery = '';
   showActionsDropdown = false;
 
-  demoIdentityStatus = 'sin_validar';
-  readonly identityStatusOptions = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
+  private identityDemo = inject(IdentityDemoStateService);
+
+  get demoIdentityStatus(): IdentitySatelliteStatus {
+    return this.identityDemo.status();
+  }
+
+  setDemoIdentityStatus(status: IdentitySatelliteStatus): void {
+    this.identityDemo.setStatus(status);
+  }
+
+  readonly identityStatusOptions: IdentitySatelliteStatus[] = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
   readonly blockedAction = 'gestionar pedidos';
 
   private readonly alertsMap: Record<string, { type: string; icon: string; text: string; cta: string; step: number; stateLabel: string }> = {

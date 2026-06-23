@@ -1,0 +1,269 @@
+@import 'styles/variables';
+
+$sumsub-brand: #00b67a;
+
+.sumsub-sdk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba($gray-900, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $size-4;
+}
+
+.sumsub-sdk {
+  width: 100%;
+  max-width: 520px;
+  max-height: 92vh;
+  background: $white;
+  border-radius: $radius-lg;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid $gray-100;
+
+  &--fullscreen {
+    max-width: 640px;
+    max-height: 96vh;
+  }
+
+  &--no-border { border: none; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12); }
+
+  &__shell {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    padding: $size-2 $size-4;
+    background: $gray-50;
+    border-bottom: 1px solid $gray-100;
+    font-size: $font-xs;
+    color: $gray-500;
+  }
+
+  &__dropi { font-weight: $font-bold; color: $primary-500; }
+  &__divider { color: $gray-300; }
+  &__brand { font-weight: $font-semibold; color: $sumsub-brand; }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $size-3 $size-4;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__title {
+    font-size: $font-md;
+    font-weight: $font-semibold;
+    color: $gray-800;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    color: $gray-400;
+    cursor: pointer;
+    padding: $size-1;
+    font-size: 18px;
+    &:hover { color: $gray-700; }
+  }
+
+  &__progress {
+    display: flex;
+    justify-content: space-between;
+    padding: $size-2 $size-4;
+    background: $gray-50;
+    font-size: $font-xs;
+    color: $gray-500;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: $size-5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: $size-3;
+  }
+
+  &__footer {
+    padding: $size-4;
+    border-top: 1px solid $gray-100;
+    display: flex;
+    flex-direction: column;
+    gap: $size-3;
+  }
+
+  &__cta {
+    width: 100%;
+    min-height: 48px;
+    background: $primary-500;
+    color: $white;
+    border: none;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-semibold;
+    cursor: pointer;
+    &:hover { background: $primary-600; }
+  }
+
+  &__powered {
+    font-size: 10px;
+    color: $gray-400;
+    text-align: center;
+    padding-bottom: $size-2;
+  }
+
+  &__demo {
+    padding: $size-2 $size-4;
+    background: $gray-800;
+    border-top: 1px solid $gray-700;
+  }
+
+  &__demo-toggle {
+    background: none;
+    border: none;
+    color: $primary-500;
+    font-size: 10px;
+    font-weight: $font-bold;
+    cursor: pointer;
+    padding: $size-1 0;
+  }
+
+  &__demo-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $size-2;
+    margin-top: $size-2;
+    label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: $gray-300;
+      cursor: pointer;
+    }
+  }
+}
+
+.sumsub-warning-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba($warning, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $warning;
+  font-size: 24px;
+}
+
+.sumsub-welcome-list {
+  text-align: left;
+  width: 100%;
+  margin: 0;
+  padding-left: $size-5;
+  font-size: $font-sm;
+  color: $gray-600;
+  li { margin-bottom: $size-2; }
+}
+
+.sumsub-camera-frame {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 4/3;
+  border: 2px dashed $gray-300;
+  border-radius: $radius-md;
+  background: $gray-50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: $size-3 auto;
+
+  &--round {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    max-width: 200px;
+  }
+}
+
+.sumsub-doc-options {
+  display: flex;
+  flex-direction: column;
+  gap: $size-2;
+  width: 100%;
+}
+
+.sumsub-doc-option {
+  padding: $size-3 $size-4;
+  border: 1px solid $gray-200;
+  border-radius: $radius-md;
+  background: $white;
+  cursor: pointer;
+  font-size: $font-sm;
+  &:hover { border-color: $primary-500; background: rgba($primary-500, 0.04); }
+}
+
+.sumsub-steps-inline {
+  display: flex;
+  gap: $size-2;
+  width: 100%;
+  overflow-x: auto;
+  padding: $size-2 0;
+}
+
+.sumsub-step-dot {
+  flex: 1;
+  min-width: 72px;
+  text-align: center;
+  font-size: 10px;
+  color: $gray-400;
+
+  &__circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid $gray-200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto $size-1;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+  }
+
+  &--active {
+    color: $primary-500;
+    .sumsub-step-dot__circle {
+      border-color: $primary-500;
+      background: $primary-500;
+      color: $white;
+    }
+  }
+
+  &--done {
+    color: $success;
+    .sumsub-step-dot__circle {
+      border-color: $success;
+      background: $success;
+      color: $white;
+    }
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .sumsub-sdk-overlay { padding: 0; }
+  .sumsub-sdk {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+}

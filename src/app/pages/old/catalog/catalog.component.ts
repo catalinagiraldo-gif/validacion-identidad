@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { OrdersManualComponent } from '../orders-manual/orders-manual.component';
+import { IdentityDemoStateService } from '../../../common/services/identity-demo-state.service';
+import { IdentitySatelliteStatus } from '../../../common/models/identity-flow.models';
 
 interface Product {
   id: string;
@@ -39,8 +41,17 @@ export class CatalogComponent implements OnInit {
   showBlockModal = false;
   selectedProduct: Product | null = null;
 
-  demoIdentityStatus = 'sin_validar';
-  readonly identityStatusOptions = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
+  private identityDemo = inject(IdentityDemoStateService);
+
+  get demoIdentityStatus(): IdentitySatelliteStatus {
+    return this.identityDemo.status();
+  }
+
+  setDemoIdentityStatus(status: IdentitySatelliteStatus): void {
+    this.identityDemo.setStatus(status);
+  }
+
+  readonly identityStatusOptions: IdentitySatelliteStatus[] = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
   readonly blockedAction = 'crear órdenes';
 
   readonly identityAlerts: Record<string, { type: string; icon: string; text: string; cta: string; step: number; stateLabel: string }> = {

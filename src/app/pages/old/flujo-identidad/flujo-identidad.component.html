@@ -79,7 +79,35 @@
         <button type="button" class="demo-chip demo-chip--neutral" (click)="startTour()">
           <i class="pi pi-compass"></i> Tour guiado
         </button>
+        <button type="button" class="demo-chip demo-chip--neutral" data-tour="demo-copy-link" (click)="copyDemoLink()">
+          <i class="pi pi-link"></i> {{ copyLinkFeedback() ? '¡Copiado!' : 'Copiar enlace demo' }}
+        </button>
         <span class="demo-otp-hint"><i class="pi pi-info-circle"></i> MFA demo: 123456</span>
+      </div>
+
+      <div class="demo-top-divider"></div>
+      <div class="demo-group">
+        <span class="demo-group__label">Escenarios</span>
+        <div class="demo-chips">
+          @for (preset of demoPresets; track preset.id) {
+            <button type="button" class="demo-chip demo-chip--neutral" (click)="applyPreset(preset)">{{ preset.label }}</button>
+          }
+        </div>
+      </div>
+
+      <div class="demo-top-divider"></div>
+      <div class="demo-group">
+        <span class="demo-group__label">Mapa de vistas</span>
+        <button type="button" class="demo-chip demo-chip--neutral" (click)="toggleVistaMap()">
+          <i class="pi pi-map"></i> {{ vistaMapOpen() ? 'Ocultar' : 'Mostrar' }} vistas
+        </button>
+        @if (vistaMapOpen()) {
+          <div class="demo-chips demo-chips--vista-map">
+            @for (v of vistaMap; track v.id) {
+              <button type="button" class="demo-chip demo-chip--neutral demo-chip--sm" (click)="irAVista(v.id)">{{ v.label }}</button>
+            }
+          </div>
+        }
       </div>
 
       @if (selectorEstado() === 'rechazada-espera') {
@@ -109,7 +137,7 @@
       <div class="demo-group">
         <span class="demo-group__label">Ver alertas en módulos</span>
         <div class="demo-chips">
-          <button type="button" class="demo-chip demo-chip--neutral" (click)="navegarAModulo('/old/productos/catalogo')">
+          <button type="button" class="demo-chip demo-chip--neutral" data-tour="demo-nav-catalogo" (click)="navegarAModulo('/old/productos/catalogo')">
             <i class="pi pi-shopping-bag"></i> Catálogo
           </button>
           <button type="button" class="demo-chip demo-chip--neutral" (click)="navegarAModulo('/old/mis-pedidos/mis-pedidos')">
@@ -293,6 +321,7 @@
               <div class="checklist-group">
                 <h4 class="checklist-group__title"><i class="pi pi-id-card"></i> Documentos</h4>
                 <ul class="checklist-group__list">
+                  <li>Los datos que escribas deben <strong>coincidir exactamente</strong> con tu documento oficial</li>
                   <li>Documento de identidad <strong>original</strong> — no fotocopias ni capturas de pantalla</li>
                 </ul>
               </div>
@@ -335,11 +364,6 @@
       <div class="fid-vista">
         <div class="fid-layout-wide">
         <form class="fid-form fid-form-card" (ngSubmit)="onFormSubmit()" data-tour="fid-form">
-
-          <div class="fid-alert fid-alert--warning">
-            <i class="pi pi-lock fa-icon"></i>
-            <span class="fa-body"><strong>Recuerda:</strong> una vez validados, estos datos no podrán modificarse por <strong>6 meses</strong> y se usarán para tu facturación.</span>
-          </div>
 
           @if (paisConFiscal) {
             <div class="fid-form-wizard">
@@ -445,6 +469,21 @@
                 <span class="fid-field__helper">Para cambiar tu teléfono ve a Seguridad.</span>
               </div>
 
+              <div class="fid-field" [class.fid-field--error]="hasFieldError('emailFacturacion')">
+                <label class="fid-field__label" for="field-emailFacturacion">Email de facturación</label>
+                <input class="fid-field__input" id="field-emailFacturacion" type="email" placeholder="Email para facturas electrónicas…" [(ngModel)]="formNucleo.emailFacturacion" name="emailFacturacion"
+                       (blur)="validateField('emailFacturacion')" />
+                @if (hasFieldError('emailFacturacion')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('emailFacturacion') }}</span> }
+                @else { <span class="fid-field__helper">Aparece en el Excel de datos de facturación del proveedor.</span> }
+              </div>
+
+              <div class="fid-field" [class.fid-field--error]="hasFieldError('departamento')">
+                <label class="fid-field__label" for="field-departamento">Departamento / Estado</label>
+                <input class="fid-field__input" id="field-departamento" type="text" placeholder="Ej: Cundinamarca…" [(ngModel)]="formNucleo.departamento" name="departamento"
+                       (blur)="validateField('departamento')" />
+                @if (hasFieldError('departamento')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('departamento') }}</span> }
+              </div>
+
               <div class="fid-field full-width" [class.fid-field--error]="hasFieldError('direccion')">
                 <label class="fid-field__label" for="field-direccion">Dirección</label>
                 <input class="fid-field__input" id="field-direccion" type="text" placeholder="Ej: Calle 45 # 32-10, Apto 502…" [(ngModel)]="formNucleo.direccion" name="direccion"
@@ -521,6 +560,25 @@
                   <div class="fid-field" [class.fid-field--new]="isCampoNuevo('co_impuesto')">
                     <label class="fid-field__label" for="field-co_impuesto">Impuesto <span class="text-muted">(opcional)</span></label>
                     <input class="fid-field__input" id="field-co_impuesto" type="text" placeholder="Ej: IVA…" [(ngModel)]="formFiscal.co_impuesto" name="co_impuesto" />
+                  </div>
+
+                  <div class="fid-field" [class.fid-field--error]="hasFieldError('actividadEconomica')">
+                    <label class="fid-field__label" for="field-actividadEconomica">Actividad económica</label>
+                    <select class="fid-field__select" id="field-actividadEconomica" [(ngModel)]="formFiscal.actividadEconomica" name="actividadEconomica"
+                            (change)="onActividadEconomicaChange()" (blur)="validateField('actividadEconomica')">
+                      <option value="" disabled>Seleccionar…</option>
+                      @for (o of actividadEconomicaOptions; track o.codigo) {
+                        <option [value]="o.label">{{ o.label }}</option>
+                      }
+                    </select>
+                    @if (hasFieldError('actividadEconomica')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('actividadEconomica') }}</span> }
+                  </div>
+
+                  <div class="fid-field" [class.fid-field--error]="hasFieldError('codigoActividadEconomica')">
+                    <label class="fid-field__label" for="field-codigoActividadEconomica">Código actividad económica</label>
+                    <input class="fid-field__input" id="field-codigoActividadEconomica" type="text" [(ngModel)]="formFiscal.codigoActividadEconomica" name="codigoActividadEconomica"
+                           (blur)="validateField('codigoActividadEconomica')" />
+                    @if (hasFieldError('codigoActividadEconomica')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('codigoActividadEconomica') }}</span> }
                   </div>
                 }
 
@@ -821,11 +879,6 @@
               <p class="fid-status__body">{{ motivoBaneo }}</p>
             </div>
 
-            <div class="fid-alert fid-alert--error">
-              <i class="pi pi-times-circle fa-icon"></i>
-              <span class="fa-body">Si crees que esto es un error, contacta soporte con tu número de documento y el correo afectado.</span>
-            </div>
-
             <div class="fid-form__actions fid-form__actions--solo">
               <button class="fid-btn fid-btn--primary" (click)="solicitarRevision()">
                 <i class="pi pi-headphones"></i> Contactar soporte
@@ -907,11 +960,6 @@
       <div class="fid-vista">
         <div class="fid-layout-wide">
         <div class="fid-card">
-          <div class="fid-alert fid-alert--success">
-            <i class="pi pi-verified fa-icon"></i>
-            <span class="fa-body"><strong>Identidad verificada</strong> — Tus datos están protegidos.</span>
-          </div>
-
           @if (!canEditData) {
             <div class="fid-alert fid-alert--warning">
               <i class="pi pi-clock fa-icon"></i>
@@ -1113,46 +1161,6 @@
   </div>
 }
 
-<!-- ── M-SELECCIONAR-CAMPOS ─────────────────────────────────── -->
-@if (isModal('m-seleccionar-campos')) {
-  <div class="fid-modal-overlay" role="presentation" (click)="onOverlayClick()">
-    <div class="fid-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-seleccionar-campos" (click)="$event.stopPropagation()">
-      <div class="fid-modal__header">
-        <h3 id="modal-title-seleccionar-campos">¿Qué datos quieres actualizar?</h3>
-        <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
-      </div>
-      <div class="fid-modal__body">
-        <p class="fid-field__helper">Selecciona los grupos de datos que deseas modificar. Los campos sensibles requerirán reverificación biométrica.</p>
-        <div class="grupos-list" role="group" aria-label="Grupos de datos a actualizar">
-          <button type="button"
-                  *ngFor="let g of gruposActualizacion"
-                  class="grupo-item"
-                  [class.selected]="isGrupoSelected(g.id)"
-                  [attr.aria-pressed]="isGrupoSelected(g.id)"
-                  (click)="toggleGrupo(g.id)">
-            <span class="gi-checkbox" aria-hidden="true"><i class="pi pi-check"></i></span>
-            <span class="gi-body">
-              <span class="gi-label">{{ g.label }}</span>
-              <span class="gi-desc">{{ g.desc }}</span>
-              @if (g.requiresRevalidation) {
-                <span class="gi-tag"><i class="pi pi-lock"></i> Requiere reverificación</span>
-              }
-            </span>
-          </button>
-        </div>
-      </div>
-      <div class="fid-modal__footer">
-        <button class="fid-btn fid-btn--secondary" (click)="closeModal()">Cerrar</button>
-        <button class="fid-btn fid-btn--primary"
-                [disabled]="gruposSeleccionados().length === 0"
-                (click)="continuarConGrupos()">
-          Continuar <i class="pi pi-arrow-right"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-}
-
 <!-- ── M-MFA ──────────────────────────────────────────────────── -->
 @if (isModal('m-mfa')) {
   <div class="fid-modal-overlay" role="presentation">
@@ -1203,22 +1211,23 @@
         <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
       </div>
       <div class="fid-modal__body">
-        <div class="fid-alert fid-alert--warning fid-alert--flush">
+        <div class="fid-alert fid-alert--critical fid-alert--flush">
           <i class="pi pi-exclamation-triangle fa-icon"></i>
-          <span class="fa-body">Revisa que todo sea correcto antes de iniciar la sesión biométrica.</span>
+          <span class="fa-body">
+            Los datos que ingresaste deben <strong>coincidir exactamente</strong> con los de tu documento de identidad.
+            Si el nombre, número o fecha no corresponden, la verificación biométrica fallará y consumirás uno de tus intentos.
+            <br><br>
+            Al confirmar, validaremos tu identidad con Sumsub. Esto puede tardar unos minutos.
+          </span>
         </div>
 
-        @if (isEditMode()) {
-          <div class="fid-alert fid-alert--info fid-camera-reminder">
-            <i class="pi pi-camera fa-icon"></i>
-            <span class="fa-body"><strong>Antes de verificar:</strong> ten tu documento original a la mano, buena iluminación y cámara disponible.</span>
-          </div>
-        }
-
         <div class="confirm-section">
-          <h4>Información personal</h4>
+          <div class="confirm-section__header">
+            <h4>Información personal</h4>
+            <button type="button" class="confirm-edit-link" (click)="editarSeccionConfirmacion('personal')">Editar</button>
+          </div>
           <div class="confirm-grid">
-            <div class="cf-pair"><div class="cf-label">Nombre completo</div><div class="cf-value">{{ formNucleo.primerNombre }} {{ formNucleo.primerApellido }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Nombre completo</div><div class="cf-value">{{ formNucleo.primerNombre }} {{ formNucleo.segundoNombre }} {{ formNucleo.primerApellido }} {{ formNucleo.segundoApellido }}</div></div>
             <div class="cf-pair"><div class="cf-label">Documento</div><div class="cf-value">{{ formNucleo.tipoDocumento }} · {{ formNucleo.numeroDocumento }}</div></div>
             <div class="cf-pair"><div class="cf-label">Fecha de nacimiento</div><div class="cf-value">{{ formNucleo.fechaNacimiento }}</div></div>
             <div class="cf-pair"><div class="cf-label">País</div><div class="cf-value">{{ paisLabel }}</div></div>
@@ -1226,20 +1235,69 @@
         </div>
 
         <div class="confirm-section">
-          <h4>Contacto</h4>
+          <div class="confirm-section__header">
+            <h4>Contacto</h4>
+            <button type="button" class="confirm-edit-link" (click)="editarSeccionConfirmacion('contacto')">Editar</button>
+          </div>
           <div class="confirm-grid">
-            <div class="cf-pair"><div class="cf-label">Correo</div><div class="cf-value">{{ mockUser.email }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Correo contacto</div><div class="cf-value">{{ formNucleo.email || mockUser.email }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Email facturación</div><div class="cf-value">{{ formNucleo.emailFacturacion }}</div></div>
             <div class="cf-pair"><div class="cf-label">Teléfono</div><div class="cf-value">{{ mockUser.telefono }}</div></div>
             <div class="cf-pair"><div class="cf-label">Dirección</div><div class="cf-value">{{ formNucleo.direccion }}</div></div>
             <div class="cf-pair"><div class="cf-label">{{ campoGeografico }}</div><div class="cf-value">{{ formNucleo.ciudad }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Departamento / Estado</div><div class="cf-value">{{ formNucleo.departamento }}</div></div>
           </div>
         </div>
+
+        @if (tipoPersona === 'juridica') {
+          <div class="confirm-section">
+            <div class="confirm-section__header">
+              <h4>Empresa</h4>
+              <button type="button" class="confirm-edit-link" (click)="editarSeccionConfirmacion('empresa')">Editar</button>
+            </div>
+            <div class="confirm-grid">
+              <div class="cf-pair"><div class="cf-label">Razón social</div><div class="cf-value">{{ formNucleo.razonSocial }}</div></div>
+            </div>
+          </div>
+        }
+
+        @if (paisConFiscal) {
+          <div class="confirm-section">
+            <div class="confirm-section__header">
+              <h4>Información tributaria</h4>
+              <button type="button" class="confirm-edit-link" (click)="editarSeccionConfirmacion('fiscal')">Editar</button>
+            </div>
+            <div class="confirm-grid">
+              @if (pais === 'CO') {
+                <div class="cf-pair"><div class="cf-label">Régimen tributario</div><div class="cf-value">{{ formFiscal.co_tipoRegimen }}</div></div>
+                <div class="cf-pair"><div class="cf-label">Responsabilidad</div><div class="cf-value">{{ formFiscal.co_tipoResponsabilidad }}</div></div>
+                <div class="cf-pair"><div class="cf-label">Actividad económica</div><div class="cf-value">{{ formFiscal.actividadEconomica }}</div></div>
+                <div class="cf-pair"><div class="cf-label">Código actividad</div><div class="cf-value">{{ formFiscal.codigoActividadEconomica }}</div></div>
+                <div class="cf-pair"><div class="cf-label">Responsable IVA</div><div class="cf-value">{{ responsableIVALabel }}</div></div>
+              }
+              @if (pais === 'MX') {
+                <div class="cf-pair"><div class="cf-label">Código postal</div><div class="cf-value">{{ formFiscal.mx_codigoPostal }}</div></div>
+                <div class="cf-pair"><div class="cf-label">Régimen fiscal SAT</div><div class="cf-value">{{ formFiscal.mx_regimenFiscal }}</div></div>
+                <div class="cf-pair"><div class="cf-label">Sujeto a impuestos</div><div class="cf-value">{{ formFiscal.mx_sujetoImpuestos ? 'Sí' : 'No' }}</div></div>
+              }
+              @if (pais === 'AR') {
+                <div class="cf-pair"><div class="cf-label">Condición IVA</div><div class="cf-value">{{ formFiscal.ar_condicionIVA }}</div></div>
+                <div class="cf-pair"><div class="cf-label">Provincia</div><div class="cf-value">{{ formFiscal.ar_provincia }}</div></div>
+              }
+            </div>
+          </div>
+        }
+
+        <label class="confirm-checkbox">
+          <input type="checkbox" [checked]="confirmacionAceptada()" (change)="confirmacionAceptada.set($any($event.target).checked)" />
+          <span>Confirmo que revisé mis datos y coinciden con mi documento oficial.</span>
+        </label>
       </div>
       <div class="fid-modal__footer">
         <button class="fid-btn fid-btn--secondary" (click)="closeModal()">
           <i class="pi pi-arrow-left"></i> Editar datos
         </button>
-        <button class="fid-btn fid-btn--primary" (click)="confirmarYValidar()">
+        <button class="fid-btn fid-btn--primary" [disabled]="!confirmacionAceptada()" (click)="confirmarYValidar()">
           <i class="pi pi-shield"></i> Confirmar e iniciar validación
         </button>
       </div>
@@ -1249,71 +1307,117 @@
 
 <!-- ── M-SUMSUB ───────────────────────────────────────────────── -->
 @if (isModal('m-sumsub')) {
-  <div class="fid-modal-overlay" role="presentation">
-    <div class="fid-modal fid-modal--fullscreen" role="dialog" aria-modal="true" aria-labelledby="modal-title-sumsub" (click)="$event.stopPropagation()">
-      <div class="fid-modal__header">
-        <h3 id="modal-title-sumsub">Captura de documento y selfie</h3>
-        <button class="modal-close" (click)="cerrarSumsub()" aria-label="Cerrar sesión biométrica"><i class="pi pi-times"></i></button>
+  <div class="sumsub-sdk-overlay" role="presentation">
+    <div class="sumsub-sdk sumsub-sdk--fullscreen"
+         [class.sumsub-sdk--no-border]="sumsubCustomization().hideWidgetBorder"
+         role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <div class="sumsub-sdk__shell">
+        <span class="sumsub-sdk__dropi">Dropi</span>
+        <span class="sumsub-sdk__divider">›</span>
+        <span class="sumsub-sdk__brand">Sumsub</span>
       </div>
+      <div class="sumsub-sdk__header">
+        <span class="sumsub-sdk__title">Verificación de identidad</span>
+        <button type="button" class="sumsub-sdk__close" (click)="cerrarSumsub()" aria-label="Cerrar">✕</button>
+      </div>
+      @if (!sumsubCustomization().hideProgressBar) {
+        <div class="sumsub-sdk__progress">
+          <span>{{ sumsubPhaseLabel }}</span>
+          <span>Powered by Sumsub · WebSDK 2.0 mock</span>
+        </div>
+      }
 
-      <div class="fid-sumsub-header">
-        <div class="fid-steps fid-steps--compact">
-          @for (s of sumsubSteps; track s; let i = $index) {
-            <div class="fid-step"
-                 [class.fid-step--focus]="sumsubStep() === i"
-                 [class.fid-step--completed]="sumsubStep() > i">
-              <div class="fid-step__bubble">
-                @if (sumsubStep() > i) { <i class="pi pi-check"></i> } @else { {{ i + 1 }} }
+      <div class="sumsub-sdk__body">
+        @if (sumsubLoading()) {
+          <div class="spinner"></div>
+          <p>Procesando verificación…</p>
+        } @else {
+          @switch (sumsubPhase()) {
+            @case ('warning') {
+              <div class="sumsub-warning-icon"><i class="pi pi-shield"></i></div>
+              <h3>Verificación para Dropi</h3>
+              <p>Estás a punto de verificar tu identidad para <strong>Dropi</strong>. Asegúrate de estar en el sitio oficial.</p>
+            }
+            @case ('welcome') {
+              <h3>Bienvenido a la verificación</h3>
+              <p>Tardarás aproximadamente <strong>5 minutos</strong>.</p>
+              <ol class="sumsub-welcome-list">
+                <li>Seleccionar documento</li>
+                <li>Captura frontal y trasera</li>
+                <li>Selfie / verificación biométrica</li>
+                <li>Revisión por Sumsub</li>
+              </ol>
+            }
+            @case ('instructions') {
+              <h3>Antes de capturar</h3>
+              <ul class="sumsub-welcome-list">
+                <li>Usa tu documento <strong>original</strong></li>
+                <li>Buena iluminación, sin reflejos</li>
+                <li>Los datos del documento deben coincidir con lo que escribiste en Dropi</li>
+                <li>Rostro descubierto en la selfie</li>
+              </ul>
+            }
+            @case ('kyb-empresa') {
+              <h3>Datos de la empresa</h3>
+              <p><strong>{{ formNucleo.razonSocial || mockUser.razonSocial }}</strong></p>
+              <p>Confirma la documentación legal de la empresa.</p>
+            }
+            @case ('kyb-rep') {
+              <h3>Representante legal</h3>
+              <p>{{ formNucleo.primerNombre }} {{ formNucleo.primerApellido }} completará la verificación biométrica.</p>
+            }
+            @case ('document') {
+              <h3>Selecciona tu documento</h3>
+              <div class="sumsub-doc-options">
+                <button type="button" class="sumsub-doc-option" (click)="avanzarSumsubPhase()">{{ formNucleo.tipoDocumento || 'Documento de identidad' }}</button>
+                <button type="button" class="sumsub-doc-option" (click)="avanzarSumsubPhase()">Pasaporte</button>
               </div>
-              <span class="fid-step__label">{{ s }}</span>
-            </div>
-            @if (i < sumsubSteps.length - 1) {
-              <div class="fid-step__connector" [class.fid-step__connector--done]="sumsubStep() > i"></div>
+            }
+            @case ('capture-front') {
+              <h3>Captura frontal</h3>
+              <div class="sumsub-camera-frame"><i class="pi pi-id-card" style="font-size:48px;color:#c3c9d9"></i></div>
+              <p>Coloca el documento dentro del marco, bien iluminado.</p>
+            }
+            @case ('capture-back') {
+              <h3>Captura trasera</h3>
+              <div class="sumsub-camera-frame"><i class="pi pi-refresh" style="font-size:48px;color:#c3c9d9"></i></div>
+              <p>Gira tu documento y repite el proceso.</p>
+            }
+            @case ('selfie') {
+              <h3>Selfie de verificación</h3>
+              <div class="sumsub-camera-frame sumsub-camera-frame--round"><i class="pi pi-user" style="font-size:48px;color:#c3c9d9"></i></div>
+              <p>Mira a la cámara, rostro descubierto.</p>
             }
           }
-        </div>
-      </div>
-
-      <div class="fid-modal__body">
-        @if (sumsubLoading()) {
-          <div class="sumsub-loading">
-            <div class="spinner"></div>
-            <span>Procesando…</span>
-          </div>
-        } @else {
-          <div class="sumsub-body">
-            @switch (sumsubStep()) {
-              @case (0) {
-                <span class="sumsub-icon"><i class="pi pi-id-card"></i></span>
-                <p class="sumsub-title">Selecciona tu documento</p>
-                <p class="sumsub-desc">Vamos a verificar tu {{ formNucleo.tipoDocumento || 'documento de identidad' }}. Asegúrate de tenerlo disponible.</p>
-              }
-              @case (1) {
-                <span class="sumsub-icon"><i class="pi pi-camera"></i></span>
-                <p class="sumsub-title">Captura la parte frontal</p>
-                <p class="sumsub-desc">Coloca el documento sobre una superficie plana, bien iluminado y sin reflejos. El texto debe ser legible.</p>
-              }
-              @case (2) {
-                <span class="sumsub-icon"><i class="pi pi-refresh"></i></span>
-                <p class="sumsub-title">Captura la parte trasera</p>
-                <p class="sumsub-desc">Gira tu documento y repite el proceso. Algunos documentos no tienen reverso — puedes omitir este paso.</p>
-              }
-              @case (3) {
-                <span class="sumsub-icon"><i class="pi pi-user"></i></span>
-                <p class="sumsub-title">Selfie de verificación</p>
-                <p class="sumsub-desc">Mira directamente a la cámara, rostro descubierto, en un lugar bien iluminado. No uses gafas de sol ni mascarilla.</p>
-              }
-            }
-          </div>
         }
       </div>
 
-      <div class="fid-modal__footer">
-        <button class="fid-btn fid-btn--ghost" (click)="cerrarSumsub()">Salir de la sesión biométrica</button>
-        <button class="fid-btn fid-btn--primary" [disabled]="sumsubLoading()" (click)="avanzarSumsub()">
-          @if (sumsubStep() === sumsubSteps.length - 1) { <i class="pi pi-check"></i> Finalizar verificación }
-          @else { Siguiente <i class="pi pi-arrow-right"></i> }
+      @if (sumsubPhase() !== 'document') {
+        <div class="sumsub-sdk__footer">
+          <button type="button" class="fid-btn fid-btn--ghost" (click)="cerrarSumsub()">Salir</button>
+          @if (sumsubPhase() !== 'processing') {
+            <button type="button" class="sumsub-sdk__cta" [disabled]="sumsubLoading()" (click)="avanzarSumsubPhase()">
+              {{ sumsubPhase() === 'selfie' ? 'Finalizar captura' : 'Continuar' }}
+            </button>
+          }
+        </div>
+      }
+
+      <div class="sumsub-sdk__powered">Verificación segura · Sumsub · Customización Dropi</div>
+
+      <div class="sumsub-sdk__demo">
+        <button type="button" class="sumsub-sdk__demo-toggle" (click)="sumsubDemoExpanded.set(!sumsubDemoExpanded())">
+          {{ sumsubDemoExpanded() ? '▾' : '▸' }} Customization preview (Dashboard Sumsub)
         </button>
+        @if (sumsubDemoExpanded()) {
+          <div class="sumsub-sdk__demo-toggles">
+            <label><input type="checkbox" [checked]="sumsubCustomization().skipWarning" (change)="toggleSumsubCustomization('skipWarning')" /> Skip warning</label>
+            <label><input type="checkbox" [checked]="sumsubCustomization().skipWelcome" (change)="toggleSumsubCustomization('skipWelcome')" /> Skip welcome</label>
+            <label><input type="checkbox" [checked]="sumsubCustomization().skipInstructions" (change)="toggleSumsubCustomization('skipInstructions')" /> Skip instructions</label>
+            <label><input type="checkbox" [checked]="sumsubCustomization().hideProgressBar" (change)="toggleSumsubCustomization('hideProgressBar')" /> Hide progress</label>
+            <label><input type="checkbox" [checked]="sumsubCustomization().hideWidgetBorder" (change)="toggleSumsubCustomization('hideWidgetBorder')" /> Hide border</label>
+          </div>
+        }
       </div>
     </div>
   </div>
@@ -1357,7 +1461,10 @@
   <div class="fid-modal-overlay" role="presentation" (click)="onOverlayClick()">
     <div class="fid-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-documento" (click)="$event.stopPropagation()">
       <div class="fid-modal__header">
-        <h3 id="modal-title-documento">Documento de identidad verificado</h3>
+        <div class="fid-modal__header-row">
+          <h3 id="modal-title-documento">Documento de identidad verificado</h3>
+          <span class="fid-doc-verified-badge"><i class="pi pi-verified"></i> Válido · Sumsub</span>
+        </div>
         <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
       </div>
       <div class="fid-modal__body">
@@ -1380,11 +1487,6 @@
             <i class="pi pi-image"></i>
             <span>Reverso del documento</span>
           </div>
-        </div>
-
-        <div class="fid-alert fid-alert--success">
-          <i class="pi pi-verified fa-icon"></i>
-          <span class="fa-body">Documento verificado y autenticado por Sumsub · Válido</span>
         </div>
       </div>
       <div class="fid-modal__footer">

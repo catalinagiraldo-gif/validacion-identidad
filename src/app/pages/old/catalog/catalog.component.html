@@ -40,10 +40,10 @@
 <!-- Demo: selector estado identidad -->
 <div class="identity-demo-bar">
   <span class="identity-demo-bar__label"><i class="pi pi-sliders-h"></i> Estado demo identidad:</span>
-  <button *ngFor="let s of ['sin_validar','pendiente','en_revision','rechazado','aprobado']"
+  <button *ngFor="let s of identityStatusOptions"
           class="identity-demo-chip"
           [class.active]="demoIdentityStatus === s"
-          (click)="demoIdentityStatus = s">{{ s }}</button>
+          (click)="setDemoIdentityStatus(s)">{{ s }}</button>
 </div>
 
 <!-- Activation Card — identidad -->

@@ -1,4 +1,6 @@
 ﻿@import 'styles/variables-new';
+@import '../../../../../styles/variables';
+@import '../../../../../styles/sumsub-sdk-mock';
 
 // ============================================================
 // Host & shell
@@ -1244,6 +1246,21 @@
   line-height: 1.5;
 
   i { color: $secondary-500; font-size: $font-lg; flex-shrink: 0; margin-top: 2px; }
+}
+
+.confirm-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  margin-top: $space-4;
+  padding: $space-3;
+  background: $gray-50;
+  border-radius: $radius-2;
+  border: 1px solid $gray-100;
+  cursor: pointer;
+
+  input { margin-top: 3px; accent-color: $primary-500; }
+  span { font-size: $font-sm; color: $gray-700; line-height: 1.45; }
 }
 
 // ============================================================
