@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IdentityActivationCardComponent } from '../../../../common/components/identity-activation-card/identity-activation-card.component';
 
 interface Transaction {
   id: number;
@@ -12,7 +13,7 @@ interface Transaction {
 @Component({
   selector: 'app-dropicard-new',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IdentityActivationCardComponent],
   styleUrls: ['./dropicard.component.scss'],
   template: `
     <div class="dropicard-page">
@@ -33,6 +34,13 @@ interface Transaction {
 
       <!-- Title -->
       <h1 class="page-title">Dropicard</h1>
+
+      <app-identity-activation-card
+        context="dropicard"
+        blockedAction="solicitar Dropicard"
+        [sticky]="true"
+        identityRoute="/new/configuraciones/flujo-identidad-2026-06-18"
+      />
 
       <!-- Card + Details grid -->
       <div class="card-section" *ngIf="hasCard">

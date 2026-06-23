@@ -1,5 +1,6 @@
 @import '../../../../styles/variables';
 @import '../../../../styles/sumsub-sdk-mock';
+@import '../../../../styles/datos-form';
 
 :host {
   display: block;
@@ -262,6 +263,12 @@
 .fid-vista { animation: fidFadeIn 0.22s ease both; }
 .fid-layout-wide { width: 100%; }
 
+.fid-layout-wide.datos-form {
+  .tabs-container {
+    margin-bottom: 0;
+  }
+}
+
 .fid-emotional--left {
   display: grid;
   grid-template-columns: 64px 1fr;
@@ -451,40 +458,258 @@
   }
 }
 
-// ─── Hero bloqueada — two-column desktop layout ──────────────────────────────
+// ─── Welcome card (v-nueva-bloqueada) — two-tone split, zero gap ─────────────
 
-.fid-hero--bloqueada {
+.fid-welcome {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: $size-10;
-  align-items: start;
-  text-align: left;
-  padding: $size-10 $size-10;
-
-  p {
-    max-width: none;
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-  }
+  grid-template-columns: 1fr 300px;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  box-shadow: $shadow-medium, 0 8px 40px rgba($primary-500, 0.13);
+  border: 1px solid rgba($primary-500, 0.16);
+  animation: fidFadeIn 0.32s ease both;
+  min-height: 300px;
 
   @media (max-width: $bp-lg) {
-    grid-template-columns: 1fr;
-    gap: $size-6;
-    text-align: center;
-    padding: $size-8 $size-6;
+    grid-template-columns: 1fr 260px;
+  }
 
-    p {
-      max-width: 480px;
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: $size-4;
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+  }
+
+  // LEFT — white panel
+  &__left {
+    background: $white;
+    display: flex;
+    align-items: center;
+    padding: $size-10;
+    position: relative;
+    overflow: hidden;
+
+    // Warm glow bleeding from the orange side — connects the two panels
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba($primary-500, 0.07) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
+    @media (max-width: $bp-lg) { padding: $size-8; }
+    @media (max-width: $bp-md) { padding: $size-8 $size-6; }
+    @media (max-width: $bp-sm) { padding: $size-6 $size-4; }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: $size-5;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__title {
+    font-family: $font-primary;
+    font-size: 40px;
+    font-weight: $font-extrabold;
+    color: $gray-900;
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin: 0;
+
+    @media (max-width: $bp-lg) { font-size: $font-3xl; letter-spacing: -1px; }
+    @media (max-width: $bp-md) { font-size: $font-2xl; letter-spacing: -0.8px; }
+    @media (max-width: $bp-sm) { font-size: $font-xl; letter-spacing: -0.4px; }
+  }
+
+  &__lead {
+    font-family: $font-primary;
+    font-size: $font-base;
+    color: $gray-500;
+    line-height: 1.7;
+    margin: 0;
+    max-width: 380px;
+  }
+
+  &__action {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $size-4;
+    padding-top: $size-2;
+
+    @media (max-width: $bp-sm) {
+      flex-direction: column;
+      align-items: stretch;
+      .fid-btn { width: 100%; }
     }
   }
 
-  @media (max-width: $bp-sm) {
-    padding: $size-6 $size-4;
+  // RIGHT — textured orange panel
+  &__right {
+    background: $primary-500;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: $size-8 $size-6;
+    position: relative;
+    overflow: hidden;
+
+    // Dot grid texture — adds craft without noise
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba($white, 0.16) 1px, transparent 1px);
+      background-size: 18px 18px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    // Radial glow at top-right corner — depth without decoration
+    &::after {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba($white, 0.14) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    > * { position: relative; z-index: 1; }
+
+    @media (max-width: $bp-lg) { padding: $size-6 $size-5; }
+    @media (max-width: $bp-md) {
+      padding: $size-6;
+      border-top: 1px solid rgba($white, 0.15);
+    }
+    @media (max-width: $bp-sm) { padding: $size-6 $size-4; }
   }
+
+  &__unlock-label {
+    font-family: $font-primary;
+    font-size: 10px;
+    font-weight: $font-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba($white, 0.6);
+    margin: 0 0 $size-4;
+  }
+
+  &__benefits {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  &__benefit {
+    display: flex;
+    align-items: center;
+    gap: $size-3;
+    padding: $size-3 0;
+    animation: fidSlideUp 0.4s ease both;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba($white, 0.1);
+    }
+  }
+
+  &__benefit-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-md;
+    background: rgba($white, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 15px;
+      height: 15px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+  }
+
+  &__benefit-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__benefit-label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-semibold;
+    color: $white;
+    line-height: 1.3;
+  }
+
+  &__benefit-desc {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: rgba($white, 0.72);
+    line-height: 1.45;
+  }
+}
+
+
+.fid-onboard-flow {
+  width: 120px;
+  max-width: 100%;
+  height: auto;
+
+  &__line {
+    animation: fidFlowDash 1.2s linear infinite;
+
+    &--2 { animation-delay: 0.2s; }
+    &--3 { animation-delay: 0.4s; }
+  }
+
+  &__doc {
+    animation: fidFlowPulse 2.4s ease-in-out infinite;
+  }
+
+  &__face {
+    animation: fidFlowPulse 2.4s ease-in-out 0.4s infinite;
+  }
+
+  &__check {
+    animation: fidFlowPulse 2.4s ease-in-out 0.8s infinite;
+  }
+
+  &__check-mark {
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    animation: fidFlowCheck 2.4s ease-in-out 1.2s infinite;
+  }
+}
+
+@keyframes fidFlowDash {
+  to { stroke-dashoffset: -8; }
+}
+
+@keyframes fidFlowPulse {
+  0%, 100% { opacity: 1; transform: scale(1); transform-origin: center; }
+  50% { opacity: 0.85; transform: scale(1.03); transform-origin: center; }
+}
+
+@keyframes fidFlowCheck {
+  0%, 40% { stroke-dashoffset: 24; }
+  60%, 100% { stroke-dashoffset: 0; }
 }
 
 .fid-hero__col {
@@ -821,17 +1046,20 @@
   @media (max-width: $bp-sm) { padding: $size-4; }
 }
 
-.section-title {
-  font-family: $font-primary;
-  font-size: $font-base;
-  font-weight: $font-semibold;
-  color: $gray-800;
-  margin: 0 0 $size-4;
-  padding: $size-3 $size-4;
-  border-left: 3px solid $primary-500;
-  border-bottom: none;
-  background: rgba($primary-500, 0.025);
-  border-radius: 0 $radius-sm $radius-sm 0;
+.fid-form-card {
+  &.tab-content {
+    gap: $size-8;
+    padding: $size-6 $size-4;
+    border-radius: $radius-md;
+  }
+
+  .section-title {
+    border-left: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+  }
 }
 
 .section-label {
@@ -1045,8 +1273,6 @@ input[type="date"].fid-field__input {
   gap: $size-3;
   flex-wrap: wrap;
   margin-top: $size-4;
-  padding-top: $size-5;
-  border-top: 1px solid $gray-100;
 
   @media (max-width: $bp-sm) {
     flex-direction: column-reverse;
@@ -1477,7 +1703,6 @@ input[type="date"].fid-field__input {
   align-items: flex-start;
   justify-content: space-between;
   padding: $size-4 $size-6;
-  border-bottom: 1px solid $gray-100;
   flex-shrink: 0;
   gap: $size-3;
 
@@ -1552,11 +1777,22 @@ input[type="date"].fid-field__input {
   justify-content: flex-end;
   gap: $size-3;
   padding: $size-4 $size-6;
-  border-top: 1px solid $gray-100;
   flex-shrink: 0;
   flex-wrap: wrap;
 
+  &--ds {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
   @media (max-width: $bp-sm) { flex-direction: column-reverse; .fid-btn { width: 100%; }   }
+}
+
+.fid-form__actions--ds {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: $size-3;
 }
 
 .fid-doc-verified-badge {
@@ -1702,7 +1938,9 @@ input[type="date"].fid-field__input {
 .fid-spin { animation: fidSpin 1.2s linear infinite; }
 
 .confirm-section {
-  margin-bottom: $size-4;
+  margin-bottom: $size-6;
+  padding-bottom: 0;
+  border: none;
 
   &__header {
     display: flex;
@@ -2303,4 +2541,233 @@ input[type="date"].fid-field__input {
 
   .countdown-timer { animation: none !important; }
   .fid-hero__glow  { animation: none !important; }
+}
+
+.fid-section-hint {
+  font-size: $font-sm;
+  color: $gray-500;
+  margin: 0 0 $size-4;
+}
+
+.fid-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-2;
+  margin-top: $size-3;
+  font-size: $font-sm;
+  color: $gray-700;
+
+  input { margin-top: 2px; }
+}
+
+.fid-validado-tabs {
+  display: flex;
+  gap: $size-2;
+  margin-bottom: $size-6;
+  border-bottom: 1px solid $gray-200;
+  flex-wrap: wrap;
+}
+
+.fid-validado-tab {
+  padding: $size-2 $size-4;
+  border: none;
+  background: transparent;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  color: $gray-500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+
+  &--active {
+    color: $primary-500;
+    border-bottom-color: $primary-500;
+  }
+}
+
+.fid-form__actions--inline {
+  margin-top: $size-4;
+  justify-content: flex-start;
+}
+
+.fid-modal__text {
+  font-size: $font-base;
+  color: $gray-700;
+  line-height: 1.5;
+  margin: 0 0 $size-3;
+
+  &--muted { color: $gray-500; font-size: $font-sm; }
+}
+
+.fid-btn--disabled,
+.fid-btn--primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.sumsub-sdk__footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $size-3;
+  padding: $size-4 $size-6;
+
+  .fid-btn--ghost { justify-self: start; }
+  .sumsub-sdk__cta { justify-self: end; }
+}
+
+.sumsub-capture-steps {
+  display: flex;
+  gap: $size-2;
+  margin-bottom: $size-6;
+  justify-content: center;
+}
+
+.sumsub-capture-step {
+  flex: 1;
+  max-width: 120px;
+  text-align: center;
+  font-size: $font-xs;
+  color: $gray-400;
+  padding-bottom: $size-2;
+  border-bottom: 2px solid $gray-200;
+
+  &--active {
+    color: $primary-500;
+    border-bottom-color: $primary-500;
+    font-weight: $font-semibold;
+  }
+
+  &--done {
+    color: $gray-600;
+    border-bottom-color: $gray-400;
+  }
+}
+
+.sumsub-camera-frame {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 4 / 3;
+  margin: $size-4 auto;
+  border: 2px dashed $gray-300;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, $gray-50 0%, rgba($primary-500, 0.06) 100%);
+  box-shadow: inset 0 0 24px rgba($primary-500, 0.04);
+  overflow: hidden;
+
+  &--capture {
+    border-color: rgba($primary-500, 0.35);
+    animation: sumsubFramePulse 2.5s ease-in-out infinite;
+  }
+
+  &--round {
+    aspect-ratio: 1;
+    max-width: 200px;
+    border-radius: 50%;
+  }
+
+  &--selfie {
+    border-color: rgba($primary-500, 0.45);
+    animation: sumsubOvalPulse 2s ease-in-out infinite;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: $size-4;
+    border: 2px solid rgba($primary-500, 0.55);
+    border-radius: $radius-sm;
+    pointer-events: none;
+    box-shadow: 0 0 0 9999px rgba($white, 0.12) inset;
+    z-index: 1;
+  }
+
+  &--round &__overlay {
+    border-radius: 50%;
+  }
+
+  &__scan {
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, $primary-500, transparent);
+    z-index: 2;
+    animation: sumsubScanLine 2.5s ease-in-out infinite;
+    pointer-events: none;
+
+    &--oval {
+      left: 20%;
+      right: 20%;
+    }
+  }
+}
+
+.sumsub-camera-hint {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-500;
+  text-align: center;
+  margin: $size-2 0 0;
+  line-height: 1.45;
+}
+
+.sumsub-processing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $size-3;
+  text-align: center;
+
+  &__steps {
+    display: flex;
+    gap: $size-3;
+    margin-top: $size-2;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__step {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    font-weight: $font-semibold;
+    color: $gray-400;
+    padding: $size-1 $size-3;
+    border-radius: $radius-sm;
+    background: $gray-50;
+
+    &--done {
+      color: $gray-600;
+      background: rgba($success, 0.08);
+    }
+
+    &--active {
+      color: $primary-500;
+      background: rgba($primary-500, 0.1);
+      animation: fidGlowPulse 2s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes sumsubScanLine {
+  0%, 100% { top: 18%; opacity: 0.4; }
+  50% { top: 78%; opacity: 1; }
+}
+
+@keyframes sumsubOvalPulse {
+  0%, 100% { transform: scale(1); box-shadow: inset 0 0 24px rgba($primary-500, 0.04); }
+  50% { transform: scale(1.02); box-shadow: inset 0 0 32px rgba($primary-500, 0.08); }
+}
+
+@keyframes sumsubFramePulse {
+  0%, 100% { border-color: rgba($primary-500, 0.25); }
+  50% { border-color: rgba($primary-500, 0.55); }
+}
+
+.fid-prep-alert {
+  margin-bottom: $size-6;
 }

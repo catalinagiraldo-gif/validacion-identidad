@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IdentityActivationCardComponent } from '../../../../common/components/identity-activation-card/identity-activation-card.component';
 
 interface Transaction {
   date: string;
@@ -18,7 +19,7 @@ interface Transaction {
 @Component({
   selector: 'app-wallet-new',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IdentityActivationCardComponent],
   styleUrls: ['./wallet.component.scss'],
   template: `
     <div class="page-wrapper">
@@ -51,6 +52,13 @@ interface Transaction {
           </button>
         </div>
       </div>
+
+      <app-identity-activation-card
+        context="retiros"
+        blockedAction="retirar fondos"
+        [sticky]="true"
+        identityRoute="/new/configuraciones/flujo-identidad-2026-06-18"
+      />
 
       <!-- Info banner -->
       <div class="info-banner">

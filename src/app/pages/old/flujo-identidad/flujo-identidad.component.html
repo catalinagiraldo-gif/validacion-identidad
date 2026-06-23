@@ -192,47 +192,7 @@
         }
       </div>
       <p class="fid-subtitle">{{ vistaSubtitle }}</p>
-      @if (mostrarStepMobile) {
-        <p class="fid-step-mobile">{{ globalStepLabel }}</p>
-      }
     </div>
-
-    <!-- ── Stepper global (3 pasos, ancho completo) ───────────── -->
-    @if (mostrarStepper) {
-      <div class="fid-layout-wide">
-      <div class="fid-steps" data-tour="fid-stepper">
-        <div class="fid-step"
-             [class.fid-step--focus]="stepState(1) === 'focus'"
-             [class.fid-step--completed]="stepState(1) === 'completed'">
-          <div class="fid-step__bubble">
-            @if (stepState(1) === 'completed') { <i class="pi pi-check"></i> } @else { 1 }
-          </div>
-          <span class="fid-step__label">Tus datos</span>
-        </div>
-        <div class="fid-step__connector" [class.fid-step__connector--done]="pasoGlobal > 1"></div>
-        <div class="fid-step"
-             [class.fid-step--focus]="stepState(2) === 'focus'"
-             [class.fid-step--completed]="stepState(2) === 'completed'"
-             [class.fid-step--error]="stepState(2) === 'error'">
-          <div class="fid-step__bubble">
-            @if (stepState(2) === 'completed') { <i class="pi pi-check"></i> }
-            @else if (stepState(2) === 'error') { <i class="pi pi-times"></i> }
-            @else { 2 }
-          </div>
-          <span class="fid-step__label">Verificación</span>
-        </div>
-        <div class="fid-step__connector" [class.fid-step__connector--done]="pasoGlobal > 2"></div>
-        <div class="fid-step"
-             [class.fid-step--focus]="stepState(3) === 'focus'"
-             [class.fid-step--completed]="stepState(3) === 'completed'">
-          <div class="fid-step__bubble">
-            @if (stepState(3) === 'completed') { <i class="pi pi-check"></i> } @else { 3 }
-          </div>
-          <span class="fid-step__label">Resultado</span>
-        </div>
-      </div>
-      </div>
-    }
 
     <!-- ════════════════════════════════════════════════════════
          VISTAS
@@ -242,39 +202,40 @@
     @if (isVista('v-nueva-bloqueada')) {
       <div class="fid-vista">
         <div class="fid-layout-wide">
-        <div class="fid-hero fid-hero--bloqueada">
-          <div class="fid-hero__glow" aria-hidden="true"></div>
+          <div class="fid-welcome" data-tour="fid-hero-journey">
 
-          <div class="fid-hero__col fid-hero__col--left">
-            <span class="fid-hero__badge">
-              <i class="pi pi-shield"></i> Un solo proceso · Datos protegidos
-            </span>
-            <h2>{{ heroEncuadre.titulo }}</h2>
-            <p>{{ heroEncuadre.descripcion }}</p>
-          </div>
-
-          <div class="fid-hero__col fid-hero__col--right">
-            <div class="fid-unlock-list">
-              @for (b of heroBenefits; track b.label; let i = $index) {
-                <div class="unlock-item" [style.animation-delay]="(i * 0.08) + 's'">
-                  <span class="unlock-item__icon">
-                    <img [src]="b.icon" [alt]="b.label" width="18" height="18" />
-                  </span>
-                  <span class="unlock-item__text">
-                    <span class="unlock-item__label">{{ b.label }}</span>
-                    <span class="unlock-item__desc">{{ b.desc }}</span>
-                  </span>
+            <!-- LEFT: white — headline + lead + CTA -->
+            <div class="fid-welcome__left">
+              <div class="fid-welcome__content">
+                <h2 class="fid-welcome__title">{{ heroEncuadre.titulo }}</h2>
+                <p class="fid-welcome__lead">{{ heroEncuadre.descripcion }}</p>
+                <div class="fid-welcome__action">
+                  <button type="button" class="fid-btn fid-btn--primary fid-btn--lg" (click)="irAValidar()" data-tour="fid-cta">
+                    Comenzar verificación <i class="pi pi-arrow-right"></i>
+                  </button>
                 </div>
-              }
+              </div>
             </div>
-            <div class="fid-hero__actions">
-              <button class="fid-btn fid-btn--primary fid-btn--lg" (click)="irAValidar()" data-tour="fid-cta">
-                Comenzar <i class="pi pi-arrow-right"></i>
-              </button>
-            </div>
-          </div>
 
-        </div>
+            <!-- RIGHT: orange — benefits -->
+            <aside class="fid-welcome__right" aria-labelledby="fid-welcome-unlock">
+              <p id="fid-welcome-unlock" class="fid-welcome__unlock-label">Al verificarte desbloqueas</p>
+              <ul class="fid-welcome__benefits">
+                @for (b of heroBenefits; track b.label; let i = $index) {
+                  <li class="fid-welcome__benefit" [style.animation-delay]="(0.1 + i * 0.09) + 's'">
+                    <span class="fid-welcome__benefit-icon">
+                      <img [src]="b.icon" [alt]="" width="16" height="16" />
+                    </span>
+                    <span class="fid-welcome__benefit-body">
+                      <span class="fid-welcome__benefit-label">{{ b.label }}</span>
+                      <span class="fid-welcome__benefit-desc">{{ b.desc }}</span>
+                    </span>
+                  </li>
+                }
+              </ul>
+            </aside>
+
+          </div>
         </div>
       </div>
     }
@@ -283,78 +244,22 @@
     @if (isVista('v-nueva-onboarding')) {
       <div class="fid-vista">
         <div class="fid-layout-wide">
-
-        <!-- Paso 1: Tipo de persona -->
-        @if (onboardingStep() === 1) {
-          <div class="fid-card">
-            <p class="section-title">¿Cómo operas en Dropi?</p>
-            <div class="persona-selector">
-              <button type="button" class="persona-card"
-                      [class.selected]="onboardingTipoPersona === 'natural'"
-                      (click)="selectOnboardingPersona('natural')">
-                <span class="persona-card__icon"><i class="pi pi-user"></i></span>
-                <p class="persona-card__title">Persona natural</p>
-                <p class="persona-card__desc">Emprendes como individuo, bajo tu nombre y documento personal.</p>
-              </button>
-              <button type="button" class="persona-card"
-                      [class.selected]="onboardingTipoPersona === 'juridica'"
-                      (click)="selectOnboardingPersona('juridica')">
-                <span class="persona-card__icon"><i class="pi pi-building"></i></span>
-                <p class="persona-card__title">Persona jurídica</p>
-                <p class="persona-card__desc">Operas como empresa o sociedad con razón social registrada.</p>
-              </button>
+          <div class="fid-card datos-form">
+            <p class="instructions">Completa tus datos y verifica tu identidad. Suele tardar <strong>menos de 5 minutos</strong>.</p>
+            <div class="fid-alert fid-alert--warning">
+              <i class="pi pi-exclamation-triangle fa-icon"></i>
+              <span class="fa-body">
+                Una vez validados, tus datos no podrán modificarse por <strong>6 meses</strong>.
+                Tus datos biométricos los procesa Sumsub (ISO 27001); Dropi no los almacena.
+              </span>
             </div>
             <div class="fid-form__actions">
               <button class="fid-btn fid-btn--secondary" (click)="navTo('v-nueva-bloqueada')">Volver al inicio</button>
-              <button class="fid-btn fid-btn--primary" (click)="siguienteOnboarding()">
-                Siguiente: checklist <i class="pi pi-arrow-right"></i>
-              </button>
-            </div>
-          </div>
-        }
-
-        <!-- Paso 2: Checklist -->
-        @if (onboardingStep() === 2) {
-          <div class="fid-card">
-            <p class="section-title">Antes de continuar, ten a la mano:</p>
-            <div class="fid-checklist-groups">
-              <div class="checklist-group">
-                <h4 class="checklist-group__title"><i class="pi pi-id-card"></i> Documentos</h4>
-                <ul class="checklist-group__list">
-                  <li>Los datos que escribas deben <strong>coincidir exactamente</strong> con tu documento oficial</li>
-                  <li>Documento de identidad <strong>original</strong> — no fotocopias ni capturas de pantalla</li>
-                </ul>
-              </div>
-              <div class="checklist-group">
-                <h4 class="checklist-group__title"><i class="pi pi-sun"></i> Entorno</h4>
-                <ul class="checklist-group__list">
-                  <li>Dispositivo con cámara y buena iluminación</li>
-                  <li>Rostro visible, sin sombrero ni gafas de sol</li>
-                </ul>
-              </div>
-              <div class="checklist-group">
-                <h4 class="checklist-group__title"><i class="pi pi-clock"></i> Tiempo</h4>
-                <ul class="checklist-group__list">
-                  <li><strong>5 minutos</strong> sin interrupciones para la sesión biométrica</li>
-                  <li>Fotos nítidas — evita moverte al capturar</li>
-                </ul>
-              </div>
-            </div>
-            <div class="fid-alert fid-alert--warning">
-              <i class="pi pi-exclamation-triangle fa-icon"></i>
-              <span class="fa-body"><strong>Importante:</strong> una vez validados, tus datos no podrán modificarse por <strong>6 meses</strong> (información de facturación). Tus datos biométricos los procesa Sumsub (ISO 27001); Dropi no los almacena.</span>
-            </div>
-            <div class="fid-form__actions">
-              <button class="fid-btn fid-btn--secondary" (click)="anteriorOnboarding()">
-                <i class="pi pi-arrow-left"></i> Atrás
-              </button>
               <button class="fid-btn fid-btn--primary" (click)="comenzarValidacion()">
                 Comenzar <i class="pi pi-arrow-right"></i>
               </button>
             </div>
           </div>
-        }
-
         </div>
       </div>
     }
@@ -363,276 +268,342 @@
     @if (isVista('v-nueva-formulario')) {
       <div class="fid-vista">
         <div class="fid-layout-wide">
-        <form class="fid-form fid-form-card" (ngSubmit)="onFormSubmit()" data-tour="fid-form">
+        <form class="fid-form fid-form-card datos-form tab-content" (ngSubmit)="onFormSubmit()" data-tour="fid-form">
 
           @if (paisConFiscal) {
             <div class="fid-form-wizard">
-              <span class="fid-form-wizard__step" [class.fid-form-wizard__step--active]="formStep() === 1">1. Datos personales</span>
-              <span class="fid-form-wizard__sep"></span>
-              <span class="fid-form-wizard__step" [class.fid-form-wizard__step--active]="formStep() === 2">2. Información tributaria</span>
+              <span class="fid-form-wizard__step" [class.fid-form-wizard__step--active]="formStep() === 1" [class.fid-form-wizard__step--done]="formStep() > 1">
+                <span class="fid-form-wizard__step-num">1</span>
+                Datos personales
+              </span>
+              <span class="fid-form-wizard__sep" [class.fid-form-wizard__sep--done]="formStep() > 1"></span>
+              <span class="fid-form-wizard__step" [class.fid-form-wizard__step--active]="formStep() === 2" [class.fid-form-wizard__step--done]="formStep() > 2">
+                <span class="fid-form-wizard__step-num">2</span>
+                Facturación electrónica
+              </span>
             </div>
           }
 
           @if (formStep() === 1) {
-          <!-- Sección 1: Información personal -->
-          <div class="fid-form__section">
-            <h3 class="section-title">Información personal</h3>
-            <div class="form-grid form-grid--2col">
+            <h2 class="section-title section-title--h4">Datos personales</h2>
 
-              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('primerNombre')" [class.fid-field--error]="hasFieldError('primerNombre')">
-                <label class="fid-field__label" for="field-primerNombre">Primer nombre</label>
-                <input class="fid-field__input" id="field-primerNombre" type="text" placeholder="Ej: Laura…" [(ngModel)]="formNucleo.primerNombre" name="primerNombre" autocomplete="given-name"
-                       [attr.aria-invalid]="hasFieldError('primerNombre') || null"
-                       [attr.aria-describedby]="hasFieldError('primerNombre') ? fieldDescId('primerNombre') : null"
+            @if (showCamposNuevosAlert) {
+              <div class="fid-alert fid-alert--warning fid-prep-alert">
+                <i class="pi pi-exclamation-circle fa-icon"></i>
+                <span class="fa-body">
+                  Faltan campos obligatorios por regulación en <strong>{{ paisLabel }}</strong>:
+                  @for (label of camposNuevosPendienteLabels; track label; let last = $last) {
+                    <strong>{{ label }}</strong>@if (!last) {, }
+                  }.
+                  Completa los campos resaltados para continuar.
+                </span>
+              </div>
+            }
+            <div class="fid-alert fid-alert--info fid-prep-alert">
+              <i class="pi pi-info-circle fa-icon"></i>
+              <span class="fa-body">
+                Ten a la mano tu <strong>documento original</strong> y reserva <strong>5 minutos</strong> sin interrupciones.
+                Los datos deben coincidir con tu documento. Necesitas buena luz y cámara frontal.
+              </span>
+            </div>
+
+            <p class="instructions">
+              <strong>Si eres persona natural</strong>, ingresa tus datos según tu documento de identidad.
+              <strong>Si eres persona jurídica</strong> (empresa), ingresa únicamente los datos personales del representante legal, no los datos de la empresa.
+            </p>
+
+            <div class="form-row">
+              <div class="form-field" [class.form-field--new]="isCampoNuevo('primerNombre')" [class.form-field--error]="hasFieldError('primerNombre')">
+                <label class="field-label" for="field-primerNombre">Primer nombre</label>
+                <input class="field-input" id="field-primerNombre" type="text" placeholder="Ej: Laura…" [(ngModel)]="formNucleo.primerNombre" name="primerNombre" autocomplete="given-name"
                        (blur)="validateField('primerNombre')" />
-                @if (hasFieldError('primerNombre')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('primerNombre')">{{ getFieldError('primerNombre') }}</span> }
+                @if (hasFieldError('primerNombre')) { <span class="field-helper field-helper--error">{{ getFieldError('primerNombre') }}</span> }
               </div>
-
-              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('segundoNombre')">
-                <label class="fid-field__label" for="field-segundoNombre">Segundo nombre <span class="text-muted">(opcional)</span></label>
-                <input class="fid-field__input" id="field-segundoNombre" type="text" placeholder="Ej: Isabel…" [(ngModel)]="formNucleo.segundoNombre" name="segundoNombre" />
+              <div class="form-field" [class.form-field--new]="isCampoNuevo('segundoNombre')">
+                <label class="field-label" for="field-segundoNombre">Segundo nombre (Opcional)</label>
+                <input class="field-input" id="field-segundoNombre" type="text" placeholder="Ej: Isabel…" [(ngModel)]="formNucleo.segundoNombre" name="segundoNombre" />
               </div>
-
-              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('primerApellido')" [class.fid-field--error]="hasFieldError('primerApellido')">
-                <label class="fid-field__label" for="field-primerApellido">Primer apellido</label>
-                <input class="fid-field__input" id="field-primerApellido" type="text" placeholder="Ej: Martínez…" [(ngModel)]="formNucleo.primerApellido" name="primerApellido" autocomplete="family-name"
-                       [attr.aria-invalid]="hasFieldError('primerApellido') || null"
-                       [attr.aria-describedby]="hasFieldError('primerApellido') ? fieldDescId('primerApellido') : null"
+            </div>
+            <div class="form-row">
+              <div class="form-field" [class.form-field--new]="isCampoNuevo('primerApellido')" [class.form-field--error]="hasFieldError('primerApellido')">
+                <label class="field-label" for="field-primerApellido">Primer apellido</label>
+                <input class="field-input" id="field-primerApellido" type="text" placeholder="Ej: Martínez…" [(ngModel)]="formNucleo.primerApellido" name="primerApellido" autocomplete="family-name"
                        (blur)="validateField('primerApellido')" />
-                @if (hasFieldError('primerApellido')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('primerApellido')">{{ getFieldError('primerApellido') }}</span> }
+                @if (hasFieldError('primerApellido')) { <span class="field-helper field-helper--error">{{ getFieldError('primerApellido') }}</span> }
               </div>
-
-              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('segundoApellido')">
-                <label class="fid-field__label" for="field-segundoApellido">Segundo apellido</label>
-                <input class="fid-field__input" id="field-segundoApellido" type="text" placeholder="Ej: Suárez…" [(ngModel)]="formNucleo.segundoApellido" name="segundoApellido" />
+              <div class="form-field" [class.form-field--new]="isCampoNuevo('segundoApellido')">
+                <label class="field-label" for="field-segundoApellido">Segundo apellido (Opcional)</label>
+                <input class="field-input" id="field-segundoApellido" type="text" placeholder="Ej: Suárez…" [(ngModel)]="formNucleo.segundoApellido" name="segundoApellido" />
               </div>
-
-              <div class="fid-field" [class.fid-field--error]="hasFieldError('fechaNacimiento')">
-                <label class="fid-field__label" for="field-fechaNacimiento">Fecha de nacimiento</label>
-                <input class="fid-field__input" id="field-fechaNacimiento" type="date" [(ngModel)]="formNucleo.fechaNacimiento" name="fechaNacimiento" autocomplete="bday"
-                       [attr.aria-invalid]="hasFieldError('fechaNacimiento') || null"
-                       [attr.aria-describedby]="hasFieldError('fechaNacimiento') ? fieldDescId('fechaNacimiento') : null"
-                       (blur)="validateField('fechaNacimiento')" />
-                @if (hasFieldError('fechaNacimiento')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('fechaNacimiento')">{{ getFieldError('fechaNacimiento') }}</span> }
+            </div>
+            <div class="form-row">
+              <div class="form-field" [class.form-field--error]="hasFieldError('fechaNacimiento')">
+                <label class="field-label" for="field-fechaNacimiento">Fecha de nacimiento</label>
+                <div class="field-input field-input--icon">
+                  <svg class="input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M15.833 3.333H4.167c-.92 0-1.667.747-1.667 1.667v11.667c0 .92.746 1.666 1.667 1.666h11.666c.92 0 1.667-.746 1.667-1.666V5c0-.92-.747-1.667-1.667-1.667ZM13.333 1.667V5M6.667 1.667V5M2.5 8.333h15" stroke="#475066" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <input id="field-fechaNacimiento" type="text" placeholder="DD/MM/AAAA" [(ngModel)]="formNucleo.fechaNacimiento" name="fechaNacimiento" autocomplete="bday"
+                         (blur)="validateField('fechaNacimiento')" />
+                </div>
+                @if (hasFieldError('fechaNacimiento')) { <span class="field-helper field-helper--error">{{ getFieldError('fechaNacimiento') }}</span> }
               </div>
-
-              <div class="fid-field" [class.fid-field--error]="hasFieldError('nacionalidad')">
-                <label class="fid-field__label" for="field-nacionalidad">Nacionalidad</label>
-                <select class="fid-field__select" id="field-nacionalidad" [(ngModel)]="formNucleo.nacionalidad" name="nacionalidad" autocomplete="country-name"
-                        [attr.aria-invalid]="hasFieldError('nacionalidad') || null"
-                        [attr.aria-describedby]="hasFieldError('nacionalidad') ? fieldDescId('nacionalidad') : null"
+              <div class="form-field" [class.form-field--error]="hasFieldError('nacionalidad')">
+                <label class="field-label" for="field-nacionalidad">Nacionalidad</label>
+                <select class="field-select" id="field-nacionalidad" [(ngModel)]="formNucleo.nacionalidad" name="nacionalidad" autocomplete="country-name"
                         (blur)="validateField('nacionalidad')">
-                  <option value="" disabled>Seleccionar…</option>
+                  <option value="" disabled>Seleccionar</option>
                   <option *ngFor="let n of nacionalidades" [value]="n">{{ n }}</option>
                 </select>
-                @if (hasFieldError('nacionalidad')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('nacionalidad')">{{ getFieldError('nacionalidad') }}</span> }
+                @if (hasFieldError('nacionalidad')) { <span class="field-helper field-helper--error">{{ getFieldError('nacionalidad') }}</span> }
               </div>
+            </div>
 
-              <div class="fid-field" [class.fid-field--error]="hasFieldError('tipoDocumento')">
-                <label class="fid-field__label" for="field-tipoDocumento">Tipo de documento</label>
-                <select class="fid-field__select" id="field-tipoDocumento" [(ngModel)]="formNucleo.tipoDocumento" name="tipoDocumento"
-                        [attr.aria-invalid]="hasFieldError('tipoDocumento') || null"
-                        [attr.aria-describedby]="hasFieldError('tipoDocumento') ? fieldDescId('tipoDocumento') : null"
+            <div class="section-divider"></div>
+
+            <h3 class="section-subtitle">Identificación</h3>
+            <div class="form-row">
+              <div class="form-field" [class.form-field--error]="hasFieldError('tipoDocumento')">
+                <label class="field-label" for="field-tipoDocumento">Tipo de documento</label>
+                <select class="field-select" id="field-tipoDocumento" [(ngModel)]="formNucleo.tipoDocumento" name="tipoDocumento"
                         (blur)="validateField('tipoDocumento')">
-                  <option value="" disabled>Seleccionar…</option>
+                  <option value="" disabled>Seleccionar</option>
                   <option *ngFor="let t of tiposDocumento" [value]="t">{{ t }}</option>
                 </select>
-                @if (hasFieldError('tipoDocumento')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('tipoDocumento')">{{ getFieldError('tipoDocumento') }}</span> }
+                @if (hasFieldError('tipoDocumento')) { <span class="field-helper field-helper--error">{{ getFieldError('tipoDocumento') }}</span> }
               </div>
-
-              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('numeroDocumento')" [class.fid-field--error]="hasFieldError('numeroDocumento')">
-                <label class="fid-field__label" for="field-numeroDocumento">Número de documento</label>
-                <input class="fid-field__input" id="field-numeroDocumento" type="text" placeholder="Número sin puntos ni espacios…" [(ngModel)]="formNucleo.numeroDocumento" name="numeroDocumento"
-                       [attr.aria-invalid]="hasFieldError('numeroDocumento') || null"
-                       [attr.aria-describedby]="hasFieldError('numeroDocumento') ? fieldDescId('numeroDocumento') : null"
+              <div class="form-field" [class.form-field--new]="isCampoNuevo('numeroDocumento')" [class.form-field--error]="hasFieldError('numeroDocumento')">
+                <label class="field-label" for="field-numeroDocumento">Documento</label>
+                <input class="field-input" id="field-numeroDocumento" type="text" placeholder="Número sin puntos ni espacios…" [(ngModel)]="formNucleo.numeroDocumento" name="numeroDocumento"
                        (blur)="validateField('numeroDocumento')" />
-                @if (hasFieldError('numeroDocumento')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('numeroDocumento')">{{ getFieldError('numeroDocumento') }}</span> }
+                @if (hasFieldError('numeroDocumento')) { <span class="field-helper field-helper--error">{{ getFieldError('numeroDocumento') }}</span> }
               </div>
-
             </div>
-          </div>
 
-          <!-- Sección 2: Contacto -->
-          <div class="fid-form__section">
-            <h3 class="section-title">Información de contacto</h3>
-            <div class="form-grid form-grid--2col">
+            <div class="section-divider"></div>
 
-              <div class="fid-field">
-                <label class="fid-field__label" for="field-email">Correo de contacto</label>
-                <input class="fid-field__input" id="field-email" type="email" [value]="mockUser.email" disabled autocomplete="email" />
-                <span class="fid-field__helper">Este campo no puede modificarse aquí.</span>
+            <h3 class="section-subtitle">Contacto</h3>
+            <div class="form-row">
+              <div class="form-field" [class.form-field--error]="hasFieldError('email')">
+                <label class="field-label" for="field-email">Email de contacto</label>
+                <input class="field-input" id="field-email" type="email" [(ngModel)]="formNucleo.email" name="email" autocomplete="email"
+                       (blur)="validateField('email')" />
+                @if (hasFieldError('email')) { <span class="field-helper field-helper--error">{{ getFieldError('email') }}</span> }
               </div>
-
-              <div class="fid-field">
-                <label class="fid-field__label" for="field-telefono">Teléfono</label>
-                <input class="fid-field__input" id="field-telefono" type="tel" [value]="mockUser.telefono" disabled autocomplete="tel" />
-                <span class="fid-field__helper">Para cambiar tu teléfono ve a Seguridad.</span>
-              </div>
-
-              <div class="fid-field" [class.fid-field--error]="hasFieldError('emailFacturacion')">
-                <label class="fid-field__label" for="field-emailFacturacion">Email de facturación</label>
-                <input class="fid-field__input" id="field-emailFacturacion" type="email" placeholder="Email para facturas electrónicas…" [(ngModel)]="formNucleo.emailFacturacion" name="emailFacturacion"
-                       (blur)="validateField('emailFacturacion')" />
-                @if (hasFieldError('emailFacturacion')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('emailFacturacion') }}</span> }
-                @else { <span class="fid-field__helper">Aparece en el Excel de datos de facturación del proveedor.</span> }
-              </div>
-
-              <div class="fid-field" [class.fid-field--error]="hasFieldError('departamento')">
-                <label class="fid-field__label" for="field-departamento">Departamento / Estado</label>
-                <input class="fid-field__input" id="field-departamento" type="text" placeholder="Ej: Cundinamarca…" [(ngModel)]="formNucleo.departamento" name="departamento"
-                       (blur)="validateField('departamento')" />
-                @if (hasFieldError('departamento')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('departamento') }}</span> }
-              </div>
-
-              <div class="fid-field full-width" [class.fid-field--error]="hasFieldError('direccion')">
-                <label class="fid-field__label" for="field-direccion">Dirección</label>
-                <input class="fid-field__input" id="field-direccion" type="text" placeholder="Ej: Calle 45 # 32-10, Apto 502…" [(ngModel)]="formNucleo.direccion" name="direccion"
-                       [attr.aria-invalid]="hasFieldError('direccion') || null"
-                       [attr.aria-describedby]="hasFieldError('direccion') ? fieldDescId('direccion') : null"
-                       (blur)="validateField('direccion')" />
-                @if (hasFieldError('direccion')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('direccion')">{{ getFieldError('direccion') }}</span> }
-              </div>
-
-              <div class="fid-field" [class.fid-field--new]="isCampoNuevo('ciudad')" [class.fid-field--error]="hasFieldError('ciudad')">
-                <label class="fid-field__label" for="field-ciudad">{{ campoGeografico }}</label>
-                <input class="fid-field__input" id="field-ciudad" type="text" [placeholder]="'Ej: ' + paisLabel + '…'" [(ngModel)]="formNucleo.ciudad" name="ciudad"
-                       [attr.aria-invalid]="hasFieldError('ciudad') || null"
-                       [attr.aria-describedby]="hasFieldError('ciudad') ? fieldDescId('ciudad') : null"
-                       (blur)="validateField('ciudad')" />
-                @if (hasFieldError('ciudad')) { <span class="fid-field__helper fid-field__helper--error" [id]="fieldDescId('ciudad')">{{ getFieldError('ciudad') }}</span> }
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Sección 3: Empresa (jurídica) -->
-          @if (tipoPersona === 'juridica') {
-            <div class="fid-form__section">
-              <h3 class="section-title">Información de empresa</h3>
-              <div class="form-grid form-grid--2col">
-                <div class="fid-field full-width" [class.fid-field--error]="hasFieldError('razonSocial')">
-                  <label class="fid-field__label" for="field-razonSocial">Razón social</label>
-                  <input class="fid-field__input" id="field-razonSocial" type="text" placeholder="Nombre legal de la empresa…" [(ngModel)]="formNucleo.razonSocial" name="razonSocial" (blur)="validateField('razonSocial')" />
-                  @if (hasFieldError('razonSocial')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('razonSocial') }}</span> }
+              <div class="form-field" [class.form-field--error]="hasFieldError('telefono')">
+                <label class="field-label" for="field-telefono">Teléfono celular</label>
+                <div class="phone-input">
+                  <div class="phone-prefix">
+                    <span class="phone-code">{{ phonePrefix }}</span>
+                  </div>
+                  <input class="field-input" id="field-telefono" type="tel" [(ngModel)]="formNucleo.telefono" name="telefono" autocomplete="tel"
+                         (blur)="validateField('telefono')" />
                 </div>
+                @if (hasFieldError('telefono')) { <span class="field-helper field-helper--error">{{ getFieldError('telefono') }}</span> }
               </div>
-              <button type="button" class="fid-upload fid-upload--spaced" aria-label="Subir documento legal de la empresa">
-                <i class="pi pi-cloud-upload upload-icon"></i>
-                <span class="upload-text">Documento legal de la empresa</span>
-                <span class="upload-hint">PDF, JPG o PNG — máx. 10 MB</span>
-              </button>
             </div>
-          }
+            <div class="form-row form-row--single">
+              <div class="form-field form-field--full" [class.form-field--error]="hasFieldError('direccion')">
+                <label class="field-label" for="field-direccion">Dirección</label>
+                <input class="field-input" id="field-direccion" type="text" [(ngModel)]="formNucleo.direccion" name="direccion" autocomplete="street-address"
+                       (blur)="validateField('direccion')" />
+                @if (hasFieldError('direccion')) { <span class="field-helper field-helper--error">{{ getFieldError('direccion') }}</span> }
+              </div>
+            </div>
           }
 
           @if (formStep() === 2 && paisConFiscal) {
-            <div class="fid-form__section">
-              <h3 class="section-title">Información tributaria</h3>
-              <div class="form-grid form-grid--2col">
+            <div class="tab-header">
+              <h2 class="section-title section-title--h3">Facturación electrónica</h2>
+            </div>
+            <p class="instructions">Completa los datos que aparecerán en tus facturas electrónicas.</p>
 
-                @if (pais === 'CO') {
-                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('co_tipoRegimen')" [class.fid-field--error]="hasFieldError('co_tipoRegimen')">
-                    <label class="fid-field__label" for="field-co_tipoRegimen">Tipo de régimen</label>
-                    <select class="fid-field__select" id="field-co_tipoRegimen" [(ngModel)]="formFiscal.co_tipoRegimen" name="co_tipoRegimen" (blur)="validateField('co_tipoRegimen')">
-                      <option value="" disabled>Seleccionar…</option>
-                      <option *ngFor="let o of opcionesFiscalesCo" [value]="o">{{ o }}</option>
-                    </select>
-                    @if (hasFieldError('co_tipoRegimen')) {
-                      <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('co_tipoRegimen') }}</span>
-                    } @else {
-                      <span class="fid-field__helper">Ej: "Simplificado" si tus ventas anuales son menores a 3.500 UVT.</span>
-                    }
-                  </div>
-
-                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('co_tipoResponsabilidad')" [class.fid-field--error]="hasFieldError('co_tipoResponsabilidad')">
-                    <label class="fid-field__label" for="field-co_tipoResponsabilidad">Tipo de responsabilidad</label>
-                    <select class="fid-field__select" id="field-co_tipoResponsabilidad" [(ngModel)]="formFiscal.co_tipoResponsabilidad" name="co_tipoResponsabilidad" (blur)="validateField('co_tipoResponsabilidad')">
-                      <option value="" disabled>Seleccionar…</option>
-                      <option *ngFor="let o of opcionesFiscalesCo" [value]="o">{{ o }}</option>
-                    </select>
-                    @if (hasFieldError('co_tipoResponsabilidad')) {
-                      <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('co_tipoResponsabilidad') }}</span>
-                    } @else {
-                      <span class="fid-field__helper">Indica qué obligaciones tributarias tienes ante la DIAN.</span>
-                    }
-                  </div>
-
-                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('co_impuesto')">
-                    <label class="fid-field__label" for="field-co_impuesto">Impuesto <span class="text-muted">(opcional)</span></label>
-                    <input class="fid-field__input" id="field-co_impuesto" type="text" placeholder="Ej: IVA…" [(ngModel)]="formFiscal.co_impuesto" name="co_impuesto" />
-                  </div>
-
-                  <div class="fid-field" [class.fid-field--error]="hasFieldError('actividadEconomica')">
-                    <label class="fid-field__label" for="field-actividadEconomica">Actividad económica</label>
-                    <select class="fid-field__select" id="field-actividadEconomica" [(ngModel)]="formFiscal.actividadEconomica" name="actividadEconomica"
-                            (change)="onActividadEconomicaChange()" (blur)="validateField('actividadEconomica')">
-                      <option value="" disabled>Seleccionar…</option>
-                      @for (o of actividadEconomicaOptions; track o.codigo) {
-                        <option [value]="o.label">{{ o.label }}</option>
-                      }
-                    </select>
-                    @if (hasFieldError('actividadEconomica')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('actividadEconomica') }}</span> }
-                  </div>
-
-                  <div class="fid-field" [class.fid-field--error]="hasFieldError('codigoActividadEconomica')">
-                    <label class="fid-field__label" for="field-codigoActividadEconomica">Código actividad económica</label>
-                    <input class="fid-field__input" id="field-codigoActividadEconomica" type="text" [(ngModel)]="formFiscal.codigoActividadEconomica" name="codigoActividadEconomica"
-                           (blur)="validateField('codigoActividadEconomica')" />
-                    @if (hasFieldError('codigoActividadEconomica')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('codigoActividadEconomica') }}</span> }
-                  </div>
-                }
-
-                @if (pais === 'MX') {
-                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('mx_codigoPostal')" [class.fid-field--error]="hasFieldError('mx_codigoPostal')">
-                    <label class="fid-field__label" for="field-mx_codigoPostal">Código postal</label>
-                    <input class="fid-field__input" id="field-mx_codigoPostal" type="text" placeholder="Ej: 03100…" [(ngModel)]="formFiscal.mx_codigoPostal" name="mx_codigoPostal" maxlength="5" (blur)="validateField('mx_codigoPostal')" />
-                    @if (hasFieldError('mx_codigoPostal')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('mx_codigoPostal') }}</span> }
-                  </div>
-
-                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('mx_regimenFiscal')" [class.fid-field--error]="hasFieldError('mx_regimenFiscal')">
-                    <label class="fid-field__label" for="field-mx_regimenFiscal">Régimen fiscal SAT</label>
-                    <select class="fid-field__select" id="field-mx_regimenFiscal" [(ngModel)]="formFiscal.mx_regimenFiscal" name="mx_regimenFiscal" (blur)="validateField('mx_regimenFiscal')">
-                      <option value="" disabled>Seleccionar…</option>
-                      <option *ngFor="let o of opcionesFiscalesMx" [value]="o">{{ o }}</option>
-                    </select>
-                    @if (hasFieldError('mx_regimenFiscal')) {
-                      <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('mx_regimenFiscal') }}</span>
-                    } @else {
-                      <span class="fid-field__helper">Encuéntralo en tu Constancia de Situación Fiscal del SAT.</span>
-                    }
-                  </div>
-
-                  <div class="fid-field fid-toggle-row full-width" [class.fid-field--new]="isCampoNuevo('mx_sujetoImpuestos')">
-                    <label class="fid-toggle-row__label" for="field-mx_sujetoImpuestos">¿Sujeto a impuestos?</label>
-                    <input type="checkbox" id="field-mx_sujetoImpuestos" [(ngModel)]="formFiscal.mx_sujetoImpuestos" name="mx_sujetoImpuestos" />
-                  </div>
-                }
-
-                @if (pais === 'AR') {
-                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('ar_condicionIVA')" [class.fid-field--error]="hasFieldError('ar_condicionIVA')">
-                    <label class="fid-field__label" for="field-ar_condicionIVA">Condición frente al IVA</label>
-                    <select class="fid-field__select" id="field-ar_condicionIVA" [(ngModel)]="formFiscal.ar_condicionIVA" name="ar_condicionIVA" (blur)="validateField('ar_condicionIVA')">
-                      <option value="" disabled>Seleccionar…</option>
-                      <option *ngFor="let o of opcionesFiscalesAr" [value]="o">{{ o }}</option>
-                    </select>
-                    @if (hasFieldError('ar_condicionIVA')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('ar_condicionIVA') }}</span> }
-                  </div>
-
-                  <div class="fid-field" [class.fid-field--new]="isCampoNuevo('ar_provincia')" [class.fid-field--error]="hasFieldError('ar_provincia')">
-                    <label class="fid-field__label" for="field-ar_provincia">Provincia</label>
-                    <input class="fid-field__input" id="field-ar_provincia" type="text" placeholder="Ej: Buenos Aires…" [(ngModel)]="formFiscal.ar_provincia" name="ar_provincia" (blur)="validateField('ar_provincia')" />
-                    @if (hasFieldError('ar_provincia')) { <span class="fid-field__helper fid-field__helper--error">{{ getFieldError('ar_provincia') }}</span> }
-                  </div>
-                }
-
+            <h3 class="section-subtitle">Información de Contacto</h3>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="field-label field-label--disabled">País</label>
+                <input class="field-input field-input--disabled" type="text" [value]="paisLabel" disabled />
               </div>
+              <div class="form-field" [class.form-field--error]="hasFieldError('fact_localidad')">
+                <label class="field-label" for="field-fact_localidad">{{ campoGeografico }}</label>
+                <input class="field-input" id="field-fact_localidad" type="text" placeholder="Ej: Bogotá…" [(ngModel)]="formFacturacion.localidad" name="fact_localidad" (blur)="validateField('fact_localidad')" />
+                @if (hasFieldError('fact_localidad')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_localidad') }}</span> }
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field" [class.form-field--error]="hasFieldError('fact_direccion')">
+                <label class="field-label" for="field-fact_direccion">Dirección</label>
+                <input class="field-input" id="field-fact_direccion" type="text" placeholder="Ej: Calle 45 # 32-10…" [(ngModel)]="formFacturacion.direccion" name="fact_direccion" (blur)="validateField('fact_direccion')" />
+                @if (hasFieldError('fact_direccion')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_direccion') }}</span> }
+              </div>
+              <div class="form-field" [class.form-field--error]="hasFieldError('fact_email')">
+                <label class="field-label" for="field-fact_email">Email de facturación</label>
+                <input class="field-input" id="field-fact_email" type="email" [(ngModel)]="formFacturacion.emailFacturacion" name="fact_email" (blur)="validateField('fact_email')" />
+                @if (hasFieldError('fact_email')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_email') }}</span> }
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field" [class.form-field--error]="hasFieldError('fact_telefono')">
+                <label class="field-label" for="field-fact_telefono">Teléfono de facturación</label>
+                <div class="phone-input">
+                  <div class="phone-prefix">
+                    <span class="phone-code">{{ phonePrefix }}</span>
+                  </div>
+                  <input class="field-input" id="field-fact_telefono" type="tel" [(ngModel)]="formFacturacion.telefonoFacturacion" name="fact_telefono" (blur)="validateField('fact_telefono')" />
+                </div>
+                @if (hasFieldError('fact_telefono')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_telefono') }}</span> }
+              </div>
+              <div class="form-field form-field--empty"></div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <h3 class="section-subtitle">Información tributaria</h3>
+            <div class="form-row">
+              <div class="form-field" [class.form-field--error]="hasFieldError('fact_tipo_persona')">
+                <label class="field-label" for="field-fact_tipo_persona">Tipo de persona</label>
+                <select class="field-select" id="field-fact_tipo_persona" [(ngModel)]="formFacturacion.tipoPersonaFacturacion" name="fact_tipo_persona" (ngModelChange)="onTipoPersonaFacturacionChange()" (blur)="validateField('fact_tipo_persona')">
+                  <option value="natural">Persona natural</option>
+                  <option value="juridica">Persona jurídica</option>
+                </select>
+                @if (hasFieldError('fact_tipo_persona')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_tipo_persona') }}</span> }
+              </div>
+              <div class="form-field" [class.form-field--error]="hasFieldError('fact_nombre')">
+                <label class="field-label" for="field-fact_nombre">{{ nombreFacturacionLabel }}</label>
+                <input class="field-input" id="field-fact_nombre" type="text" [(ngModel)]="formFacturacion.nombreFacturacion" name="fact_nombre" (blur)="validateField('fact_nombre')" />
+                @if (hasFieldError('fact_nombre')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_nombre') }}</span> }
+                @else { <span class="field-helper">{{ nombreFacturacionHelper }}</span> }
+              </div>
+            </div>
+            <p class="instructions">
+              <strong>Persona natural:</strong> datos según tu documento.
+              <strong> Persona jurídica:</strong> datos del representante legal, no de la empresa.
+            </p>
+            <div class="form-row">
+              <div class="form-field" [class.form-field--error]="hasFieldError('fact_regimen')">
+                <label class="field-label" for="field-fact_regimen">Régimen fiscal</label>
+                <select class="field-select" id="field-fact_regimen" [(ngModel)]="formFacturacion.regimenFiscal" name="fact_regimen" (change)="onBillingRegimenChange()" (blur)="validateField('fact_regimen')">
+                  <option value="" disabled>Seleccionar…</option>
+                  @for (o of billingRegimenOptions; track o) { <option [value]="o">{{ o }}</option> }
+                </select>
+                @if (hasFieldError('fact_regimen')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_regimen') }}</span> }
+              </div>
+              <div class="form-field" [class.form-field--error]="hasFieldError('fact_tipo_doc')">
+                <label class="field-label" for="field-fact_tipo_doc">Tipo de documento</label>
+                <select class="field-select" id="field-fact_tipo_doc" [(ngModel)]="formFacturacion.tipoDocumentoFacturacion" name="fact_tipo_doc" (blur)="validateField('fact_tipo_doc')">
+                  <option value="" disabled>Seleccionar…</option>
+                  @for (o of billingDocumentTypes; track o) { <option [value]="o">{{ o }}</option> }
+                </select>
+                @if (hasFieldError('fact_tipo_doc')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_tipo_doc') }}</span> }
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field" [class.form-field--error]="hasFieldError('fact_numero_doc')">
+                <label class="field-label" for="field-fact_numero_doc">Número de documento</label>
+                <input class="field-input" id="field-fact_numero_doc" type="text" [(ngModel)]="formFacturacion.numeroDocumentoFacturacion" name="fact_numero_doc" (blur)="validateField('fact_numero_doc')" />
+                @if (hasFieldError('fact_numero_doc')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_numero_doc') }}</span> }
+              </div>
+              @if (pais === 'MX') {
+                <div class="form-field" [class.form-field--error]="hasFieldError('mx_codigoPostal')">
+                  <label class="field-label" for="field-mx_codigoPostal">Código postal</label>
+                  <input class="field-input" id="field-mx_codigoPostal" type="text" [(ngModel)]="formFiscal.mx_codigoPostal" name="mx_codigoPostal" maxlength="5" (blur)="validateField('mx_codigoPostal')" />
+                </div>
+              } @else if (pais === 'AR') {
+                <div class="form-field" [class.form-field--error]="hasFieldError('ar_provincia')">
+                  <label class="field-label" for="field-ar_provincia">Provincia</label>
+                  <input class="field-input" id="field-ar_provincia" type="text" [(ngModel)]="formFiscal.ar_provincia" name="ar_provincia" (blur)="validateField('ar_provincia')" />
+                </div>
+              } @else {
+                <div class="form-field form-field--empty"></div>
+              }
+            </div>
+            @if (pais === 'CO') {
+              <div class="form-row">
+                <div class="form-field" [class.form-field--error]="hasFieldError('co_tipoResponsabilidad')">
+                  <label class="field-label" for="field-co_tipoResponsabilidad">Tipo de responsabilidad</label>
+                  <select class="field-select" id="field-co_tipoResponsabilidad" [(ngModel)]="formFiscal.co_tipoResponsabilidad" name="co_tipoResponsabilidad" (blur)="validateField('co_tipoResponsabilidad')">
+                    <option value="" disabled>Seleccionar…</option>
+                    <option *ngFor="let o of opcionesFiscalesCo" [value]="o">{{ o }}</option>
+                  </select>
+                </div>
+                <div class="form-field" [class.form-field--error]="hasFieldError('actividadEconomica')">
+                  <label class="field-label" for="field-actividadEconomica">Actividad económica</label>
+                  <select class="field-select" id="field-actividadEconomica" [(ngModel)]="formFiscal.actividadEconomica" name="actividadEconomica" (change)="onActividadEconomicaChange()" (blur)="validateField('actividadEconomica')">
+                    <option value="" disabled>Seleccionar…</option>
+                    @for (o of actividadEconomicaOptions; track o.codigo) { <option [value]="o.label">{{ o.label }}</option> }
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field" [class.form-field--error]="hasFieldError('codigoActividadEconomica')">
+                  <label class="field-label" for="field-codigoActividadEconomica">Código actividad económica</label>
+                  <input class="field-input" id="field-codigoActividadEconomica" type="text" [(ngModel)]="formFiscal.codigoActividadEconomica" name="codigoActividadEconomica" (blur)="validateField('codigoActividadEconomica')" />
+                </div>
+                <div class="form-field form-field--empty"></div>
+              </div>
+            }
+            @if (pais === 'MX') {
+              <div class="form-row">
+                <div class="form-field fid-toggle-row">
+                  <label class="field-label" for="field-mx_sujetoImpuestos">¿Sujeto a impuestos?</label>
+                  <input type="checkbox" id="field-mx_sujetoImpuestos" [(ngModel)]="formFiscal.mx_sujetoImpuestos" name="mx_sujetoImpuestos" />
+                </div>
+                <div class="form-field form-field--empty"></div>
+              </div>
+            }
+
+            @if (documentSlots.length) {
+              <div class="upload-section">
+                <h4 class="section-subtitle">Documentos tributarios</h4>
+                <div class="upload-slots">
+                  @for (slot of documentSlots; track slot.label; let i = $index) {
+                    <div class="upload-slot">
+                      <div class="upload-slot__label">
+                        <span>{{ i + 1 }}. {{ slot.label }}</span>
+                        @if (slot.required) { <span class="upload-slot__required">*</span> }
+                      </div>
+                      @if (!slot.fileName) {
+                        <div class="upload-area">
+                          <div class="upload-content">
+                            <span class="upload-text">Suelta un documento aquí o</span>
+                            <label class="upload-button">
+                              Seleccionar documento
+                              <input type="file" accept=".jpg,.jpeg,.png,.pdf" (change)="onFileSelected($event, i)" hidden />
+                            </label>
+                          </div>
+                          <p class="upload-hint">JPG, PDF, JPEG, PNG — máx. 10 MB</p>
+                        </div>
+                      } @else {
+                        <div class="uploaded-file">
+                          <svg class="uploaded-file__icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <path d="M9.333 1.333H4a1.333 1.333 0 0 0-1.333 1.334v10.666A1.333 1.333 0 0 0 4 14h8a1.333 1.333 0 0 0 1.333-1.333V5.333L9.333 1.333Z" stroke="#475066" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9.333 1.333V5.333H12.667" stroke="#475066" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                          <span class="uploaded-file__name">{{ slot.fileName }}</span>
+                          <button type="button" class="uploaded-file__preview" (click)="openUploadPreview(slot.fileName!)" aria-label="Ver documento"><i class="pi pi-eye"></i></button>
+                          <button type="button" class="uploaded-file__remove" (click)="removeFile(i)" aria-label="Eliminar"><i class="pi pi-times"></i></button>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="checkbox-row">
+              <input type="checkbox" class="checkbox" id="fact-terminos" [(ngModel)]="formFacturacion.aceptaTerminos" name="fact_terminos" />
+              <label for="fact-terminos" class="checkbox-label">Acepto los Términos y Condiciones de Dropi para la emisión de facturas.</label>
+            </div>
+            <div class="checkbox-row">
+              <input type="checkbox" class="checkbox" id="fact-politica" [(ngModel)]="formFacturacion.aceptaPolitica" name="fact_politica" />
+              <label for="fact-politica" class="checkbox-label">Acepto la política de tratamiento de datos personales para fines de facturación.</label>
             </div>
           }
 
           <div class="fid-form__actions">
             @if (formStep() === 1) {
               <button type="button" class="fid-btn fid-btn--secondary" (click)="openSalirSinGuardar()">Cancelar</button>
-              <button type="submit" class="fid-btn fid-btn--primary">
+              <button type="submit" class="fid-btn fid-btn--primary" [disabled]="!canContinueStep1" [class.fid-btn--disabled]="!canContinueStep1">
                 @if (paisConFiscal) { Continuar <i class="pi pi-arrow-right"></i> }
                 @else { Revisar antes de enviar <i class="pi pi-arrow-right"></i> }
               </button>
@@ -640,7 +611,7 @@
               <button type="button" class="fid-btn fid-btn--secondary" (click)="anteriorFormPaso()">
                 <i class="pi pi-arrow-left"></i> Atrás
               </button>
-              <button type="submit" class="fid-btn fid-btn--primary">
+              <button type="submit" class="fid-btn fid-btn--primary" [disabled]="!canContinueStep2" [class.fid-btn--disabled]="!canContinueStep2">
                 Revisar antes de enviar <i class="pi pi-arrow-right"></i>
               </button>
             }
@@ -688,8 +659,8 @@
               <div class="rf-value">{{ mockUser.telefono }}</div>
             </div>
           </div>
-          <div class="fid-form__actions">
-            <button class="fid-btn fid-btn--secondary" (click)="navTo('v-nueva-formulario')">Editar datos</button>
+          <div class="fid-form__actions fid-form__actions--ds">
+            <button class="fid-btn fid-btn--secondary" (click)="editarDatosGuardados()">Editar datos</button>
             <button class="fid-btn fid-btn--primary" (click)="comenzarDesdeGuardado()">
               <i class="pi pi-camera"></i> Comenzar verificación
             </button>
@@ -709,11 +680,11 @@
               <h2 class="fid-status__title">Quedó pendiente la sesión biométrica</h2>
               <p class="fid-status__body">{{ sumsubProgresoLabel }} Tus datos del formulario están guardados; la captura requiere una sesión continua.</p>
             </div>
-            <div class="fid-form__actions">
+            <div class="fid-form__actions fid-form__actions--ds">
               <button class="fid-btn fid-btn--ghost fid-btn--sm" (click)="empezarDeNuevo()">
                 Reiniciar sesión biométrica
               </button>
-              <button class="fid-btn fid-btn--secondary" (click)="navTo('v-nueva-formulario')">
+              <button class="fid-btn fid-btn--secondary" (click)="editarDatosGuardados()">
                 Revisar datos del formulario
               </button>
               <button class="fid-btn fid-btn--primary" (click)="reanudarValidacion()">
@@ -958,103 +929,330 @@
     <!-- ── V-VALIDADO-DATOS ──────────────────────────────────── -->
     @if (isVista('v-validado-datos')) {
       <div class="fid-vista">
-        <div class="fid-layout-wide">
-        <div class="fid-card">
-          @if (!canEditData) {
-            <div class="fid-alert fid-alert--warning">
-              <i class="pi pi-clock fa-icon"></i>
-              <span class="fa-body">Tus datos fueron validados el <strong>{{ fechaAprobacionLabel }}</strong>. Por políticas de facturación, podrás solicitar cambios a partir del <strong>{{ fechaDesbloqueoLabel }}</strong>.</span>
+        <div class="fid-layout-wide datos-form">
+          <div class="tabs-container">
+            <button type="button" class="tab" [class.tab--active]="validadoTab() === 'personal'" (click)="validadoTab.set('personal')">
+              <span class="tab__label">Datos personales</span>
+              <span class="tab__badge tab__badge--complete"></span>
+            </button>
+            <button type="button" class="tab" [class.tab--active]="validadoTab() === 'facturacion'" (click)="onValidadoFacturacionTab()">
+              <span class="tab__label">Facturación electrónica</span>
+              <span class="tab__badge" [class.tab__badge--complete]="validadoFacturacionTabComplete" [class.tab__badge--pending]="!validadoFacturacionTabComplete"></span>
+            </button>
+          </div>
+
+          @if (validadoTab() === 'personal') {
+            <div class="tab-content">
+              <div class="tab-header">
+                <h2 class="section-title section-title--h4">Datos personales</h2>
+                <span class="tag tag--success">{{ validadoPersonalTagText }}</span>
+                @if (canEditData) {
+                  <button type="button" class="fid-btn fid-btn--ghost fid-btn--sm" (click)="solicitarActualizacion()">
+                    <i class="pi pi-pencil"></i> Actualizar datos
+                  </button>
+                }
+              </div>
+
+              <div class="datos-layout">
+                <div class="avatar-section">
+                  <div class="avatar-circle">
+                    <svg width="99" height="96" viewBox="0 0 99 96" fill="none" aria-hidden="true">
+                      <path d="M49.5 48C62.76 48 73.5 37.26 73.5 24C73.5 10.74 62.76 0 49.5 0C36.24 0 25.5 10.74 25.5 24C25.5 37.26 36.24 48 49.5 48ZM49.5 60C33.48 60 1.5 68.04 1.5 84V96H97.5V84C97.5 68.04 65.52 60 49.5 60Z" fill="white"/>
+                    </svg>
+                  </div>
+                  @if (canEditData) {
+                    <button type="button" class="text-button">Cambiar foto</button>
+                  }
+                </div>
+
+                <div class="datos-form">
+                  @if (!canEditData) {
+                    <div class="fid-alert fid-alert--warning">
+                      <i class="pi pi-clock fa-icon"></i>
+                      <span class="fa-body">
+                        Tus datos fueron validados el <strong>{{ fechaAprobacionLabel }}</strong>.
+                        Podrás solicitar cambios a partir del <strong>{{ fechaDesbloqueoLabel }}</strong>.
+                      </span>
+                    </div>
+                  }
+
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label class="field-label field-label--disabled">Primer nombre</label>
+                      <input class="field-input field-input--disabled" type="text" [value]="mockUser.primerNombre" disabled />
+                    </div>
+                    <div class="form-field">
+                      <label class="field-label field-label--disabled">Segundo nombre (Opcional)</label>
+                      <input class="field-input field-input--disabled" type="text" [value]="mockUser.segundoNombre" disabled />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label class="field-label field-label--disabled">Primer apellido</label>
+                      <input class="field-input field-input--disabled" type="text" [value]="mockUser.primerApellido" disabled />
+                    </div>
+                    <div class="form-field">
+                      <label class="field-label field-label--disabled">Segundo apellido (Opcional)</label>
+                      <input class="field-input field-input--disabled" type="text" [value]="mockUser.segundoApellido" disabled />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label class="field-label field-label--disabled">Fecha de nacimiento</label>
+                      <div class="field-input field-input--icon field-input--disabled">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                          <path d="M15.833 3.333H4.167c-.92 0-1.667.747-1.667 1.667v11.667c0 .92.746 1.666 1.667 1.666h11.666c.92 0 1.667-.746 1.667-1.666V5c0-.92-.747-1.667-1.667-1.667ZM13.333 1.667V5M6.667 1.667V5M2.5 8.333h15" stroke="#475066" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <input type="text" [value]="formattedFechaNacimiento" disabled />
+                      </div>
+                    </div>
+                    <div class="form-field">
+                      <label class="field-label field-label--disabled">Nacionalidad</label>
+                      <input class="field-input field-input--disabled" type="text" [value]="mockUser.nacionalidad" disabled />
+                    </div>
+                  </div>
+
+                  <div class="section-divider"></div>
+
+                  <h3 class="section-subtitle">Identificación</h3>
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label class="field-label field-label--disabled">Tipo de documento</label>
+                      <input class="field-input field-input--disabled" type="text" [value]="mockUser.tipoDocumento" disabled />
+                    </div>
+                    <div class="form-field">
+                      <label class="field-label field-label--disabled">Documento</label>
+                      <input class="field-input field-input--disabled" type="text" [value]="mockUser.numeroDocumento" disabled />
+                    </div>
+                  </div>
+
+                  <div class="section-divider"></div>
+
+                  <h3 class="section-subtitle">Contacto</h3>
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label class="field-label field-label--disabled">Email de contacto</label>
+                      <input class="field-input field-input--disabled" type="email" [value]="mockUser.email" disabled />
+                    </div>
+                    <div class="form-field">
+                      <label class="field-label field-label--disabled">Teléfono celular</label>
+                      <div class="phone-input">
+                        <div class="phone-prefix">
+                          <span class="phone-code">{{ phonePrefix }}</span>
+                        </div>
+                        <input class="field-input field-input--disabled" type="tel" [value]="mockUser.telefono" disabled />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row form-row--single">
+                    <div class="form-field form-field--full">
+                      <label class="field-label field-label--disabled">Dirección</label>
+                      <input class="field-input field-input--disabled" type="text" [value]="mockUser.direccion" disabled />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           }
 
-          <div class="fid-readonly-header">
-            <span class="section-label">Datos personales</span>
-            <div class="fid-readonly-header__actions">
-              <button class="fid-btn fid-btn--secondary" (click)="verDocumento()">
-                <i class="pi pi-id-card"></i> Ver documento
-              </button>
-              @if (canEditData) {
-                <button class="fid-btn fid-btn--ghost" (click)="solicitarActualizacion()">
-                  <i class="pi pi-pencil"></i> Actualizar datos
-                </button>
-              }
-            </div>
-          </div>
-
-          <div class="fid-readonly-grid">
-            <div class="readonly-field">
-              <div class="rf-label">Nombre completo</div>
-              <div class="rf-value">{{ mockUser.primerNombre }} {{ mockUser.segundoNombre }} {{ mockUser.primerApellido }} {{ mockUser.segundoApellido }}</div>
-            </div>
-            <div class="readonly-field">
-              <div class="rf-label">Fecha de nacimiento</div>
-              <div class="rf-value">{{ mockUser.fechaNacimiento }}</div>
-            </div>
-            <div class="readonly-field">
-              <div class="rf-label">Documento</div>
-              <div class="rf-value">{{ mockUser.tipoDocumento }} · {{ mockUser.numeroDocumento }}</div>
-            </div>
-            <div class="readonly-field">
-              <div class="rf-label">Nacionalidad</div>
-              <div class="rf-value">{{ mockUser.nacionalidad }}</div>
-            </div>
-            <div class="readonly-field">
-              <div class="rf-label">Correo</div>
-              <div class="rf-value">{{ mockUser.email }}</div>
-            </div>
-            <div class="readonly-field">
-              <div class="rf-label">Teléfono</div>
-              <div class="rf-value">{{ mockUser.telefono }}</div>
-            </div>
-            <div class="readonly-field">
-              <div class="rf-label">Dirección</div>
-              <div class="rf-value">{{ mockUser.direccion }}</div>
-            </div>
-            <div class="readonly-field">
-              <div class="rf-label">{{ campoGeografico }}</div>
-              <div class="rf-value">{{ mockUser.ciudad }}</div>
-            </div>
-            @if (tipoPersona === 'juridica') {
-              <div class="readonly-field full-width">
-                <div class="rf-label">Razón social</div>
-                <div class="rf-value">{{ mockUser.razonSocial }}</div>
+          @if (validadoTab() === 'facturacion' && paisConFiscal) {
+            <div class="tab-content tab-content--facturacion">
+              <div class="tab-header">
+                <h2 class="section-title section-title--h3">Facturación electrónica</h2>
+                <span class="tag" [class.tag--success]="validadoFacturacionTabComplete" [class.tag--info]="!validadoFacturacionTabComplete">{{ validadoFacturacionTagText }}</span>
               </div>
-            }
-          </div>
 
-          @if (paisConFiscal) {
-            <div class="divider"></div>
-            <span class="section-label">Información tributaria</span>
-            <div class="fid-readonly-grid">
-              @if (pais === 'CO') {
-                <div class="readonly-field">
-                  <div class="rf-label">Tipo de régimen</div>
-                  <div class="rf-value">{{ mockUser.co_tipoRegimen || '—' }}</div>
+              <div class="fid-alert fid-alert--info fid-alert--flush">
+                <i class="pi pi-info-circle fa-icon"></i>
+                <span class="fa-body">Puedes actualizar tus datos de facturación. Al guardar, verificaremos tu rostro con Sumsub.</span>
+              </div>
+
+              <h3 class="section-subtitle">Información de Contacto</h3>
+              <div class="form-row">
+                <div class="form-field">
+                  <label class="field-label field-label--disabled">País</label>
+                  <input class="field-input field-input--disabled" type="text" [value]="paisLabel" disabled />
                 </div>
-                <div class="readonly-field">
-                  <div class="rf-label">Responsabilidad</div>
-                  <div class="rf-value">{{ mockUser.co_tipoResponsabilidad || '—' }}</div>
+                <div class="form-field" [class.form-field--error]="hasFieldError('fact_localidad')">
+                  <label class="field-label" for="field-vf_localidad">{{ campoGeografico }}</label>
+                  <input class="field-input" id="field-vf_localidad" type="text" [(ngModel)]="formFacturacion.localidad" name="vf_localidad" (blur)="validateField('fact_localidad')" />
+                  @if (hasFieldError('fact_localidad')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_localidad') }}</span> }
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field" [class.form-field--error]="hasFieldError('fact_direccion')">
+                  <label class="field-label" for="field-vf_direccion">Dirección</label>
+                  <input class="field-input" id="field-vf_direccion" type="text" [(ngModel)]="formFacturacion.direccion" name="vf_direccion" (blur)="validateField('fact_direccion')" />
+                  @if (hasFieldError('fact_direccion')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_direccion') }}</span> }
+                </div>
+                <div class="form-field" [class.form-field--error]="hasFieldError('fact_email')">
+                  <label class="field-label" for="field-vf_email">Email de facturación</label>
+                  <input class="field-input" id="field-vf_email" type="email" [(ngModel)]="formFacturacion.emailFacturacion" name="vf_email" (blur)="validateField('fact_email')" />
+                  @if (hasFieldError('fact_email')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_email') }}</span> }
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field" [class.form-field--error]="hasFieldError('fact_telefono')">
+                  <label class="field-label" for="field-vf_telefono">Teléfono de facturación</label>
+                  <div class="phone-input">
+                    <div class="phone-prefix">
+                      <span class="phone-code">{{ phonePrefix }}</span>
+                    </div>
+                    <input class="field-input" id="field-vf_telefono" type="tel" [(ngModel)]="formFacturacion.telefonoFacturacion" name="vf_telefono" (blur)="validateField('fact_telefono')" />
+                  </div>
+                  @if (hasFieldError('fact_telefono')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_telefono') }}</span> }
+                </div>
+                <div class="form-field form-field--empty"></div>
+              </div>
+
+              <div class="section-divider"></div>
+
+              <h3 class="section-subtitle">Información tributaria</h3>
+              <div class="form-row">
+                <div class="form-field" [class.form-field--error]="hasFieldError('fact_tipo_persona')">
+                  <label class="field-label" for="field-vf_tipo_persona">Tipo de persona</label>
+                  <select class="field-select" id="field-vf_tipo_persona" [(ngModel)]="formFacturacion.tipoPersonaFacturacion" name="vf_tipo_persona" (ngModelChange)="onTipoPersonaFacturacionChange()" (blur)="validateField('fact_tipo_persona')">
+                    <option value="natural">Persona natural</option>
+                    <option value="juridica">Persona jurídica</option>
+                  </select>
+                  @if (hasFieldError('fact_tipo_persona')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_tipo_persona') }}</span> }
+                </div>
+                <div class="form-field" [class.form-field--error]="hasFieldError('fact_nombre')">
+                  <label class="field-label" for="field-vf_nombre">{{ nombreFacturacionLabel }}</label>
+                  <input class="field-input" id="field-vf_nombre" type="text" [(ngModel)]="formFacturacion.nombreFacturacion" name="vf_nombre" (blur)="validateField('fact_nombre')" />
+                  @if (hasFieldError('fact_nombre')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_nombre') }}</span> }
+                </div>
+              </div>
+              <p class="instructions">
+                <strong>Persona natural:</strong> datos según tu documento.
+                <strong> Persona jurídica:</strong> datos del representante legal, no de la empresa.
+              </p>
+              <div class="form-row">
+                <div class="form-field" [class.form-field--error]="hasFieldError('fact_regimen')">
+                  <label class="field-label" for="field-vf_regimen">Régimen fiscal</label>
+                  <select class="field-select" id="field-vf_regimen" [(ngModel)]="formFacturacion.regimenFiscal" name="vf_regimen" (change)="onBillingRegimenChange()" (blur)="validateField('fact_regimen')">
+                    <option value="" disabled>Seleccionar…</option>
+                    @for (o of billingRegimenOptions; track o) { <option [value]="o">{{ o }}</option> }
+                  </select>
+                  @if (hasFieldError('fact_regimen')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_regimen') }}</span> }
+                </div>
+                <div class="form-field" [class.form-field--error]="hasFieldError('fact_tipo_doc')">
+                  <label class="field-label" for="field-vf_tipo_doc">Tipo de documento</label>
+                  <select class="field-select" id="field-vf_tipo_doc" [(ngModel)]="formFacturacion.tipoDocumentoFacturacion" name="vf_tipo_doc" (blur)="validateField('fact_tipo_doc')">
+                    <option value="" disabled>Seleccionar…</option>
+                    @for (o of billingDocumentTypes; track o) { <option [value]="o">{{ o }}</option> }
+                  </select>
+                  @if (hasFieldError('fact_tipo_doc')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_tipo_doc') }}</span> }
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field" [class.form-field--error]="hasFieldError('fact_numero_doc')">
+                  <label class="field-label" for="field-vf_numero_doc">Número de documento</label>
+                  <input class="field-input" id="field-vf_numero_doc" type="text" [(ngModel)]="formFacturacion.numeroDocumentoFacturacion" name="vf_numero_doc" (blur)="validateField('fact_numero_doc')" />
+                  @if (hasFieldError('fact_numero_doc')) { <span class="field-helper field-helper--error">{{ getFieldError('fact_numero_doc') }}</span> }
+                </div>
+                @if (pais === 'MX') {
+                  <div class="form-field" [class.form-field--error]="hasFieldError('mx_codigoPostal')">
+                    <label class="field-label" for="field-vf_mx_codigoPostal">Código postal</label>
+                    <input class="field-input" id="field-vf_mx_codigoPostal" type="text" [(ngModel)]="formFiscal.mx_codigoPostal" name="vf_mx_codigoPostal" maxlength="5" (blur)="validateField('mx_codigoPostal')" />
+                  </div>
+                } @else if (pais === 'AR') {
+                  <div class="form-field" [class.form-field--error]="hasFieldError('ar_provincia')">
+                    <label class="field-label" for="field-vf_ar_provincia">Provincia</label>
+                    <input class="field-input" id="field-vf_ar_provincia" type="text" [(ngModel)]="formFiscal.ar_provincia" name="vf_ar_provincia" (blur)="validateField('ar_provincia')" />
+                  </div>
+                } @else {
+                  <div class="form-field form-field--empty"></div>
+                }
+              </div>
+              @if (pais === 'CO') {
+                <div class="form-row">
+                  <div class="form-field" [class.form-field--error]="hasFieldError('co_tipoResponsabilidad')">
+                    <label class="field-label" for="field-vf_co_tipoResponsabilidad">Tipo de responsabilidad</label>
+                    <select class="field-select" id="field-vf_co_tipoResponsabilidad" [(ngModel)]="formFiscal.co_tipoResponsabilidad" name="vf_co_tipoResponsabilidad" (blur)="validateField('co_tipoResponsabilidad')">
+                      <option value="" disabled>Seleccionar…</option>
+                      <option *ngFor="let o of opcionesFiscalesCo" [value]="o">{{ o }}</option>
+                    </select>
+                  </div>
+                  <div class="form-field" [class.form-field--error]="hasFieldError('actividadEconomica')">
+                    <label class="field-label" for="field-vf_actividadEconomica">Actividad económica</label>
+                    <select class="field-select" id="field-vf_actividadEconomica" [(ngModel)]="formFiscal.actividadEconomica" name="vf_actividadEconomica" (change)="onActividadEconomicaChange()" (blur)="validateField('actividadEconomica')">
+                      <option value="" disabled>Seleccionar…</option>
+                      @for (o of actividadEconomicaOptions; track o.codigo) { <option [value]="o.label">{{ o.label }}</option> }
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-field" [class.form-field--error]="hasFieldError('codigoActividadEconomica')">
+                    <label class="field-label" for="field-vf_codigoActividadEconomica">Código actividad económica</label>
+                    <input class="field-input" id="field-vf_codigoActividadEconomica" type="text" [(ngModel)]="formFiscal.codigoActividadEconomica" name="vf_codigoActividadEconomica" (blur)="validateField('codigoActividadEconomica')" />
+                  </div>
+                  <div class="form-field form-field--empty"></div>
                 </div>
               }
               @if (pais === 'MX') {
-                <div class="readonly-field">
-                  <div class="rf-label">Régimen fiscal SAT</div>
-                  <div class="rf-value">{{ mockUser.mx_regimenFiscal || '—' }}</div>
+                <div class="form-row">
+                  <div class="form-field fid-toggle-row">
+                    <label class="field-label" for="field-vf_mx_sujetoImpuestos">¿Sujeto a impuestos?</label>
+                    <input type="checkbox" id="field-vf_mx_sujetoImpuestos" [(ngModel)]="formFiscal.mx_sujetoImpuestos" name="vf_mx_sujetoImpuestos" />
+                  </div>
+                  <div class="form-field form-field--empty"></div>
                 </div>
               }
-              @if (pais === 'AR') {
-                <div class="readonly-field">
-                  <div class="rf-label">Condición IVA</div>
-                  <div class="rf-value">{{ mockUser.ar_condicionIVA || '—' }}</div>
-                </div>
-                <div class="readonly-field">
-                  <div class="rf-label">Provincia</div>
-                  <div class="rf-value">{{ mockUser.ar_provincia || '—' }}</div>
+
+              @if (documentSlots.length) {
+                <div class="upload-section">
+                  <h4 class="section-subtitle">Documentos tributarios</h4>
+                  <div class="upload-slots">
+                    @for (slot of documentSlots; track slot.label; let i = $index) {
+                      <div class="upload-slot">
+                        <div class="upload-slot__label">
+                          <span>{{ i + 1 }}. {{ slot.label }}</span>
+                          @if (slot.required) { <span class="upload-slot__required">*</span> }
+                        </div>
+                        @if (!slot.fileName) {
+                          <div class="upload-area">
+                            <div class="upload-content">
+                              <span class="upload-text">Suelta un documento aquí o</span>
+                              <label class="upload-button">
+                                Seleccionar documento
+                                <input type="file" accept=".jpg,.jpeg,.png,.pdf" (change)="onFileSelected($event, i)" hidden />
+                              </label>
+                            </div>
+                            <p class="upload-hint">JPG, PDF, JPEG, PNG — máx. 10 MB</p>
+                          </div>
+                        } @else {
+                          <div class="uploaded-file">
+                            <svg class="uploaded-file__icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                              <path d="M9.333 1.333H4a1.333 1.333 0 0 0-1.333 1.334v10.666A1.333 1.333 0 0 0 4 14h8a1.333 1.333 0 0 0 1.333-1.333V5.333L9.333 1.333Z" stroke="#475066" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M9.333 1.333V5.333H12.667" stroke="#475066" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span class="uploaded-file__name">{{ slot.fileName }}</span>
+                            <button type="button" class="uploaded-file__preview" (click)="openUploadPreview(slot.fileName!)" aria-label="Ver documento"><i class="pi pi-eye"></i></button>
+                            <button type="button" class="uploaded-file__remove" (click)="removeFile(i)" aria-label="Eliminar"><i class="pi pi-times"></i></button>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
                 </div>
               }
+
+              <div class="checkbox-row">
+                <input type="checkbox" class="checkbox" id="vf-terminos" [(ngModel)]="formFacturacion.aceptaTerminos" name="vf_terminos" />
+                <label for="vf-terminos" class="checkbox-label">Acepto los Términos y Condiciones de Dropi para la emisión de facturas.</label>
+              </div>
+              <div class="checkbox-row">
+                <input type="checkbox" class="checkbox" id="vf-politica" [(ngModel)]="formFacturacion.aceptaPolitica" name="vf_politica" />
+                <label for="vf-politica" class="checkbox-label">Acepto la política de tratamiento de datos personales para fines de facturación.</label>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="fid-btn fid-btn--primary" (click)="guardarFacturacionPostAprobacion()">
+                  Guardar facturación
+                </button>
+              </div>
             </div>
           }
-        </div>
         </div>
       </div>
     }
@@ -1153,15 +1351,46 @@
       <div class="fid-modal__body">
         <p class="fid-modal__text">Los cambios que hiciste en tus datos personales no se guardarán. La próxima vez que quieras editar, tendrás que empezar de nuevo.</p>
       </div>
-      <div class="fid-modal__footer">
-        <button class="fid-btn fid-btn--primary" (click)="closeModal()">Seguir editando</button>
+      <div class="fid-modal__footer fid-modal__footer--ds">
         <button class="fid-btn fid-btn--secondary" (click)="confirmarSalir()">Salir</button>
+        <button class="fid-btn fid-btn--primary" (click)="closeModal()">Seguir editando</button>
       </div>
     </div>
   </div>
 }
 
 <!-- ── M-MFA ──────────────────────────────────────────────────── -->
+<!-- ── M-PREFILL-BILLING ─────────────────────────────────────── -->
+@if (isModal('m-prefill-billing')) {
+  <div class="fid-modal-overlay" role="presentation" (click)="onOverlayClick()">
+    <div class="fid-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-prefill-billing" (click)="$event.stopPropagation()">
+      <div class="fid-modal__header">
+        <h3 id="modal-title-prefill-billing">¿Usas los mismos datos para facturar?</h3>
+        <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
+      </div>
+      <div class="fid-modal__body">
+        <p class="fid-modal__text">
+          Copiaremos tu nombre <strong>{{ prefillNombreDisplay }}</strong> y tu contacto a facturación.
+          Puedes editarlos después si facturas con otros datos.
+        </p>
+        <div class="prefill-preview">
+          <div class="prefill-preview__icon"><i class="pi pi-clone"></i></div>
+          @for (row of prefillPreviewFields; track row.label) {
+            <div class="prefill-preview__row">
+              <strong>{{ row.label }}:</strong> {{ row.value }}
+            </div>
+          }
+        </div>
+      </div>
+      <div class="fid-modal__footer fid-modal__footer--ds">
+        <button type="button" class="fid-btn fid-btn--secondary" (click)="ingresarDatosFacturacionNuevos()">No, los ingreso manualmente</button>
+        <button type="button" class="fid-btn fid-btn--primary" (click)="usarDatosIdentidadFacturacion()">Sí, copiar datos</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ── M-MFA ─────────────────────────────────────────────────── -->
 @if (isModal('m-mfa')) {
   <div class="fid-modal-overlay" role="presentation">
     <div class="fid-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-mfa" (click)="$event.stopPropagation()">
@@ -1211,14 +1440,9 @@
         <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
       </div>
       <div class="fid-modal__body">
-        <div class="fid-alert fid-alert--critical fid-alert--flush">
-          <i class="pi pi-exclamation-triangle fa-icon"></i>
-          <span class="fa-body">
-            Los datos que ingresaste deben <strong>coincidir exactamente</strong> con los de tu documento de identidad.
-            Si el nombre, número o fecha no corresponden, la verificación biométrica fallará y consumirás uno de tus intentos.
-            <br><br>
-            Al confirmar, validaremos tu identidad con Sumsub. Esto puede tardar unos minutos.
-          </span>
+        <div class="fid-alert fid-alert--info fid-alert--flush">
+          <i class="pi pi-info-circle fa-icon"></i>
+          <span class="fa-body">Al confirmar, validamos tu identidad con Sumsub. Suele tardar <strong>menos de un minuto</strong>.</span>
         </div>
 
         <div class="confirm-section">
@@ -1228,77 +1452,50 @@
           </div>
           <div class="confirm-grid">
             <div class="cf-pair"><div class="cf-label">Nombre completo</div><div class="cf-value">{{ formNucleo.primerNombre }} {{ formNucleo.segundoNombre }} {{ formNucleo.primerApellido }} {{ formNucleo.segundoApellido }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Nacionalidad</div><div class="cf-value">{{ formNucleo.nacionalidad }}</div></div>
             <div class="cf-pair"><div class="cf-label">Documento</div><div class="cf-value">{{ formNucleo.tipoDocumento }} · {{ formNucleo.numeroDocumento }}</div></div>
             <div class="cf-pair"><div class="cf-label">Fecha de nacimiento</div><div class="cf-value">{{ formNucleo.fechaNacimiento }}</div></div>
-            <div class="cf-pair"><div class="cf-label">País</div><div class="cf-value">{{ paisLabel }}</div></div>
-          </div>
-        </div>
-
-        <div class="confirm-section">
-          <div class="confirm-section__header">
-            <h4>Contacto</h4>
-            <button type="button" class="confirm-edit-link" (click)="editarSeccionConfirmacion('contacto')">Editar</button>
-          </div>
-          <div class="confirm-grid">
-            <div class="cf-pair"><div class="cf-label">Correo contacto</div><div class="cf-value">{{ formNucleo.email || mockUser.email }}</div></div>
-            <div class="cf-pair"><div class="cf-label">Email facturación</div><div class="cf-value">{{ formNucleo.emailFacturacion }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Correo</div><div class="cf-value">{{ formNucleo.email || mockUser.email }}</div></div>
             <div class="cf-pair"><div class="cf-label">Teléfono</div><div class="cf-value">{{ mockUser.telefono }}</div></div>
-            <div class="cf-pair"><div class="cf-label">Dirección</div><div class="cf-value">{{ formNucleo.direccion }}</div></div>
-            <div class="cf-pair"><div class="cf-label">{{ campoGeografico }}</div><div class="cf-value">{{ formNucleo.ciudad }}</div></div>
-            <div class="cf-pair"><div class="cf-label">Departamento / Estado</div><div class="cf-value">{{ formNucleo.departamento }}</div></div>
           </div>
         </div>
-
-        @if (tipoPersona === 'juridica') {
-          <div class="confirm-section">
-            <div class="confirm-section__header">
-              <h4>Empresa</h4>
-              <button type="button" class="confirm-edit-link" (click)="editarSeccionConfirmacion('empresa')">Editar</button>
-            </div>
-            <div class="confirm-grid">
-              <div class="cf-pair"><div class="cf-label">Razón social</div><div class="cf-value">{{ formNucleo.razonSocial }}</div></div>
-            </div>
-          </div>
-        }
 
         @if (paisConFiscal) {
-          <div class="confirm-section">
-            <div class="confirm-section__header">
-              <h4>Información tributaria</h4>
-              <button type="button" class="confirm-edit-link" (click)="editarSeccionConfirmacion('fiscal')">Editar</button>
-            </div>
-            <div class="confirm-grid">
-              @if (pais === 'CO') {
-                <div class="cf-pair"><div class="cf-label">Régimen tributario</div><div class="cf-value">{{ formFiscal.co_tipoRegimen }}</div></div>
-                <div class="cf-pair"><div class="cf-label">Responsabilidad</div><div class="cf-value">{{ formFiscal.co_tipoResponsabilidad }}</div></div>
-                <div class="cf-pair"><div class="cf-label">Actividad económica</div><div class="cf-value">{{ formFiscal.actividadEconomica }}</div></div>
-                <div class="cf-pair"><div class="cf-label">Código actividad</div><div class="cf-value">{{ formFiscal.codigoActividadEconomica }}</div></div>
-                <div class="cf-pair"><div class="cf-label">Responsable IVA</div><div class="cf-value">{{ responsableIVALabel }}</div></div>
-              }
-              @if (pais === 'MX') {
-                <div class="cf-pair"><div class="cf-label">Código postal</div><div class="cf-value">{{ formFiscal.mx_codigoPostal }}</div></div>
-                <div class="cf-pair"><div class="cf-label">Régimen fiscal SAT</div><div class="cf-value">{{ formFiscal.mx_regimenFiscal }}</div></div>
-                <div class="cf-pair"><div class="cf-label">Sujeto a impuestos</div><div class="cf-value">{{ formFiscal.mx_sujetoImpuestos ? 'Sí' : 'No' }}</div></div>
-              }
-              @if (pais === 'AR') {
-                <div class="cf-pair"><div class="cf-label">Condición IVA</div><div class="cf-value">{{ formFiscal.ar_condicionIVA }}</div></div>
-                <div class="cf-pair"><div class="cf-label">Provincia</div><div class="cf-value">{{ formFiscal.ar_provincia }}</div></div>
-              }
-            </div>
+        <div class="confirm-section">
+          <div class="confirm-section__header">
+            <h4>Facturación electrónica</h4>
+            <button type="button" class="confirm-edit-link" (click)="editarSeccionConfirmacion('facturacion')">Editar</button>
           </div>
+          <div class="confirm-grid">
+            <div class="cf-pair"><div class="cf-label">Tipo de persona</div><div class="cf-value">{{ tipoPersonaFacturacionLabel }}</div></div>
+            <div class="cf-pair"><div class="cf-label">{{ nombreFacturacionLabel }}</div><div class="cf-value">{{ formFacturacion.nombreFacturacion || '—' }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Email facturación</div><div class="cf-value">{{ formFacturacion.emailFacturacion || '—' }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Teléfono facturación</div><div class="cf-value">{{ formFacturacion.telefonoFacturacion || '—' }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Dirección</div><div class="cf-value">{{ formFacturacion.direccion || '—' }}</div></div>
+            <div class="cf-pair"><div class="cf-label">{{ campoGeografico }}</div><div class="cf-value">{{ formFacturacion.localidad || '—' }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Régimen fiscal</div><div class="cf-value">{{ formFacturacion.regimenFiscal || '—' }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Tipo documento</div><div class="cf-value">{{ formFacturacion.tipoDocumentoFacturacion || '—' }}</div></div>
+            <div class="cf-pair"><div class="cf-label">Número documento</div><div class="cf-value">{{ formFacturacion.numeroDocumentoFacturacion || '—' }}</div></div>
+            @if (pais === 'CO') {
+              <div class="cf-pair"><div class="cf-label">Responsabilidad</div><div class="cf-value">{{ formFiscal.co_tipoResponsabilidad || '—' }}</div></div>
+              <div class="cf-pair"><div class="cf-label">Actividad económica</div><div class="cf-value">{{ formFiscal.actividadEconomica || '—' }}</div></div>
+            }
+            @if (pais === 'MX') {
+              <div class="cf-pair"><div class="cf-label">Código postal</div><div class="cf-value">{{ formFiscal.mx_codigoPostal || '—' }}</div></div>
+            }
+            @if (pais === 'AR') {
+              <div class="cf-pair"><div class="cf-label">Provincia</div><div class="cf-value">{{ formFiscal.ar_provincia || '—' }}</div></div>
+            }
+          </div>
+        </div>
         }
-
-        <label class="confirm-checkbox">
-          <input type="checkbox" [checked]="confirmacionAceptada()" (change)="confirmacionAceptada.set($any($event.target).checked)" />
-          <span>Confirmo que revisé mis datos y coinciden con mi documento oficial.</span>
-        </label>
       </div>
-      <div class="fid-modal__footer">
+      <div class="fid-modal__footer fid-modal__footer--ds">
         <button class="fid-btn fid-btn--secondary" (click)="closeModal()">
           <i class="pi pi-arrow-left"></i> Editar datos
         </button>
-        <button class="fid-btn fid-btn--primary" [disabled]="!confirmacionAceptada()" (click)="confirmarYValidar()">
-          <i class="pi pi-shield"></i> Confirmar e iniciar validación
+        <button class="fid-btn fid-btn--primary" (click)="confirmarYValidar()">
+          <i class="pi pi-shield"></i> Confirmar e verificar
         </button>
       </div>
     </div>
@@ -1323,79 +1520,106 @@
       @if (!sumsubCustomization().hideProgressBar) {
         <div class="sumsub-sdk__progress">
           <span>{{ sumsubPhaseLabel }}</span>
-          <span>Powered by Sumsub · WebSDK 2.0 mock</span>
+          <span class="sumsub-sdk__progress-hint">Verificación biométrica</span>
         </div>
       }
 
       <div class="sumsub-sdk__body">
         @if (sumsubLoading()) {
           <div class="spinner"></div>
-          <p>Procesando verificación…</p>
+          <p>Analizando tu identidad…</p>
         } @else {
+          @if (isSumsubCapturePhase) {
+            <div class="sumsub-capture-steps">
+              <span class="sumsub-capture-step" [class.sumsub-capture-step--active]="sumsubCaptureStepIndex === 0" [class.sumsub-capture-step--done]="sumsubCaptureStepIndex > 0">Documento</span>
+              <span class="sumsub-capture-step" [class.sumsub-capture-step--active]="sumsubCaptureStepIndex === 1" [class.sumsub-capture-step--done]="sumsubCaptureStepIndex > 1">Reverso</span>
+              <span class="sumsub-capture-step" [class.sumsub-capture-step--active]="sumsubCaptureStepIndex === 2" [class.sumsub-capture-step--done]="sumsubCaptureStepIndex > 2">Selfie</span>
+            </div>
+          }
           @switch (sumsubPhase()) {
             @case ('warning') {
               <div class="sumsub-warning-icon"><i class="pi pi-shield"></i></div>
               <h3>Verificación para Dropi</h3>
-              <p>Estás a punto de verificar tu identidad para <strong>Dropi</strong>. Asegúrate de estar en el sitio oficial.</p>
+              <p>Estás a punto de verificar tu identidad para <strong>Dropi</strong>.</p>
             }
             @case ('welcome') {
               <h3>Bienvenido a la verificación</h3>
-              <p>Tardarás aproximadamente <strong>5 minutos</strong>.</p>
-              <ol class="sumsub-welcome-list">
-                <li>Seleccionar documento</li>
-                <li>Captura frontal y trasera</li>
-                <li>Selfie / verificación biométrica</li>
-                <li>Revisión por Sumsub</li>
-              </ol>
+              <p>Captura tu documento y una selfie. Suele tardar menos de un minuto.</p>
             }
             @case ('instructions') {
-              <h3>Antes de capturar</h3>
-              <ul class="sumsub-welcome-list">
-                <li>Usa tu documento <strong>original</strong></li>
-                <li>Buena iluminación, sin reflejos</li>
-                <li>Los datos del documento deben coincidir con lo que escribiste en Dropi</li>
-                <li>Rostro descubierto en la selfie</li>
-              </ul>
+              @if (sumsubContext() === 'facturacion-revalidation') {
+                <h3>Verifica tu rostro</h3>
+                <p>Para guardar cambios en facturación, necesitamos confirmar tu identidad con una selfie biométrica.</p>
+                <ul class="sumsub-welcome-list">
+                  <li>Rostro descubierto, sin gafas ni gorra</li>
+                  <li>Buena iluminación y cámara frontal</li>
+                </ul>
+              } @else {
+                <h3>Antes de capturar</h3>
+                <ul class="sumsub-welcome-list">
+                  <li>Documento <strong>original</strong>, buena luz, sin reflejos</li>
+                  <li>Rostro descubierto en la selfie</li>
+                </ul>
+              }
             }
             @case ('kyb-empresa') {
               <h3>Datos de la empresa</h3>
-              <p><strong>{{ formNucleo.razonSocial || mockUser.razonSocial }}</strong></p>
-              <p>Confirma la documentación legal de la empresa.</p>
+              <p><strong>{{ formFacturacion.nombreFacturacion || mockUser.razonSocial }}</strong></p>
+              <p>Confirma la documentación legal antes de la captura biométrica.</p>
             }
             @case ('kyb-rep') {
               <h3>Representante legal</h3>
               <p>{{ formNucleo.primerNombre }} {{ formNucleo.primerApellido }} completará la verificación biométrica.</p>
             }
-            @case ('document') {
-              <h3>Selecciona tu documento</h3>
-              <div class="sumsub-doc-options">
-                <button type="button" class="sumsub-doc-option" (click)="avanzarSumsubPhase()">{{ formNucleo.tipoDocumento || 'Documento de identidad' }}</button>
-                <button type="button" class="sumsub-doc-option" (click)="avanzarSumsubPhase()">Pasaporte</button>
-              </div>
-            }
             @case ('capture-front') {
-              <h3>Captura frontal</h3>
-              <div class="sumsub-camera-frame"><i class="pi pi-id-card" style="font-size:48px;color:#c3c9d9"></i></div>
-              <p>Coloca el documento dentro del marco, bien iluminado.</p>
+              <div class="sumsub-doc-badge"><i class="pi pi-id-card"></i> {{ formNucleo.tipoDocumento }}</div>
+              <h3>Frente del documento</h3>
+              <div class="sumsub-camera-frame sumsub-camera-frame--capture">
+                <i class="pi pi-id-card" style="font-size:48px;color:#c3c9d9"></i>
+                <div class="sumsub-camera-frame__overlay"></div>
+                <div class="sumsub-camera-frame__scan" aria-hidden="true"></div>
+              </div>
+              <p class="sumsub-camera-hint">Coloca el documento dentro del marco. Usa luz directa y evita reflejos.</p>
             }
             @case ('capture-back') {
-              <h3>Captura trasera</h3>
-              <div class="sumsub-camera-frame"><i class="pi pi-refresh" style="font-size:48px;color:#c3c9d9"></i></div>
-              <p>Gira tu documento y repite el proceso.</p>
+              <div class="sumsub-doc-badge"><i class="pi pi-id-card"></i> {{ formNucleo.tipoDocumento }}</div>
+              <h3>Reverso del documento</h3>
+              <div class="sumsub-camera-frame sumsub-camera-frame--capture">
+                <i class="pi pi-refresh" style="font-size:48px;color:#c3c9d9"></i>
+                <div class="sumsub-camera-frame__overlay"></div>
+                <div class="sumsub-camera-frame__scan" aria-hidden="true"></div>
+              </div>
+              <p class="sumsub-camera-hint">Gira tu documento y alinea el reverso dentro del marco.</p>
             }
             @case ('selfie') {
               <h3>Selfie de verificación</h3>
-              <div class="sumsub-camera-frame sumsub-camera-frame--round"><i class="pi pi-user" style="font-size:48px;color:#c3c9d9"></i></div>
-              <p>Mira a la cámara, rostro descubierto.</p>
+              <div class="sumsub-camera-frame sumsub-camera-frame--round sumsub-camera-frame--selfie">
+                <i class="pi pi-user" style="font-size:48px;color:#c3c9d9"></i>
+                <div class="sumsub-camera-frame__overlay"></div>
+                <div class="sumsub-camera-frame__scan sumsub-camera-frame__scan--oval" aria-hidden="true"></div>
+              </div>
+              <p class="sumsub-camera-hint">Mantén el rostro dentro del marco. Mira a la cámara sin gafas ni gorra.</p>
+            }
+            @case ('processing') {
+              <div class="sumsub-processing">
+                <div class="spinner"></div>
+                <h3>Analizando tu identidad</h3>
+                <p>Esto suele tardar unos segundos…</p>
+                <div class="sumsub-processing__steps">
+                  <span class="sumsub-processing__step sumsub-processing__step--done">Documento</span>
+                  <span class="sumsub-processing__step sumsub-processing__step--done">Selfie</span>
+                  <span class="sumsub-processing__step sumsub-processing__step--active">Validación</span>
+                </div>
+              </div>
             }
           }
         }
       </div>
 
-      @if (sumsubPhase() !== 'document') {
+      @if (sumsubPhase() !== 'processing') {
         <div class="sumsub-sdk__footer">
           <button type="button" class="fid-btn fid-btn--ghost" (click)="cerrarSumsub()">Salir</button>
-          @if (sumsubPhase() !== 'processing') {
+          @if (sumsubPhase() !== 'document') {
             <button type="button" class="sumsub-sdk__cta" [disabled]="sumsubLoading()" (click)="avanzarSumsubPhase()">
               {{ sumsubPhase() === 'selfie' ? 'Finalizar captura' : 'Continuar' }}
             </button>
@@ -1451,6 +1675,29 @@
           <i class="pi pi-send"></i>
           @if (apelacionEnviada()) { Enviada } @else { Enviar solicitud }
         </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ── M-DOC-PREVIEW ─────────────────────────────────────────── -->
+@if (isModal('m-doc-preview')) {
+  <div class="fid-modal-overlay" role="presentation" (click)="onOverlayClick()">
+    <div class="fid-modal fid-modal--compact" role="dialog" aria-modal="true" aria-labelledby="modal-title-doc-preview" (click)="$event.stopPropagation()">
+      <div class="fid-modal__header">
+        <h3 id="modal-title-doc-preview">Vista previa del documento</h3>
+        <button class="modal-close" (click)="closeModal()" aria-label="Cerrar"><i class="pi pi-times"></i></button>
+      </div>
+      <div class="fid-modal__body">
+        <p class="fid-modal__text"><strong>{{ previewDocName }}</strong></p>
+        <div class="fid-doc-preview fid-doc-preview--large">
+          <i class="pi pi-file-pdf" style="font-size: 48px; color: #c3c9d9;"></i>
+          <span>Documento de ejemplo (mock)</span>
+        </div>
+      </div>
+      <div class="fid-modal__footer fid-modal__footer--ds">
+        <span></span>
+        <button class="fid-btn fid-btn--primary" (click)="closeModal()">Cerrar</button>
       </div>
     </div>
   </div>
