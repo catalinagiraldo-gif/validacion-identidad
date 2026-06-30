@@ -1,0 +1,559 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Datos de Facturacion — New Architecture
+// Figma: Ub7Up7f5K0WGuDC6g2jdCu, node 13837:108139
+// ============================================
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.facturacion-page {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-4 $space-8;
+  position: relative;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  margin-bottom: $space-1; // Figma "Titulos" group gap is 4px between breadcrumb and title row
+
+  .breadcrumb-item {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $gray-700;
+    line-height: $line-height-large;
+
+    &.muted {
+      color: $gray-500;
+    }
+
+    .pi-home {
+      font-size: $font-sm;
+      color: $gray-500;
+    }
+  }
+
+  .breadcrumb-separator {
+    font-size: $font-xs;
+    color: $gray-500;
+    display: flex;
+    align-items: center;
+    transform: rotate(-90deg);
+
+    i {
+      font-size: $font-xs;
+    }
+  }
+}
+
+// ========== Title row ==========
+.title-row {
+  display: flex;
+  align-items: flex-end;
+  gap: $space-3;
+  flex-wrap: wrap;
+  margin-bottom: $space-5;
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-700;
+  margin: 0;
+  line-height: $line-height-simple;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-1 $space-2;
+  border-radius: $radius-5;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  line-height: $line-height-large;
+
+  &.tag-warning {
+    background: $warning-50;
+    color: #AB8036; // Figma literal value for warning-700 on this tag (token $warning-700 is #A67B32)
+  }
+}
+
+.tutorial-link {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  color: $primary-500;
+  text-decoration: none;
+  line-height: $line-height-simple;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+app-dropi-tag {
+  flex-shrink: 0;
+}
+
+app-dropi-alert {
+  display: block;
+  margin-bottom: $space-5;
+}
+
+.form-section app-dropi-alert {
+  margin-bottom: 0;
+}
+
+// ========== Mismos datos del dueño ==========
+.mismos-datos-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  flex-wrap: wrap;
+
+  &__text {
+    flex: 1 0 0;
+    min-width: 220px;
+  }
+}
+
+.switch {
+  flex-shrink: 0;
+  width: 44px;
+  height: 24px;
+  border-radius: $radius-5;
+  background: $gray-200;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &__knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: $neutral-white;
+    box-shadow: $shadow-small;
+    transition: transform 0.2s ease;
+  }
+
+  &--on {
+    background: $primary-500;
+
+    .switch__knob {
+      transform: translateX(20px);
+    }
+  }
+}
+
+.btn-secondary {
+  align-self: flex-start;
+  height: 40px;
+  padding: 0 $space-4;
+  border-radius: $radius-3;
+  border: 1px solid $primary-500;
+  background: $neutral-white;
+  color: $primary-500;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: $primary-50;
+  }
+}
+
+.confirm-text {
+  font-family: $font-primary;
+  font-size: $font-md;
+  line-height: $line-height-large;
+  color: $gray-600;
+  margin: 0;
+}
+
+// ========== Alert banner ==========
+.alert-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-2;
+  padding: 12px; // Figma p-12px (size-3=12px in Figma scale; project $space-3 is 10px)
+  margin-bottom: $space-5;
+  background: $warning-50;
+  border: 1px solid $warning-500;
+  border-radius: $radius-3;
+
+  i {
+    font-size: $font-base;
+    color: $warning-500;
+    line-height: $line-height-large;
+    flex-shrink: 0;
+  }
+
+  p {
+    margin: 0;
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-regular;
+    color: $gray-700;
+    line-height: $line-height-large;
+
+    strong {
+      font-weight: $font-medium;
+    }
+  }
+}
+
+// ========== Form Card ==========
+// Figma node 13837:108159 has no border/shadow/radius/padding — the form
+// sits flush against the page background (no card chrome around it).
+.form-card {
+  background: $neutral-white;
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+}
+
+.section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.section-title {
+  font-family: $font-primary;
+  font-size: $font-base;
+  font-weight: $font-bold;
+  color: $gray-700;
+  margin: 0;
+  line-height: $line-height-simple;
+}
+
+.section-description {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-regular;
+  color: $gray-700;
+  margin: 0;
+  line-height: $line-height-large;
+
+  strong {
+    font-weight: $font-medium;
+  }
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid $gray-100;
+  margin: 0;
+}
+
+// ========== Form Rows / Groups ==========
+.form-row {
+  display: flex;
+  gap: $space-5;
+  align-items: flex-start;
+
+  .form-group {
+    flex: 1 0 0;
+    min-width: 0;
+
+    &.spacer {
+      visibility: hidden;
+    }
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $gray-600;
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+  }
+
+  .tooltip-icon {
+    font-size: 14px; // Figma icon box is exactly 14x14 (Icon/outline/Tooltip)
+    color: $gray-400;
+  }
+
+  input,
+  select {
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-regular;
+    color: $gray-600;
+    height: 40px;
+    padding: $space-2 12px; // Figma px-12px (size-3=12px in Figma scale; project $space-3 is 10px)
+    border: 1px solid $gray-200;
+    border-radius: $radius-3;
+    background: $neutral-white;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: $gray-500;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary-500;
+      box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      color: $gray-400;
+    }
+  }
+
+  select {
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath fill='%23858EA6' d='M5.5 7.5L10 12l4.5-4.5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: $space-7;
+  }
+
+  .form-input--fill {
+    background-color: $primary-50;
+    border-color: $primary-200;
+    color: $gray-600;
+  }
+}
+
+// Read-only select look (matches Figma static state — no live dropdown wired yet)
+.select-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2;
+  height: 40px;
+  padding: $space-2 12px; // Figma px-12px (size-3=12px in Figma scale; project $space-3 is 10px)
+  border: 1px solid $gray-200;
+  border-radius: $radius-3;
+  background: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-regular;
+  color: $gray-500;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  i {
+    font-size: $font-base;
+    color: $gray-500;
+    flex-shrink: 0;
+  }
+
+  &:not(.placeholder) {
+    color: $gray-500;
+  }
+}
+
+// ========== Phone field ==========
+.phone-group {
+  display: flex;
+  gap: $space-2;
+
+  .phone-prefix {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    width: 82px;
+    flex-shrink: 0;
+    height: 40px;
+    padding: $space-2 12px; // Figma px-12px (size-3=12px in Figma scale; project $space-3 is 10px)
+    border: 1px solid $gray-200;
+    border-radius: $radius-3;
+    background: $neutral-white;
+    font-family: $font-primary;
+    font-size: $font-md;
+    color: $gray-600;
+    box-sizing: border-box;
+
+    .flag-co {
+      width: 24px;
+      height: 16px;
+      border-radius: 2px;
+      flex-shrink: 0;
+      background: linear-gradient(
+        to bottom,
+        #fcd116 0%,
+        #fcd116 50%,
+        #003893 50%,
+        #003893 75%,
+        #ce1126 75%,
+        #ce1126 100%
+      );
+    }
+  }
+
+  input {
+    flex: 1 0 0;
+    min-width: 0;
+  }
+}
+
+// ========== Actions ==========
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-primary {
+  // Figma literal #ffa067 (its own primary-300 shade) — lighter than DS token
+  // $primary-300 (#F8B76D); this is the button's default/idle state in the
+  // design, distinct from the full-saturation $primary-500 hover state.
+  background: #FFA067;
+  color: $neutral-white;
+  border: none;
+  border-radius: $radius-3;
+  height: 40px;
+  padding: 12px; // Figma p-12px (size-3=12px in Figma scale; project $space-3 is 10px)
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  width: 235px;
+  box-sizing: border-box;
+
+  &:hover {
+    background: $primary-500;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// ========== Toast ==========
+.toast {
+  position: fixed;
+  bottom: $space-6;
+  right: $space-6;
+  padding: $space-3 $space-5;
+  border-radius: $radius-2;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  color: $neutral-white;
+  box-shadow: $shadow-large;
+  z-index: 1000;
+  animation: toastSlideIn 0.3s ease;
+
+  &.success {
+    background: $success-600;
+  }
+
+  &.info {
+    background: $info-600;
+  }
+
+  i {
+    font-size: $font-base;
+  }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== Responsive ==========
+@media (max-width: $bp-lg) {
+  .form-row {
+    flex-wrap: wrap;
+  }
+
+  .form-row .form-group {
+    flex: 1 1 240px;
+  }
+
+  .form-row .form-group.spacer {
+    display: none;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .facturacion-page {
+    padding: $space-4;
+  }
+
+  .form-card {
+    gap: $space-5;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: $space-4;
+  }
+
+  .form-row .form-group {
+    width: 100%;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .facturacion-page {
+    padding: $space-4;
+  }
+
+  .title-row {
+    gap: $space-2;
+  }
+
+  .form-actions {
+    .btn-primary {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+}

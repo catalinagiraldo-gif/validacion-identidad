@@ -1,6 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+import { IdentityProfileService } from '../../../../common/services/identity-profile.service';
+import { IdentityBlockBannerComponent } from '../../../../common/components/identity-block-banner/identity-block-banner.component';
+import { ToastService } from '../../../../common/services/toast.service';
 
 interface Transaction {
   date: string;
@@ -18,7 +22,7 @@ interface Transaction {
 @Component({
   selector: 'app-wallet-new',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IdentityBlockBannerComponent],
   styleUrls: ['./wallet.component.scss'],
   template: `
     <div class="page-wrapper">
@@ -37,7 +41,7 @@ interface Transaction {
       <div class="page-header">
         <h1 class="page-title">Historial de wallet</h1>
         <div class="page-header__actions">
-          <button class="btn-secondary">
+          <button class="btn-secondary" (click)="onTransferir()">
             <i class="pi pi-arrows-h"></i>
             <span>Transferir entre cuentas</span>
           </button>
@@ -51,6 +55,8 @@ interface Transaction {
           </button>
         </div>
       </div>
+
+      <app-identity-block-banner [motivo]="identity.bloqueoMotivo()" contexto="transferencia"></app-identity-block-banner>
 
       <!-- Info banner -->
       <div class="info-banner">
@@ -243,6 +249,9 @@ interface Transaction {
   `,
 })
 export class WalletNewComponent {
+  readonly identity = inject(IdentityProfileService);
+  private toast = inject(ToastService);
+
   saldoDisponible = 245800;
   montoMinRetiro = 50000;
 
@@ -524,5 +533,13 @@ export class WalletNewComponent {
 
   toggleExpandAll(): void {
     this.transactions.forEach(tx => (tx.expanded = this.expandAll));
+  }
+
+  onTransferir(): void {
+    if (this.identity.transferenciasBloqueadas()) {
+      this.toast.warning('Completa tu validación de identidad para poder transferir entre cuentas.');
+      return;
+    }
+    this.toast.success('Transferencia entre cuentas iniciada.');
   }
 }

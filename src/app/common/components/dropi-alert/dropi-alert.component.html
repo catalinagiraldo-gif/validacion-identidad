@@ -1,0 +1,9 @@
+<div class="dropi-alert" [class]="'dropi-alert--' + severity">
+  <i class="pi dropi-alert__icon" [ngClass]="resolvedIcon"></i>
+  <p class="dropi-alert__text">{{ message }}<ng-content></ng-content></p>
+  @if (closable) {
+    <button type="button" class="dropi-alert__close" (click)="onClose()" aria-label="Cerrar alerta">
+      <i class="pi pi-times"></i>
+    </button>
+  }
+</div>

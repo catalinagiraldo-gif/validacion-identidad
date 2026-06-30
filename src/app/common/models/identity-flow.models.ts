@@ -1,6 +1,6 @@
 // Shared identity flow types, mock data, and billing helpers (old + new prototypes)
 
-export type OrigenValidacion = 'configuraciones' | 'retiro' | 'dropicard';
+export type OrigenValidacion = 'configuraciones' | 'retiro' | 'dropicard' | 'transferencia';
 export type UserType = 'nuevo-sin-datos' | 'antiguo-completo' | 'antiguo-campos-nuevos' | 'cross-country';
 export type IdentitySatelliteStatus = 'sin_validar' | 'pendiente' | 'en_revision' | 'rechazado' | 'aprobado';
 

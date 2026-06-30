@@ -12,110 +12,219 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: $space-5 $space-6;
-  background-color: $gray-50;
+  position: relative;
 }
 
 // --- Breadcrumb ---
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: $space-2;
-  margin-bottom: $space-5;
+  gap: $space-1;
+  margin-bottom: $space-1; // Figma: gap-[4px] between breadcrumb row and title row (was $space-2/8px)
   font-family: $font-primary;
   font-size: $font-sm;
-  color: $gray-400;
 
   .breadcrumb-chevron {
     font-size: 10px;
-    color: $gray-300;
+    color: $gray-400;
+    margin: 0 2px;
   }
 
   .breadcrumb-item {
-    color: $gray-400;
+    color: $gray-500;
+
+    &.breadcrumb-home {
+      font-size: $font-sm;
+      color: $gray-500;
+      display: inline-flex;
+      align-items: center;
+    }
 
     &.active {
-      color: $gray-700;
-      font-weight: $font-semibold;
+      color: #32394d; // Figma literal gray-700 (project $gray-700 is #333B4D, slightly different)
     }
   }
+}
+
+// --- Title row ---
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px; // Figma: gap-[var(--size-3,12px)] ($space-3 token is 10px in this project, does not match)
+  margin-bottom: $space-4;
+  flex-wrap: wrap;
 }
 
 .page-title {
   font-family: $font-primary;
   font-size: $font-2xl;
   font-weight: $font-bold;
-  color: $gray-700;
-  margin: 0 0 $space-5 0;
+  line-height: $line-height-simple;
+  color: #32394d; // Figma literal gray-700 (project $gray-700 is #333B4D, slightly different)
+  margin: 0;
+}
+
+app-dropi-tag {
+  flex-shrink: 0;
+}
+
+app-dropi-alert {
+  display: block;
+  margin-bottom: $space-5;
+}
+
+.form-section app-dropi-alert {
+  margin-bottom: $space-4;
+}
+
+// --- Tipo de persona selector ---
+.tipo-persona-row {
+  display: flex;
+  gap: $space-2;
+  margin-bottom: $space-5;
+  flex-wrap: wrap;
+}
+
+.tipo-persona-btn {
+  flex: 1 0 0;
+  min-width: 180px;
+  height: 44px;
+  padding: $space-2 $space-4;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  background: $neutral-white;
+  color: $gray-500;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    border-color: $primary-300;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  &--active {
+    border-color: $primary-500;
+    background-color: $primary-50;
+    color: $primary-600;
+    font-weight: $font-bold;
+  }
+}
+
+// --- Filled (validated, readonly) input state ---
+.form-input--fill {
+  background-color: $primary-50;
+  border-color: $primary-200;
+  color: $gray-600;
+  cursor: default;
+}
+
+// --- Alerts ---
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-2;
+  padding: 12px; // Figma: p-[var(--size-3,12px)] ($space-3 token is 10px, does not match)
+  border-radius: $radius-2;
+  background-color: $warning-50;
+  border: 1px solid $warning-500;
+  margin-bottom: $space-5; // Figma: gap-[24px] between alert and next block (was $space-4/16px)
+
+  &.alert-border-radius {
+    border-radius: $radius-3;
+  }
+
+  .alert-icon {
+    font-size: 16px;
+    color: $warning-500;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .alert-text {
+    font-family: $font-primary;
+    font-size: $font-md;
+    line-height: $line-height-large;
+    color: #32394d; // Figma literal gray-700 (project $gray-700 is #333B4D, slightly different)
+    margin: 0;
+    font-weight: $font-regular;
+  }
+
+  .alert-strong {
+    font-weight: $font-medium;
+  }
+
+  .alert-link {
+    color: $info-500;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 // --- Layout ---
 .cuenta-layout {
   display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: $space-6;
-  align-items: flex-start;
+  grid-template-columns: 156px 1fr;
+  gap: $space-8; // Figma: gap-[var(--size-8,48px)] between avatar column and form (was $space-6/32px)
+  align-items: start;
+  margin-bottom: $space-9;
 }
 
 // --- Avatar Section ---
 .avatar-section {
-  position: sticky;
-  top: $space-5;
-}
-
-.avatar-card {
-  background-color: $neutral-white;
-  border-radius: $radius-3;
-  padding: $space-6 $space-4;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $space-4;
-  box-shadow: $shadow-small;
+  gap: 12px; // Figma: gap-[12px] ($space-3 token is 10px, does not match)
+  padding: 0 $space-2;
 }
 
 .avatar-circle {
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  background: linear-gradient(135deg, $primary-100, $primary-200);
+  background-color: $primary-500;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border: 3px solid $primary-300;
 }
 
 .avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
 }
 
-.avatar-initials {
-  font-family: $font-primary;
-  font-size: $font-3xl;
-  font-weight: $font-bold;
-  color: $primary-600;
-}
-
-.btn-upload {
+.btn-change-photo {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: $space-2;
-  padding: $space-2 $space-4;
+  padding: 12px; // Figma: p-[var(--size-3,12px)] ($space-3 token is 10px, does not match)
+  height: 40px;
   background: transparent;
-  border: 1px solid $primary-500;
+  border: none;
   border-radius: $radius-2;
   color: $primary-500;
   font-family: $font-primary;
-  font-size: $font-sm;
-  font-weight: $font-semibold;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  line-height: $line-height-simple;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: $primary-500;
-    color: $neutral-white;
+    background-color: $primary-50;
   }
 }
 
@@ -123,25 +232,55 @@
   display: none;
 }
 
-.avatar-hint {
+// --- Form section ---
+.form-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.explanation-text {
   font-family: $font-primary;
-  font-size: $font-xs;
-  color: $gray-400;
-  margin: 0;
+  font-size: $font-md;
+  line-height: $line-height-large;
+  color: #32394d; // Figma literal gray-700 (project $gray-700 is #333B4D, slightly different)
+  margin: 0 0 $space-5 0;
+  font-weight: $font-regular;
 }
 
-// --- Form Section ---
-.form-card {
-  background-color: $neutral-white;
-  border-radius: $radius-3;
-  padding: $space-6;
-  box-shadow: $shadow-small;
+.explanation-strong {
+  font-weight: $font-bold;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: $space-5 $space-6;
+// --- Form ---
+.account-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row {
+  display: flex;
+  gap: $space-4;
+  margin-bottom: $space-4;
+  flex-wrap: wrap;
+}
+
+.form-row-2 {
+  .form-group {
+    flex: 1 0 0;
+    min-width: 220px;
+  }
+}
+
+.form-row-date-select {
+  .form-group-date {
+    width: 280px;
+    flex: 0 0 280px;
+  }
+
+  .form-group:not(.form-group-date) {
+    flex: 1 0 0;
+    min-width: 220px;
+  }
 }
 
 .form-group {
@@ -150,132 +289,206 @@
   gap: $space-2;
 }
 
+.form-group-full {
+  flex: 1 0 0;
+}
+
 .form-label {
   font-family: $font-primary;
   font-size: $font-sm;
-  font-weight: $font-medium;
+  font-weight: $font-regular;
   color: $gray-600;
 }
 
-.form-input {
+.form-label-muted {
+  color: $gray-500;
+}
+
+.form-input,
+.select-field,
+.date-input-field {
   height: 40px;
-  padding: 0 $space-4;
+  padding: $space-2 12px; // Figma: px-[12px] py-[8px] ($space-3 token is 10px, does not match)
   border: 1px solid $gray-200;
-  border-radius: $radius-2;
+  border-radius: $radius-3;
   font-family: $font-primary;
   font-size: $font-md;
-  color: $gray-700;
+  color: #32394d; // Figma literal gray-700 (project $gray-700 is #333B4D, slightly different)
   background-color: $neutral-white;
   outline: none;
+  width: 100%;
+  box-sizing: border-box;
   transition: border-color 0.2s ease;
 
   &::placeholder {
-    color: $gray-300;
+    color: $gray-500;
   }
 
   &:focus {
-    border-color: $primary-400;
-    box-shadow: 0 0 0 2px rgba($primary-500, 0.1);
+    border-color: $info-500;
   }
 }
 
-.form-select {
-  height: 40px;
-  padding: 0 $space-4;
-  border: 1px solid $gray-200;
-  border-radius: $radius-2;
-  font-family: $font-primary;
-  font-size: $font-md;
-  color: $gray-700;
-  background-color: $neutral-white;
-  outline: none;
-  cursor: pointer;
+.form-input-disabled {
+  background-color: #f0f4f9; // Figma literal gray-50 (project $gray-50 token is #F7F8FA, does not match)
+  color: $gray-400;
+  cursor: not-allowed;
+}
+
+// --- Select ---
+.select-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 12px; // Figma: right inset within the 12px input padding ($space-3 token is 10px, does not match)
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath fill='%23858EA6' d='M5.5 7.5L10 12l4.5-4.5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}
+
+.select-field {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23858EA6' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 32px;
+  cursor: pointer;
+  padding-right: $space-7;
+  color: $gray-500;
 
-  &:focus {
-    border-color: $primary-400;
-    box-shadow: 0 0 0 2px rgba($primary-500, 0.1);
+  &:disabled {
+    cursor: not-allowed;
   }
 }
 
+.select-input-disabled {
+  .select-field {
+    background-color: #f0f4f9; // Figma literal gray-50 (project $gray-50 token is #F7F8FA, does not match)
+    color: $gray-400;
+    border-color: $gray-200;
+  }
+}
+
+// --- Date input ---
+.date-input {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  height: 40px;
+  padding: $space-2 12px; // Figma: px-[12px] py-[8px] ($space-3 token is 10px, does not match)
+  border: 1px solid $gray-200;
+  border-radius: $radius-3;
+  background-color: $neutral-white;
+  box-sizing: border-box;
+
+  &:focus-within {
+    border-color: $info-500;
+  }
+
+  .date-icon {
+    font-size: 20px;
+    color: $gray-500;
+    flex-shrink: 0;
+  }
+}
+
+.date-input-field {
+  border: none;
+  padding: 0;
+  height: auto;
+  flex: 1 0 0;
+}
+
+// --- Phone ---
 .phone-input-row {
   display: flex;
   gap: $space-2;
 
-  .phone-code {
-    width: 80px;
-    min-width: 80px;
-  }
-
   .form-input {
-    flex: 1;
+    flex: 1 0 0;
   }
 }
 
-// --- Actions ---
-.form-actions {
+.phone-code {
   display: flex;
-  justify-content: flex-end;
-  gap: $space-4;
-  margin-top: $space-6;
-  padding-top: $space-5;
-  border-top: 1px solid $gray-100;
+  align-items: center;
+  gap: $space-2;
+  width: 82px;
+  flex: 0 0 82px;
+  height: 40px;
+  padding: $space-2 12px; // Figma: px-[12px] py-[8px] ($space-3 token is 10px, does not match)
+  border: 1px solid $gray-200;
+  border-radius: $radius-3;
+  background-color: $neutral-white;
+  box-sizing: border-box;
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $gray-600;
 }
 
-.btn-primary {
+.phone-flag {
+  width: 24px;
+  height: 24px; // Figma: Flag icon container is size-[24px] (square, was 24x18)
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+// --- Section dividers ---
+.form-divider {
+  border: none;
+  border-top: 1px solid $gray-100;
+  margin: $space-5 0; // Figma: 24px gap before and after divider (was $space-2/8px top)
+}
+
+.form-section-title {
+  font-family: $font-primary;
+  font-size: $font-base;
+  font-weight: $font-bold;
+  line-height: $line-height-simple;
+  color: #32394d; // Figma literal gray-700 (project $gray-700 is #333B4D, slightly different)
+  margin: 0 0 $space-4 0;
+}
+
+// --- Floating save button ---
+.btn-save-floating {
+  position: sticky;
+  bottom: $space-5;
+  left: 100%;
+  transform: translateX(calc(-100% - 76px));
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: $space-3 $space-6;
-  min-width: 120px;
+  gap: $space-1; // Figma: gap-[var(--size-1,4px)] between icon slot and label
+  padding: 12px; // Figma: p-[var(--size-3,12px)] ($space-3 token is 10px, does not match)
   height: 40px;
-  background-color: $primary-500;
+  background-color: #ffa067; // Figma literal primary-300 (project $primary-300 token is #F8B76D, does not match)
   border: none;
-  border-radius: $radius-2;
+  border-radius: $radius-3;
   color: $neutral-white;
   font-family: $font-primary;
   font-size: $font-md;
-  font-weight: $font-semibold;
+  font-weight: $font-bold;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.16); // matches the floating action-icon shadow used elsewhere on this screen
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  z-index: 5;
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba($primary-500, 0.3);
-  }
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: $space-3 $space-6;
-  min-width: 120px;
-  height: 40px;
-  background: transparent;
-  border: 1px solid $gray-200;
-  border-radius: $radius-2;
-  color: $gray-500;
-  font-family: $font-primary;
-  font-size: $font-md;
-  font-weight: $font-medium;
-  cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
-
-  &:hover {
-    border-color: $gray-400;
-    color: $gray-700;
+    background-color: $primary-500;
   }
 }
 
 // --- Responsive ---
 @media (max-width: $bp-lg) {
   .cuenta-layout {
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 140px 1fr;
     gap: $space-5;
   }
 }
@@ -286,24 +499,33 @@
   }
 
   .avatar-section {
-    position: static;
-  }
-
-  .avatar-card {
     flex-direction: row;
-    padding: $space-4;
-    gap: $space-5;
+    padding: 0;
   }
 
   .avatar-circle {
-    width: 80px;
-    height: 80px;
-    min-width: 80px;
+    width: 96px;
+    height: 96px;
+    flex-shrink: 0;
   }
 
-  .form-grid {
-    grid-template-columns: 1fr;
-    gap: $space-4;
+  .form-row-2,
+  .form-row-date-select {
+    flex-direction: column;
+
+    .form-group,
+    .form-group-date {
+      width: 100%;
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+  }
+
+  .btn-save-floating {
+    position: sticky;
+    left: auto;
+    transform: none;
+    width: 100%;
   }
 }
 
@@ -316,24 +538,20 @@
     font-size: $font-xl;
   }
 
-  .form-card {
-    padding: $space-4;
-  }
-
-  .form-actions {
+  .title-row {
     flex-wrap: wrap;
-
-    .btn-primary,
-    .btn-secondary {
-      width: 100%;
-    }
   }
 
   .phone-input-row {
     flex-wrap: wrap;
 
     .phone-code {
+      flex: 1 1 100%;
       width: 100%;
+    }
+
+    .form-input {
+      flex: 1 1 100%;
     }
   }
 }

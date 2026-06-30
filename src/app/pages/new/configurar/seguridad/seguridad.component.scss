@@ -12,30 +12,33 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: $space-5 $space-6;
-  background-color: $gray-50;
 }
 
 // --- Breadcrumb ---
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: $space-2;
-  margin-bottom: $space-5;
+  gap: $space-1;
+  margin-bottom: $space-2;
   font-family: $font-primary;
   font-size: $font-sm;
-  color: $gray-400;
 
   .breadcrumb-chevron {
     font-size: 10px;
-    color: $gray-300;
+    color: $gray-400;
+    margin: 0 2px;
   }
 
   .breadcrumb-item {
-    color: $gray-400;
+    color: $gray-500;
+
+    &.breadcrumb-home {
+      display: inline-flex;
+      align-items: center;
+    }
 
     &.active {
       color: $gray-700;
-      font-weight: $font-semibold;
     }
   }
 }
@@ -44,432 +47,294 @@
   font-family: $font-primary;
   font-size: $font-2xl;
   font-weight: $font-bold;
+  line-height: $line-height-simple;
   color: $gray-700;
-  margin: 0 0 $space-5 0;
+  margin: 0 0 $space-4 0;
 }
 
-// --- Layout ---
-.seguridad-layout {
-  display: flex;
-  flex-direction: column;
-  gap: $space-5;
-  max-width: 720px;
-}
-
-// --- Section Card ---
-.section-card {
+// --- Tabs card ---
+.tabs-card {
   background-color: $neutral-white;
-  border-radius: $radius-3;
-  padding: $space-6;
-  box-shadow: $shadow-small;
+  border-radius: $radius-2;
+  overflow: hidden;
 }
 
-.section-header {
+.tabs-row {
   display: flex;
-  align-items: flex-start;
-  gap: $space-4;
-  margin-bottom: $space-5;
+  align-items: stretch;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.section-header-text {
-  flex: 1;
-}
-
-.section-icon {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  border-radius: $radius-3;
-  background-color: $primary-100;
+.tab {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $primary-500;
-  font-size: $font-lg;
-
-  &--teal {
-    background-color: $secondary-100;
-    color: $secondary-500;
-  }
-
-  &--purple {
-    background-color: $info-100;
-    color: $info-500;
-  }
-}
-
-.section-title {
+  padding: $space-4 $space-5;
+  height: 52px;
+  max-height: 52px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid $gray-100;
   font-family: $font-primary;
-  font-size: $font-lg;
-  font-weight: $font-semibold;
-  color: $gray-700;
-  margin: 0 0 $space-1 0;
-}
-
-.section-subtitle {
-  font-family: $font-primary;
-  font-size: $font-sm;
+  font-size: $font-md;
+  font-weight: $font-bold;
   color: $gray-400;
-  margin: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    color: $gray-600;
+  }
+
+  &.active {
+    color: $gray-600;
+    border-bottom-color: $primary-500;
+    background-color: $neutral-white;
+  }
 }
 
-// --- Form ---
-.form-stack {
+.tab-filler {
+  flex: 1 0 0;
+  cursor: default;
+  pointer-events: none;
+
+  &:hover {
+    color: $gray-400;
+  }
+}
+
+// --- Tab panel ---
+.tab-panel {
   display: flex;
   flex-direction: column;
   gap: $space-5;
+  padding: $space-6 $space-3;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  flex-wrap: wrap;
+}
+
+.panel-title {
+  font-family: $font-primary;
+  font-size: $font-xl;
+  font-weight: $font-bold;
+  line-height: $line-height-simple;
+  color: $gray-700;
+  margin: 0;
+}
+
+.link-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-2;
+  background: transparent;
+  border: none;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-bold;
+  color: $secondary-500;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.panel-empty-text {
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $gray-500;
+  margin: 0;
+}
+
+// --- Registro fields ---
+.registro-fields {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-6;
+  flex-wrap: wrap;
+}
+
+.field-block {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  flex: 1 0 0;
+  min-width: 260px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: $space-2;
+  width: 100%;
 }
 
 .form-label {
   font-family: $font-primary;
   font-size: $font-sm;
-  font-weight: $font-medium;
-  color: $gray-600;
+  font-weight: $font-regular;
+  color: $gray-500;
 }
 
 .form-input {
   height: 40px;
-  padding: 0 $space-4;
+  padding: $space-2 $space-3;
   border: 1px solid $gray-200;
-  border-radius: $radius-2;
+  border-radius: $radius-3;
   font-family: $font-primary;
   font-size: $font-md;
-  color: $gray-700;
-  background-color: $neutral-white;
+  color: $gray-400;
+  background-color: $gray-50;
   outline: none;
   width: 100%;
   box-sizing: border-box;
-  transition: border-color 0.2s ease;
+}
 
-  &::placeholder {
-    color: $gray-300;
-  }
+.form-input-disabled {
+  cursor: not-allowed;
+}
+
+.form-input:not(.form-input-disabled):not(:disabled) {
+  color: $gray-700;
+  background-color: $neutral-white;
+  border-color: $gray-300;
+  cursor: text;
 
   &:focus {
-    border-color: $primary-400;
-    box-shadow: 0 0 0 2px rgba($primary-500, 0.1);
+    outline: none;
+    border-color: $primary-500;
   }
 }
 
-.input-password-wrapper {
-  position: relative;
-
-  .form-input {
-    padding-right: 44px;
-  }
-}
-
-.toggle-password {
-  position: absolute;
-  right: $space-3;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
+.link-edit-btn {
+  align-self: flex-start;
   border: none;
-  color: $gray-400;
+  background: transparent;
+  padding: 0;
+  color: $primary-500;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-bold;
   cursor: pointer;
-  padding: $space-1;
 
   &:hover {
+    text-decoration: underline;
+  }
+}
+
+// --- Phone ---
+.phone-input-row {
+  display: flex;
+  gap: $space-2;
+
+  .form-input {
+    flex: 1 0 0;
+    border-color: $gray-400;
     color: $gray-600;
+    background-color: $neutral-white;
   }
 }
 
-// --- Password Strength ---
-.password-strength {
+.phone-code {
   display: flex;
   align-items: center;
-  gap: $space-3;
+  gap: $space-2;
+  width: 82px;
+  flex: 0 0 82px;
+  height: 40px;
+  padding: $space-2 $space-3;
+  border: 1px solid $gray-400;
+  border-radius: $radius-3;
+  background-color: $neutral-white;
+  box-sizing: border-box;
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $gray-600;
 }
 
-.strength-bars {
-  display: flex;
-  gap: $space-1;
-}
-
-.strength-bar {
-  width: 40px;
-  height: 4px;
+.phone-flag {
+  width: 24px;
+  height: 18px;
   border-radius: 2px;
-  background-color: $gray-200;
-  transition: background-color 0.3s ease;
-
-  &.active.weak {
-    background-color: $error-500;
-  }
-
-  &.active.medium {
-    background-color: $warning-500;
-  }
-
-  &.active.strong {
-    background-color: $success-500;
-  }
+  flex-shrink: 0;
 }
 
-.strength-label {
-  font-family: $font-primary;
-  font-size: $font-xs;
-  color: $gray-500;
-  font-weight: $font-medium;
-}
-
-// --- Match Indicator ---
-.match-indicator {
-  display: flex;
+// --- Status tag (Verificado) ---
+.status-tag {
+  display: inline-flex;
   align-items: center;
   gap: $space-1;
+  width: fit-content;
+  padding: $space-1 $space-2;
+  border-radius: $radius-5;
   font-family: $font-primary;
-  font-size: $font-xs;
+  font-size: $font-sm;
+  font-weight: $font-medium;
 
-  &.match {
-    color: $success-500;
-  }
-
-  &.no-match {
-    color: $error-500;
+  i {
+    font-size: $font-md;
   }
 }
 
-// --- Actions ---
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: $space-5;
-  padding-top: $space-5;
-  border-top: 1px solid $gray-100;
+.status-tag-success {
+  background-color: $success-50;
+  color: $success-700;
 }
 
-.btn-primary {
+// --- Save button ---
+.btn-save-registro {
+  align-self: flex-end;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: $space-3 $space-6;
-  min-width: 120px;
+  padding: $space-3;
   height: 40px;
-  background-color: $primary-500;
+  background-color: $primary-300; // Figma literal: #ffa067, matches the floating CTA on Información de cuenta
   border: none;
-  border-radius: $radius-2;
+  border-radius: $radius-3;
   color: $neutral-white;
   font-family: $font-primary;
   font-size: $font-md;
-  font-weight: $font-semibold;
+  font-weight: $font-bold;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba($primary-500, 0.3);
-  }
-}
-
-// --- Toggle Switch ---
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 44px;
-  height: 24px;
-  min-width: 44px;
-
-  input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: $gray-200;
-    border-radius: 24px;
-    transition: background-color 0.3s ease;
-
-    &::before {
-      content: '';
-      position: absolute;
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: $neutral-white;
-      border-radius: 50%;
-      transition: transform 0.3s ease;
-    }
-  }
-
-  input:checked + .slider {
     background-color: $primary-500;
-
-    &::before {
-      transform: translateX(20px);
-    }
-  }
-}
-
-// --- 2FA Methods ---
-.tfa-content {
-  margin-top: $space-4;
-}
-
-.tfa-methods {
-  display: flex;
-  flex-direction: column;
-  gap: $space-3;
-}
-
-.tfa-method {
-  display: flex;
-  align-items: center;
-  gap: $space-4;
-  padding: $space-4;
-  border: 1px solid $gray-100;
-  border-radius: $radius-2;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-
-  &:hover {
-    border-color: $gray-200;
-    background-color: $gray-50;
   }
 
-  &.active {
-    border-color: $primary-300;
-    background-color: $primary-50;
-  }
-
-  > i {
-    font-size: $font-xl;
-    color: $gray-500;
-    width: 24px;
-    text-align: center;
-  }
-
-  &.active > i {
-    color: $primary-500;
-  }
-}
-
-.tfa-method-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.tfa-method-name {
-  font-family: $font-primary;
-  font-size: $font-md;
-  font-weight: $font-semibold;
-  color: $gray-700;
-}
-
-.tfa-method-desc {
-  font-family: $font-primary;
-  font-size: $font-sm;
-  color: $gray-400;
-}
-
-.tfa-method-status {
-  font-family: $font-primary;
-  font-size: $font-xs;
-  font-weight: $font-semibold;
-  padding: $space-1 $space-3;
-  border-radius: $radius-4;
-  color: $gray-400;
-  background-color: $gray-100;
-
-  &.enabled {
-    color: $success-600;
-    background-color: $success-50;
-  }
-}
-
-// --- Sessions ---
-.sessions-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.session-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: $space-4 0;
-  border-bottom: 1px solid $gray-100;
-
-  &:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-
-  &:first-child {
-    padding-top: 0;
-  }
-}
-
-.session-device {
-  display: flex;
-  align-items: center;
-  gap: $space-3;
-}
-
-.session-device-icon {
-  font-size: $font-xl;
-  color: $gray-400;
-}
-
-.session-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.session-name {
-  font-family: $font-primary;
-  font-size: $font-md;
-  font-weight: $font-medium;
-  color: $gray-700;
-}
-
-.session-meta {
-  font-family: $font-primary;
-  font-size: $font-sm;
-  color: $gray-400;
-}
-
-.session-badge {
-  font-family: $font-primary;
-  font-size: $font-xs;
-  font-weight: $font-semibold;
-  padding: $space-1 $space-3;
-  border-radius: $radius-4;
-  color: $gray-500;
-  background-color: $gray-100;
-
-  &.current {
-    color: $success-600;
-    background-color: $success-50;
+  &:disabled {
+    background-color: $gray-200;
+    color: $gray-400;
+    cursor: not-allowed;
   }
 }
 
 // --- Responsive ---
 @media (max-width: $bp-md) {
-  .section-card {
-    padding: $space-4;
+  .tab-panel {
+    padding: $space-5 $space-2;
   }
 
-  .section-header {
-    flex-wrap: wrap;
+  .registro-fields {
+    flex-direction: column;
+    gap: $space-4;
+  }
+
+  .field-block {
+    min-width: 0;
+    width: 100%;
   }
 }
 
@@ -482,24 +347,25 @@
     font-size: $font-xl;
   }
 
-  .strength-bars {
-    .strength-bar {
-      width: 28px;
-    }
+  .tab {
+    padding: $space-3 $space-4;
+    font-size: $font-sm;
   }
 
-  .session-row {
+  .phone-input-row {
     flex-wrap: wrap;
-    gap: $space-2;
-  }
 
-  .tfa-method {
-    flex-wrap: wrap;
-  }
-
-  .form-actions {
-    .btn-primary {
+    .phone-code {
+      flex: 1 1 100%;
       width: 100%;
     }
+
+    .form-input {
+      flex: 1 1 100%;
+    }
+  }
+
+  .btn-save-registro {
+    width: 100%;
   }
 }

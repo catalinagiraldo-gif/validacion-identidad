@@ -2,11 +2,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 interface Integration {
-  name: string;
-  description: string;
-  icon: string;
-  status: 'connected' | 'disconnected';
-  category: string;
+  id: number;
+  tipo: string;
+  nombre: string;
 }
 
 @Component({
@@ -20,69 +18,63 @@ interface Integration {
       <nav class="breadcrumb">
         <span class="breadcrumb-item"><i class="pi pi-home"></i></span>
         <i class="pi pi-chevron-right breadcrumb-chevron"></i>
-        <span class="breadcrumb-item">Configuraciones</span>
+        <span class="breadcrumb-item">Configurar</span>
         <i class="pi pi-chevron-right breadcrumb-chevron"></i>
         <span class="breadcrumb-item active">Integraciones</span>
       </nav>
 
       <div class="page-header">
-        <div>
-          <h1 class="page-title">Integraciones</h1>
-          <p class="page-subtitle">Conecta tu tienda con las principales plataformas de e-commerce</p>
-        </div>
-        <div class="stats-row">
-          <div class="stat-pill">
-            <span class="stat-number">{{ getConnectedCount() }}</span>
-            <span class="stat-label">Conectadas</span>
-          </div>
-          <div class="stat-pill stat-pill--inactive">
-            <span class="stat-number">{{ getDisconnectedCount() }}</span>
-            <span class="stat-label">Disponibles</span>
-          </div>
-        </div>
+        <h1 class="page-title">Integraciones</h1>
+        <button class="btn-add" (click)="onAdd()">
+          <i class="pi pi-plus"></i>
+          Agregar
+        </button>
       </div>
 
-      <!-- Integration Cards Grid -->
-      <div class="integrations-grid">
-        <div
-          class="integration-card"
-          *ngFor="let integration of integrations; let i = index"
-          [style.animation-delay]="i * 60 + 'ms'"
-        >
-          <div class="card-header">
-            <div class="card-icon">
-              <i [class]="'pi ' + integration.icon"></i>
-            </div>
-            <span
-              class="status-badge"
-              [class.connected]="integration.status === 'connected'"
-              [class.disconnected]="integration.status === 'disconnected'"
-            >
-              <span class="status-dot"></span>
-              {{ integration.status === 'connected' ? 'Conectado' : 'Desconectado' }}
-            </span>
-          </div>
+      <!-- Integrations Table -->
+      <div class="table-card">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tipo</th>
+                <th>Nombre de integración</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let integration of integrations">
+                <td>{{ integration.id }}</td>
+                <td>{{ integration.tipo }}</td>
+                <td>{{ integration.nombre }}</td>
+                <td>
+                  <div class="row-actions">
+                    <i class="pi pi-eye action-icon" title="Ver" (click)="onView(integration)"></i>
+                    <i class="pi pi-user-edit action-icon" title="Editar" (click)="onEdit(integration)"></i>
+                    <i class="pi pi-trash action-icon" title="Eliminar" (click)="onDelete(integration)"></i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-          <div class="card-body">
-            <h3 class="card-title">{{ integration.name }}</h3>
-            <p class="card-description">{{ integration.description }}</p>
-            <span class="card-category">{{ integration.category }}</span>
-          </div>
-
-          <div class="card-footer">
-            <button
-              class="btn-integration"
-              [class.btn-connected]="integration.status === 'connected'"
-              [class.btn-disconnected]="integration.status === 'disconnected'"
-              (click)="toggleConnection(integration)"
-            >
-              <i [class]="integration.status === 'connected' ? 'pi pi-check' : 'pi pi-link'"></i>
-              {{ integration.status === 'connected' ? 'Conectado' : 'Conectar' }}
-            </button>
-            <button class="btn-config" *ngIf="integration.status === 'connected'">
-              <i class="pi pi-cog"></i>
-            </button>
-          </div>
+        <!-- Paginator -->
+        <div class="paginator">
+          <button class="page-arrow" type="button" aria-label="Primera página">
+            <i class="pi pi-angle-double-left"></i>
+          </button>
+          <button class="page-arrow" type="button" aria-label="Página anterior">
+            <i class="pi pi-angle-left"></i>
+          </button>
+          <button class="page-number active" type="button">1</button>
+          <button class="page-arrow" type="button" aria-label="Página siguiente">
+            <i class="pi pi-angle-right"></i>
+          </button>
+          <button class="page-arrow" type="button" aria-label="Última página">
+            <i class="pi pi-angle-double-right"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -91,72 +83,30 @@ interface Integration {
 export class IntegracionesNewComponent {
   integrations: Integration[] = [
     {
-      name: 'Shopify',
-      description: 'Sincroniza tu catalogo de productos, pedidos e inventario con tu tienda Shopify',
-      icon: 'pi-shopping-bag',
-      status: 'connected',
-      category: 'E-commerce',
+      id: 176293,
+      tipo: 'CHATCENTER',
+      nombre: 'chatcenter',
     },
     {
-      name: 'WooCommerce',
-      description: 'Conecta tu tienda WordPress con WooCommerce para gestionar productos y pedidos',
-      icon: 'pi-shopping-cart',
-      status: 'connected',
-      category: 'E-commerce',
-    },
-    {
-      name: 'Tienda Nube',
-      description: 'Integra tu tienda Tienda Nube y sincroniza automaticamente tus productos',
-      icon: 'pi-cloud',
-      status: 'disconnected',
-      category: 'E-commerce',
-    },
-    {
-      name: 'API Dropi',
-      description: 'Accede a nuestra API REST para integraciones personalizadas con tu sistema',
-      icon: 'pi-code',
-      status: 'disconnected',
-      category: 'Desarrollo',
-    },
-    {
-      name: 'Mercado Libre',
-      description: 'Publica y sincroniza tus productos directamente en Mercado Libre',
-      icon: 'pi-tag',
-      status: 'disconnected',
-      category: 'Marketplace',
-    },
-    {
-      name: 'WhatsApp Business',
-      description: 'Envia notificaciones de pedidos y seguimiento por WhatsApp automaticamente',
-      icon: 'pi-whatsapp',
-      status: 'connected',
-      category: 'Comunicacion',
-    },
-    {
-      name: 'Google Analytics',
-      description: 'Conecta Google Analytics para rastrear el rendimiento de tu tienda y campanas',
-      icon: 'pi-chart-bar',
-      status: 'disconnected',
-      category: 'Analitica',
-    },
-    {
-      name: 'Facebook Pixel',
-      description: 'Instala el pixel de Facebook para rastrear conversiones y crear audiencias',
-      icon: 'pi-facebook',
-      status: 'disconnected',
-      category: 'Marketing',
+      id: 59296,
+      tipo: 'Confirmacion de datos',
+      nombre: 'milunos',
     },
   ];
 
-  getConnectedCount(): number {
-    return this.integrations.filter(i => i.status === 'connected').length;
+  onAdd(): void {
+    // Placeholder for "Agregar" action
   }
 
-  getDisconnectedCount(): number {
-    return this.integrations.filter(i => i.status === 'disconnected').length;
+  onView(integration: Integration): void {
+    // Placeholder for view action
   }
 
-  toggleConnection(integration: Integration): void {
-    integration.status = integration.status === 'connected' ? 'disconnected' : 'connected';
+  onEdit(integration: Integration): void {
+    // Placeholder for edit action
+  }
+
+  onDelete(integration: Integration): void {
+    // Placeholder for delete action
   }
 }

@@ -1,0 +1,92 @@
+@import '../../../../styles/variables-new';
+
+.otp-text {
+  font-family: $font-primary;
+  font-size: $font-md;
+  line-height: $line-height-large;
+  color: $gray-600;
+  margin: 0 0 $space-4;
+}
+
+.otp-field {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  margin-bottom: $space-3;
+}
+
+.otp-label {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-600;
+}
+
+.otp-input {
+  height: 48px;
+  padding: 0 $space-3;
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-xl;
+  letter-spacing: 6px;
+  text-align: center;
+  color: $gray-700;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    border-color: $primary-500;
+  }
+
+  &--error {
+    border-color: $error-500;
+  }
+}
+
+.otp-error {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $error-600;
+  margin: 0;
+}
+
+.otp-hint {
+  font-family: $font-primary;
+  font-size: $font-sm;
+  color: $gray-400;
+  margin: 0;
+}
+
+.otp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 $space-4;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.15s ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: $primary-500;
+    color: $neutral-white;
+
+    &:hover:not(:disabled) { background: $primary-600; }
+  }
+
+  &--secondary {
+    background: $gray-50;
+    color: $gray-600;
+
+    &:hover:not(:disabled) { background: $gray-100; }
+  }
+}

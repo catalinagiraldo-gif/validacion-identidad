@@ -1,0 +1,19 @@
+<ol class="dropi-steps" [class]="'dropi-steps--' + direction">
+  @for (step of steps; track step.label; let i = $index; let last = $last) {
+    <li class="dropi-steps__item" [class]="'dropi-steps__item--' + step.state">
+      <span class="dropi-steps__dot">
+        @if (step.state === 'completed') {
+          <i class="pi pi-check"></i>
+        } @else if (step.state === 'error') {
+          <i class="pi pi-times"></i>
+        } @else {
+          {{ i + 1 }}
+        }
+      </span>
+      <span class="dropi-steps__label">{{ step.label }}</span>
+      @if (!last) {
+        <span class="dropi-steps__connector"></span>
+      }
+    </li>
+  }
+</ol>

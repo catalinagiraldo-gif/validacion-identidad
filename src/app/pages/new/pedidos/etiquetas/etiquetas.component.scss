@@ -1,0 +1,348 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Etiquetas Page — New Architecture
+// Figma node 9275:63257 — Pedidos > Preferencias > Etiquetas
+// ============================================
+
+// Figma uses slightly different gray shades than the DS token scale
+// (gray-700 #32394d vs token $gray-700 #333b4d, gray-100 #e6eaf2 vs token $gray-100 #eef0f4).
+// Using exact Figma values per "use Figma value, document discrepancy" rule.
+$text-header: #32394d;
+$text-body: #475066;
+$text-muted: #69738c;
+$row-border: #e6eaf2;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-5 $space-6;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  margin-bottom: $space-4;
+
+  .breadcrumb-item {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $text-muted;
+    line-height: 1.5;
+
+    &.active {
+      color: $text-header;
+    }
+
+    &.breadcrumb-home {
+      display: flex;
+      align-items: center;
+
+      .pi-home {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .breadcrumb-chevron {
+    font-size: 10px;
+    color: $text-muted;
+  }
+}
+
+// ========== Header ==========
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  margin-bottom: $space-5;
+  flex-wrap: wrap;
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $text-header;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.btn-nueva-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  background: $primary-500;
+  color: $neutral-white;
+  border: none;
+  border-radius: $radius-3;
+  padding: $space-3;
+  height: 39px;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  white-space: nowrap;
+
+  i {
+    font-size: 14px;
+  }
+
+  &:hover {
+    background: $primary-600;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// ========== Table ==========
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.etiquetas-table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+  background: $neutral-white;
+  border-radius: $radius-2;
+  overflow: hidden;
+
+  thead {
+    tr {
+      border-bottom: 1px solid $row-border;
+    }
+
+    th {
+      font-family: $font-primary;
+      font-size: $font-sm;
+      font-weight: $font-bold;
+      color: $text-header;
+      text-align: left;
+      padding: $space-4 $space-3;
+      white-space: nowrap;
+    }
+
+    .col-num {
+      width: 90px;
+    }
+
+    .col-detalles {
+      width: 150px;
+    }
+  }
+
+  tbody {
+    tr.etiqueta-row {
+      border-bottom: 1px solid $row-border;
+      animation: fadeInRow 0.3s ease forwards;
+      opacity: 0;
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: $gray-50;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      font-family: $font-primary;
+      font-size: $font-md;
+      font-weight: $font-regular;
+      color: $text-body;
+      padding: $space-3;
+      height: 80px;
+      vertical-align: middle;
+    }
+  }
+}
+
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tag-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.action-icons {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+}
+
+.action-icon-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+
+  img {
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+
+  &:hover {
+    opacity: 0.7;
+    transform: translateY(-1px);
+  }
+}
+
+// ========== Paginator ==========
+.paginator {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: $space-1;
+  padding: $space-3 0;
+  flex-wrap: wrap;
+}
+
+.paginator-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-4;
+  border: none;
+  background: transparent;
+  color: $text-muted;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: $gray-50;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &.paginator-number.active {
+    background: $primary-500;
+    color: $neutral-white;
+    font-weight: $font-semibold;
+  }
+}
+
+// ========== Toast ==========
+.toast {
+  position: fixed;
+  bottom: $space-6;
+  right: $space-6;
+  padding: $space-3 $space-5;
+  border-radius: $radius-2;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  color: $neutral-white;
+  box-shadow: $shadow-large;
+  z-index: 1000;
+  animation: toastSlideIn 0.3s ease;
+
+  &.success {
+    background: $success-600;
+  }
+
+  &.info {
+    background: $info-600;
+  }
+
+  i {
+    font-size: $font-base;
+  }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== Responsive ==========
+@media (max-width: $bp-lg) {
+  .page-wrapper {
+    padding: $space-5 $space-4;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .page-header {
+    flex-wrap: wrap;
+  }
+
+  .btn-nueva-etiqueta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .page-title {
+    font-size: $font-xl;
+  }
+
+  .etiquetas-table {
+    thead th,
+    tbody td {
+      padding: $space-2;
+      font-size: $font-sm;
+    }
+  }
+
+  .paginator {
+    justify-content: center;
+  }
+}

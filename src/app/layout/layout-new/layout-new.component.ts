@@ -4,11 +4,12 @@ import { RouterOutlet } from '@angular/router';
 import { SidebarNewComponent } from '../sidebar-new/sidebar-new.component';
 import { HeaderNewComponent } from '../header-new/header-new.component';
 import { FabMenuComponent } from '../fab-menu/fab-menu.component';
+import { DropiToastComponent } from '../../common/components/dropi-toast/dropi-toast.component';
 
 @Component({
   selector: 'app-layout-new',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SidebarNewComponent, HeaderNewComponent, FabMenuComponent],
+  imports: [CommonModule, RouterOutlet, SidebarNewComponent, HeaderNewComponent, FabMenuComponent, DropiToastComponent],
   template: `
     <div class="layout-new">
       <app-header-new class="layout-new__header" />
@@ -19,6 +20,7 @@ import { FabMenuComponent } from '../fab-menu/fab-menu.component';
         </main>
       </div>
       <app-fab-menu />
+      <app-dropi-toast />
     </div>
   `,
   styleUrl: './layout-new.component.scss',

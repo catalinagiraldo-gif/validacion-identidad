@@ -1,0 +1,407 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Datos Bancarios — New Architecture
+// Figma: Ub7Up7f5K0WGuDC6g2jdCu, node 9275:81946
+// ============================================
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-5 $space-6;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  margin-bottom: $space-4;
+
+  .breadcrumb-item {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $gray-500;
+    line-height: $line-height-large;
+
+    &.muted {
+      color: $gray-500;
+    }
+
+    &:last-child {
+      color: $gray-700;
+    }
+
+    .pi-home {
+      font-size: $font-xs;
+    }
+  }
+
+  .breadcrumb-separator {
+    font-size: $font-sm;
+    color: $gray-400;
+    display: flex;
+    align-items: center;
+
+    i {
+      font-size: 10px;
+    }
+  }
+}
+
+// ========== Page Header ==========
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  flex-wrap: wrap;
+  margin-bottom: $space-5;
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-700;
+  margin: 0;
+  line-height: $line-height-simple;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-1;
+  height: 39px;
+  min-width: 200px;
+  padding: $space-3;
+  background: $primary-500;
+  color: $neutral-white;
+  border: none;
+  border-radius: $radius-3;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+
+  i {
+    font-size: $font-base;
+  }
+
+  &:hover {
+    background: $primary-600;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// ========== Data Table ==========
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: $neutral-white;
+  border-radius: $radius-2;
+  box-shadow: $shadow-small;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    tr {
+      background: $neutral-white;
+    }
+
+    th {
+      font-family: $font-primary;
+      font-size: $font-sm;
+      font-weight: $font-bold;
+      color: $gray-700;
+      text-align: left;
+      padding: $space-4 $space-3;
+      line-height: $line-height-simple;
+      border-bottom: 1px solid $gray-100;
+      white-space: nowrap;
+
+      &.col-actions {
+        width: 131px;
+      }
+    }
+  }
+
+  tbody {
+    tr.table-row {
+      border-bottom: 1px solid $gray-100;
+      animation: fadeInRow 0.3s ease forwards;
+      opacity: 0;
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: $gray-50;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      font-family: $font-primary;
+      font-size: $font-md;
+      font-weight: $font-regular;
+      color: $gray-600;
+      padding: $space-3;
+      line-height: $line-height-large;
+      white-space: nowrap;
+    }
+  }
+}
+
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== Account number tag ==========
+.account-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-1 $space-2;
+  border-radius: $radius-5;
+  background: $success-50;
+  color: $success-700;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  line-height: $line-height-large;
+  white-space: nowrap;
+}
+
+// ========== Action icons ==========
+.action-icons {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+}
+
+.action-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-1;
+  transition: opacity 0.2s ease;
+
+  img {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+// ========== Empty state ==========
+.empty-state {
+  text-align: center;
+  padding: $space-8 $space-4;
+  color: $gray-500;
+
+  i {
+    font-size: 36px;
+    color: $gray-300;
+    display: block;
+    margin-bottom: $space-3;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-md;
+    font-family: $font-primary;
+  }
+}
+
+// ========== Paginator ==========
+.paginator {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: $space-3;
+  padding: $space-3 0;
+  width: 100%;
+}
+
+.paginator-track {
+  width: 100%;
+  height: 4px;
+  border-radius: $radius-4;
+  background: $gray-50;
+  overflow: hidden;
+}
+
+.paginator-bar {
+  height: 100%;
+  border-radius: $radius-4;
+  background: $gray-300;
+  transition: width 0.2s ease;
+}
+
+.paginator-controls {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+}
+
+.page-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: $space-3;
+  background: none;
+  border: none;
+  border-radius: $radius-5;
+  color: $gray-500;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  i {
+    font-size: $font-sm;
+  }
+
+  &:hover:not(:disabled) {
+    background: $gray-50;
+    color: $primary-500;
+  }
+
+  &:disabled {
+    color: $gray-200;
+    cursor: not-allowed;
+  }
+}
+
+.page-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: $primary-500;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-regular;
+  line-height: $line-height-large;
+}
+
+// ========== Toast ==========
+.toast {
+  position: fixed;
+  bottom: $space-6;
+  right: $space-6;
+  padding: $space-3 $space-5;
+  border-radius: $radius-2;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-medium;
+  color: $neutral-white;
+  box-shadow: $shadow-large;
+  z-index: 1000;
+  animation: toastSlideIn 0.3s ease;
+
+  &.success {
+    background: $success-600;
+  }
+
+  &.info {
+    background: $info-600;
+  }
+
+  i {
+    font-size: $font-base;
+  }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========== Responsive ==========
+@media (max-width: $bp-lg) {
+  .page-wrapper {
+    padding: $space-5 $space-4;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-primary {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .data-table {
+    thead th,
+    tbody td {
+      padding: $space-2;
+      font-size: $font-sm;
+    }
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .page-title {
+    font-size: $font-xl;
+  }
+
+  .paginator {
+    align-items: center;
+  }
+}

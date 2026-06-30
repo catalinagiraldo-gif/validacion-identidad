@@ -1,240 +1,196 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+import { ToastService } from '../../../../common/services/toast.service';
+import { OtpVerificationModalComponent } from '../../../../common/components/otp-verification-modal/otp-verification-modal.component';
+
+type SeguridadTab = 'registro' | 'autenticacion' | 'sesiones';
 
 @Component({
   selector: 'app-seguridad-new',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, OtpVerificationModalComponent],
   styleUrls: ['./seguridad.component.scss'],
   template: `
     <div class="page-wrapper">
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <span class="breadcrumb-item"><i class="pi pi-home"></i></span>
+        <span class="breadcrumb-item breadcrumb-home"><i class="pi pi-home"></i></span>
         <i class="pi pi-chevron-right breadcrumb-chevron"></i>
-        <span class="breadcrumb-item">Configuraciones</span>
+        <span class="breadcrumb-item">Configurar</span>
+        <i class="pi pi-chevron-right breadcrumb-chevron"></i>
+        <span class="breadcrumb-item">Cuenta</span>
         <i class="pi pi-chevron-right breadcrumb-chevron"></i>
         <span class="breadcrumb-item active">Seguridad</span>
       </nav>
 
       <h1 class="page-title">Seguridad</h1>
 
-      <div class="seguridad-layout">
-        <!-- Change Password -->
-        <div class="section-card">
-          <div class="section-header">
-            <div class="section-icon">
-              <i class="pi pi-lock"></i>
-            </div>
-            <div>
-              <h2 class="section-title">Cambiar contrasena</h2>
-              <p class="section-subtitle">Actualiza tu contrasena para mantener tu cuenta segura</p>
-            </div>
-          </div>
-
-          <div class="form-stack">
-            <div class="form-group">
-              <label class="form-label">Contrasena actual</label>
-              <div class="input-password-wrapper">
-                <input
-                  [type]="showCurrent ? 'text' : 'password'"
-                  class="form-input"
-                  [(ngModel)]="passwordForm.current"
-                  placeholder="Ingresa tu contrasena actual"
-                />
-                <button
-                  class="toggle-password"
-                  (click)="showCurrent = !showCurrent"
-                  type="button"
-                >
-                  <i [class]="showCurrent ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Nueva contrasena</label>
-              <div class="input-password-wrapper">
-                <input
-                  [type]="showNew ? 'text' : 'password'"
-                  class="form-input"
-                  [(ngModel)]="passwordForm.newPassword"
-                  placeholder="Ingresa nueva contrasena"
-                />
-                <button
-                  class="toggle-password"
-                  (click)="showNew = !showNew"
-                  type="button"
-                >
-                  <i [class]="showNew ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
-                </button>
-              </div>
-              <div class="password-strength">
-                <div class="strength-bars">
-                  <div
-                    class="strength-bar"
-                    *ngFor="let i of [1,2,3,4]"
-                    [class.active]="getStrength() >= i"
-                    [class.weak]="getStrength() === 1"
-                    [class.medium]="getStrength() === 2"
-                    [class.strong]="getStrength() >= 3"
-                  ></div>
-                </div>
-                <span class="strength-label">{{ getStrengthLabel() }}</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Confirmar contrasena</label>
-              <div class="input-password-wrapper">
-                <input
-                  [type]="showConfirm ? 'text' : 'password'"
-                  class="form-input"
-                  [(ngModel)]="passwordForm.confirm"
-                  placeholder="Confirma nueva contrasena"
-                />
-                <button
-                  class="toggle-password"
-                  (click)="showConfirm = !showConfirm"
-                  type="button"
-                >
-                  <i [class]="showConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
-                </button>
-              </div>
-              <span
-                class="match-indicator"
-                *ngIf="passwordForm.confirm.length > 0"
-                [class.match]="passwordsMatch()"
-                [class.no-match]="!passwordsMatch()"
-              >
-                <i [class]="passwordsMatch() ? 'pi pi-check-circle' : 'pi pi-times-circle'"></i>
-                {{ passwordsMatch() ? 'Las contrasenas coinciden' : 'Las contrasenas no coinciden' }}
-              </span>
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button class="btn-primary">Actualizar</button>
-          </div>
+      <div class="tabs-card">
+        <!-- Tabs -->
+        <div class="tabs-row">
+          <button
+            class="tab"
+            [class.active]="activeTab === 'registro'"
+            (click)="activeTab = 'registro'"
+            type="button"
+          >
+            Datos de registro
+          </button>
+          <button
+            class="tab"
+            [class.active]="activeTab === 'autenticacion'"
+            (click)="activeTab = 'autenticacion'"
+            type="button"
+          >
+            Datos de autenticación
+          </button>
+          <button
+            class="tab"
+            [class.active]="activeTab === 'sesiones'"
+            (click)="activeTab = 'sesiones'"
+            type="button"
+          >
+            Mis sesiones
+          </button>
+          <div class="tab tab-filler"></div>
         </div>
 
-        <!-- 2FA Section -->
-        <div class="section-card">
-          <div class="section-header">
-            <div class="section-icon section-icon--teal">
-              <i class="pi pi-shield"></i>
-            </div>
-            <div class="section-header-text">
-              <h2 class="section-title">Autenticacion en dos pasos (2FA)</h2>
-              <p class="section-subtitle">Anade una capa adicional de seguridad a tu cuenta</p>
-            </div>
-            <label class="switch">
-              <input type="checkbox" [(ngModel)]="twoFactorEnabled" />
-              <span class="slider"></span>
-            </label>
+        <!-- Tab content: Datos de registro -->
+        <div class="tab-panel" *ngIf="activeTab === 'registro'">
+          <div class="panel-header">
+            <h2 class="panel-title">Datos de registro</h2>
+            <button class="link-button" type="button">¿Por qué es importante validar tu número telefónico?</button>
           </div>
 
-          <div class="tfa-content" *ngIf="twoFactorEnabled">
-            <div class="tfa-methods">
-              <div
-                class="tfa-method"
-                *ngFor="let method of tfaMethods"
-                [class.active]="method.active"
-                (click)="method.active = !method.active"
-              >
-                <i [class]="'pi ' + method.icon"></i>
-                <div class="tfa-method-info">
-                  <span class="tfa-method-name">{{ method.name }}</span>
-                  <span class="tfa-method-desc">{{ method.description }}</span>
-                </div>
-                <div class="tfa-method-status" [class.enabled]="method.active">
-                  {{ method.active ? 'Activo' : 'Inactivo' }}
+          <div class="registro-fields">
+            <div class="field-block">
+              <div class="form-group">
+                <label class="form-label">Email de registro</label>
+                <input
+                  type="email"
+                  class="form-input"
+                  [class.form-input-disabled]="!editingEmail"
+                  [(ngModel)]="registro.email"
+                  [disabled]="!editingEmail"
+                />
+              </div>
+              <button class="link-edit-btn" type="button" (click)="editingEmail = !editingEmail">
+                {{ editingEmail ? 'Cancelar' : 'Cambiar' }}
+              </button>
+              @if (!editingEmail) {
+                <span class="status-tag status-tag-success">
+                  <i class="pi pi-check-circle"></i>
+                  Verificado
+                </span>
+              }
+            </div>
+
+            <div class="field-block">
+              <div class="form-group">
+                <label class="form-label">Número de registro</label>
+                <div class="phone-input-row">
+                  <div class="phone-code">
+                    <img src="assets/images/configurar/flag-colombia.svg" alt="Colombia" class="phone-flag" />
+                    <span>57</span>
+                  </div>
+                  <input type="tel" class="form-input" [(ngModel)]="registro.telefono" [disabled]="!editingTelefono" />
                 </div>
               </div>
+              <button class="link-edit-btn" type="button" (click)="editingTelefono = !editingTelefono">
+                {{ editingTelefono ? 'Cancelar' : 'Cambiar' }}
+              </button>
+              @if (!editingTelefono) {
+                <span class="status-tag status-tag-success">
+                  <i class="pi pi-check-circle"></i>
+                  Verificado
+                </span>
+              }
             </div>
           </div>
+
+          <button class="btn-save-registro" type="button" (click)="onSaveRegistro()" [disabled]="!editingEmail && !editingTelefono">
+            Guardar datos de registro
+          </button>
         </div>
 
-        <!-- Active Sessions -->
-        <div class="section-card">
-          <div class="section-header">
-            <div class="section-icon section-icon--purple">
-              <i class="pi pi-desktop"></i>
-            </div>
-            <div>
-              <h2 class="section-title">Sesiones activas</h2>
-              <p class="section-subtitle">Dispositivos donde tu cuenta esta conectada</p>
-            </div>
+        <!-- Tab content: Datos de autenticación -->
+        <div class="tab-panel" *ngIf="activeTab === 'autenticacion'">
+          <div class="panel-header">
+            <h2 class="panel-title">Datos de autenticación</h2>
           </div>
+          <p class="panel-empty-text">Próximamente podrás administrar tu contraseña y verificación en dos pasos desde aquí.</p>
+        </div>
 
-          <div class="sessions-list">
-            <div class="session-row" *ngFor="let session of sessions">
-              <div class="session-device">
-                <i [class]="'pi ' + session.icon + ' session-device-icon'"></i>
-                <div class="session-info">
-                  <span class="session-name">{{ session.device }}</span>
-                  <span class="session-meta">{{ session.location }} - {{ session.lastActive }}</span>
-                </div>
-              </div>
-              <span
-                class="session-badge"
-                [class.current]="session.current"
-              >
-                {{ session.current ? 'Sesion actual' : 'Activa' }}
-              </span>
-            </div>
+        <!-- Tab content: Mis sesiones -->
+        <div class="tab-panel" *ngIf="activeTab === 'sesiones'">
+          <div class="panel-header">
+            <h2 class="panel-title">Mis sesiones</h2>
           </div>
+          <p class="panel-empty-text">Próximamente podrás ver y cerrar las sesiones activas de tu cuenta desde aquí.</p>
         </div>
       </div>
     </div>
+
+    <app-otp-verification-modal
+      [visible]="otpModalVisible"
+      [medio]="otpMedioActual"
+      (visibleChange)="otpModalVisible = $event"
+      (verified)="onOtpVerificado()"
+      (cancelled)="onOtpCancelado()"
+    ></app-otp-verification-modal>
   `,
 })
 export class SeguridadNewComponent {
-  showCurrent = false;
-  showNew = false;
-  showConfirm = false;
-  twoFactorEnabled = false;
+  private toast = inject(ToastService);
 
-  passwordForm = {
-    current: '',
-    newPassword: '',
-    confirm: '',
+  activeTab: SeguridadTab = 'registro';
+
+  registro = {
+    email: 'marisama0209@gmail.com',
+    telefono: '3017393262',
   };
 
-  tfaMethods = [
-    { name: 'SMS', description: 'Recibe un codigo por mensaje de texto', icon: 'pi-mobile', active: true },
-    { name: 'Email', description: 'Recibe un codigo por correo electronico', icon: 'pi-envelope', active: false },
-    { name: 'App autenticadora', description: 'Usa Google Authenticator o similar', icon: 'pi-qrcode', active: false },
-  ];
+  private registroOriginal = { ...this.registro };
 
-  sessions = [
-    { device: 'Chrome - MacOS', location: 'Bogota, Colombia', lastActive: 'Ahora', icon: 'pi-desktop', current: true },
-    { device: 'Safari - iPhone 15', location: 'Bogota, Colombia', lastActive: 'Hace 2 horas', icon: 'pi-mobile', current: false },
-    { device: 'Firefox - Windows 11', location: 'Medellin, Colombia', lastActive: 'Hace 1 dia', icon: 'pi-desktop', current: false },
-  ];
+  editingEmail = false;
+  editingTelefono = false;
 
-  getStrength(): number {
-    const pw = this.passwordForm.newPassword;
-    if (!pw) return 0;
-    let score = 0;
-    if (pw.length >= 8) score++;
-    if (/[A-Z]/.test(pw)) score++;
-    if (/[0-9]/.test(pw)) score++;
-    if (/[^A-Za-z0-9]/.test(pw)) score++;
-    return score;
+  otpModalVisible = false;
+  otpMedioActual = '';
+  private pendingRegistro = { ...this.registro };
+
+  onSaveRegistro(): void {
+    const emailCambio = this.registro.email !== this.registroOriginal.email;
+    const telefonoCambio = this.registro.telefono !== this.registroOriginal.telefono;
+
+    if (!emailCambio && !telefonoCambio) {
+      this.editingEmail = false;
+      this.editingTelefono = false;
+      return;
+    }
+
+    // Regla: OTP enviado al medio ACTUAL (ya verificado), no al nuevo — patrón antifraude.
+    this.otpMedioActual = emailCambio ? this.registroOriginal.email : this.formatTelefono(this.registroOriginal.telefono);
+    this.pendingRegistro = { ...this.registro };
+    this.otpModalVisible = true;
   }
 
-  getStrengthLabel(): string {
-    const s = this.getStrength();
-    if (s === 0) return '';
-    if (s === 1) return 'Debil';
-    if (s === 2) return 'Media';
-    if (s === 3) return 'Fuerte';
-    return 'Muy fuerte';
+  onOtpVerificado(): void {
+    this.registro = { ...this.pendingRegistro };
+    this.registroOriginal = { ...this.registro };
+    this.editingEmail = false;
+    this.editingTelefono = false;
+    this.toast.success('Datos de registro actualizados.');
   }
 
-  passwordsMatch(): boolean {
-    return this.passwordForm.newPassword === this.passwordForm.confirm && this.passwordForm.newPassword.length > 0;
+  onOtpCancelado(): void {
+    this.registro = { ...this.registroOriginal };
+    this.toast.info('Cambios descartados.');
+  }
+
+  private formatTelefono(telefono: string): string {
+    return `+57 ${telefono}`;
   }
 }

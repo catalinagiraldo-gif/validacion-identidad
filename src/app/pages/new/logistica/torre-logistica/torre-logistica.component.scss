@@ -1,0 +1,596 @@
+@import 'styles/variables-new';
+
+// ============================================
+// Torre Logistica Page — New Architecture
+// Figma node 9275:66807 — Logistica > Torre logistica
+// ============================================
+
+// Figma uses slightly different gray shades than the DS token scale
+// (gray-700 #32394d, gray-900 #495057, gray-100 #e9eef5 / #e2e4e9).
+// Using exact Figma values per "use Figma value, document discrepancy" rule.
+$text-header: #32394d;
+$text-card: #495057;
+$text-muted: #69738c;
+$text-label: #475066;
+$card-border: #e9eef5;
+$track-bg: #e2e4e9;
+$bar-success: #0abb87;
+$bar-warning: #f1b44c;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $space-5 $space-6;
+}
+
+// ========== Breadcrumb ==========
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  margin-bottom: $space-2;
+
+  .breadcrumb-item {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $text-muted;
+    line-height: 1.5;
+
+    &.active {
+      color: $text-header;
+    }
+
+    &.breadcrumb-home {
+      display: flex;
+      align-items: center;
+
+      .pi-home {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .breadcrumb-chevron {
+    font-size: 10px;
+    color: $text-muted;
+  }
+}
+
+.page-title {
+  font-family: $font-primary;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $text-header;
+  margin: 0 0 $space-5 0;
+  line-height: 1.1;
+}
+
+// ========== Filter bar ==========
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: $space-3;
+  margin-bottom: $space-4;
+  flex-wrap: wrap;
+}
+
+.filter-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  width: 217px;
+  max-width: 100%;
+
+  label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $text-label;
+  }
+}
+
+.filter-input,
+.filter-select {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  height: 40px;
+  padding: $space-2 $space-3;
+  border: 1px solid $gray-200;
+  border-radius: $radius-3;
+  background: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $text-muted;
+  cursor: default;
+
+  i {
+    font-size: 16px;
+    color: $gray-400;
+  }
+}
+
+.filter-select {
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: $primary-400;
+  }
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.filter-dropdown {
+  position: absolute;
+  top: calc(100% + #{$space-1});
+  left: 0;
+  z-index: 20;
+  background: $neutral-white;
+  border: 1px solid $gray-100;
+  border-radius: $radius-2;
+  box-shadow: $shadow-medium;
+  min-width: 100%;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: $space-1;
+
+  &--right {
+    left: auto;
+    right: 0;
+  }
+}
+
+.filter-dropdown__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: $space-2 $space-3;
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $text-label;
+  cursor: pointer;
+  border-radius: $radius-1;
+  white-space: nowrap;
+
+  &:hover {
+    background: $gray-50;
+    color: $primary-600;
+  }
+}
+
+.btn-apply-filter {
+  width: 42px;
+  height: 40px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: $radius-3;
+  background: $primary-500;
+  color: $neutral-white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+
+  i {
+    font-size: 16px;
+  }
+
+  &:hover {
+    background: $primary-600;
+    transform: translateY(-1px);
+  }
+}
+
+// ========== Controls row (toggles + sort) ==========
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-5;
+  flex-wrap: wrap;
+  gap: $space-3;
+}
+
+.toggle-group {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+}
+
+.toggle-item {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+.toggle-switch {
+  width: 40px;
+  height: 21px;
+  border-radius: $radius-3;
+  border: none;
+  background: $gray-200;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+
+  &__indicator {
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: $neutral-white;
+    transition: left 0.2s ease;
+  }
+
+  &.active {
+    background: $primary-500;
+
+    .toggle-switch__indicator {
+      left: 20px;
+    }
+  }
+}
+
+.toggle-label {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-regular;
+  color: $text-muted;
+  white-space: nowrap;
+}
+
+.sort-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.sort-label {
+  font-family: $font-primary;
+  font-size: $font-md;
+  color: $text-card;
+  white-space: nowrap;
+}
+
+.sort-select {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  height: 40px;
+  padding: $space-3;
+  border-radius: $radius-1;
+  cursor: pointer;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  color: $text-muted;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: $gray-50;
+  }
+
+  i {
+    font-size: 16px;
+  }
+}
+
+// ========== Content grid: carrier list + map ==========
+.content-grid {
+  display: grid;
+  grid-template-columns: 444px 1fr;
+  gap: $space-5;
+  align-items: start;
+}
+
+.carrier-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  max-height: 700px;
+  overflow-y: auto;
+  padding-right: $space-2;
+}
+
+.carrier-card {
+  border: 1px solid $card-border;
+  border-radius: $radius-3;
+  padding: $space-3;
+  background: $neutral-white;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+  }
+}
+
+.carrier-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.carrier-name {
+  font-family: $font-primary;
+  font-size: $font-base;
+  font-weight: $font-bold;
+  color: $text-card;
+  line-height: 24px;
+}
+
+.carrier-block {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  width: 100%;
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $space-2;
+  }
+
+  &__label {
+    font-family: $font-primary;
+    font-size: $font-md;
+    font-weight: $font-bold;
+    color: $text-card;
+    line-height: 20px;
+  }
+
+  &__sublabel {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $text-card;
+    line-height: 16px;
+  }
+
+  &__bar-row {
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+  }
+
+  &__stats {
+    display: flex;
+    gap: $space-3;
+    flex-wrap: wrap;
+  }
+}
+
+.bar-icon {
+  width: 19px;
+  height: 18px;
+  flex-shrink: 0;
+
+  &--dropi {
+    width: 18px;
+    height: 17px;
+  }
+}
+
+.bar-track {
+  flex: 1;
+  min-width: 60px;
+  height: 10px;
+  border-radius: $radius-3;
+  background: $track-bg;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: $radius-3;
+  transition: width 0.4s ease;
+
+  &--success {
+    background: $bar-success;
+  }
+
+  &--warning {
+    background: $bar-warning;
+  }
+}
+
+.bar-value {
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  color: $text-card;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.stat {
+  flex: 1;
+  min-width: 110px;
+  display: flex;
+  flex-direction: column;
+
+  &-label {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    font-weight: $font-regular;
+    color: $text-card;
+    line-height: 16px;
+    white-space: nowrap;
+  }
+
+  &-value {
+    font-family: $font-primary;
+    font-size: $font-xl;
+    font-weight: $font-bold;
+    color: $text-card;
+    line-height: 28px;
+  }
+}
+
+.carrier-divider {
+  height: 1px;
+  background: $track-bg;
+  width: 100%;
+}
+
+// ========== Map panel ==========
+.map-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: $space-1;
+}
+
+.map-zoom-controls {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  position: absolute;
+  top: $space-5;
+  right: 0;
+  z-index: 10;
+}
+
+.map-zoom-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-3;
+  border: 1px solid $gray-200;
+  background: $neutral-white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: $text-muted;
+  transition: background 0.2s ease;
+
+  i {
+    font-size: 14px;
+  }
+
+  &--primary {
+    background: $primary-500;
+    border-color: $primary-500;
+    color: $neutral-white;
+
+    &:hover {
+      background: $primary-600;
+    }
+  }
+
+  &:hover {
+    background: $gray-50;
+  }
+}
+
+.map-wrapper {
+  width: 100%;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.colombia-map {
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.25s ease;
+}
+
+// ========== Responsive ==========
+@media (max-width: $bp-lg) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .carrier-list {
+    max-height: 520px;
+  }
+
+  .map-panel {
+    order: -1;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .filter-bar {
+    flex-wrap: wrap;
+  }
+
+  .filter-field {
+    width: calc(50% - #{$space-2});
+  }
+
+  .controls-row {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .page-wrapper {
+    padding: $space-4;
+  }
+
+  .page-title {
+    font-size: $font-xl;
+  }
+
+  .filter-field {
+    width: 100%;
+  }
+
+  .btn-apply-filter {
+    width: 100%;
+  }
+
+  .toggle-group {
+    flex-wrap: wrap;
+  }
+
+  .sort-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .carrier-block__stats {
+    flex-direction: column;
+    gap: $space-2;
+  }
+}

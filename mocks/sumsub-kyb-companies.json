@@ -1,0 +1,7 @@
+[
+  { "id": "kyb-001", "razonSocial": "Dropi SAS", "nit": "901123456-7", "pais": "CO", "representanteLegal": "Andrés Felipe Vega Castillo" },
+  { "id": "kyb-002", "razonSocial": "Dropi Colombia S.A.S", "nit": "900987654-1", "pais": "CO", "representanteLegal": "Laura Isabel Martínez Suárez" },
+  { "id": "kyb-003", "razonSocial": "TechStore SAS", "nit": "901234567-3", "pais": "CO", "representanteLegal": "Carlos Andrés Gómez Ríos" },
+  { "id": "kyb-004", "razonSocial": "Inversiones XYZ SA de CV", "nit": "LOMM800315HDF", "pais": "MX", "representanteLegal": "Miguel Ángel López Mendoza" },
+  { "id": "kyb-005", "razonSocial": "E-Commerce Argentina SRL", "nit": "30-71234567-8", "pais": "AR", "representanteLegal": "María José Rodríguez Pereyra" }
+]

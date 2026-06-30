@@ -431,6 +431,10 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
         titulo: 'Activa tu Dropicard en minutos',
         descripcion: 'Verificamos tu identidad en menos de 5 minutos, una sola vez. Lo que se activa:',
       },
+      transferencia: {
+        titulo: 'Verifica tu identidad para transferir',
+        descripcion: 'En menos de 5 minutos confirmamos quién eres. Tus transferencias entre cuentas quedan habilitadas de forma permanente.',
+      },
     };
     return map[this.selectorOrigen()];
   }
@@ -452,6 +456,11 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
         { icon: 'assets/icons/sidebar/gali-v5/money-coin.svg', label: 'Transferencias libres',    desc: 'Mueve dinero entre tus cuentas Dropi sin restricciones' },
         { icon: 'assets/icons/sidebar/certificated.svg',        label: 'Cuenta verificada',       desc: 'Cumple con las regulaciones de los 12 países de operación' },
       ],
+      transferencia: [
+        { icon: 'assets/icons/sidebar/gali-v5/money-coin.svg', label: 'Transferencias libres', desc: 'Mueve dinero entre tus cuentas Dropi sin restricciones' },
+        { icon: 'assets/icons/sidebar/certificated.svg',        label: 'Proceso seguro',        desc: 'Tus datos están cifrados y protegidos en todo momento' },
+        { icon: 'assets/icons/sidebar/user-check.svg',          label: 'Solo esta vez',          desc: 'No volverás a pasar por este paso — es permanente' },
+      ],
     };
     return all[this.selectorOrigen()];
   }
@@ -466,6 +475,7 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
       configuraciones: 'Volver a Configuraciones',
       retiro: 'Continuar con mi retiro',
       dropicard: 'Volver a Dropicard',
+      transferencia: 'Continuar con mi transferencia',
     };
     return map[this.selectorOrigen()];
   }
@@ -475,6 +485,7 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
       configuraciones: 'usar todas las funciones de tu cuenta',
       retiro: 'procesar retiros de saldo',
       dropicard: 'solicitar tu Dropicard',
+      transferencia: 'transferir entre tus cuentas',
     };
     return map[this.selectorOrigen()];
   }

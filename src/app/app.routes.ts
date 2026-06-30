@@ -320,8 +320,8 @@ export const routes: Routes = [
       {
         path: 'mis-pedidos/etiquetas',
         loadComponent: () =>
-          import('./pages/prototype-gallery/prototype-gallery.component').then(
-            m => m.PrototypeGalleryComponent,
+          import('./pages/new/pedidos/etiquetas/etiquetas.component').then(
+            m => m.EtiquetasNewComponent,
           ),
       },
       // Garantias
@@ -357,8 +357,8 @@ export const routes: Routes = [
       {
         path: 'reportes/torre-logistica',
         loadComponent: () =>
-          import('./pages/prototype-gallery/prototype-gallery.component').then(
-            m => m.PrototypeGalleryComponent,
+          import('./pages/new/logistica/torre-logistica/torre-logistica.component').then(
+            m => m.TorreLogisticaNewComponent,
           ),
       },
       // Reportes
@@ -369,12 +369,26 @@ export const routes: Routes = [
             m => m.ReportesNewComponent,
           ),
       },
-      // Financiero
+      // Financiero — Wallet
       {
         path: 'historial-de-cartera',
         loadComponent: () =>
           import('./pages/new/financiero/wallet/wallet.component').then(
             m => m.WalletNewComponent,
+          ),
+      },
+      {
+        path: 'financiero/datos-bancarios',
+        loadComponent: () =>
+          import('./pages/new/financiero/datos-bancarios/datos-bancarios.component').then(
+            m => m.DatosBancariosNewComponent,
+          ),
+      },
+      {
+        path: 'financiero/retiros-de-saldo',
+        loadComponent: () =>
+          import('./pages/new/financiero/retiros-saldo/retiros-saldo.component').then(
+            m => m.RetirosSaldoNewComponent,
           ),
       },
       // Dropicard
@@ -385,21 +399,33 @@ export const routes: Routes = [
             m => m.DropicardNewComponent,
           ),
       },
-      // Facturacion
+      // Financiero — Facturación
       {
-        path: 'facturacion',
+        path: 'financiero/datos-facturacion',
         loadComponent: () =>
-          import('./pages/new/financiero/facturacion/facturacion.component').then(
-            m => m.FacturacionNewComponent,
+          import('./pages/new/financiero/datos-facturacion/datos-facturacion.component').then(
+            m => m.DatosFacturacionNewComponent,
+          ),
+      },
+      {
+        path: 'financiero/facturas',
+        loadComponent: () =>
+          import('./pages/new/financiero/facturas/facturas.component').then(
+            m => m.FacturasNewComponent,
+          ),
+      },
+      {
+        path: 'financiero/notas-credito',
+        loadComponent: () =>
+          import('./pages/new/financiero/notas-credito/notas-credito.component').then(
+            m => m.NotasCreditoNewComponent,
           ),
       },
       // Marketing
       {
         path: 'marketing',
-        loadComponent: () =>
-          import('./pages/new/marketing/chatea-pro/chatea-pro.component').then(
-            m => m.ChateaProNewComponent,
-          ),
+        redirectTo: 'marketing/campanas',
+        pathMatch: 'full',
       },
       {
         path: 'marketing/campanas',
@@ -407,6 +433,18 @@ export const routes: Routes = [
           import('./pages/new/marketing/campanas/campanas.component').then(
             m => m.CampanasNewComponent,
           ),
+      },
+      {
+        path: 'marketing/automatizacion',
+        loadComponent: () =>
+          import('./pages/new/shared/pendiente-diseno/pendiente-diseno.component').then(
+            m => m.PendienteDisenoComponent,
+          ),
+        data: {
+          title: 'Automatización',
+          breadcrumb: ['Marketing', 'SMS y Correo', 'Automatización'],
+          figmaNote: 'Pendiente de extraer node-id 9336-42587 de Figma.',
+        },
       },
       {
         path: 'marketing/chatea-pro',
@@ -421,6 +459,30 @@ export const routes: Routes = [
           import('./pages/new/marketing/roax/roax.component').then(
             m => m.RoaxNewComponent,
           ),
+      },
+      {
+        path: 'marketing/informes',
+        loadComponent: () =>
+          import('./pages/new/shared/pendiente-diseno/pendiente-diseno.component').then(
+            m => m.PendienteDisenoComponent,
+          ),
+        data: {
+          title: 'Informes',
+          breadcrumb: ['Marketing', 'Roax', 'Informes'],
+          figmaNote: 'Pendiente de extraer node-id 9341-45123 de Figma.',
+        },
+      },
+      {
+        path: 'marketing/lanzador-campanas',
+        loadComponent: () =>
+          import('./pages/new/shared/pendiente-diseno/pendiente-diseno.component').then(
+            m => m.PendienteDisenoComponent,
+          ),
+        data: {
+          title: 'Lanzador de campañas',
+          breadcrumb: ['Marketing', 'Roax', 'Lanzador de campañas'],
+          figmaNote: 'Pendiente de extraer node-id 12215-75390 de Figma.',
+        },
       },
       {
         path: 'marketing/creador-paginas',
@@ -455,10 +517,8 @@ export const routes: Routes = [
       // Configuraciones
       {
         path: 'configuraciones',
-        loadComponent: () =>
-          import('./pages/prototype-gallery/prototype-gallery.component').then(
-            m => m.PrototypeGalleryComponent,
-          ),
+        redirectTo: 'configuraciones/cuenta',
+        pathMatch: 'full',
       },
       {
         path: 'configuraciones/datos-personales',

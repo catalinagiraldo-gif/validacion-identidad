@@ -11,8 +11,7 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: $space-5 $space-6;
-  background-color: $gray-50;
+  padding: $space-4 $space-6;
 }
 
 // --- Breadcrumb ---
@@ -20,10 +19,10 @@
   display: flex;
   align-items: center;
   gap: $space-2;
-  margin-bottom: $space-5;
+  margin-bottom: $space-4;
   font-family: $font-primary;
   font-size: $font-sm;
-  color: $gray-400;
+  color: $gray-500;
 
   .breadcrumb-chevron {
     font-size: 10px;
@@ -31,11 +30,10 @@
   }
 
   .breadcrumb-item {
-    color: $gray-400;
+    color: $gray-500;
 
     &.active {
       color: $gray-700;
-      font-weight: $font-semibold;
     }
   }
 }
@@ -43,9 +41,9 @@
 // --- Page Header ---
 .page-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: $space-6;
+  margin-bottom: $space-5;
   flex-wrap: wrap;
   gap: $space-4;
 }
@@ -55,257 +53,147 @@
   font-size: $font-2xl;
   font-weight: $font-bold;
   color: $gray-700;
-  margin: 0 0 $space-1 0;
-}
-
-.page-subtitle {
-  font-family: $font-primary;
-  font-size: $font-md;
-  color: $gray-400;
   margin: 0;
 }
 
-.stats-row {
-  display: flex;
-  gap: $space-3;
-}
-
-.stat-pill {
-  display: flex;
-  align-items: center;
-  gap: $space-2;
-  padding: $space-2 $space-4;
-  background-color: $success-50;
-  border-radius: $radius-4;
-
-  .stat-number {
-    font-family: $font-primary;
-    font-size: $font-lg;
-    font-weight: $font-bold;
-    color: $success-600;
-  }
-
-  .stat-label {
-    font-family: $font-primary;
-    font-size: $font-sm;
-    color: $success-600;
-  }
-
-  &--inactive {
-    background-color: $gray-100;
-
-    .stat-number {
-      color: $gray-600;
-    }
-
-    .stat-label {
-      color: $gray-500;
-    }
-  }
-}
-
-// --- Grid ---
-.integrations-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: $space-5;
-}
-
-// --- Card ---
-.integration-card {
-  background-color: $neutral-white;
-  border-radius: $radius-3;
-  padding: $space-5;
-  box-shadow: $shadow-small;
-  display: flex;
-  flex-direction: column;
-  gap: $space-4;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  animation: fadeInUp 0.4s ease forwards;
-  opacity: 0;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: $shadow-medium;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.card-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: $radius-3;
-  background-color: $primary-50;
-  display: flex;
+.btn-add {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: $space-1;
+  height: 39px;
+  min-width: 200px;
+  padding: $space-3;
+  border: none;
+  border-radius: $radius-3;
+  background-color: $primary-500;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   i {
-    font-size: $font-xl;
+    font-size: $font-md;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba($primary-500, 0.3);
+  }
+}
+
+// --- Table ---
+.table-card {
+  background-color: $neutral-white;
+  border-radius: $radius-3;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: $font-primary;
+
+  th {
+    text-align: left;
+    padding: $space-4 $space-3;
+    font-size: $font-sm;
+    font-weight: $font-bold;
+    color: $gray-700;
+    background-color: $neutral-white;
+    white-space: nowrap;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  td {
+    padding: $space-3;
+    font-size: $font-md;
+    color: $gray-600;
+    border-bottom: 1px solid $gray-100;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: $gray-50;
+    }
+  }
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+}
+
+.action-icon {
+  font-size: $font-xl;
+  color: $gray-500;
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  &:hover {
     color: $primary-500;
   }
 }
 
-.status-badge {
-  display: inline-flex;
+// --- Paginator ---
+.paginator {
+  display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: $space-1;
-  padding: $space-1 $space-3;
+  padding: $space-3 $space-2;
+}
+
+.page-arrow,
+.page-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
   border-radius: $radius-4;
-  font-family: $font-primary;
-  font-size: $font-xs;
-  font-weight: $font-semibold;
-
-  &.connected {
-    background-color: $success-50;
-    color: $success-600;
-
-    .status-dot {
-      background-color: $success-500;
-    }
-  }
-
-  &.disconnected {
-    background-color: $gray-100;
-    color: $gray-500;
-
-    .status-dot {
-      background-color: $gray-400;
-    }
-  }
-}
-
-.status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.card-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: $space-2;
-}
-
-.card-title {
-  font-family: $font-primary;
-  font-size: $font-base;
-  font-weight: $font-bold;
-  color: $gray-700;
-  margin: 0;
-}
-
-.card-description {
-  font-family: $font-primary;
-  font-size: $font-sm;
-  color: $gray-400;
-  margin: 0;
-  line-height: 1.5;
-}
-
-.card-category {
-  font-family: $font-primary;
-  font-size: $font-xs;
-  color: $secondary-500;
-  font-weight: $font-medium;
-  margin-top: auto;
-}
-
-.card-footer {
-  display: flex;
-  align-items: center;
-  gap: $space-2;
-  padding-top: $space-4;
-  border-top: 1px solid $gray-100;
-}
-
-.btn-integration {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: $space-2;
-  height: 36px;
-  border-radius: $radius-2;
-  font-family: $font-primary;
-  font-size: $font-sm;
-  font-weight: $font-semibold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &.btn-connected {
-    background-color: $success-50;
-    border: 1px solid $success-200;
-    color: $success-600;
-
-    &:hover {
-      background-color: $success-100;
-    }
-  }
-
-  &.btn-disconnected {
-    background-color: $primary-500;
-    border: none;
-    color: $neutral-white;
-
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba($primary-500, 0.3);
-    }
-  }
-}
-
-.btn-config {
-  width: 36px;
-  height: 36px;
-  border-radius: $radius-2;
-  border: 1px solid $gray-200;
   background: transparent;
-  color: $gray-400;
+  color: $gray-500;
+  font-family: $font-primary;
+  font-size: $font-sm;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.15s ease;
 
   &:hover {
-    border-color: $gray-400;
-    color: $gray-600;
+    background-color: $gray-50;
+  }
+}
+
+.page-number.active {
+  background-color: $primary-500;
+  color: $neutral-white;
+
+  &:hover {
+    background-color: $primary-500;
   }
 }
 
 // --- Responsive ---
-@media (max-width: $bp-lg) {
-  .integrations-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 @media (max-width: $bp-md) {
   .page-header {
     flex-direction: column;
+    align-items: flex-start;
   }
 
-  .integrations-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: $space-4;
+  .btn-add {
+    width: 100%;
+    min-width: 0;
   }
 }
 
@@ -318,12 +206,7 @@
     font-size: $font-xl;
   }
 
-  .integrations-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stats-row {
-    width: 100%;
-    justify-content: flex-start;
+  .paginator {
+    justify-content: center;
   }
 }

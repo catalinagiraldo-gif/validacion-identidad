@@ -1,18 +1,19 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 interface Referral {
-  name: string;
-  email: string;
-  date: string;
-  status: 'activo' | 'pendiente' | 'inactivo';
-  commission: number;
+  id: number;
+  nombre: string;
+  correo: string;
+  telefono: string;
+  estado: 'Activo' | 'Inactivo';
 }
 
 @Component({
   selector: 'app-referidos-new',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   styleUrls: ['./referidos.component.scss'],
   template: `
     <div class="page-wrapper">
@@ -20,139 +21,161 @@ interface Referral {
       <nav class="breadcrumb">
         <span class="breadcrumb-item"><i class="pi pi-home"></i></span>
         <i class="pi pi-chevron-right breadcrumb-chevron"></i>
-        <span class="breadcrumb-item">Configuraciones</span>
+        <span class="breadcrumb-item">Configurar</span>
         <i class="pi pi-chevron-right breadcrumb-chevron"></i>
         <span class="breadcrumb-item active">Referidos</span>
       </nav>
 
-      <h1 class="page-title">Referidos</h1>
+      <div class="page-header">
+        <h1 class="page-title">Referidos</h1>
+        <button class="btn-export" (click)="onExport()">
+          <i class="pi pi-download"></i>
+          Exportar
+        </button>
+      </div>
 
-      <!-- Referral Link Card -->
-      <div class="referral-link-card">
-        <div class="referral-link-content">
-          <div class="referral-icon">
-            <i class="pi pi-share-alt"></i>
-          </div>
-          <div class="referral-link-info">
-            <h3 class="referral-link-title">Tu enlace de referido</h3>
-            <p class="referral-link-desc">Comparte este enlace y gana comisiones por cada usuario que se registre</p>
+      <!-- Affiliate Link Bar -->
+      <div class="affiliate-bar">
+        <div class="affiliate-text">
+          <span class="affiliate-label">Link de afiliados:</span>
+          <span class="affiliate-url">{{ affiliateLink }}</span>
+        </div>
+        <button class="btn-copy" (click)="copyLink()" [title]="copied ? 'Copiado' : 'Copiar'">
+          <i [class]="copied ? 'pi pi-check' : 'pi pi-copy'"></i>
+        </button>
+      </div>
+
+      <!-- Filters Row -->
+      <div class="filters-row">
+        <div class="date-filter">
+          <label class="filter-label">Rango de fecha</label>
+          <div class="date-filter-row">
+            <div class="date-input">
+              <i class="pi pi-calendar"></i>
+              <span>{{ dateRange }}</span>
+            </div>
+            <button class="btn-go" (click)="onFilterDate()" aria-label="Aplicar filtro de fecha">
+              <i class="pi pi-arrow-right"></i>
+            </button>
           </div>
         </div>
-        <div class="referral-link-input-row">
-          <div class="referral-link-box">
-            <i class="pi pi-link"></i>
-            <span class="referral-url">{{ referralLink }}</span>
-          </div>
-          <button class="btn-copy" (click)="copyLink()">
-            <i [class]="copied ? 'pi pi-check' : 'pi pi-copy'"></i>
-            {{ copied ? 'Copiado!' : 'Copiar' }}
-          </button>
+
+        <div class="search-box">
+          <i class="pi pi-search"></i>
+          <input type="text" placeholder="Buscar" [(ngModel)]="searchTerm" name="search" />
         </div>
       </div>
 
-      <!-- Stats Row -->
-      <div class="stats-grid">
-        <div class="stat-card" *ngFor="let stat of stats">
-          <div class="stat-icon-wrapper" [ngStyle]="{ 'background-color': stat.bgColor }">
-            <i [class]="'pi ' + stat.icon" [ngStyle]="{ color: stat.iconColor }"></i>
-          </div>
-          <div class="stat-content">
-            <span class="stat-value">{{ stat.value }}</span>
-            <span class="stat-label">{{ stat.label }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Referrals Table -->
+      <!-- Table Card -->
       <div class="table-card">
-        <div class="table-header">
-          <h3 class="table-title">Lista de referidos</h3>
-          <span class="table-count">{{ referrals.length }} referidos</span>
+        <div class="table-meta">
+          <span class="total-count">Total Ordenes Referidos : {{ referrals.length }}</span>
+          <div class="sort-dropdown">
+            <span class="sort-label">Ordenar por:</span>
+            <button class="sort-button" type="button">
+              Orden Ascende
+              <i class="pi pi-chevron-down"></i>
+            </button>
+          </div>
         </div>
+
         <div class="table-scroll">
           <table class="data-table">
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Nombre</th>
-                <th>Email</th>
-                <th>Fecha de registro</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
                 <th>Estado</th>
-                <th>Comision</th>
+                <th>Detalles</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let ref of referrals">
+                <td>{{ ref.id }}</td>
+                <td>{{ ref.nombre }}</td>
+                <td>{{ ref.correo }}</td>
+                <td>{{ ref.telefono }}</td>
                 <td>
-                  <div class="user-cell">
-                    <div class="user-avatar-small">{{ getInitial(ref.name) }}</div>
-                    <span>{{ ref.name }}</span>
-                  </div>
-                </td>
-                <td>{{ ref.email }}</td>
-                <td>{{ ref.date }}</td>
-                <td>
-                  <span
-                    class="status-badge"
-                    [class.activo]="ref.status === 'activo'"
-                    [class.pendiente]="ref.status === 'pendiente'"
-                    [class.inactivo]="ref.status === 'inactivo'"
-                  >
-                    {{ ref.status | titlecase }}
+                  <span class="status-tag" [class.activo]="ref.estado === 'Activo'" [class.inactivo]="ref.estado === 'Inactivo'">
+                    {{ ref.estado }}
                   </span>
                 </td>
-                <td class="commission-cell">{{ formatPrice(ref.commission) }}</td>
+                <td>
+                  <i class="pi pi-search action-icon" title="Ver detalles" (click)="onViewDetails(ref)"></i>
+                </td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- Paginator -->
+        <div class="paginator">
+          <button class="page-arrow" type="button" aria-label="Primera página">
+            <i class="pi pi-angle-double-left"></i>
+          </button>
+          <button class="page-arrow" type="button" aria-label="Página anterior">
+            <i class="pi pi-angle-left"></i>
+          </button>
+          <button class="page-number active" type="button">1</button>
+          <button class="page-arrow" type="button" aria-label="Página siguiente">
+            <i class="pi pi-angle-right"></i>
+          </button>
+          <button class="page-arrow" type="button" aria-label="Última página">
+            <i class="pi pi-angle-double-right"></i>
+          </button>
         </div>
       </div>
     </div>
   `,
 })
 export class ReferidosNewComponent {
-  referralLink = 'https://dropi.co/ref/alejandra-martinez-2024';
+  affiliateLink = 'https://app.dropi.co/auth/register?afl=74525';
+  dateRange = '09/10/2025 - 15/10/2025';
+  searchTerm = '';
   copied = false;
 
-  stats = [
-    { label: 'Referidos totales', value: '24', icon: 'pi-users', bgColor: '#FEF8F1', iconColor: '#FF6102' },
-    { label: 'Activos', value: '18', icon: 'pi-check-circle', bgColor: '#E7F8F3', iconColor: '#0ABB87' },
-    { label: 'Comision ganada', value: '$ 1.250.000', icon: 'pi-wallet', bgColor: '#EEF6FE', iconColor: '#50A5F1' },
-  ];
-
   referrals: Referral[] = [
-    { name: 'Carlos Rodriguez', email: 'carlos.rodriguez@gmail.com', date: '15 Mar 2024', status: 'activo', commission: 85000 },
-    { name: 'Maria Lopez', email: 'maria.lopez@outlook.com', date: '12 Mar 2024', status: 'activo', commission: 62000 },
-    { name: 'Juan Perez', email: 'juan.perez@gmail.com', date: '08 Mar 2024', status: 'pendiente', commission: 0 },
-    { name: 'Ana Garcia', email: 'ana.garcia@hotmail.com', date: '05 Mar 2024', status: 'activo', commission: 120000 },
-    { name: 'Diego Martinez', email: 'diego.m@gmail.com', date: '01 Mar 2024', status: 'inactivo', commission: 45000 },
-    { name: 'Laura Sanchez', email: 'laura.s@outlook.com', date: '28 Feb 2024', status: 'activo', commission: 93000 },
-    { name: 'Pedro Gomez', email: 'pedro.gomez@gmail.com', date: '25 Feb 2024', status: 'activo', commission: 78000 },
-    { name: 'Sofia Torres', email: 'sofia.t@hotmail.com', date: '20 Feb 2024', status: 'pendiente', commission: 0 },
-    { name: 'Andres Ramirez', email: 'andres.r@gmail.com', date: '18 Feb 2024', status: 'activo', commission: 110000 },
-    { name: 'Camila Herrera', email: 'camila.h@outlook.com', date: '15 Feb 2024', status: 'activo', commission: 56000 },
-    { name: 'Ricardo Morales', email: 'ricardo.m@gmail.com', date: '12 Feb 2024', status: 'inactivo', commission: 32000 },
-    { name: 'Valentina Diaz', email: 'valentina.d@gmail.com', date: '10 Feb 2024', status: 'activo', commission: 88000 },
-    { name: 'Fernando Castro', email: 'fernando.c@outlook.com', date: '08 Feb 2024', status: 'activo', commission: 74000 },
-    { name: 'Isabella Vargas', email: 'isabella.v@hotmail.com', date: '05 Feb 2024', status: 'pendiente', commission: 0 },
-    { name: 'Alejandro Ruiz', email: 'alejandro.r@gmail.com', date: '01 Feb 2024', status: 'activo', commission: 95000 },
-    { name: 'Daniela Ortiz', email: 'daniela.o@gmail.com', date: '28 Ene 2024', status: 'activo', commission: 67000 },
-    { name: 'Sebastian Jimenez', email: 'sebastian.j@outlook.com', date: '25 Ene 2024', status: 'inactivo', commission: 41000 },
-    { name: 'Natalia Mendoza', email: 'natalia.m@gmail.com', date: '22 Ene 2024', status: 'activo', commission: 83000 },
-    { name: 'Gabriel Rojas', email: 'gabriel.r@hotmail.com', date: '20 Ene 2024', status: 'activo', commission: 52000 },
-    { name: 'Paula Restrepo', email: 'paula.r@gmail.com', date: '18 Ene 2024', status: 'activo', commission: 69000 },
+    { id: 176293, nombre: 'Dream Shop', correo: 'diana@gmail.com', telefono: '3145256365', estado: 'Activo' },
+    { id: 59296, nombre: 'Magic Shop', correo: 'paola@gmail.com', telefono: '3002568965', estado: 'Activo' },
+    { id: 84721, nombre: 'Urban Style Co', correo: 'carlos.mendez@gmail.com', telefono: '3114567890', estado: 'Activo' },
+    { id: 93582, nombre: 'Bella Boutique', correo: 'maria.lopez@outlook.com', telefono: '3201239876', estado: 'Inactivo' },
+    { id: 67234, nombre: 'TechZone Store', correo: 'juan.perez@gmail.com', telefono: '3056781234', estado: 'Activo' },
+    { id: 41985, nombre: 'Casa Hogar', correo: 'ana.garcia@hotmail.com', telefono: '3187654321', estado: 'Activo' },
+    { id: 75310, nombre: 'Deportes Max', correo: 'diego.martinez@gmail.com', telefono: '3009876543', estado: 'Inactivo' },
+    { id: 28461, nombre: 'Joyeria Luna', correo: 'laura.sanchez@outlook.com', telefono: '3145678901', estado: 'Activo' },
+    { id: 53197, nombre: 'Mascotas Felices', correo: 'pedro.gomez@gmail.com', telefono: '3223456789', estado: 'Activo' },
+    { id: 86420, nombre: 'Belleza Natural', correo: 'sofia.torres@hotmail.com', telefono: '3098761234', estado: 'Activo' },
+    { id: 19753, nombre: 'Hogar y Decor', correo: 'andres.ramirez@gmail.com', telefono: '3156789012', estado: 'Inactivo' },
+    { id: 64218, nombre: 'Moda Express', correo: 'camila.herrera@outlook.com', telefono: '3012345678', estado: 'Activo' },
+    { id: 37589, nombre: 'Electro Hogar', correo: 'ricardo.morales@gmail.com', telefono: '3134567890', estado: 'Activo' },
+    { id: 92146, nombre: 'Juguetes Felices', correo: 'valentina.diaz@gmail.com', telefono: '3245678901', estado: 'Activo' },
+    { id: 58723, nombre: 'Cocina Total', correo: 'fernando.castro@outlook.com', telefono: '3067891234', estado: 'Inactivo' },
+    { id: 71649, nombre: 'Fit Sport', correo: 'isabella.vargas@hotmail.com', telefono: '3178901234', estado: 'Activo' },
+    { id: 26385, nombre: 'Libreria Central', correo: 'alejandro.ruiz@gmail.com', telefono: '3089012345', estado: 'Activo' },
+    { id: 49217, nombre: 'Accesorios Plus', correo: 'daniela.ortiz@gmail.com', telefono: '3190123456', estado: 'Activo' },
+    { id: 83642, nombre: 'Tienda Verde', correo: 'sebastian.jimenez@outlook.com', telefono: '3001234567', estado: 'Inactivo' },
+    { id: 15974, nombre: 'Mundo Infantil', correo: 'natalia.mendoza@gmail.com', telefono: '3212345678', estado: 'Activo' },
+    { id: 68352, nombre: 'Auto Repuestos JC', correo: 'gabriel.rojas@hotmail.com', telefono: '3123456789', estado: 'Activo' },
+    { id: 31870, nombre: 'Papeleria Punto', correo: 'paula.restrepo@gmail.com', telefono: '3234567890', estado: 'Activo' },
   ];
-
-  getInitial(name: string): string {
-    return name.charAt(0).toUpperCase();
-  }
-
-  formatPrice(value: number): string {
-    return '$ ' + value.toLocaleString('es-CO');
-  }
 
   copyLink(): void {
-    navigator.clipboard.writeText(this.referralLink);
+    navigator.clipboard.writeText(this.affiliateLink);
     this.copied = true;
     setTimeout(() => (this.copied = false), 2000);
+  }
+
+  onExport(): void {
+    // Placeholder for export action
+  }
+
+  onFilterDate(): void {
+    // Placeholder for date filter action
+  }
+
+  onViewDetails(ref: Referral): void {
+    // Placeholder for view-details action
   }
 }
