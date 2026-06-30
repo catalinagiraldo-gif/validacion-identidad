@@ -1,390 +1,204 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { TipoPersona } from '../../../../common/models/identity-flow.models';
-import {
-  DatosPersonaNatural,
-  DuenoCuentaState,
-  IdentityProfileService,
-} from '../../../../common/services/identity-profile.service';
-import { ToastService } from '../../../../common/services/toast.service';
-import { DropiTagComponent, DropiTagSeverity } from '../../../../common/components/dropi-tag/dropi-tag.component';
-import { DropiAlertComponent, DropiAlertSeverity } from '../../../../common/components/dropi-alert/dropi-alert.component';
-import {
-  SumsubModalConfig,
-  SumsubResult,
-  SumsubVerificationModalComponent,
-} from '../../../../common/components/sumsub-verification-modal/sumsub-verification-modal.component';
+const AVATAR_ICON = 'https://www.figma.com/api/mcp/asset/7e9163eb-de22-4728-845a-0e2ffbf9b37d';
+const ICON_CALENDAR = 'https://www.figma.com/api/mcp/asset/18dc5cd0-37c6-440e-992a-c36bd2132906';
+const FLAG_CO = 'https://www.figma.com/api/mcp/asset/634fbf8a-aef1-4fd6-9336-3ddada33124f';
+const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e77-91725eda6ace';
 
 @Component({
   selector: 'app-cuenta-new',
   standalone: true,
-  imports: [CommonModule, FormsModule, DropiTagComponent, DropiAlertComponent, SumsubVerificationModalComponent],
+  imports: [CommonModule, FormsModule],
   styleUrls: ['./cuenta.component.scss'],
   template: `
     <div class="page-wrapper">
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <span class="breadcrumb-item breadcrumb-home"><i class="pi pi-home"></i></span>
-        <i class="pi pi-chevron-right breadcrumb-chevron"></i>
-        <span class="breadcrumb-item">Configurar</span>
-        <i class="pi pi-chevron-right breadcrumb-chevron"></i>
-        <span class="breadcrumb-item">Cuenta</span>
-        <i class="pi pi-chevron-right breadcrumb-chevron"></i>
-        <span class="breadcrumb-item active">Información de cuenta</span>
+        <span class="bc-home"><i class="pi pi-home"></i></span>
+        <i class="pi pi-chevron-right bc-sep"></i>
+        <span class="bc-item">Configurar</span>
+        <i class="pi pi-chevron-right bc-sep"></i>
+        <span class="bc-item">Cuenta</span>
+        <i class="pi pi-chevron-right bc-sep"></i>
+        <span class="bc-item bc-active">Información de cuenta</span>
       </nav>
 
-      <!-- Title + status tag -->
-      <div class="title-row">
+      <!-- Title row -->
+      <div class="page-header">
         <h1 class="page-title">Información de cuenta</h1>
-        <app-dropi-tag [label]="statusLabel" [severity]="statusSeverity"></app-dropi-tag>
+        <span class="tag-pendiente">Validación Pendiente</span>
       </div>
 
-      <!-- Top alert: dynamic per estado real -->
-      <app-dropi-alert [message]="topAlertMessage" [severity]="topAlertSeverity" [closable]="false"></app-dropi-alert>
+      <!-- Top alert -->
+      <div class="alert-top">
+        <i class="pi pi-exclamation-circle alert-icon"></i>
+        <p class="alert-text">
+          <span class="alert-bold">Faltan tus datos personales. </span>
+          <span>Complétalos para continuar con la validación.</span>
+        </p>
+      </div>
 
+      <!-- Main layout: avatar + form -->
       <div class="cuenta-layout">
-        <!-- Avatar Section -->
-        <div class="avatar-section">
+
+        <!-- Avatar column -->
+        <div class="avatar-col">
           <div class="avatar-circle">
-            <img src="assets/images/configurar/mascot-avatar.svg" alt="Avatar" class="avatar-img" />
+            <img [src]="avatarIcon" alt="Avatar" class="avatar-icon-img" />
           </div>
-          <button class="btn-change-photo" (click)="fileInput.click()" type="button">
-            <span>Cambiar foto</span>
-          </button>
-          <input
-            #fileInput
-            type="file"
-            accept="image/*"
-            class="file-input-hidden"
-            (change)="onFileSelected($event)"
-          />
+          <button class="btn-cambiar-foto" type="button">Cambiar foto</button>
         </div>
 
-        <!-- Form Section -->
-        <div class="form-section">
-          @if (!validado) {
-            <app-dropi-alert
-              message="Revisa bien tus datos. Tras validarte, no podrás cambiarlos por 6 meses. ¿Dudas? Escríbenos a soporte@dropi.co"
-              severity="warning"
-              [closable]="false"
-            ></app-dropi-alert>
-          }
+        <!-- Form column -->
+        <div class="form-col">
 
-          <p class="explanation-text">
-            <span class="explanation-strong">Si eres persona natural</span>, ingresa tus datos según tu documento de identidad.
-            <span class="explanation-strong">Si eres persona jurídica </span>(empresa), ingresa únicamente los datos personales del representante legal, no los datos de la empresa.
+          <!-- Inner alert -->
+          <div class="alert-inner">
+            <i class="pi pi-exclamation-circle alert-icon-sm"></i>
+            <p class="alert-text-sm">
+              <span class="alert-bold">Revisa bien tus datos. </span>
+              <span>Tras validarte, no podrás cambiarlos por 6 meses. ¿Dudas? </span>
+              <span class="alert-link">Escríbenos a soporte.</span>
+            </p>
+          </div>
+
+          <!-- Instruction text -->
+          <p class="instruction-text">
+            <strong>Si eres persona natural</strong>, ingresa tus datos según tu documento de identidad.
+            <strong>Si eres persona jurídica </strong>(empresa), ingresa únicamente los datos personales del representante legal, no los datos de la empresa.
           </p>
 
-          <!-- Selector tipo de persona -->
-          <div class="tipo-persona-row">
-            <button
-              type="button"
-              class="tipo-persona-btn"
-              [class.tipo-persona-btn--active]="tipoPersona === 'natural'"
-              [disabled]="formLocked"
-              (click)="setTipoPersona('natural')"
-            >
-              Persona natural
-            </button>
-            <button
-              type="button"
-              class="tipo-persona-btn"
-              [class.tipo-persona-btn--active]="tipoPersona === 'juridica'"
-              [disabled]="formLocked"
-              (click)="setTipoPersona('juridica')"
-            >
-              Persona jurídica (empresa)
-            </button>
+          <!-- Datos personales -->
+          <div class="form-block">
+            <div class="form-row">
+              <div class="field-group">
+                <label class="field-label">Primer nombre</label>
+                <input type="text" class="field-input" placeholder="" [(ngModel)]="primerNombre" />
+              </div>
+              <div class="field-group">
+                <label class="field-label">Segundo nombre (Opcional)</label>
+                <input type="text" class="field-input" placeholder="" [(ngModel)]="segundoNombre" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field-group">
+                <label class="field-label">Primer apellido</label>
+                <input type="text" class="field-input" placeholder="" [(ngModel)]="primerApellido" />
+              </div>
+              <div class="field-group">
+                <label class="field-label">Segundo apellido (Opcional)</label>
+                <input type="text" class="field-input" placeholder="" [(ngModel)]="segundoApellido" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field-group field-date">
+                <label class="field-label">Fecha de nacimiento</label>
+                <div class="date-input-wrap">
+                  <img class="cal-icon" [src]="iconCalendar" alt="" />
+                  <input type="text" class="field-input" placeholder="DD/MM/AAAA" [(ngModel)]="fechaNacimiento" />
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Nacionalidad</label>
+                <div class="select-wrap">
+                  <select class="field-select" [(ngModel)]="nacionalidad">
+                    <option value="">Seleccionar</option>
+                    <option value="co">Colombiana</option>
+                    <option value="mx">Mexicana</option>
+                    <option value="ec">Ecuatoriana</option>
+                    <option value="ve">Venezolana</option>
+                    <option value="pe">Peruana</option>
+                  </select>
+                  <img class="chevron-icon" [src]="iconChevron" alt="" />
+                </div>
+              </div>
+            </div>
           </div>
 
-          @if (tipoPersona === 'juridica' && razonSocial) {
+          <div class="section-divider"></div>
+
+          <!-- Identificación -->
+          <div class="form-block">
+            <h2 class="section-title">Identificación</h2>
             <div class="form-row">
-              <div class="form-group form-group-full">
-                <label class="form-label form-label-muted">Razón social (validada por Sumsub)</label>
-                <input type="text" class="form-input form-input-disabled" [value]="razonSocial" disabled />
-              </div>
-            </div>
-          }
-
-          <form class="account-form">
-            <!-- Row: nombres -->
-            <div class="form-row form-row-2">
-              <div class="form-group">
-                <label class="form-label">Primer nombre</label>
-                <input type="text" class="form-input" [class.form-input--fill]="formLocked" [(ngModel)]="form.primerNombre" name="primerNombre" [readonly]="formLocked" />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Segundo nombre (Opcional)</label>
-                <input type="text" class="form-input" [class.form-input--fill]="formLocked" [(ngModel)]="form.segundoNombre" name="segundoNombre" [readonly]="formLocked" />
-              </div>
-            </div>
-
-            <!-- Row: apellidos -->
-            <div class="form-row form-row-2">
-              <div class="form-group">
-                <label class="form-label">Primer apellido</label>
-                <input type="text" class="form-input" [class.form-input--fill]="formLocked" [(ngModel)]="form.primerApellido" name="primerApellido" [readonly]="formLocked" />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Segundo apellido (Opcional)</label>
-                <input type="text" class="form-input" [class.form-input--fill]="formLocked" [(ngModel)]="form.segundoApellido" name="segundoApellido" [readonly]="formLocked" />
-              </div>
-            </div>
-
-            <!-- Row: fecha nacimiento / nacionalidad -->
-            <div class="form-row form-row-date-select">
-              <div class="form-group form-group-date">
-                <label class="form-label">Fecha de nacimiento</label>
-                <div class="date-input">
-                  <i class="pi pi-calendar date-icon"></i>
-                  <input
-                    type="text"
-                    class="date-input-field"
-                    [(ngModel)]="form.fechaNacimiento"
-                    name="fechaNacimiento"
-                    placeholder="DD/MM/AAAA"
-                    [readonly]="formLocked"
-                  />
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Nacionalidad</label>
-                <div class="select-input" [class.select-input-disabled]="formLocked">
-                  <select class="select-field" [(ngModel)]="form.nacionalidad" name="nacionalidad" [disabled]="formLocked">
-                    <option value="" disabled selected>Seleccionar</option>
-                    <option *ngFor="let n of nacionalidades" [value]="n">{{ n }}</option>
+              <div class="field-group">
+                <label class="field-label">Tipo de documento</label>
+                <div class="select-wrap">
+                  <select class="field-select field-disabled" [(ngModel)]="tipoDocumento" disabled>
+                    <option value="">Seleccionar</option>
+                    <option value="cc">Cédula de ciudadanía</option>
+                    <option value="nit">NIT</option>
+                    <option value="ce">Cédula de extranjería</option>
+                    <option value="pasaporte">Pasaporte</option>
                   </select>
+                  <img class="chevron-icon" [src]="iconChevron" alt="" />
                 </div>
               </div>
-            </div>
-
-            <hr class="form-divider" />
-
-            <!-- Identificación -->
-            <h2 class="form-section-title">Identificación</h2>
-            <div class="form-row form-row-2">
-              <div class="form-group">
-                <label class="form-label form-label-muted">Tipo de documento</label>
-                <div class="select-input select-input-disabled">
-                  <select class="select-field" [(ngModel)]="form.tipoDocumento" name="tipoDocumento" disabled>
-                    <option value="" disabled selected>Validado por Sumsub</option>
-                    <option *ngFor="let t of tiposDocumento" [value]="t">{{ t }}</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label form-label-muted">Documento</label>
-                <input type="text" class="form-input form-input-disabled" [(ngModel)]="form.documento" name="documento" disabled placeholder="Validado por Sumsub" />
+              <div class="field-group">
+                <label class="field-label">Documento</label>
+                <input type="text" class="field-input field-disabled" placeholder="" [(ngModel)]="documento" [disabled]="true" />
               </div>
             </div>
+          </div>
 
-            <hr class="form-divider" />
+          <div class="section-divider"></div>
 
-            <!-- Contacto -->
-            <h2 class="form-section-title">Contacto</h2>
-            <div class="form-row form-row-2">
-              <div class="form-group">
-                <label class="form-label">Email de contacto</label>
-                <input type="email" class="form-input" [class.form-input--fill]="formLocked" [(ngModel)]="form.email" name="email" [readonly]="formLocked" />
+          <!-- Contacto -->
+          <div class="form-block">
+            <h2 class="section-title">Contacto</h2>
+            <div class="form-row">
+              <div class="field-group">
+                <label class="field-label">Email de contacto</label>
+                <input type="email" class="field-input" placeholder="" [(ngModel)]="emailContacto" />
               </div>
-              <div class="form-group">
-                <label class="form-label">Teléfono celular</label>
-                <div class="phone-input-row">
-                  <div class="phone-code">
-                    <img src="assets/images/configurar/flag-colombia.svg" alt="Colombia" class="phone-flag" />
-                    <span>57</span>
+              <div class="field-group">
+                <label class="field-label">Teléfono celular</label>
+                <div class="phone-row">
+                  <div class="phone-prefix">
+                    <img class="flag" [src]="flagCo" alt="Colombia" />
+                    <span class="phone-code-text">57</span>
                   </div>
-                  <input type="tel" class="form-input" [class.form-input--fill]="formLocked" [(ngModel)]="form.telefono" name="telefono" [readonly]="formLocked" />
+                  <input type="tel" class="field-input phone-number" placeholder="" [(ngModel)]="telefono" />
                 </div>
               </div>
             </div>
-
             <div class="form-row">
-              <div class="form-group form-group-full">
-                <label class="form-label">Dirección</label>
-                <input type="text" class="form-input" [class.form-input--fill]="formLocked" [(ngModel)]="form.direccion" name="direccion" [readonly]="formLocked" />
+              <div class="field-group field-full">
+                <label class="field-label">Dirección</label>
+                <input type="text" class="field-input" placeholder="" [(ngModel)]="direccion" />
               </div>
             </div>
-          </form>
+          </div>
+
+          <!-- CTA -->
+          <div class="form-actions">
+            <button class="btn-save" type="button" (click)="onGuardar()">Guardar información de cuenta</button>
+          </div>
+
         </div>
       </div>
-
-      <!-- Floating action button -->
-      @if (!validado) {
-        <button class="btn-save-floating" type="button" (click)="iniciarValidacion()">
-          Comenzar verificación de identidad
-        </button>
-      } @else if (!formLocked) {
-        <button class="btn-save-floating" type="button" (click)="onSave()">
-          Guardar información de cuenta
-        </button>
-      }
     </div>
-
-    <app-sumsub-verification-modal
-      [visible]="modalVisible"
-      [config]="modalConfig"
-      (visibleChange)="modalVisible = $event"
-      (success)="onValidacionExitosa($event)"
-      (cancelled)="onValidacionCancelada()"
-    ></app-sumsub-verification-modal>
   `,
 })
 export class CuentaNewComponent {
-  private identity = inject(IdentityProfileService);
-  private toast = inject(ToastService);
+  readonly avatarIcon = AVATAR_ICON;
+  readonly iconCalendar = ICON_CALENDAR;
+  readonly flagCo = FLAG_CO;
+  readonly iconChevron = ICON_CHEVRON;
 
-  readonly dueno = this.identity.dueno;
+  primerNombre = '';
+  segundoNombre = '';
+  primerApellido = '';
+  segundoApellido = '';
+  fechaNacimiento = '';
+  nacionalidad = '';
+  tipoDocumento = '';
+  documento = '';
+  emailContacto = '';
+  telefono = '';
+  direccion = '';
 
-  form = {
-    primerNombre: '',
-    segundoNombre: '',
-    primerApellido: '',
-    segundoApellido: '',
-    fechaNacimiento: '',
-    nacionalidad: '',
-    tipoDocumento: '',
-    documento: '',
-    email: '',
-    telefono: '',
-    direccion: '',
-  };
-
-  tipoPersona: TipoPersona = 'natural';
-  razonSocial = '';
-
-  modalVisible = false;
-  modalConfig: SumsubModalConfig = { origen: 'configuraciones', para: 'dueno', tipoPersona: 'natural' };
-
-  nacionalidades = ['Colombiana', 'Mexicana', 'Chilena', 'Peruana', 'Ecuatoriana', 'Argentina'];
-  tiposDocumento = ['Cédula de ciudadanía', 'Cédula de extranjería', 'Pasaporte', 'NIT'];
-
-  constructor() {
-    effect(() => {
-      this.syncFromService(this.dueno());
-    });
-  }
-
-  get validado(): boolean {
-    return this.identity.duenoValidado();
-  }
-
-  get formLocked(): boolean {
-    return this.identity.duenoBloqueadoEdicion();
-  }
-
-  get statusLabel(): string {
-    switch (this.dueno().status) {
-      case 'aprobado': return 'Validado';
-      case 'pendiente': return 'Validación pendiente';
-      case 'en_revision': return 'En revisión';
-      case 'rechazado': return 'Validación rechazada';
-      default: return 'Sin validar';
-    }
-  }
-
-  get statusSeverity(): DropiTagSeverity {
-    switch (this.dueno().status) {
-      case 'aprobado': return 'success';
-      case 'pendiente': return 'warning';
-      case 'en_revision': return 'info';
-      case 'rechazado': return 'error';
-      default: return 'secondary';
-    }
-  }
-
-  get topAlertMessage(): string {
-    const d = this.dueno();
-    if (d.status === 'aprobado' && this.formLocked) {
-      return `Tu cuenta está validada. No podrás editar estos datos hasta el ${this.fechaDesbloqueoLegible}.`;
-    }
-    if (d.status === 'aprobado') {
-      return 'Tu cuenta está validada y tus datos ya se pueden editar nuevamente.';
-    }
-    if (d.status === 'rechazado') {
-      return d.motivoRechazo
-        ? `No pudimos validar tu identidad: ${d.motivoRechazo.label}. ${d.motivoRechazo.description}`
-        : 'No pudimos validar tu identidad. Inténtalo de nuevo.';
-    }
-    return 'Faltan tus datos personales. Completa la verificación con Sumsub para continuar.';
-  }
-
-  get topAlertSeverity(): DropiAlertSeverity {
-    const status = this.dueno().status;
-    if (status === 'aprobado') return this.formLocked ? 'warning' : 'info';
-    if (status === 'rechazado') return 'error';
-    return 'warning';
-  }
-
-  get fechaDesbloqueoLegible(): string {
-    const f = this.dueno().fechaDesbloqueo;
-    if (!f) return '';
-    return new Date(f).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
-  }
-
-  setTipoPersona(tipo: TipoPersona): void {
-    if (this.formLocked) return;
-    this.tipoPersona = tipo;
-  }
-
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      // Photo upload handled here in a future iteration.
-    }
-  }
-
-  iniciarValidacion(): void {
-    this.modalConfig = {
-      origen: 'configuraciones',
-      para: 'dueno',
-      tipoPersona: this.tipoPersona,
-      paisSugerido: this.form.nacionalidad || undefined,
-    };
-    this.modalVisible = true;
-  }
-
-  onValidacionExitosa(result: SumsubResult): void {
-    this.identity.setDuenoValidado(result.applicantId, result.tipoPersona, result.datos);
-    this.toast.success('Tu identidad fue validada correctamente.', 'Validación exitosa');
-  }
-
-  onValidacionCancelada(): void {
-    this.toast.info('Puedes retomar la validación de identidad cuando quieras.');
-  }
-
-  onSave(): void {
-    if (this.formLocked) return;
-    this.toast.success('Información de cuenta guardada.');
-  }
-
-  private syncFromService(d: DuenoCuentaState): void {
-    if (d.tipoPersona) this.tipoPersona = d.tipoPersona;
-
-    if (d.tipoPersona === 'natural' && d.natural) {
-      this.applyNatural(d.natural);
-      this.razonSocial = '';
-    } else if (d.tipoPersona === 'juridica' && d.juridica) {
-      this.applyNatural(d.juridica.representante);
-      this.razonSocial = d.juridica.razonSocial;
-      this.form.documento = d.juridica.nit;
-      this.form.tipoDocumento = 'NIT';
-    }
-  }
-
-  private applyNatural(n: DatosPersonaNatural): void {
-    this.form.primerNombre = n.primerNombre;
-    this.form.segundoNombre = n.segundoNombre;
-    this.form.primerApellido = n.primerApellido;
-    this.form.segundoApellido = n.segundoApellido;
-    this.form.fechaNacimiento = n.fechaNacimiento;
-    this.form.nacionalidad = n.nacionalidad;
-    this.form.tipoDocumento = n.tipoDocumento;
-    this.form.documento = n.numeroDocumento;
-    this.form.email = n.email;
-    this.form.telefono = n.telefono;
-    this.form.direccion = n.direccion;
-  }
+  onGuardar(): void {}
 }

@@ -148,7 +148,7 @@ export const SIDEBAR_NEW_NAV: NewNavItem[] = [
       },
       {
         id: 'fin-facturacion',
-        label: 'Facturación',
+        label: 'Facturación Dropi',
         icon: 'pi pi-receipt',
         children: [
           { id: 'fin-datos-facturacion', label: 'Datos de facturación', route: '/new/financiero/datos-facturacion' },

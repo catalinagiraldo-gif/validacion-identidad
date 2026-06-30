@@ -377,6 +377,15 @@ export const routes: Routes = [
             m => m.WalletNewComponent,
           ),
       },
+      // Dropicard
+      {
+        path: 'dropi-card/cards',
+        loadComponent: () =>
+          import('./pages/new/financiero/dropicard/dropicard.component').then(
+            m => m.DropicardNewComponent,
+          ),
+      },
+      // Financiero — Wallet (nuevas páginas)
       {
         path: 'financiero/datos-bancarios',
         loadComponent: () =>
@@ -389,14 +398,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/new/financiero/retiros-saldo/retiros-saldo.component').then(
             m => m.RetirosSaldoNewComponent,
-          ),
-      },
-      // Dropicard
-      {
-        path: 'dropi-card/cards',
-        loadComponent: () =>
-          import('./pages/new/financiero/dropicard/dropicard.component').then(
-            m => m.DropicardNewComponent,
           ),
       },
       // Financiero — Facturación

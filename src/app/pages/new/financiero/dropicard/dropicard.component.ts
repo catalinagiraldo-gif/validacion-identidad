@@ -1,9 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IdentityActivationCardComponent } from '../../../../common/components/identity-activation-card/identity-activation-card.component';
-
-import { IdentityProfileService } from '../../../../common/services/identity-profile.service';
-import { IdentityBlockBannerComponent } from '../../../../common/components/identity-block-banner/identity-block-banner.component';
 
 interface Transaction {
   id: number;
@@ -16,11 +12,7 @@ interface Transaction {
 @Component({
   selector: 'app-dropicard-new',
   standalone: true,
-<<<<<<< HEAD
-  imports: [CommonModule, IdentityBlockBannerComponent],
-=======
-  imports: [CommonModule, IdentityActivationCardComponent],
->>>>>>> 676de9db534c7c03070b27cebe346aa8e035f5b7
+  imports: [CommonModule],
   styleUrls: ['./dropicard.component.scss'],
   template: `
     <div class="dropicard-page">
@@ -41,17 +33,6 @@ interface Transaction {
 
       <!-- Title -->
       <h1 class="page-title">Dropicard</h1>
-
-<<<<<<< HEAD
-      <app-identity-block-banner [motivo]="identity.bloqueoMotivo()" contexto="dropicard"></app-identity-block-banner>
-=======
-      <app-identity-activation-card
-        context="dropicard"
-        blockedAction="solicitar Dropicard"
-        [sticky]="true"
-        identityRoute="/new/configuraciones/flujo-identidad-2026-06-18"
-      />
->>>>>>> 676de9db534c7c03070b27cebe346aa8e035f5b7
 
       <!-- Card + Details grid -->
       <div class="card-section" *ngIf="hasCard">
@@ -117,9 +98,7 @@ interface Transaction {
             <div class="detail-row">
               <span class="detail-label">Estado</span>
               <span class="detail-value">
-                <span class="status-badge" [ngClass]="identity.dropicardBloqueada() ? 'frozen' : 'active'">
-                  {{ identity.dropicardBloqueada() ? 'Congelada' : 'Activa' }}
-                </span>
+                <span class="status-badge active">Activa</span>
               </span>
             </div>
           </div>
@@ -133,7 +112,7 @@ interface Transaction {
         </div>
         <h2>Aun no tienes una Dropicard</h2>
         <p>Solicita tu tarjeta Dropicard y empieza a disfrutar de todos los beneficios.</p>
-        <button class="btn-primary" (click)="onRequestCard()" [disabled]="identity.dropicardBloqueada()">
+        <button class="btn-primary" (click)="onRequestCard()">
           Solicitar tarjeta
         </button>
       </div>
@@ -190,8 +169,6 @@ interface Transaction {
   `,
 })
 export class DropicardNewComponent {
-  readonly identity = inject(IdentityProfileService);
-
   hasCard = true;
   showFullCard = false;
   showCvv = false;
@@ -253,10 +230,6 @@ export class DropicardNewComponent {
   }
 
   onRequestCard(): void {
-    if (this.identity.dropicardBloqueada()) {
-      this.notify('Completa tu validación de identidad para solicitar tu Dropicard', 'info');
-      return;
-    }
     this.notify('Solicitud de tarjeta enviada correctamente', 'success');
     this.hasCard = true;
   }

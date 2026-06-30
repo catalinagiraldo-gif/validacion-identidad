@@ -73,11 +73,6 @@ $card-dark-lighter: #252b3d;
   line-height: 1.25;
 }
 
-app-identity-block-banner {
-  display: block;
-  margin-bottom: $space-5;
-}
-
 // ========== Card Section (Grid) ==========
 .card-section {
   display: grid;
@@ -333,11 +328,6 @@ app-identity-block-banner {
     background: $error-50;
     color: $error-700;
   }
-
-  &.frozen {
-    background: $info-50;
-    color: $info-700;
-  }
 }
 
 // ========== No Card State ==========
@@ -401,13 +391,6 @@ app-identity-block-banner {
 
   &:active {
     transform: translateY(0);
-  }
-
-  &:disabled {
-    background: $gray-200;
-    color: $gray-400;
-    cursor: not-allowed;
-    transform: none;
   }
 }
 

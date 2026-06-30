@@ -435,7 +435,7 @@
           "roles": ["dropshipper"],
           "prototype": "/configuraciones/datos-personales",
           "figmaSource": "https://www.figma.com/design/HvoEmrK4bRGgOg1NrUFrjV/Cuenta-V2.0?node-id=8265-347233",
-          "description": "Formulario de datos personales y facturación electrónica para dropshippers en Argentina. Dos tabs: datos personales con validación de identidad y foto, y facturación electrónica con info tributaria ARCA (ex-AFIP), upload de constancia fiscal, y checkboxes de aceptación. [ARCHIVADO — exploración previa, no conectada a Cuenta/Facturación reales. Ver 'validacion-identidad-integrada']"
+          "description": "Formulario de datos personales y facturación electrónica para dropshippers en Argentina. Dos tabs: datos personales con validación de identidad y foto, y facturación electrónica con info tributaria ARCA (ex-AFIP), upload de constancia fiscal, y checkboxes de aceptación."
         },
         "validacion-identidad": {
           "route": "/configuraciones/validacion-identidad",
@@ -445,7 +445,7 @@
           "figjamSource": "https://www.figma.com/board/89yfrFN1cQa4hI9cshybpH/Validaci%C3%B3n-de-identidad?node-id=85-1188",
           "figmaSource": "https://www.figma.com/design/HvoEmrK4bRGgOg1NrUFrjV/Cuenta-V2.0?node-id=8265-347233",
           "jira": "PROD-761",
-          "description": "Onboarding unificado de verificación de identidad (Sumsub/Truora). Shell unificado CO + resto: stepper 4 pasos (tipo cuenta → preparación → verificación SDK → datos readonly). Estado global único, modal mock Sumsub/Truora en paso 3. [ARCHIVADO — exploración previa, no conectada a Cuenta/Facturación reales. Ver 'validacion-identidad-integrada']",
+          "description": "Onboarding unificado de verificación de identidad (Sumsub/Truora). Shell unificado CO + resto: stepper 4 pasos (tipo cuenta → preparación → verificación SDK → datos readonly). Estado global único, modal mock Sumsub/Truora en paso 3.",
           "origin_points": [
             "login.sin-validacion.cta:verificar-identidad",
             "configurar.datos-personales",
@@ -473,7 +473,7 @@
           "roles": ["dropshipper"],
           "prototype": "/configuraciones/validacion-identidad-hub",
           "jira": "PROD-761",
-          "description": "Prototipo v3 UX-first: vista de estado único adaptativa. Una pantalla que detecta el estado del usuario (draft, en progreso, en revisión, aprobado, rechazado, legacy, baneado) y adapta contenido y acciones sin journeys explícitos. [ARCHIVADO — exploración previa, no conectada a Cuenta/Facturación reales. Ver 'validacion-identidad-integrada']",
+          "description": "Prototipo v3 UX-first: vista de estado único adaptativa. Una pantalla que detecta el estado del usuario (draft, en progreso, en revisión, aprobado, rechazado, legacy, baneado) y adapta contenido y acciones sin journeys explícitos.",
           "origin_points": [
             "login.sin-validacion.cta:verificar-identidad",
             "configurar.datos-personales",
@@ -493,7 +493,7 @@
           "roles": ["dropshipper"],
           "prototype": "/configuraciones/validacion-identidad-pais",
           "figjamSource": "https://www.figma.com/board/89yfrFN1cQa4hI9cshybpH/",
-          "description": "Prototipo v4 educativo: country switcher CO/MX/AR/CL/EC, split visual Dropi vs Sumsub/Truora, campos exactos por país del FigJam formulario unificado. Sin estados ni journeys. [ARCHIVADO — exploración previa, no conectada a Cuenta/Facturación reales. Ver 'validacion-identidad-integrada']",
+          "description": "Prototipo v4 educativo: country switcher CO/MX/AR/CL/EC, split visual Dropi vs Sumsub/Truora, campos exactos por país del FigJam formulario unificado. Sin estados ni journeys.",
           "origin_points": [
             "login.sin-validacion.cta:verificar-identidad",
             "configurar.datos-personales"
@@ -510,7 +510,7 @@
           "roles": ["dropshipper"],
           "prototype": "/configuraciones/flujo-identidad-2026-06-18",
           "jira": "PROD-761",
-          "description": "Prototipo v5 spec Plan1.md — 15 vistas end-to-end: formulario 2 pasos alineado con Excel LATAM (actividad económica CO), confirmación pre-Sumsub con checkbox de coincidencia documento, mock WebSDK 2.0 customizado Dropi, deep links demo, tour ampliado, ia-card sincronizada cross-módulo. [ARCHIVADO — referencia legacy intencional, no se reutiliza ni se toca. Ver 'validacion-identidad-integrada']",
+          "description": "Prototipo v5 spec Plan1.md — 15 vistas end-to-end: formulario 2 pasos alineado con Excel LATAM (actividad económica CO), confirmación pre-Sumsub con checkbox de coincidencia documento, mock WebSDK 2.0 customizado Dropi, deep links demo, tour ampliado, ia-card sincronizada cross-módulo.",
           "origin_points": ["home.nuevo-proyecto", "gallery.verificacion-identidad"]
         },
         "verificacion-identidad": {
@@ -526,7 +526,7 @@
           ],
           "figmaSource": "https://www.figma.com/design/HvoEmrK4bRGgOg1NrUFrjV/Cuenta-V2.0?node-id=8265-347233",
           "jira": "PROD-761",
-          "description": "Prototipo FigJam-fiel v2: global Sumsub (form disabled → wizard 3 pasos → WebSDK), Colombia (form editable → MFA → Truora/Sumsub), edición post-6m con revalidación condicional por campos críticos. [ARCHIVADO — exploración previa, no conectada a Cuenta/Facturación reales. Ver 'validacion-identidad-integrada']",
+          "description": "Prototipo FigJam-fiel v2: global Sumsub (form disabled → wizard 3 pasos → WebSDK), Colombia (form editable → MFA → Truora/Sumsub), edición post-6m con revalidación condicional por campos críticos.",
           "origin_points": [
             "login.sin-validacion.cta:verificar-identidad",
             "configurar.datos-personales",
@@ -546,31 +546,6 @@
             "on_success": "cierra-overlay → precarga campos readonly → alerta bloqueo 6 meses",
             "on_cancel": "cierra-overlay → mantiene pending → alerta retomar",
             "on_timeout": "estado pending → alerta retomar (10 min)"
-          }
-        },
-        "validacion-identidad-integrada": {
-          "route": "/configuraciones/cuenta",
-          "type": "page",
-          "roles": ["dropshipper"],
-          "prototype": "/configuraciones/cuenta",
-          "description": "Versión integrada real: Sumsub se dispara desde Información de cuenta (KYC/KYB dueño de cuenta) y Datos de facturación (KYC/KYB responsable tributario), autocompletando y bloqueando esos formularios reales en lugar de vivir como módulo aparte. Cubre 'usuario nuevo, cuenta nueva' (persona natural y jurídica). Cross-country y migración de usuarios antiguos quedan para iteración futura.",
-          "implementation_status": "en-construccion",
-          "touchpoints": [
-            { "view": "configuraciones/cuenta", "role": "dueño de cuenta — KYC/KYB, selector tipo de persona" },
-            { "view": "financiero/datos-facturacion", "role": "responsable tributario — toggle mismos-datos + KYC/KYB condicional" },
-            { "view": "financiero/retiros-de-saldo", "role": "hard block de retiros" },
-            { "view": "historial-de-cartera", "role": "hard block de transferencias entre cuentas" },
-            { "view": "dropi-card/cards", "role": "hard block de solicitud + congelamiento de tarjeta activa" },
-            { "view": "home", "role": "soft touchpoint post-primera-venta" },
-            { "view": "configuraciones/seguridad", "role": "OTP para cambios menores de email/teléfono" }
-          ],
-          "modal_sdk": {
-            "type": "modal",
-            "component": "app-sumsub-verification-modal",
-            "opens_from": ["configuraciones/cuenta:cta-comenzar-verificacion", "financiero/datos-facturacion:cta-validar-responsable"],
-            "on_success": "cierra-overlay → escribe datos en form real → readonly/fill → tag de estado real → toast",
-            "on_cancel": "cierra-overlay → mantiene pendiente/rechazado → CTA de retomar",
-            "on_change_post_aprobado_responsable": "confirmación explícita → fricción intencional → re-validación completa (invalidateResponsableForRevalidation)"
           }
         },
         "general": {

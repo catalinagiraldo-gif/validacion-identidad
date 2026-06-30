@@ -27,7 +27,6 @@ import galiDashboardData from '../../../../mocks/gali-dashboard.json';
 import validacionIdentidadData from '../../../../mocks/validacion-identidad.json';
 import verificacionIdentidadData from '../../../../mocks/verificacion-identidad.json';
 import validacionIdentidadHubData from '../../../../mocks/validacion-identidad-hub.json';
-import sumsubKybCompaniesData from '../../../../mocks/sumsub-kyb-companies.json';
 
 // Mutable in-memory copies (reset on page refresh)
 let orders = [...ordersData];
@@ -178,35 +177,6 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
   // GET /api/verificacion-identidad
   if (req.url.includes('/api/verificacion-identidad') && req.method === 'GET') {
     return of(new HttpResponse({ status: 200, body: verificacionIdentidadData }));
-  }
-
-  // POST /api/sumsub/session — inicia sesión mock del SDK
-  if (req.url.includes('/api/sumsub/session') && req.method === 'POST') {
-    const applicantId = `applicant-${Date.now()}`;
-    return of(new HttpResponse({ status: 200, body: { sessionToken: `tok-${applicantId}`, applicantId } })).pipe(delay(300));
-  }
-
-  // GET /api/sumsub/kyb-search?nombre=&pais= — búsqueda de empresa por nombre (regla #5: cero NIT digitado)
-  if (req.url.includes('/api/sumsub/kyb-search') && req.method === 'GET') {
-    const nombre = (req.params.get('nombre') ?? '').toLowerCase().trim();
-    const results = nombre
-      ? sumsubKybCompaniesData.filter((c: any) => c.razonSocial.toLowerCase().includes(nombre))
-      : [];
-    return of(new HttpResponse({ status: 200, body: results })).pipe(delay(400));
-  }
-
-  // POST /api/otp/request — envía código mock al medio actual
-  if (req.url.includes('/api/otp/request') && req.method === 'POST') {
-    return of(new HttpResponse({ status: 200, body: { requestId: `otp-${Date.now()}` } })).pipe(delay(300));
-  }
-
-  // POST /api/otp/verify — código mock fijo "123456" en entorno mock
-  if (req.url.includes('/api/otp/verify') && req.method === 'POST') {
-    const { code } = req.body as { requestId: string; code: string };
-    if (code === '123456') {
-      return of(new HttpResponse({ status: 200, body: { verified: true } })).pipe(delay(300));
-    }
-    return of(new HttpResponse({ status: 400, body: { verified: false, error: 'Código incorrecto' } })).pipe(delay(300));
   }
 
   return next(req);

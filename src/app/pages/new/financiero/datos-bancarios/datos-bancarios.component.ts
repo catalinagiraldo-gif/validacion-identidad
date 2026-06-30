@@ -1,13 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
-interface CuentaBancaria {
-  id: number;
+interface DatoBancario {
   pais: string;
   banco: string;
   numeroCuenta: string;
-  numeroCuentaMasked: string;
   tipoCuenta: string;
   identificacion: string;
 }
@@ -15,31 +12,28 @@ interface CuentaBancaria {
 @Component({
   selector: 'app-datos-bancarios-new',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   styleUrls: ['./datos-bancarios.component.scss'],
   template: `
     <div class="page-wrapper">
-      <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <span class="breadcrumb-item"><i class="pi pi-home"></i></span>
-        <span class="breadcrumb-separator"><i class="pi pi-chevron-right"></i></span>
-        <span class="breadcrumb-item muted">Financiero</span>
-        <span class="breadcrumb-separator"><i class="pi pi-chevron-right"></i></span>
-        <span class="breadcrumb-item muted">Wallet</span>
-        <span class="breadcrumb-separator"><i class="pi pi-chevron-right"></i></span>
-        <span class="breadcrumb-item">Datos bancarios</span>
+        <span class="breadcrumb-item breadcrumb-home"><i class="pi pi-home"></i></span>
+        <i class="pi pi-chevron-right breadcrumb-chevron"></i>
+        <span class="breadcrumb-item">Financiero</span>
+        <i class="pi pi-chevron-right breadcrumb-chevron"></i>
+        <span class="breadcrumb-item">Wallet</span>
+        <i class="pi pi-chevron-right breadcrumb-chevron"></i>
+        <span class="breadcrumb-item active">Datos bancarios</span>
       </nav>
 
-      <!-- Page header -->
       <div class="page-header">
         <h1 class="page-title">Datos bancarios</h1>
-        <button class="btn-primary" (click)="onAgregar()">
+        <button class="btn-primary" type="button">
           <i class="pi pi-plus"></i>
-          <span>Agregar</span>
+          Agregar
         </button>
       </div>
 
-      <!-- Table -->
       <div class="table-scroll">
         <table class="data-table">
           <thead>
@@ -49,148 +43,48 @@ interface CuentaBancaria {
               <th>Número de cuenta</th>
               <th>Tipo de cuenta</th>
               <th>Identificación</th>
-              <th class="col-actions">Acciones</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              class="table-row"
-              *ngFor="let cuenta of pagedCuentas; let i = index"
-              [style.animation-delay]="i * 30 + 'ms'"
-            >
-              <td>{{ cuenta.pais }}</td>
-              <td>{{ cuenta.banco }}</td>
+            <tr *ngFor="let item of datosBancarios">
+              <td>{{ item.pais }}</td>
+              <td>{{ item.banco }}</td>
               <td>
-                <span class="account-tag">{{ cuenta.numeroCuentaMasked }}</span>
+                <span class="cuenta-tag">{{ item.numeroCuenta }}</span>
               </td>
-              <td>{{ cuenta.tipoCuenta }}</td>
-              <td>{{ cuenta.identificacion }}</td>
-              <td class="col-actions">
-                <div class="action-icons">
-                  <button class="action-icon-btn" aria-label="Editar cuenta" (click)="onEdit(cuenta)">
-                    <img src="assets/images/financiero/pencil.svg" alt="" />
-                  </button>
-                  <button class="action-icon-btn" aria-label="Eliminar cuenta" (click)="onDelete(cuenta)">
-                    <img src="assets/images/financiero/trash.svg" alt="" />
-                  </button>
-                </div>
+              <td>{{ item.tipoCuenta }}</td>
+              <td>{{ item.identificacion }}</td>
+              <td class="acciones-cell">
+                <button class="icon-btn" title="Editar"><i class="pi pi-pencil"></i></button>
+                <button class="icon-btn icon-btn-danger" title="Eliminar"><i class="pi pi-trash"></i></button>
               </td>
             </tr>
           </tbody>
         </table>
-
-        <div class="empty-state" *ngIf="!pagedCuentas.length">
-          <i class="pi pi-credit-card"></i>
-          <p>No tienes cuentas bancarias registradas.</p>
-        </div>
       </div>
 
-      <!-- Paginator -->
-      <div class="paginator" *ngIf="totalPages > 1">
-        <div class="paginator-track">
-          <div class="paginator-bar" [style.width.%]="progressPct"></div>
-        </div>
-        <div class="paginator-controls">
-          <button class="page-arrow" [disabled]="currentPage === 1" (click)="goToPage(1)" aria-label="Primera pagina">
-            <i class="pi pi-angle-double-left"></i>
-          </button>
-          <button class="page-arrow" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)" aria-label="Pagina anterior">
-            <i class="pi pi-angle-left"></i>
-          </button>
-          <span class="page-number">{{ currentPage }}</span>
-          <button class="page-arrow" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)" aria-label="Pagina siguiente">
-            <i class="pi pi-angle-right"></i>
-          </button>
-          <button class="page-arrow" [disabled]="currentPage === totalPages" (click)="goToPage(totalPages)" aria-label="Ultima pagina">
-            <i class="pi pi-angle-double-right"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Toast -->
-      <div class="toast" *ngIf="showToast" [ngClass]="toastType">
-        <i class="pi" [ngClass]="{
-          'pi-check-circle': toastType === 'success',
-          'pi-info-circle': toastType === 'info'
-        }"></i>
-        <span>{{ toastMessage }}</span>
+      <div class="pagination-row">
+        <button class="pag-btn"><i class="pi pi-angle-double-left"></i></button>
+        <button class="pag-btn"><i class="pi pi-angle-left"></i></button>
+        <button class="pag-btn pag-btn-active">1</button>
+        <button class="pag-btn"><i class="pi pi-angle-right"></i></button>
+        <button class="pag-btn"><i class="pi pi-angle-double-right"></i></button>
       </div>
     </div>
   `,
 })
 export class DatosBancariosNewComponent {
-  showToast = false;
-  toastMessage = '';
-  toastType: 'success' | 'info' = 'success';
-
-  pageSize = 8;
-  currentPage = 1;
-
-  cuentas: CuentaBancaria[] = [
-    { id: 1, pais: 'Colombia', banco: 'Bancolombia', numeroCuenta: '1234567893031', numeroCuentaMasked: '*****3031', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 2, pais: 'Colombia', banco: 'Bancolombia', numeroCuenta: '1234567893012', numeroCuentaMasked: '*****3012', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 3, pais: 'Colombia', banco: 'Davivienda', numeroCuenta: '9988776653367', numeroCuentaMasked: '*****3367', tipoCuenta: 'Corriente', identificacion: 'CC: 11142536363' },
-    { id: 4, pais: 'Colombia', banco: 'Banco de Bogota', numeroCuenta: '4455667780045', numeroCuentaMasked: '*****0045', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 5, pais: 'Colombia', banco: 'BBVA Colombia', numeroCuenta: '7766554421189', numeroCuentaMasked: '*****1189', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 6, pais: 'Colombia', banco: 'Banco Agrario', numeroCuenta: '3322114478821', numeroCuentaMasked: '*****8821', tipoCuenta: 'Corriente', identificacion: 'CC: 11142536363' },
-    { id: 7, pais: 'Colombia', banco: 'Banco Caja Social', numeroCuenta: '6677889903345', numeroCuentaMasked: '*****3345', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 8, pais: 'Colombia', banco: 'Bancolombia', numeroCuenta: '1122334407812', numeroCuentaMasked: '*****7812', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 9, pais: 'Colombia', banco: 'Nequi', numeroCuenta: '3001122339984', numeroCuentaMasked: '*****9984', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 10, pais: 'Colombia', banco: 'Davivienda', numeroCuenta: '5566778821456', numeroCuentaMasked: '*****1456', tipoCuenta: 'Corriente', identificacion: 'CC: 11142536363' },
-    { id: 11, pais: 'Colombia', banco: 'Banco Popular', numeroCuenta: '8899001122678', numeroCuentaMasked: '*****2678', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 12, pais: 'Colombia', banco: 'Banco de Occidente', numeroCuenta: '2233445567990', numeroCuentaMasked: '*****7990', tipoCuenta: 'Corriente', identificacion: 'CC: 11142536363' },
-    { id: 13, pais: 'Colombia', banco: 'Bancolombia', numeroCuenta: '6655443321034', numeroCuentaMasked: '*****1034', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 14, pais: 'Colombia', banco: 'BBVA Colombia', numeroCuenta: '9900112234567', numeroCuentaMasked: '*****4567', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 15, pais: 'Colombia', banco: 'Davivienda', numeroCuenta: '1144556678901', numeroCuentaMasked: '*****8901', tipoCuenta: 'Corriente', identificacion: 'CC: 11142536363' },
-    { id: 16, pais: 'Colombia', banco: 'Banco Agrario', numeroCuenta: '7788990012345', numeroCuentaMasked: '*****2345', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 17, pais: 'Colombia', banco: 'Banco Caja Social', numeroCuenta: '3344556678123', numeroCuentaMasked: '*****8123', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 18, pais: 'Colombia', banco: 'Nequi', numeroCuenta: '3109988774512', numeroCuentaMasked: '*****4512', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 19, pais: 'Colombia', banco: 'Banco de Bogota', numeroCuenta: '5544332267890', numeroCuentaMasked: '*****7890', tipoCuenta: 'Corriente', identificacion: 'CC: 11142536363' },
-    { id: 20, pais: 'Colombia', banco: 'Bancolombia', numeroCuenta: '8877665543210', numeroCuentaMasked: '*****3210', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 21, pais: 'Colombia', banco: 'Banco Popular', numeroCuenta: '6655778899001', numeroCuentaMasked: '*****9001', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
-    { id: 22, pais: 'Colombia', banco: 'BBVA Colombia', numeroCuenta: '2211334455667', numeroCuentaMasked: '*****5667', tipoCuenta: 'Corriente', identificacion: 'CC: 11142536363' },
+  datosBancarios: DatoBancario[] = [
+    { pais: 'Colombia', banco: 'Bancolombia', numeroCuenta: '*****3031', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
+    { pais: 'Colombia', banco: 'Bancolombia', numeroCuenta: '*****3012', tipoCuenta: 'Ahorro', identificacion: 'CC: 11142536363' },
+    { pais: 'Colombia', banco: 'Banco de Bogotá', numeroCuenta: '*****8821', tipoCuenta: 'Corriente', identificacion: 'CC: 98023411256' },
+    { pais: 'Colombia', banco: 'Davivienda', numeroCuenta: '*****4490', tipoCuenta: 'Ahorro', identificacion: 'CC: 10025634512' },
+    { pais: 'México', banco: 'BBVA México', numeroCuenta: '*****2201', tipoCuenta: 'Débito', identificacion: 'RFC: MELG890512A34' },
+    { pais: 'Colombia', banco: 'Nequi', numeroCuenta: '*****7732', tipoCuenta: 'Ahorro', identificacion: 'CC: 55671923045' },
+    { pais: 'Colombia', banco: 'Daviplata', numeroCuenta: '*****1155', tipoCuenta: 'Ahorro', identificacion: 'CC: 40123987256' },
+    { pais: 'Ecuador', banco: 'Banco Pichincha', numeroCuenta: '*****6698', tipoCuenta: 'Ahorro', identificacion: 'CI: 1723045678' },
+    { pais: 'Colombia', banco: 'Bancolombia', numeroCuenta: '*****9944', tipoCuenta: 'Ahorro', identificacion: 'CC: 78902134567' },
+    { pais: 'Colombia', banco: 'BBVA Colombia', numeroCuenta: '*****3370', tipoCuenta: 'Corriente', identificacion: 'NIT: 900234561-8' },
   ];
-
-  get totalPages(): number {
-    return Math.max(1, Math.ceil(this.cuentas.length / this.pageSize));
-  }
-
-  get pagedCuentas(): CuentaBancaria[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.cuentas.slice(start, start + this.pageSize);
-  }
-
-  get progressPct(): number {
-    return (this.currentPage / this.totalPages) * 100;
-  }
-
-  goToPage(page: number): void {
-    if (page < 1 || page > this.totalPages) {
-      return;
-    }
-    this.currentPage = page;
-  }
-
-  onAgregar(): void {
-    this.notify('Funcionalidad de agregar cuenta bancaria proximamente disponible', 'info');
-  }
-
-  onEdit(cuenta: CuentaBancaria): void {
-    this.notify(`Editando cuenta ${cuenta.numeroCuentaMasked}`, 'info');
-  }
-
-  onDelete(cuenta: CuentaBancaria): void {
-    this.cuentas = this.cuentas.filter(c => c.id !== cuenta.id);
-    if (this.currentPage > this.totalPages) {
-      this.currentPage = this.totalPages;
-    }
-    this.notify('Cuenta bancaria eliminada correctamente', 'success');
-  }
-
-  private notify(msg: string, type: 'success' | 'info' = 'success'): void {
-    this.toastMessage = msg;
-    this.toastType = type;
-    this.showToast = true;
-    setTimeout(() => (this.showToast = false), 2800);
-  }
 }

@@ -1,9 +1,14 @@
 @import 'styles/variables-new';
 
-// ============================================
-// Datos de Facturacion — New Architecture
-// Figma: Ub7Up7f5K0WGuDC6g2jdCu, node 13837:108139
-// ============================================
+// Exact Figma values
+$gray-700: #32394d;
+$gray-600: #475066;
+$gray-500: #69738c;
+$gray-200: #c3c9d9;
+$gray-100: #e9eef5;
+$warning-50: #fef8ed;
+$warning-500: #f1b44c;
+$warning-700: #ab8036;
 
 :host {
   display: block;
@@ -12,548 +17,329 @@
   overflow: hidden;
 }
 
-.facturacion-page {
+.page-wrapper {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: $space-4 $space-8;
-  position: relative;
+  padding: $space-4 $space-6;
+  background: #fff;
 }
 
-// ========== Breadcrumb ==========
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: $space-1;
-  margin-bottom: $space-1; // Figma "Titulos" group gap is 4px between breadcrumb and title row
+  gap: 4px;
+  margin-bottom: $space-3;
+}
 
-  .breadcrumb-item {
-    font-family: $font-primary;
-    font-size: $font-sm;
-    font-weight: $font-regular;
+.bc-home {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: $gray-500;
+}
+
+.bc-sep {
+  font-size: 10px;
+  color: $gray-500;
+}
+
+.bc-item {
+  font-family: $font-primary;
+  font-size: 12px;
+  font-weight: 400;
+  color: $gray-500;
+  padding: 0 4px;
+  line-height: 1.5;
+
+  &.bc-active {
     color: $gray-700;
-    line-height: $line-height-large;
-
-    &.muted {
-      color: $gray-500;
-    }
-
-    .pi-home {
-      font-size: $font-sm;
-      color: $gray-500;
-    }
-  }
-
-  .breadcrumb-separator {
-    font-size: $font-xs;
-    color: $gray-500;
-    display: flex;
-    align-items: center;
-    transform: rotate(-90deg);
-
-    i {
-      font-size: $font-xs;
-    }
   }
 }
 
-// ========== Title row ==========
-.title-row {
+// ── Page header ───────────────────────────────────────────────────────────────
+.page-header {
   display: flex;
-  align-items: flex-end;
-  gap: $space-3;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
   margin-bottom: $space-5;
+  flex-wrap: wrap;
 }
 
 .page-title {
   font-family: $font-primary;
-  font-size: $font-2xl;
+  font-size: 24px;
   font-weight: $font-bold;
   color: $gray-700;
+  line-height: 1.1;
   margin: 0;
-  line-height: $line-height-simple;
 }
 
-.tag {
+.tag-pendiente {
   display: inline-flex;
   align-items: center;
-  gap: $space-1;
-  padding: $space-1 $space-2;
-  border-radius: $radius-5;
+  padding: 4px 8px;
+  background: $warning-50;
+  color: $warning-700;
+  border-radius: 32px;
   font-family: $font-primary;
-  font-size: $font-sm;
-  font-weight: $font-medium;
-  line-height: $line-height-large;
-
-  &.tag-warning {
-    background: $warning-50;
-    color: #AB8036; // Figma literal value for warning-700 on this tag (token $warning-700 is #A67B32)
-  }
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
 }
 
-.tutorial-link {
-  font-family: $font-primary;
-  font-size: $font-md;
-  font-weight: $font-bold;
-  color: $primary-500;
-  text-decoration: none;
-  line-height: $line-height-simple;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-app-dropi-tag {
-  flex-shrink: 0;
-}
-
-app-dropi-alert {
-  display: block;
-  margin-bottom: $space-5;
-}
-
-.form-section app-dropi-alert {
-  margin-bottom: 0;
-}
-
-// ========== Mismos datos del dueño ==========
-.mismos-datos-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: $space-4;
-  flex-wrap: wrap;
-
-  &__text {
-    flex: 1 0 0;
-    min-width: 220px;
-  }
-}
-
-.switch {
-  flex-shrink: 0;
-  width: 44px;
-  height: 24px;
-  border-radius: $radius-5;
-  background: $gray-200;
+.link-tutorial {
+  background: none;
   border: none;
-  position: relative;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  &__knob {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: $neutral-white;
-    box-shadow: $shadow-small;
-    transition: transform 0.2s ease;
-  }
-
-  &--on {
-    background: $primary-500;
-
-    .switch__knob {
-      transform: translateX(20px);
-    }
-  }
-}
-
-.btn-secondary {
-  align-self: flex-start;
-  height: 40px;
-  padding: 0 $space-4;
-  border-radius: $radius-3;
-  border: 1px solid $primary-500;
-  background: $neutral-white;
-  color: $primary-500;
+  padding: 0;
   font-family: $font-primary;
-  font-size: $font-md;
+  font-size: 14px;
   font-weight: $font-bold;
+  color: $primary-500;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  line-height: 1.1;
 
-  &:hover {
-    background: $primary-50;
-  }
+  &:hover { text-decoration: underline; }
 }
 
-.confirm-text {
-  font-family: $font-primary;
-  font-size: $font-md;
-  line-height: $line-height-large;
-  color: $gray-600;
-  margin: 0;
-}
-
-// ========== Alert banner ==========
-.alert-banner {
+// ── Alert ─────────────────────────────────────────────────────────────────────
+.alert-warning {
   display: flex;
   align-items: flex-start;
-  gap: $space-2;
-  padding: 12px; // Figma p-12px (size-3=12px in Figma scale; project $space-3 is 10px)
-  margin-bottom: $space-5;
+  gap: 8px;
+  padding: 12px;
   background: $warning-50;
   border: 1px solid $warning-500;
-  border-radius: $radius-3;
-
-  i {
-    font-size: $font-base;
-    color: $warning-500;
-    line-height: $line-height-large;
-    flex-shrink: 0;
-  }
-
-  p {
-    margin: 0;
-    font-family: $font-primary;
-    font-size: $font-md;
-    font-weight: $font-regular;
-    color: $gray-700;
-    line-height: $line-height-large;
-
-    strong {
-      font-weight: $font-medium;
-    }
-  }
+  border-radius: 12px;
+  margin-bottom: $space-6;
 }
 
-// ========== Form Card ==========
-// Figma node 13837:108159 has no border/shadow/radius/padding — the form
-// sits flush against the page background (no card chrome around it).
-.form-card {
-  background: $neutral-white;
+.alert-icon {
+  color: #dd6b20;
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.alert-text {
+  font-family: $font-primary;
+  font-size: 14px;
+  color: $gray-700;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.alert-bold {
+  font-weight: 500;
+}
+
+// ── Form content area ─────────────────────────────────────────────────────────
+.form-content {
   display: flex;
   flex-direction: column;
   gap: $space-6;
 }
 
+// ── Sections ──────────────────────────────────────────────────────────────────
 .form-section {
   display: flex;
   flex-direction: column;
-  gap: $space-5;
-}
-
-.section-heading {
-  display: flex;
-  flex-direction: column;
-  gap: $space-2;
+  gap: 24px;
 }
 
 .section-title {
   font-family: $font-primary;
-  font-size: $font-base;
+  font-size: 16px;
   font-weight: $font-bold;
   color: $gray-700;
   margin: 0;
-  line-height: $line-height-simple;
+  line-height: 1.1;
 }
 
-.section-description {
+.section-body {
   font-family: $font-primary;
-  font-size: $font-md;
-  font-weight: $font-regular;
+  font-size: 14px;
   color: $gray-700;
-  margin: 0;
-  line-height: $line-height-large;
-
-  strong {
-    font-weight: $font-medium;
-  }
+  margin: -16px 0 0 0;
+  line-height: 1.5;
 }
 
 .section-divider {
-  border: none;
-  border-top: 1px solid $gray-100;
+  height: 1px;
+  background: $gray-100;
   margin: 0;
 }
 
-// ========== Form Rows / Groups ==========
+// ── Form rows & fields ────────────────────────────────────────────────────────
 .form-row {
   display: flex;
-  gap: $space-5;
-  align-items: flex-start;
-
-  .form-group {
-    flex: 1 0 0;
-    min-width: 0;
-
-    &.spacer {
-      visibility: hidden;
-    }
-  }
+  gap: 24px;
+  flex-wrap: wrap;
 }
 
-.form-group {
+.field-group {
+  flex: 1;
+  min-width: 200px;
   display: flex;
   flex-direction: column;
-  gap: $space-2;
-
-  label {
-    font-family: $font-primary;
-    font-size: $font-sm;
-    font-weight: $font-regular;
-    color: $gray-600;
-    display: flex;
-    align-items: center;
-    gap: $space-1;
-  }
-
-  .tooltip-icon {
-    font-size: 14px; // Figma icon box is exactly 14x14 (Icon/outline/Tooltip)
-    color: $gray-400;
-  }
-
-  input,
-  select {
-    font-family: $font-primary;
-    font-size: $font-md;
-    font-weight: $font-regular;
-    color: $gray-600;
-    height: 40px;
-    padding: $space-2 12px; // Figma px-12px (size-3=12px in Figma scale; project $space-3 is 10px)
-    border: 1px solid $gray-200;
-    border-radius: $radius-3;
-    background: $neutral-white;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    max-width: 100%;
-    width: 100%;
-    box-sizing: border-box;
-
-    &::placeholder {
-      color: $gray-500;
-    }
-
-    &:focus {
-      outline: none;
-      border-color: $primary-500;
-      box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-      color: $gray-400;
-    }
-  }
-
-  select {
-    appearance: none;
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath fill='%23858EA6' d='M5.5 7.5L10 12l4.5-4.5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: $space-7;
-  }
-
-  .form-input--fill {
-    background-color: $primary-50;
-    border-color: $primary-200;
-    color: $gray-600;
-  }
+  gap: 8px;
 }
 
-// Read-only select look (matches Figma static state — no live dropdown wired yet)
-.select-control {
+.field-label {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: $space-2;
-  height: 40px;
-  padding: $space-2 12px; // Figma px-12px (size-3=12px in Figma scale; project $space-3 is 10px)
-  border: 1px solid $gray-200;
-  border-radius: $radius-3;
-  background: $neutral-white;
+  gap: 4px;
   font-family: $font-primary;
-  font-size: $font-md;
-  font-weight: $font-regular;
-  color: $gray-500;
-  cursor: pointer;
+  font-size: 12px;
+  font-weight: 400;
+  color: $gray-600;
+  line-height: 1.5;
+}
+
+.tooltip-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  cursor: help;
+  opacity: 0.7;
+}
+
+.field-input {
+  height: 40px;
+  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid $gray-200;
+  border-radius: 12px;
+  background: #fff;
+  font-family: $font-primary;
+  font-size: 14px;
+  font-weight: 400;
+  color: $gray-700;
+  outline: none;
+  transition: border-color 0.2s;
 
-  i {
-    font-size: $font-base;
-    color: $gray-500;
-    flex-shrink: 0;
-  }
-
-  &:not(.placeholder) {
-    color: $gray-500;
-  }
+  &::placeholder { color: $gray-500; }
+  &:focus { border-color: $primary-500; }
 }
 
-// ========== Phone field ==========
-.phone-group {
+// Select
+.select-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.field-select {
+  height: 40px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 8px 36px 8px 12px;
+  border: 1px solid $gray-200;
+  border-radius: 12px;
+  background: #fff;
+  font-family: $font-primary;
+  font-size: 14px;
+  font-weight: 400;
+  color: $gray-500;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+
+  &:focus { border-color: $primary-500; }
+}
+
+.chevron-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  object-fit: contain;
+}
+
+// Phone input
+.phone-row {
   display: flex;
-  gap: $space-2;
+  gap: 0;
+  width: 100%;
 
-  .phone-prefix {
-    display: flex;
-    align-items: center;
-    gap: $space-2;
-    width: 82px;
-    flex-shrink: 0;
-    height: 40px;
-    padding: $space-2 12px; // Figma px-12px (size-3=12px in Figma scale; project $space-3 is 10px)
-    border: 1px solid $gray-200;
-    border-radius: $radius-3;
-    background: $neutral-white;
-    font-family: $font-primary;
-    font-size: $font-md;
-    color: $gray-600;
-    box-sizing: border-box;
-
-    .flag-co {
-      width: 24px;
-      height: 16px;
-      border-radius: 2px;
-      flex-shrink: 0;
-      background: linear-gradient(
-        to bottom,
-        #fcd116 0%,
-        #fcd116 50%,
-        #003893 50%,
-        #003893 75%,
-        #ce1126 75%,
-        #ce1126 100%
-      );
-    }
-  }
-
-  input {
-    flex: 1 0 0;
-    min-width: 0;
+  .field-input.phone-number {
+    border-radius: 0 12px 12px 0;
+    flex: 1;
+    border-left: none;
   }
 }
 
-// ========== Actions ==========
+.phone-prefix {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  height: 40px;
+  border: 1px solid $gray-200;
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  background: #fff;
+  white-space: nowrap;
+  flex-shrink: 0;
+  width: 82px;
+  box-sizing: border-box;
+}
+
+.flag {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.phone-code-text {
+  font-family: $font-primary;
+  font-size: 14px;
+  font-weight: 400;
+  color: $gray-600;
+  min-width: 26px;
+}
+
+// ── CTA ───────────────────────────────────────────────────────────────────────
 .form-actions {
   display: flex;
   justify-content: flex-end;
 }
 
-.btn-primary {
-  // Figma literal #ffa067 (its own primary-300 shade) — lighter than DS token
-  // $primary-300 (#F8B76D); this is the button's default/idle state in the
-  // design, distinct from the full-saturation $primary-500 hover state.
-  background: #FFA067;
-  color: $neutral-white;
-  border: none;
-  border-radius: $radius-3;
+.btn-save {
   height: 40px;
-  padding: 12px; // Figma p-12px (size-3=12px in Figma scale; project $space-3 is 10px)
+  padding: 0 12px;
+  background: #ffa067;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
   font-family: $font-primary;
-  font-size: $font-md;
+  font-size: 14px;
   font-weight: $font-bold;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease;
-  width: 235px;
-  box-sizing: border-box;
+  white-space: nowrap;
+  transition: background 0.2s;
+  line-height: 1.1;
 
-  &:hover {
-    background: $primary-500;
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
+  &:hover { background: darken(#ffa067, 8%); }
 }
 
-// ========== Toast ==========
-.toast {
-  position: fixed;
-  bottom: $space-6;
-  right: $space-6;
-  padding: $space-3 $space-5;
-  border-radius: $radius-2;
-  display: flex;
-  align-items: center;
-  gap: $space-2;
-  font-family: $font-primary;
-  font-size: $font-md;
-  font-weight: $font-medium;
-  color: $neutral-white;
-  box-shadow: $shadow-large;
-  z-index: 1000;
-  animation: toastSlideIn 0.3s ease;
-
-  &.success {
-    background: $success-600;
-  }
-
-  &.info {
-    background: $info-600;
-  }
-
-  i {
-    font-size: $font-base;
-  }
-}
-
-@keyframes toastSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-// ========== Responsive ==========
-@media (max-width: $bp-lg) {
-  .form-row {
-    flex-wrap: wrap;
-  }
-
-  .form-row .form-group {
-    flex: 1 1 240px;
-  }
-
-  .form-row .form-group.spacer {
-    display: none;
-  }
-}
-
+// ── Responsive ─────────────────────────────────────────────────────────────────
 @media (max-width: $bp-md) {
-  .facturacion-page {
-    padding: $space-4;
-  }
-
-  .form-card {
-    gap: $space-5;
-  }
-
-  .form-row {
-    flex-direction: column;
-    gap: $space-4;
-  }
-
-  .form-row .form-group {
-    width: 100%;
-  }
+  .form-row { flex-direction: column; }
+  .field-group { min-width: 100%; }
 }
 
 @media (max-width: $bp-sm) {
-  .facturacion-page {
-    padding: $space-4;
-  }
-
-  .title-row {
-    gap: $space-2;
-  }
-
-  .form-actions {
-    .btn-primary {
-      width: 100%;
-      min-width: 0;
-    }
-  }
+  .page-wrapper { padding: $space-4; }
+  .page-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .btn-save { width: 100%; justify-content: center; }
 }

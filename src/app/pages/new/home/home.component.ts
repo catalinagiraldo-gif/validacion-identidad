@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { IdentitySoftTouchpointBannerComponent } from '../../../common/components/identity-soft-touchpoint-banner/identity-soft-touchpoint-banner.component';
-
 interface Provider {
   name: string;
   avatar: string;
@@ -51,13 +49,11 @@ interface ProtoCard {
 @Component({
   selector: 'app-home-new',
   standalone: true,
-  imports: [CommonModule, RouterModule, IdentitySoftTouchpointBannerComponent],
+  imports: [CommonModule, RouterModule],
   styleUrls: ['./home.component.scss'],
   template: `
     <div class="page-wrapper">
       <h1 class="greeting">{{ greeting }}</h1>
-
-      <app-identity-soft-touchpoint-banner></app-identity-soft-touchpoint-banner>
 
       <div class="home-layout">
         <!-- LEFT COLUMN (765px) -->

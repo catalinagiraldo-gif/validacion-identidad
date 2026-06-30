@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 
 type FormState = 'draft' | 'pending_validation' | 'in_review' | 'approved' | 'rejected' | 'rejected_field';
 
@@ -29,8 +28,6 @@ interface AlertConfig {
 })
 export class DatosPersonalesComponent {
   activeTab: 'datos' | 'facturacion' = 'datos';
-
-  constructor(private readonly router: Router) {}
 
   datosState: FormState = 'draft';
   facturacionState: FormState = 'draft';
@@ -248,7 +245,7 @@ export class DatosPersonalesComponent {
   }
 
   get facturacionFieldsLocked(): boolean {
-    return ['pending_validation', 'in_review'].includes(this.facturacionState);
+    return ['pending_validation', 'in_review', 'approved'].includes(this.facturacionState);
   }
 
   // ═══════════════════════════════════
@@ -489,18 +486,6 @@ export class DatosPersonalesComponent {
 
   guardarFacturacion(): void {
     if (!this.guardarFacturacionEnabled) return;
-    if (this.facturacionState === 'approved') {
-      this.router.navigate(['/old/configuraciones/flujo-identidad-2026-06-18'], {
-        queryParams: {
-          tipo: 'antiguo-datos-completos',
-          estado: 'aprobada',
-          pais: 'co-natural',
-          origen: 'configuraciones',
-          revalidar: 'facturacion',
-        },
-      });
-      return;
-    }
     this.toast('Datos de facturación guardados. Enviando a revisión...');
     setTimeout(() => {
       this.facturacionState = 'in_review';

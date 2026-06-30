@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { IdentityDemoStateService } from '../../../common/services/identity-demo-state.service';
-import { IdentityActivationCardComponent } from '../../../common/components/identity-activation-card/identity-activation-card.component';
+import { IdentitySatelliteStatus } from '../../../common/models/identity-flow.models';
 
 interface Proveedor {
   id: string;
@@ -21,7 +21,7 @@ interface Proveedor {
 @Component({
   selector: 'app-proveedores',
   standalone: true,
-  imports: [CommonModule, FormsModule, IdentityActivationCardComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './proveedores.component.html',
   styleUrls: ['./proveedores.component.scss'],
 })
@@ -35,8 +35,30 @@ export class ProveedoresComponent implements OnInit {
 
   private identityDemo = inject(IdentityDemoStateService);
 
-  get demoIdentityStatus() {
+  get demoIdentityStatus(): IdentitySatelliteStatus {
     return this.identityDemo.status();
+  }
+
+  setDemoIdentityStatus(status: IdentitySatelliteStatus): void {
+    this.identityDemo.setStatus(status);
+  }
+
+  readonly identityStatusOptions: IdentitySatelliteStatus[] = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
+  readonly blockedAction = 'comprar a proveedores';
+
+  private readonly alertsMap: Record<string, { type: string; icon: string; text: string; cta: string; step: number; stateLabel: string }> = {
+    sin_validar: { type: 'warning', icon: 'pi-shield',                step: 1, stateLabel: 'Sin validar',             text: 'Para operar con proveedores y contratar catálogos, verifica tu identidad. Solo toma unos minutos.', cta: 'Verificar identidad' },
+    pendiente:   { type: 'warning', icon: 'pi-exclamation-triangle',  step: 2, stateLabel: 'Verificación incompleta', text: 'Casi listo. Completa tu verificación de identidad para contratar con proveedores sin restricciones.', cta: 'Completar verificación' },
+    en_revision: { type: 'info',    icon: 'pi-clock',                 step: 3, stateLabel: 'En revisión',             text: 'Tu identidad está en revisión. Puedes explorar proveedores — te avisamos cuando puedas contratar.', cta: 'Ver estado' },
+    rechazado:   { type: 'error',   icon: 'pi-times-circle',          step: 2, stateLabel: 'Verificación rechazada',  text: 'Tu verificación fue rechazada. Reintenta para desbloquear la contratación de proveedores.', cta: 'Reintentar verificación' },
+  };
+
+  get identityAlert() {
+    return this.demoIdentityStatus !== 'aprobado' ? this.alertsMap[this.demoIdentityStatus] : null;
+  }
+
+  irAValidar(): void {
+    this.router.navigate(['/old/configuraciones/flujo-identidad-2026-06-18']);
   }
 
   tiposProveedor = ['Todos', 'premium', 'verificado', 'estándar'];

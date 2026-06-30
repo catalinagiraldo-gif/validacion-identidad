@@ -3,14 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { ToastService } from '../../../../common/services/toast.service';
-import { OtpVerificationModalComponent } from '../../../../common/components/otp-verification-modal/otp-verification-modal.component';
 
 type SeguridadTab = 'registro' | 'autenticacion' | 'sesiones';
 
 @Component({
   selector: 'app-seguridad-new',
   standalone: true,
-  imports: [CommonModule, FormsModule, OtpVerificationModalComponent],
+  imports: [CommonModule, FormsModule],
   styleUrls: ['./seguridad.component.scss'],
   template: `
     <div class="page-wrapper">
@@ -133,13 +132,6 @@ type SeguridadTab = 'registro' | 'autenticacion' | 'sesiones';
       </div>
     </div>
 
-    <app-otp-verification-modal
-      [visible]="otpModalVisible"
-      [medio]="otpMedioActual"
-      (visibleChange)="otpModalVisible = $event"
-      (verified)="onOtpVerificado()"
-      (cancelled)="onOtpCancelado()"
-    ></app-otp-verification-modal>
   `,
 })
 export class SeguridadNewComponent {
@@ -157,40 +149,15 @@ export class SeguridadNewComponent {
   editingEmail = false;
   editingTelefono = false;
 
-  otpModalVisible = false;
-  otpMedioActual = '';
-  private pendingRegistro = { ...this.registro };
-
   onSaveRegistro(): void {
     const emailCambio = this.registro.email !== this.registroOriginal.email;
     const telefonoCambio = this.registro.telefono !== this.registroOriginal.telefono;
 
-    if (!emailCambio && !telefonoCambio) {
-      this.editingEmail = false;
-      this.editingTelefono = false;
-      return;
-    }
+    if (!emailCambio && !telefonoCambio) return;
 
-    // Regla: OTP enviado al medio ACTUAL (ya verificado), no al nuevo — patrón antifraude.
-    this.otpMedioActual = emailCambio ? this.registroOriginal.email : this.formatTelefono(this.registroOriginal.telefono);
-    this.pendingRegistro = { ...this.registro };
-    this.otpModalVisible = true;
-  }
-
-  onOtpVerificado(): void {
-    this.registro = { ...this.pendingRegistro };
     this.registroOriginal = { ...this.registro };
     this.editingEmail = false;
     this.editingTelefono = false;
     this.toast.success('Datos de registro actualizados.');
-  }
-
-  onOtpCancelado(): void {
-    this.registro = { ...this.registroOriginal };
-    this.toast.info('Cambios descartados.');
-  }
-
-  private formatTelefono(telefono: string): string {
-    return `+57 ${telefono}`;
   }
 }
