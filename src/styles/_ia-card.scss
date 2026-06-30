@@ -178,7 +178,17 @@
   &--current { background: $primary-500; animation: iaStepGlow 1.5s ease-in-out infinite; }
 }
 
-// ── Keyframes ─────────────────────────────────────────────────
+.ia-card--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin-bottom: $size-4;
+}
+
+.ia-card--home {
+  margin-bottom: $size-5;
+}
+
 @keyframes iaCardIn {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: none; }

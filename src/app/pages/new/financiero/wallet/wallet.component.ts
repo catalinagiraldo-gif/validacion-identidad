@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IdentityActivationCardComponent } from '../../../../common/components/identity-activation-card/identity-activation-card.component';
 
 import { IdentityProfileService } from '../../../../common/services/identity-profile.service';
 import { IdentityBlockBannerComponent } from '../../../../common/components/identity-block-banner/identity-block-banner.component';
@@ -22,7 +23,11 @@ interface Transaction {
 @Component({
   selector: 'app-wallet-new',
   standalone: true,
+<<<<<<< HEAD
   imports: [CommonModule, FormsModule, IdentityBlockBannerComponent],
+=======
+  imports: [CommonModule, FormsModule, IdentityActivationCardComponent],
+>>>>>>> 676de9db534c7c03070b27cebe346aa8e035f5b7
   styleUrls: ['./wallet.component.scss'],
   template: `
     <div class="page-wrapper">
@@ -56,7 +61,16 @@ interface Transaction {
         </div>
       </div>
 
+<<<<<<< HEAD
       <app-identity-block-banner [motivo]="identity.bloqueoMotivo()" contexto="transferencia"></app-identity-block-banner>
+=======
+      <app-identity-activation-card
+        context="retiros"
+        blockedAction="retirar fondos"
+        [sticky]="true"
+        identityRoute="/new/configuraciones/flujo-identidad-2026-06-18"
+      />
+>>>>>>> 676de9db534c7c03070b27cebe346aa8e035f5b7
 
       <!-- Info banner -->
       <div class="info-banner">

@@ -7,6 +7,7 @@ import { DropiToastComponent } from '../../../common/components/dropi-toast/drop
 import { IdentidadTourService, TourStep } from '../../../common/services/identidad-tour.service';
 import { IdentidadTourComponent } from '../../../common/components/identidad-tour/identidad-tour.component';
 import { IdentityDemoStateService } from '../../../common/services/identity-demo-state.service';
+import billingFieldsLatam from '../../../../../mocks/billing-fields-latam.json';
 import {
   OrigenValidacion,
   UserType,
@@ -17,6 +18,7 @@ import {
   SelectorOption,
   FormNucleo,
   FormFiscal,
+  FormFacturacion,
   MockUserData,
   MOCK_USERS,
   DEMO_SCENARIO_PRESETS,
@@ -28,6 +30,8 @@ import {
   SUMSUB_CAPTURE_STEPS,
   emptyFormNucleo,
   emptyFormFiscal,
+  emptyFormFacturacion,
+  buildNombreCompleto,
   deriveResponsableIVA,
 } from '../../../common/models/identity-flow.models';
 
@@ -50,19 +54,19 @@ type VistaId =
   | 'v-exitosa';
 type ModalId =
   | 'm-mfa'
+  | 'm-prefill-billing'
   | 'm-confirmacion-pre-sumsub'
   | 'm-sumsub'
   | 'm-apelacion'
   | 'm-documento'
+  | 'm-doc-preview'
   | 'm-salir-sin-guardar';
 
-// -----------------------------------------------------------------------
-// Interfaces
-// -----------------------------------------------------------------------
-
-// -----------------------------------------------------------------------
-// Component
-// -----------------------------------------------------------------------
+interface DocumentUploadSlot {
+  label: string;
+  required: boolean;
+  fileName: string | null;
+}
 
 @Component({
   selector: 'app-flujo-identidad',
@@ -152,11 +156,11 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
       },
       {
         id: 'stepper',
-        title: 'Los 3 pasos del proceso',
-        body: 'Tus datos · Verificación · Resultado. El formulario se divide en 2 pasos (datos personales + fiscal) antes de la verificación biométrica Sumsub.',
-        target: '[data-tour="fid-stepper"]',
+        title: 'Qué va a pasar',
+        body: 'Completa tus datos, verifica con Sumsub y espera la aprobación. El formulario tiene 2 pasos antes de la verificación biométrica.',
+        target: '[data-tour="fid-hero-journey"]',
         placement: 'bottom',
-        onEnter: () => { this.setEstado('inicial'); this.navTo('v-nueva-formulario'); this.formStep.set(1); },
+        onEnter: () => { this.setEstado('inicial'); this.navTo('v-nueva-bloqueada'); },
       },
       {
         id: 'formulario-dos-pasos',
@@ -262,13 +266,18 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     { id: 'incompleta',           label: 'Incompleta · puede retomar',   color: 'warning' },
     { id: 'en-revision',          label: 'En revisión',                  color: 'warning' },
     { id: 'recien-aprobada',      label: 'Recién aprobada · celebración', color: 'success' },
-    { id: 'aprobada',             label: 'Aprobada · estado estable',     color: 'success' },
+    { id: 'aprobado-bloqueado',    label: 'Aprobada · bloqueo 6 meses',  color: 'warning' },
+    { id: 'aprobado-listo-editar', label: 'Aprobada · puede actualizar', color: 'success' },
     { id: 'rechazada-espera',     label: 'Rechazada · espera 10 min',    color: 'error'   },
     { id: 'rechazada-reintentar', label: 'Rechazada · puede reintentar', color: 'error'   },
     { id: 'baneada',              label: 'Baneada (3 rechazos)',          color: 'error'   },
     { id: 'email-baneado',        label: 'Email baneado cross-country',  color: 'error'   },
-    { id: 'aprobado-bloqueado',    label: 'Aprobada · bloqueo 6 meses',  color: 'warning' },
-    { id: 'aprobado-listo-editar', label: 'Aprobada · puede actualizar', color: 'success' },
+  ];
+
+  readonly heroJourneySteps = [
+    { num: 1, label: 'Completa tus datos', desc: 'Datos personales y facturación' },
+    { num: 2, label: 'Verifica con Sumsub', desc: 'Documento y selfie biométrica' },
+    { num: 3, label: 'Revisión y aprobación', desc: 'Te avisamos cuando esté listo' },
   ];
 
   readonly paisOptions: SelectorOption<PaisPersona>[] = [
@@ -312,6 +321,14 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
 
   formNucleo: FormNucleo = emptyFormNucleo();
   formFiscal: FormFiscal = emptyFormFiscal();
+  formFacturacion: FormFacturacion = emptyFormFacturacion();
+  documentSlots: DocumentUploadSlot[] = [];
+  previewDocName = '';
+
+  readonly billingLatam = billingFieldsLatam;
+  validadoTab = signal<'personal' | 'facturacion'>('personal');
+  pendingFacturacionRevalidation = signal(false);
+  sumsubContext = signal<'initial' | 'facturacion-revalidation'>('initial');
 
   // ── Sumsub mock ───────────────────────────────────────────────────────
 
@@ -356,16 +373,6 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   // -----------------------------------------------------------------------
   // Computed getters
   // -----------------------------------------------------------------------
-
-  get globalStepLabel(): string {
-    const labels: Record<1 | 2 | 3, string> = {
-      1: 'Tus datos',
-      2: 'Verificación',
-      3: 'Resultado',
-    };
-    const paso = this.pasoGlobal;
-    return `Paso ${paso} de 3 · ${labels[paso]}`;
-  }
 
   get estadoBadge(): { label: string; variant: 'neutral' | 'success' | 'warning' | 'error' } | null {
     const es = this.selectorEstado();
@@ -421,15 +428,15 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     const map: Record<OrigenValidacion, { titulo: string; descripcion: string }> = {
       configuraciones: {
         titulo: 'Desbloquea tu cuenta en Dropi',
-        descripcion: 'Verificamos quién eres en menos de 5 minutos, una sola vez. Lo que se activa:',
+        descripcion: 'Un proceso rápido que no volverás a repetir. Tu cuenta queda completamente habilitada.',
       },
       retiro: {
         titulo: 'Verifica tu identidad para retirar',
-        descripcion: 'En menos de 5 minutos confirmamos quién eres. Tus retiros quedan habilitados de forma permanente.',
+        descripcion: 'Solo una vez. La aprobación es permanente y queda registrada en tu cuenta.',
       },
       dropicard: {
-        titulo: 'Activa tu Dropicard en minutos',
-        descripcion: 'Verificamos tu identidad en menos de 5 minutos, una sola vez. Lo que se activa:',
+        titulo: 'Activa tu Dropicard',
+        descripcion: 'Una verificación rápida para operar tu tarjeta en todos tus mercados sin restricciones.',
       },
       transferencia: {
         titulo: 'Verifica tu identidad para transferir',
@@ -542,6 +549,109 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     return this.pais === 'CO' || this.pais === 'MX' || this.pais === 'AR';
   }
 
+  get billingCountryConfig(): Record<string, unknown> | null {
+    const countries = this.billingLatam.countries as Record<string, Record<string, unknown>>;
+    return countries[this.pais] ?? null;
+  }
+
+  get billingPersonConfig(): Record<string, unknown> | null {
+    const country = this.billingCountryConfig as { personTypes?: Record<string, Record<string, unknown>> } | null;
+    if (!country?.personTypes) return null;
+    const key = this.formFacturacion.tipoPersonaFacturacion === 'juridica' ? 'juridica' : 'natural';
+    return country.personTypes[key] ?? null;
+  }
+
+  get tipoPersonaFacturacionLabel(): string {
+    return this.formFacturacion.tipoPersonaFacturacion === 'juridica' ? 'Persona jurídica' : 'Persona natural';
+  }
+
+  get sumsubCaptureStepIndex(): number {
+    const map: Partial<Record<SumsubScreenPhase, number>> = {
+      'capture-front': 0,
+      'capture-back': 1,
+      selfie: 2,
+      processing: 3,
+    };
+    return map[this.sumsubPhase()] ?? -1;
+  }
+
+  get isSumsubCapturePhase(): boolean {
+    return ['capture-front', 'capture-back', 'selfie', 'processing'].includes(this.sumsubPhase());
+  }
+
+  private get step1RequiredFields(): string[] {
+    return [
+      'primerNombre', 'primerApellido', 'fechaNacimiento', 'nacionalidad',
+      'tipoDocumento', 'numeroDocumento', 'email', 'telefono', 'direccion',
+    ];
+  }
+
+  private get step2RequiredFields(): string[] {
+    if (!this.paisConFiscal) return [];
+    const fields = [
+      'fact_tipo_persona', 'fact_localidad', 'fact_direccion', 'fact_email', 'fact_telefono',
+      'fact_nombre', 'fact_regimen', 'fact_tipo_doc', 'fact_numero_doc',
+    ];
+    if (this.pais === 'CO') fields.push('co_tipoResponsabilidad', 'actividadEconomica', 'codigoActividadEconomica');
+    if (this.pais === 'MX') fields.push('mx_codigoPostal');
+    if (this.pais === 'AR') fields.push('ar_provincia');
+    return fields;
+  }
+
+  private isFieldValid(field: string): boolean {
+    return !this.getValidationMessage(field);
+  }
+
+  get canContinueStep1(): boolean {
+    return this.step1RequiredFields.every(f => this.isFieldValid(f));
+  }
+
+  get canContinueStep2(): boolean {
+    if (!this.paisConFiscal) return this.canContinueStep1;
+    if (!this.formFacturacion.aceptaTerminos || !this.formFacturacion.aceptaPolitica) return false;
+    return this.step2RequiredFields.every(f => this.isFieldValid(f));
+  }
+
+  get prefillPreviewFields(): { label: string; value: string }[] {
+    return [
+      { label: 'Nombre', value: buildNombreCompleto(this.formNucleo) },
+      { label: 'Email', value: this.formNucleo.email || this.mockUser.email },
+      { label: 'Teléfono', value: this.mockUser.telefono },
+    ];
+  }
+
+  get nombreFacturacionLabel(): string {
+    const cfg = this.billingPersonConfig as { nombreFieldLabel?: string } | null;
+    return cfg?.nombreFieldLabel ?? (this.tipoPersona === 'juridica' ? 'Razón social' : 'Nombre completo');
+  }
+
+  get nombreFacturacionHelper(): string {
+    const cfg = this.billingPersonConfig as { nombreFieldHelper?: string } | null;
+    return cfg?.nombreFieldHelper ?? 'Tal como figura en el documento a cargar.';
+  }
+
+  get billingRegimenOptions(): string[] {
+    const cfg = this.billingPersonConfig as { regimenOptions?: string[] } | null;
+    return cfg?.regimenOptions ?? [];
+  }
+
+  get billingDocumentTypes(): string[] {
+    const cfg = this.billingPersonConfig as { documentTypes?: string[] } | null;
+    return cfg?.documentTypes ?? [];
+  }
+
+  get prefillNombreDisplay(): string {
+    if (this.tipoPersona === 'juridica' && this.formNucleo.razonSocial.trim()) {
+      return this.formNucleo.razonSocial.trim();
+    }
+    return buildNombreCompleto(this.formNucleo);
+  }
+
+  get canEditFacturacionPostAprobacion(): boolean {
+    const e = this.selectorEstado();
+    return e === 'aprobado-bloqueado' || e === 'aprobado-listo-editar';
+  }
+
   get paisLabel(): string {
     const map: Record<Pais, string> = { CO: 'Colombia', MX: 'México', AR: 'Argentina', CL: 'Chile', EC: 'Ecuador' };
     return map[this.pais];
@@ -605,6 +715,29 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     return this.camposNuevos.length;
   }
 
+  get camposNuevosPendienteLabels(): string[] {
+    const labels: Record<string, string> = {
+      co_impuesto: 'Impuesto',
+      co_tipoResponsabilidad: 'Tipo de responsabilidad',
+      co_tipoRegimen: 'Tipo de régimen',
+      mx_codigoPostal: 'Código postal',
+      mx_regimenFiscal: 'Régimen fiscal',
+      ar_provincia: 'Provincia',
+      ar_condicionIVA: 'Condición frente al IVA',
+    };
+    return this.camposNuevos
+      .filter(c => this.isCampoNuevoPendiente(c))
+      .map(c => labels[c] ?? c);
+  }
+
+  get showCamposNuevosAlert(): boolean {
+    return this.selectorUsuario() === 'antiguo-campos-nuevos' && this.camposNuevosPendienteLabels.length > 0;
+  }
+
+  get hasCamposNuevosPendientes(): boolean {
+    return this.camposNuevos.some(c => this.isCampoNuevoPendiente(c));
+  }
+
   get countdownLabel(): string {
     const s = this.countdownSeconds();
     const m = Math.floor(s / 60);
@@ -639,23 +772,10 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     return `${u.primerNombre} ${u.primerApellido}`;
   }
 
-  // ── Global stepper (3 pasos: Tus datos · Verificación · Resultado) ────────
-
-  get mostrarStepper(): boolean {
-    const v = this.vistaActiva();
-    return v !== 'v-baneada'
-      && v !== 'v-email-baneado'
-      && v !== 'v-nueva-formulario'
-      && v !== 'v-nueva-onboarding'
-      && v !== 'v-exitosa'
-      && v !== 'v-rechazada'
-      && v !== 'v-validado-datos'
-      && v !== 'v-validado-campos-nuevos';
-  }
+  // ── Post-approval edit permissions ───────────────────────────────────────
 
   get canEditData(): boolean {
-    const es = this.selectorEstado();
-    return es === 'aprobada' || es === 'recien-aprobada' || es === 'aprobado-listo-editar';
+    return this.selectorEstado() === 'aprobado-listo-editar';
   }
 
   get fechaAprobacionLabel(): string {
@@ -670,33 +790,54 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
-  get mostrarStepMobile(): boolean {
-    return this.mostrarStepper;
+  get validadoPersonalTagText(): string {
+    return 'Validado';
   }
 
-  get pasoGlobal(): 1 | 2 | 3 {
-    switch (this.vistaActiva()) {
-      case 'v-en-revision':
-      case 'v-rechazada':
-        return 2;
-      case 'v-exitosa':
-      case 'v-validado-datos':
-      case 'v-validado-campos-nuevos':
-        return 3;
-      default:
-        return 1;
-    }
+  get validadoFacturacionTagText(): string {
+    return this.validadoFacturacionTabComplete ? 'Completo' : 'Pendiente';
   }
 
-  stepState(n: 1 | 2 | 3): 'pending' | 'focus' | 'completed' | 'error' {
-    const current = this.pasoGlobal;
-    if (n < current) return 'completed';
-    if (n === current) {
-      if (n === 2 && this.vistaActiva() === 'v-rechazada') return 'error';
-      if (n === 3) return 'completed';
-      return 'focus';
+  get validadoFacturacionTabComplete(): boolean {
+    return !!this.formFacturacion.nombreFacturacion
+      && !!this.formFacturacion.regimenFiscal
+      && !!this.formFacturacion.tipoDocumentoFacturacion
+      && !!this.formFacturacion.numeroDocumentoFacturacion;
+  }
+
+  get phonePrefix(): string {
+    const map: Record<Pais, string> = { CO: '57', MX: '52', AR: '54', CL: '56', EC: '593' };
+    return map[this.pais];
+  }
+
+  get formattedFechaNacimiento(): string {
+    return this.formatFechaDisplay(this.mockUser.fechaNacimiento);
+  }
+
+  parseFechaString(s: string): Date | null {
+    if (!s) return null;
+    const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (iso) {
+      const year = parseInt(iso[1], 10);
+      const month = parseInt(iso[2], 10) - 1;
+      const day = parseInt(iso[3], 10);
+      return new Date(year, month, day);
     }
-    return 'pending';
+    const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (!m) return null;
+    const day = parseInt(m[1], 10);
+    const month = parseInt(m[2], 10) - 1;
+    const year = parseInt(m[3], 10);
+    const d = new Date(year, month, day);
+    if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) return null;
+    return d;
+  }
+
+  private formatFechaDisplay(fecha: string): string {
+    if (!fecha) return '';
+    const iso = fecha.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
+    return fecha;
   }
 
   // -----------------------------------------------------------------------
@@ -705,6 +846,9 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
 
   setUserType(type: UserType): void {
     this.selectorUsuario.set(type);
+    if (type === 'antiguo-campos-nuevos' && this.selectorEstado() === 'inicial') {
+      this.selectorEstado.set('guardado-sin-comenzar');
+    }
     this.modalActivo.set(null);
     this.resolveVista();
     this.syncUrlParams();
@@ -796,6 +940,7 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     const estado = params.get('estado') as EstadoId | null;
     const pais = params.get('pais') as PaisPersona | null;
     const origen = params.get('origen') as OrigenValidacion | null;
+    const revalidar = params.get('revalidar');
     if (tipo && this.userTypeOptions.some(o => o.id === tipo)) this.selectorUsuario.set(tipo);
     if (estado && this.estadoOptions.some(o => o.id === estado)) {
       this.selectorEstado.set(estado);
@@ -805,6 +950,14 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     if (origen && this.origenOptions.some(o => o.id === origen)) this.selectorOrigen.set(origen);
     this.resolveVista();
     this.syncIdentityDemoState();
+    if (revalidar === 'facturacion') {
+      this.validadoTab.set('facturacion');
+      this.vistaActiva.set('v-validado-datos');
+      this.pendingFacturacionRevalidation.set(true);
+      this.otpDigits = ['', '', '', '', '', ''];
+      this.otpError.set('');
+      setTimeout(() => this.openModal('m-mfa'), 0);
+    }
   }
 
   private syncUrlParams(): void {
@@ -836,19 +989,29 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     }
   }
 
-  editarSeccionConfirmacion(seccion: 'personal' | 'contacto' | 'empresa' | 'fiscal'): void {
+  onBillingRegimenChange(): void {
+    const r = this.formFacturacion.regimenFiscal;
+    if (this.pais === 'CO') this.formFiscal.co_tipoRegimen = r;
+    if (this.pais === 'MX') this.formFiscal.mx_regimenFiscal = r;
+    if (this.pais === 'AR') this.formFiscal.ar_condicionIVA = r;
+  }
+
+  editarSeccionConfirmacion(seccion: 'personal' | 'contacto' | 'empresa' | 'fiscal' | 'facturacion'): void {
     this.closeModal(true);
     this.navTo('v-nueva-formulario');
-    if (seccion === 'fiscal' && this.paisConFiscal) {
-      this.formStep.set(2);
-      setTimeout(() => document.getElementById('field-co_tipoRegimen')?.focus(), 0);
+    if (seccion === 'fiscal' || seccion === 'facturacion' || seccion === 'contacto') {
+      if (this.paisConFiscal) {
+        this.formStep.set(2);
+        setTimeout(() => document.getElementById('field-fact_email')?.focus(), 0);
+      }
     } else {
       this.formStep.set(1);
       const focusMap: Record<string, string> = {
         personal: 'field-primerNombre',
-        contacto: 'field-emailFacturacion',
+        contacto: 'field-fact_email',
         empresa: 'field-razonSocial',
-        fiscal: 'field-primerNombre',
+        fiscal: 'field-fact_regimen',
+        facturacion: 'field-fact_email',
       };
       setTimeout(() => document.getElementById(focusMap[seccion])?.focus(), 0);
     }
@@ -862,11 +1025,17 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
 
   private getInitialSumsubPhase(): SumsubScreenPhase {
     const c = this.sumsubCustomization();
+    if (this.sumsubContext() === 'facturacion-revalidation') {
+      if (!c.skipInstructions) return 'instructions';
+      return 'selfie';
+    }
     if (!c.skipWarning) return 'warning';
     if (!c.skipWelcome) return 'welcome';
     if (!c.skipInstructions) return 'instructions';
-    if (this.tipoPersona === 'juridica') return 'kyb-empresa';
-    return 'document';
+    if (this.formFacturacion.tipoPersonaFacturacion === 'juridica' || this.tipoPersona === 'juridica') {
+      return 'kyb-empresa';
+    }
+    return 'capture-front';
   }
 
   get sumsubPhaseLabel(): string {
@@ -889,7 +1058,11 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     const phase = this.sumsubPhase();
     const c = this.sumsubCustomization();
     const goCapture = (): void => {
-      this.sumsubPhase.set(this.tipoPersona === 'juridica' ? 'kyb-empresa' : 'document');
+      if (this.formFacturacion.tipoPersonaFacturacion === 'juridica' || this.tipoPersona === 'juridica') {
+        this.sumsubPhase.set('kyb-empresa');
+      } else {
+        this.sumsubPhase.set('capture-front');
+      }
     };
 
     if (phase === 'warning') {
@@ -901,6 +1074,10 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
       return;
     }
     if (phase === 'instructions') {
+      if (this.sumsubContext() === 'facturacion-revalidation') {
+        this.sumsubPhase.set('selfie');
+        return;
+      }
       goCapture();
       return;
     }
@@ -909,7 +1086,7 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
       return;
     }
     if (phase === 'kyb-rep') {
-      this.sumsubPhase.set('document');
+      this.sumsubPhase.set('capture-front');
       return;
     }
     if (phase === 'document') {
@@ -940,6 +1117,16 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
 
   private finalizarSumsub(): void {
     this.closeModal(true);
+    if (this.sumsubContext() === 'facturacion-revalidation') {
+      this.sumsubContext.set('initial');
+      this.validadoTab.set('facturacion');
+      this.vistaActiva.set('v-validado-datos');
+      this.toast.info('Revisamos tus datos de facturación. Te avisaremos cuando termine.', 'Facturación en revisión');
+      setTimeout(() => {
+        this.toast.success('Tus datos de facturación fueron actualizados.', 'Facturación aprobada');
+      }, 2500);
+      return;
+    }
     this.selectorEstado.set('en-revision');
     this.vistaActiva.set('v-en-revision');
     this.syncIdentityDemoState();
@@ -948,7 +1135,12 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
 
   resolveVista(): void {
     const ut = this.selectorUsuario();
-    const es = this.selectorEstado();
+    let es = this.selectorEstado();
+
+    if (es === 'aprobada') {
+      this.selectorEstado.set('aprobado-bloqueado');
+      es = 'aprobado-bloqueado';
+    }
 
     if (es === 'email-baneado') { this.vistaActiva.set('v-email-baneado'); return; }
     if (es === 'baneada')       { this.vistaActiva.set('v-baneada');       return; }
@@ -961,12 +1153,21 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     if (es === 'recien-aprobada') {
       this.vistaActiva.set('v-exitosa'); return;
     }
-    if (es === 'aprobada' || es === 'aprobado-bloqueado' || es === 'aprobado-listo-editar') {
+    if (es === 'aprobado-bloqueado' || es === 'aprobado-listo-editar') {
       this.vistaActiva.set(ut === 'antiguo-campos-nuevos' ? 'v-validado-campos-nuevos' : 'v-validado-datos');
+      this.initFormFacturacionFromMock();
       return;
     }
     if (es === 'guardado-sin-comenzar' || (ut !== 'nuevo-sin-datos' && es === 'inicial')) {
-      this.vistaActiva.set('v-guardada-sin-comenzar'); return;
+      if (ut === 'antiguo-campos-nuevos') {
+        this.initFormDataFromMockPartial();
+        this.formStep.set(1);
+        this.fieldErrors.set({});
+        this.vistaActiva.set('v-nueva-formulario');
+        return;
+      }
+      this.vistaActiva.set('v-guardada-sin-comenzar');
+      return;
     }
     if (es === 'incompleta')          { this.vistaActiva.set('v-incompleta');           return; }
     if (es === 'en-revision')         { this.vistaActiva.set('v-en-revision');           return; }
@@ -1083,9 +1284,10 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   // -----------------------------------------------------------------------
 
   irAValidar(): void {
-    this.onboardingStep.set(1);
-    this.onboardingTipoPersona = this.tipoPersona;
-    this.navTo('v-nueva-onboarding');
+    this.initFormData();
+    this.isEditMode.set(false);
+    this.navTo('v-nueva-formulario');
+    history.pushState(null, '', window.location.href);
   }
 
   masTarde(): void {
@@ -1100,7 +1302,7 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   }
 
   volverAlOrigen(): void {
-    this.selectorEstado.set('aprobada');
+    this.selectorEstado.set('aprobado-bloqueado');
     this.resolveVista();
     this.toast.success(
       'Retiros, facturación y Dropicard están habilitados en tu cuenta.',
@@ -1121,9 +1323,7 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   }
 
   comenzarValidacion(): void {
-    this.syncPaisFromOnboarding();
     this.initFormData();
-    this.formNucleo.tipoPersona = this.onboardingTipoPersona;
     this.isEditMode.set(false);
     this.navTo('v-nueva-formulario');
     history.pushState(null, '', window.location.href);
@@ -1148,6 +1348,52 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   // -----------------------------------------------------------------------
   // v-nueva-formulario
   // -----------------------------------------------------------------------
+
+  onFormFieldInput(field: string): void {
+    if (this.fieldErrors()[field]) {
+      this.fieldErrors.update(errors => {
+        const next = { ...errors };
+        delete next[field];
+        return next;
+      });
+    }
+  }
+
+  onTipoPersonaFacturacionChange(): void {
+    this.formFacturacion.regimenFiscal = '';
+    this.formFacturacion.tipoDocumentoFacturacion = '';
+    this.formFacturacion.numeroDocumentoFacturacion = '';
+    this.formFacturacion.nombreFacturacion = '';
+    this.updateDocumentSlots();
+  }
+
+  updateDocumentSlots(): void {
+    const cfg = this.billingPersonConfig as { uploads?: string[] } | null;
+    const uploads = cfg?.uploads ?? [];
+    this.documentSlots = uploads.map(label => ({ label, required: true, fileName: null }));
+  }
+
+  onFileSelected(event: Event, index: number): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file && this.documentSlots[index]) {
+      this.documentSlots[index].fileName = file.name;
+    }
+  }
+
+  removeFile(index: number): void {
+    if (this.documentSlots[index]) {
+      this.documentSlots[index].fileName = null;
+    }
+  }
+
+  private scrollToFactTipoDoc(): void {
+    setTimeout(() => {
+      const el = document.getElementById('field-fact_tipo_doc');
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el?.focus();
+    }, 150);
+  }
 
   getFieldError(field: string): string {
     return this.fieldErrors()[field] ?? '';
@@ -1180,11 +1426,22 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
       case 'nacionalidad':    return n.nacionalidad.trim() ? '' : 'Ingresa tu nacionalidad';
       case 'tipoDocumento':   return n.tipoDocumento ? '' : 'Selecciona el tipo de documento';
       case 'numeroDocumento': return n.numeroDocumento.trim() ? '' : 'Ingresa el número de documento';
+      case 'email':           return n.email.trim().includes('@') ? '' : 'Ingresa un email válido';
+      case 'telefono':        return n.telefono.trim() ? '' : 'Ingresa tu teléfono';
       case 'direccion':       return n.direccion.trim() ? '' : 'Ingresa tu dirección';
       case 'ciudad':          return n.ciudad.trim() ? '' : `Ingresa tu ${this.campoGeografico.toLowerCase()}`;
       case 'departamento':    return n.departamento.trim() ? '' : 'Ingresa departamento o estado';
       case 'emailFacturacion': return n.emailFacturacion.trim() ? '' : 'Ingresa el email de facturación';
       case 'razonSocial':     return this.tipoPersona !== 'juridica' || n.razonSocial.trim() ? '' : 'Ingresa la razón social';
+      case 'fact_tipo_persona': return this.formFacturacion.tipoPersonaFacturacion ? '' : 'Selecciona el tipo de persona';
+      case 'fact_localidad': return this.formFacturacion.localidad.trim() ? '' : 'Ingresa la localidad';
+      case 'fact_direccion': return this.formFacturacion.direccion.trim() ? '' : 'Ingresa la dirección';
+      case 'fact_email': return this.formFacturacion.emailFacturacion.trim() ? '' : 'Ingresa el email de facturación';
+      case 'fact_telefono': return this.formFacturacion.telefonoFacturacion.trim() ? '' : 'Ingresa el teléfono';
+      case 'fact_nombre': return this.formFacturacion.nombreFacturacion.trim() ? '' : `Ingresa ${this.nombreFacturacionLabel.toLowerCase()}`;
+      case 'fact_regimen': return this.formFacturacion.regimenFiscal ? '' : 'Selecciona el régimen fiscal';
+      case 'fact_tipo_doc': return this.formFacturacion.tipoDocumentoFacturacion ? '' : 'Selecciona el tipo de documento';
+      case 'fact_numero_doc': return this.formFacturacion.numeroDocumentoFacturacion.trim() ? '' : 'Ingresa el número de documento';
       case 'co_tipoRegimen':        return f.co_tipoRegimen ? '' : 'Selecciona el tipo de régimen';
       case 'co_tipoResponsabilidad': return f.co_tipoResponsabilidad ? '' : 'Selecciona la responsabilidad tributaria';
       case 'actividadEconomica':    return f.actividadEconomica ? '' : 'Selecciona la actividad económica';
@@ -1218,21 +1475,16 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   }
 
   validateStep1(): boolean {
-    const fields = [
-      'primerNombre', 'primerApellido', 'fechaNacimiento', 'nacionalidad',
-      'tipoDocumento', 'numeroDocumento', 'direccion', 'ciudad', 'departamento', 'emailFacturacion',
-    ];
-    if (this.tipoPersona === 'juridica') fields.push('razonSocial');
-    return this.validateFields(fields);
+    return this.validateFields(this.step1RequiredFields);
   }
 
   validateStep2(): boolean {
     if (!this.paisConFiscal) return true;
-    const fields: string[] = [];
-    if (this.pais === 'CO') fields.push('co_tipoRegimen', 'co_tipoResponsabilidad', 'actividadEconomica', 'codigoActividadEconomica');
-    if (this.pais === 'MX') fields.push('mx_codigoPostal', 'mx_regimenFiscal');
-    if (this.pais === 'AR') fields.push('ar_condicionIVA', 'ar_provincia');
-    return this.validateFields(fields);
+    if (!this.formFacturacion.aceptaTerminos || !this.formFacturacion.aceptaPolitica) {
+      this.toast.warning('Marca los dos consentimientos para continuar.', 'Consentimiento requerido');
+      return false;
+    }
+    return this.validateFields(this.step2RequiredFields);
   }
 
   private initFormData(): void {
@@ -1245,7 +1497,7 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
       segundoNombre: isNew ? '' : u.segundoNombre,
       primerApellido:  isNew ? '' : u.primerApellido,
       segundoApellido: isNew ? '' : u.segundoApellido,
-      fechaNacimiento: isNew ? '' : u.fechaNacimiento,
+      fechaNacimiento: isNew ? '' : this.formatFechaDisplay(u.fechaNacimiento),
       nacionalidad:    isNew ? '' : u.nacionalidad,
       tipoPersona: u.tipoPersona,
       tipoDocumento:  isNew ? '' : u.tipoDocumento,
@@ -1270,12 +1522,69 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
       ar_condicionIVA:       isNew ? '' : u.ar_condicionIVA,
       ar_provincia:          isNew ? '' : u.ar_provincia,
     };
+    this.formFacturacion = isNew
+      ? emptyFormFacturacion('natural')
+      : {
+          localidad: u.ciudad,
+          direccion: u.direccion,
+          emailFacturacion: u.emailFacturacion,
+          telefonoFacturacion: u.telefono,
+          nombreFacturacion: u.tipoPersona === 'juridica' ? u.razonSocial : buildNombreCompleto({
+            ...emptyFormNucleo(),
+            primerNombre: u.primerNombre,
+            segundoNombre: u.segundoNombre,
+            primerApellido: u.primerApellido,
+            segundoApellido: u.segundoApellido,
+          } as FormNucleo),
+          tipoPersonaFacturacion: u.tipoPersona,
+          regimenFiscal: u.pais === 'CO' ? u.co_tipoRegimen : u.pais === 'MX' ? u.mx_regimenFiscal : u.ar_condicionIVA,
+          tipoDocumentoFacturacion: u.tipoDocumento,
+          numeroDocumentoFacturacion: u.numeroDocumento,
+          aceptaTerminos: false,
+          aceptaPolitica: false,
+        };
+    this.updateDocumentSlots();
+  }
+
+  private prefillFacturacionFromIdentidad(): void {
+    const n = this.formNucleo;
+    const u = this.mockUser;
+    this.formFacturacion.localidad = u.ciudad;
+    this.formFacturacion.direccion = u.direccion;
+    this.formFacturacion.emailFacturacion = n.email || u.email;
+    this.formFacturacion.telefonoFacturacion = n.telefono || u.telefono;
+    this.formFacturacion.nombreFacturacion = buildNombreCompleto(n);
+  }
+
+  usarDatosIdentidadFacturacion(): void {
+    this.prefillFacturacionFromIdentidad();
+    this.closeModal(true);
+    this.formStep.set(2);
+    this.scrollToFactTipoDoc();
+  }
+
+  ingresarDatosFacturacionNuevos(): void {
+    const tipo = this.formFacturacion.tipoPersonaFacturacion || 'natural';
+    this.formFacturacion = emptyFormFacturacion(tipo);
+    this.updateDocumentSlots();
+    this.closeModal(true);
+    this.formStep.set(2);
+    this.scrollToFactTipoDoc();
+  }
+
+  guardarFacturacionPostAprobacion(): void {
+    if (!this.validateStep2()) return;
+    this.pendingFacturacionRevalidation.set(true);
+    this.isEditMode.set(false);
+    this.otpDigits = ['', '', '', '', '', ''];
+    this.otpError.set('');
+    this.openModal('m-mfa');
   }
 
   siguienteFormPaso(): void {
     if (!this.validateStep1()) return;
     if (this.paisConFiscal) {
-      this.formStep.set(2);
+      this.openModal('m-prefill-billing');
     } else {
       this.openModal('m-confirmacion-pre-sumsub');
     }
@@ -1309,12 +1618,26 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   // -----------------------------------------------------------------------
 
   comenzarDesdeGuardado(): void {
+    if (this.selectorUsuario() === 'antiguo-campos-nuevos' && this.hasCamposNuevosPendientes) {
+      this.initFormDataFromMockPartial();
+      this.formStep.set(1);
+      this.fieldErrors.set({});
+      this.navTo('v-nueva-formulario');
+      return;
+    }
     this.openSumsubMock();
+  }
+
+  editarDatosGuardados(): void {
+    this.initFormDataFromMock();
+    this.formStep.set(1);
+    this.fieldErrors.set({});
+    this.navTo('v-nueva-formulario');
   }
 
   reanudarValidacion(): void {
     this.sumsubStep.set(this.sumsubStepGuardado());
-    this.sumsubPhase.set('document');
+    this.sumsubPhase.set(this.getInitialSumsubPhase());
     this.openModal('m-sumsub');
   }
 
@@ -1325,7 +1648,7 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   }
 
   verDatosEnviados(): void {
-    this.selectorEstado.set('aprobada');
+    this.selectorEstado.set('aprobado-bloqueado');
     this.resolveVista();
   }
 
@@ -1333,12 +1656,23 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   // v-validado-datos
   // -----------------------------------------------------------------------
 
+  onValidadoFacturacionTab(): void {
+    this.validadoTab.set('facturacion');
+    this.initFormFacturacionFromMock();
+  }
+
   solicitarActualizacion(): void {
     this.iniciarActualizacionConMfa();
   }
 
   verDocumento(): void {
-    this.openModal('m-documento');
+    this.previewDocName = this.mockUser.tipoDocumento;
+    this.openModal('m-doc-preview');
+  }
+
+  openUploadPreview(fileName: string): void {
+    this.previewDocName = fileName;
+    this.openModal('m-doc-preview');
   }
 
   // -----------------------------------------------------------------------
@@ -1360,6 +1694,54 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     return this.camposNuevos.includes(campo);
   }
 
+  private isCampoNuevoPendiente(campo: string): boolean {
+    const f = this.formFiscal;
+    const n = this.formNucleo;
+    switch (campo) {
+      case 'co_impuesto': return !f.co_impuesto?.trim();
+      case 'co_tipoResponsabilidad': return !f.co_tipoResponsabilidad?.trim();
+      case 'co_tipoRegimen': return !f.co_tipoRegimen?.trim();
+      case 'mx_codigoPostal': return !f.mx_codigoPostal?.trim();
+      case 'mx_regimenFiscal': return !f.mx_regimenFiscal?.trim();
+      case 'ar_provincia': return !f.ar_provincia?.trim();
+      case 'ar_condicionIVA': return !f.ar_condicionIVA?.trim();
+      case 'primerNombre': return !n.primerNombre?.trim();
+      case 'primerApellido': return !n.primerApellido?.trim();
+      case 'numeroDocumento': return !n.numeroDocumento?.trim();
+      default: return true;
+    }
+  }
+
+  private clearCampoNuevoValue(campo: string): void {
+    switch (campo) {
+      case 'co_impuesto': this.formFiscal.co_impuesto = ''; break;
+      case 'co_tipoResponsabilidad': this.formFiscal.co_tipoResponsabilidad = ''; break;
+      case 'co_tipoRegimen':
+        this.formFiscal.co_tipoRegimen = '';
+        this.formFacturacion.regimenFiscal = '';
+        break;
+      case 'mx_codigoPostal': this.formFiscal.mx_codigoPostal = ''; break;
+      case 'mx_regimenFiscal':
+        this.formFiscal.mx_regimenFiscal = '';
+        this.formFacturacion.regimenFiscal = '';
+        break;
+      case 'ar_provincia': this.formFiscal.ar_provincia = ''; break;
+      case 'ar_condicionIVA':
+        this.formFiscal.ar_condicionIVA = '';
+        this.formFacturacion.regimenFiscal = '';
+        break;
+      default: break;
+    }
+  }
+
+  private initFormDataFromMockPartial(): void {
+    this.initFormDataFromMock();
+    for (const campo of this.mockUser.camposNuevos) {
+      this.clearCampoNuevoValue(campo);
+    }
+    this.updateDocumentSlots();
+  }
+
   // -----------------------------------------------------------------------
   // v-cross-country
   // -----------------------------------------------------------------------
@@ -1372,8 +1754,10 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   }
 
   ingresarNuevosDatos(): void {
-    this.onboardingStep.set(1);
-    this.navTo('v-nueva-onboarding');
+    this.initFormData();
+    this.formStep.set(1);
+    this.fieldErrors.set({});
+    this.navTo('v-nueva-formulario');
   }
 
   private initFormDataFromMock(): void {
@@ -1381,7 +1765,7 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
     this.formNucleo = {
       primerNombre: u.primerNombre, segundoNombre: u.segundoNombre,
       primerApellido: u.primerApellido, segundoApellido: u.segundoApellido,
-      fechaNacimiento: u.fechaNacimiento, nacionalidad: u.nacionalidad,
+      fechaNacimiento: this.formatFechaDisplay(u.fechaNacimiento), nacionalidad: u.nacionalidad,
       tipoPersona: u.tipoPersona, tipoDocumento: u.tipoDocumento,
       numeroDocumento: u.numeroDocumento, email: u.email,
       emailFacturacion: u.emailFacturacion, telefono: u.telefono,
@@ -1396,6 +1780,43 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
       mx_regimenFiscal: u.mx_regimenFiscal, mx_sujetoImpuestos: u.mx_sujetoImpuestos,
       ar_condicionIVA: u.ar_condicionIVA, ar_provincia: u.ar_provincia,
     };
+    this.initFormFacturacionFromMock();
+  }
+
+  private initFormFacturacionFromMock(): void {
+    const u = this.mockUser;
+    this.formFacturacion = {
+      localidad: u.ciudad,
+      direccion: u.direccion,
+      emailFacturacion: u.emailFacturacion,
+      telefonoFacturacion: u.telefono,
+      nombreFacturacion: u.tipoPersona === 'juridica' ? u.razonSocial : buildNombreCompleto({
+        ...emptyFormNucleo(),
+        primerNombre: u.primerNombre,
+        segundoNombre: u.segundoNombre,
+        primerApellido: u.primerApellido,
+        segundoApellido: u.segundoApellido,
+      } as FormNucleo),
+      tipoPersonaFacturacion: u.tipoPersona,
+      regimenFiscal: u.pais === 'CO' ? u.co_tipoRegimen : u.pais === 'MX' ? u.mx_regimenFiscal : u.ar_condicionIVA,
+      tipoDocumentoFacturacion: u.tipoDocumento,
+      numeroDocumentoFacturacion: u.numeroDocumento,
+      aceptaTerminos: true,
+      aceptaPolitica: true,
+    };
+    this.updateDocumentSlots();
+    this.prefillDocumentSlotsFromMock();
+  }
+
+  private prefillDocumentSlotsFromMock(): void {
+    const es = this.selectorEstado();
+    const approved = es === 'aprobada' || es === 'aprobado-bloqueado' || es === 'aprobado-listo-editar';
+    if (!approved) return;
+    this.documentSlots.forEach((slot, i) => {
+      if (!slot.fileName) {
+        slot.fileName = `documento-tributario-${i + 1}.pdf`;
+      }
+    });
   }
 
   // -----------------------------------------------------------------------
@@ -1478,6 +1899,14 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   verificarOtp(code: string): void {
     if (code === '123456') {
       this.otpError.set('');
+      if (this.pendingFacturacionRevalidation()) {
+        this.pendingFacturacionRevalidation.set(false);
+        this.sumsubContext.set('facturacion-revalidation');
+        this.closeModal(true);
+        this.toast.info('Verificaremos tu rostro con Sumsub antes de guardar.', 'Revalidación biométrica');
+        this.openSumsubMock();
+        return;
+      }
       this.initFormDataFromMock();
       this.isEditMode.set(true);
       this.closeModal(true);
@@ -1495,7 +1924,6 @@ export class FlujoIdentidadComponent implements OnDestroy, OnInit {
   // -----------------------------------------------------------------------
 
   confirmarYValidar(): void {
-    if (!this.confirmacionAceptada()) return;
     this.closeModal(true);
     this.sumsubStep.set(0);
     this.sumsubStepGuardado.set(0);

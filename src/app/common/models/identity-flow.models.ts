@@ -69,6 +69,21 @@ export interface FormFiscal {
   ar_provincia: string;
 }
 
+/** Facturación electrónica — formulario LATAM (Excel billing) */
+export interface FormFacturacion {
+  localidad: string;
+  direccion: string;
+  emailFacturacion: string;
+  telefonoFacturacion: string;
+  nombreFacturacion: string;
+  tipoPersonaFacturacion: TipoPersona;
+  regimenFiscal: string;
+  tipoDocumentoFacturacion: string;
+  numeroDocumentoFacturacion: string;
+  aceptaTerminos: boolean;
+  aceptaPolitica: boolean;
+}
+
 export interface MockUserData {
   billingId: string;
   pais: Pais;
@@ -113,9 +128,9 @@ export interface SumsubCustomizationConfig {
 }
 
 export const DEFAULT_SUMSUB_CUSTOMIZATION: SumsubCustomizationConfig = {
-  skipWarning: false,
-  skipWelcome: false,
-  skipInstructions: false,
+  skipWarning: true,
+  skipWelcome: true,
+  skipInstructions: true,
   hideProgressBar: false,
   hideWidgetBorder: false,
   forceMobile: false,
@@ -297,6 +312,29 @@ export function emptyFormFiscal(): FormFiscal {
     mx_codigoPostal: '', mx_regimenFiscal: '', mx_sujetoImpuestos: false,
     ar_condicionIVA: '', ar_provincia: '',
   };
+}
+
+export function emptyFormFacturacion(tipoPersona: TipoPersona = 'natural'): FormFacturacion {
+  return {
+    localidad: '',
+    direccion: '',
+    emailFacturacion: '',
+    telefonoFacturacion: '',
+    nombreFacturacion: '',
+    tipoPersonaFacturacion: tipoPersona,
+    regimenFiscal: '',
+    tipoDocumentoFacturacion: '',
+    numeroDocumentoFacturacion: '',
+    aceptaTerminos: false,
+    aceptaPolitica: false,
+  };
+}
+
+export function buildNombreCompleto(n: FormNucleo): string {
+  return [n.primerNombre, n.segundoNombre, n.primerApellido, n.segundoApellido]
+    .filter(Boolean)
+    .join(' ')
+    .trim();
 }
 
 export function mapEstadoToSatelliteStatus(estado: EstadoId): IdentitySatelliteStatus {

@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { IdentityDemoStateService } from '../../../common/services/identity-demo-state.service';
 import { IdentitySatelliteStatus } from '../../../common/models/identity-flow.models';
+import { IdentityActivationCardComponent } from '../../../common/components/identity-activation-card/identity-activation-card.component';
+import { getIdentityAlert, IDENTITY_STATUS_OPTIONS } from '../../../config/identity-alerts.config';
 
 interface PopoverConfig {
   type: 'warning' | 'info' | 'error';
@@ -14,59 +16,26 @@ interface PopoverConfig {
   stateLabel: string;
 }
 
-interface IdentityAlertConfig {
-  type: 'warning' | 'info' | 'error';
-  icon: string;
-  text: string;
-  cta: string;
-  step: number;
-  stateLabel: string;
-}
-
 const POPOVER_SEEN_KEY = 'dropi-home-ia-popover-seen';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IdentityActivationCardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
   private router = inject(Router);
-
   private identityDemo = inject(IdentityDemoStateService);
 
   get demoIdentityStatus(): IdentitySatelliteStatus {
     return this.identityDemo.status();
   }
 
-  readonly identityStatusOptions: IdentitySatelliteStatus[] = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
+  readonly identityStatusOptions = IDENTITY_STATUS_OPTIONS;
   showPopover = false;
   popoverSeen = false;
-
-  readonly identityAlerts: Record<string, IdentityAlertConfig> = {
-    sin_validar: {
-      type: 'warning', icon: 'pi-shield', step: 1, stateLabel: 'Sin verificar',
-      text: 'Sin verificación no puedes crear pedidos, retirar saldo ni acceder a todos los proveedores.',
-      cta: 'Verificar mi identidad',
-    },
-    pendiente: {
-      type: 'warning', icon: 'pi-exclamation-triangle', step: 2, stateLabel: 'Verificación incompleta',
-      text: 'Empezaste la verificación pero no la completaste. Solo te toma 3 minutos más.',
-      cta: 'Continuar verificación',
-    },
-    en_revision: {
-      type: 'info', icon: 'pi-clock', step: 3, stateLabel: 'En revisión',
-      text: 'Ya tenemos tus datos. Te notificamos por correo cuando terminemos la revisión.',
-      cta: 'Ver estado de revisión',
-    },
-    rechazado: {
-      type: 'error', icon: 'pi-times-circle', step: 2, stateLabel: 'Verificación rechazada',
-      text: 'Hubo un problema con tus documentos. Vuelve a intentarlo, el proceso toma 5 minutos.',
-      cta: 'Reintentar verificación',
-    },
-  };
 
   private readonly popoverMap: Record<string, PopoverConfig | null> = {
     sin_validar: {
@@ -105,14 +74,14 @@ export class HomeComponent implements OnInit {
   };
 
   readonly capacitaciones = [
-    { nombre: 'Dropshipper',         icon: 'pi-user' },
-    { nombre: 'Logística',           icon: 'pi-truck' },
-    { nombre: 'Shopify',             icon: 'pi-shopping-bag' },
+    { nombre: 'Dropshipper', icon: 'pi-user' },
+    { nombre: 'Logística', icon: 'pi-truck' },
+    { nombre: 'Shopify', icon: 'pi-shopping-bag' },
     { nombre: 'Módulo de Garantías', icon: 'pi-shield' },
   ];
 
-  get identityAlert(): IdentityAlertConfig | null {
-    return this.demoIdentityStatus !== 'aprobado' ? (this.identityAlerts[this.demoIdentityStatus] ?? null) : null;
+  get identityAlert() {
+    return getIdentityAlert(this.demoIdentityStatus, 'home');
   }
 
   get showInlineCard(): boolean {

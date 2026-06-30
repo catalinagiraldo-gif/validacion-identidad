@@ -1,0 +1,119 @@
+{
+  "version": "2026-06-23",
+  "source": "Copia de Información Datos de Facturación LATAM.xlsx",
+  "countries": {
+    "CO": {
+      "label": "Colombia",
+      "localidadLabel": "Municipio / Departamento",
+      "personTypes": {
+        "natural": {
+          "nombreFieldLabel": "Nombre completo",
+          "nombreFieldHelper": "Tal como figura en el documento a cargar. Apellidos y nombres.",
+          "regimenOptions": [
+            "Régimen Ordinario",
+            "Régimen Simple (RST)",
+            "No Responsable de IVA"
+          ],
+          "documentTypes": ["CC", "NIT"],
+          "documentRules": {
+            "CC": "Solo números (hasta 10 dígitos).",
+            "NIT": "9 a 10 dígitos (sin dígito de verificación)."
+          },
+          "uploads": ["RUT Actualizado (PDF)", "Cédula de Ciudadanía"]
+        },
+        "juridica": {
+          "nombreFieldLabel": "Razón social",
+          "nombreFieldHelper": "Nombre legal de la empresa tal como figura en el RUT.",
+          "regimenOptions": ["Responsable de IVA (Común)"],
+          "documentTypes": ["NIT"],
+          "documentRules": {
+            "NIT": "Solo números: XXXXXXXXX-X (9 dígitos + DV obligatorio)."
+          },
+          "uploads": ["RUT Completo (PDF)", "Cámara de Comercio"]
+        }
+      }
+    },
+    "MX": {
+      "label": "México",
+      "localidadLabel": "Municipio / Distrito",
+      "personTypes": {
+        "natural": {
+          "nombreFieldLabel": "Nombre completo",
+          "nombreFieldHelper": "Tal como figura en tu Constancia de Situación Fiscal.",
+          "regimenOptions": [
+            "Actividad empresarial",
+            "Física RESICO",
+            "Sueldos y salarios"
+          ],
+          "documentTypes": ["Constancia de Situación Fiscal (CSF)"],
+          "documentRules": {
+            "Constancia de Situación Fiscal (CSF)": "Solo números (13 dígitos)."
+          },
+          "uploads": ["Constancia de Situación Fiscal"]
+        },
+        "juridica": {
+          "nombreFieldLabel": "Razón social",
+          "nombreFieldHelper": "Nombre legal registrado ante el SAT.",
+          "regimenOptions": [
+            "General de ley personas morales",
+            "Personas morales con fines no lucrativos"
+          ],
+          "documentTypes": ["RFC"],
+          "documentRules": {
+            "RFC": "12 o 13 caracteres alfanuméricos según SAT."
+          },
+          "uploads": ["Constancia de Situación Fiscal"]
+        }
+      }
+    },
+    "AR": {
+      "label": "Argentina",
+      "localidadLabel": "Localidad / Provincia",
+      "personTypes": {
+        "natural": {
+          "nombreFieldLabel": "Nombre completo",
+          "nombreFieldHelper": "Tal como figura en el documento a cargar.",
+          "regimenOptions": [
+            "Monotributista",
+            "Responsable Inscripto",
+            "Exento"
+          ],
+          "documentTypes": ["CUIT", "CUIL", "DNI"],
+          "documentRules": {
+            "CUIT": "11 dígitos. Formato XX-XXXXXXXX-X.",
+            "CUIL": "11 dígitos. Formato XX-XXXXXXXX-X.",
+            "DNI": "Solo números (7 u 8 dígitos)."
+          },
+          "uploads": ["Constancia de Inscripción ARCA", "DNI (Frente y Dorso)"]
+        },
+        "juridica": {
+          "nombreFieldLabel": "Razón social",
+          "nombreFieldHelper": "Nombre legal de la sociedad.",
+          "regimenOptions": ["Responsable Inscripto (Sociedades)"],
+          "documentTypes": ["CUIT Jurídico"],
+          "documentRules": {
+            "CUIT Jurídico": "11 dígitos numéricos."
+          },
+          "uploads": [
+            "Constancia de Inscripción ARCA (Sociedades)",
+            "Estatuto Social"
+          ]
+        }
+      }
+    }
+  },
+  "contactFields": [
+    "pais",
+    "localidad",
+    "direccion",
+    "emailFacturacion",
+    "telefonoFacturacion"
+  ],
+  "tributaryFields": [
+    "nombreFacturacion",
+    "tipoPersonaFacturacion",
+    "regimenFiscal",
+    "tipoDocumentoFacturacion",
+    "numeroDocumentoFacturacion"
+  ]
+}

@@ -1,0 +1,67 @@
+@import 'styles/variables';
+
+.identity-demo-bar {
+  display: flex;
+  align-items: center;
+  gap: $size-3;
+  flex-wrap: wrap;
+  background: $gray-800;
+  border-radius: $radius-md;
+  padding: $size-2 $size-4;
+  margin-bottom: $size-3;
+
+  &__label {
+    font-family: $font-primary;
+    font-size: $font-xs;
+    color: $gray-300;
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    white-space: nowrap;
+  }
+}
+
+.identity-demo-chips {
+  display: flex;
+  gap: $size-2;
+  flex-wrap: wrap;
+}
+
+.identity-demo-chip {
+  font-family: $font-primary;
+  font-size: $font-xs;
+  font-weight: $font-medium;
+  padding: 3px 10px;
+  border-radius: $radius-pill;
+  border: 1px solid rgba($white, 0.18);
+  background: rgba($white, 0.06);
+  color: $gray-300;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    background: rgba($white, 0.12);
+  }
+
+  &.active {
+    background: $primary-500;
+    color: white;
+    border-color: $primary-500;
+  }
+
+  &--reset {
+    border-color: rgba($warning, 0.5);
+    color: $warning;
+  }
+}
+
+.ia-card--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin-bottom: $size-4;
+}
+
+.ia-card--home {
+  margin-bottom: $size-5;
+}

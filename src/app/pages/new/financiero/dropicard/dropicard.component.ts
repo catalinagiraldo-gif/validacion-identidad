@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IdentityActivationCardComponent } from '../../../../common/components/identity-activation-card/identity-activation-card.component';
 
 import { IdentityProfileService } from '../../../../common/services/identity-profile.service';
 import { IdentityBlockBannerComponent } from '../../../../common/components/identity-block-banner/identity-block-banner.component';
@@ -15,7 +16,11 @@ interface Transaction {
 @Component({
   selector: 'app-dropicard-new',
   standalone: true,
+<<<<<<< HEAD
   imports: [CommonModule, IdentityBlockBannerComponent],
+=======
+  imports: [CommonModule, IdentityActivationCardComponent],
+>>>>>>> 676de9db534c7c03070b27cebe346aa8e035f5b7
   styleUrls: ['./dropicard.component.scss'],
   template: `
     <div class="dropicard-page">
@@ -37,7 +42,16 @@ interface Transaction {
       <!-- Title -->
       <h1 class="page-title">Dropicard</h1>
 
+<<<<<<< HEAD
       <app-identity-block-banner [motivo]="identity.bloqueoMotivo()" contexto="dropicard"></app-identity-block-banner>
+=======
+      <app-identity-activation-card
+        context="dropicard"
+        blockedAction="solicitar Dropicard"
+        [sticky]="true"
+        identityRoute="/new/configuraciones/flujo-identidad-2026-06-18"
+      />
+>>>>>>> 676de9db534c7c03070b27cebe346aa8e035f5b7
 
       <!-- Card + Details grid -->
       <div class="card-section" *ngIf="hasCard">

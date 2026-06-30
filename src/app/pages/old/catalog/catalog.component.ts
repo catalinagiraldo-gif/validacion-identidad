@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { OrdersManualComponent } from '../orders-manual/orders-manual.component';
 import { IdentityDemoStateService } from '../../../common/services/identity-demo-state.service';
-import { IdentitySatelliteStatus } from '../../../common/models/identity-flow.models';
+import { IdentityActivationCardComponent } from '../../../common/components/identity-activation-card/identity-activation-card.component';
 
 interface Product {
   id: string;
@@ -28,7 +28,7 @@ interface Product {
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [CommonModule, FormsModule, OrdersManualComponent],
+  imports: [CommonModule, FormsModule, OrdersManualComponent, IdentityActivationCardComponent],
   templateUrl: './catalog.component.html',
   styleUrls: ['./catalog.component.scss'],
 })
@@ -43,39 +43,9 @@ export class CatalogComponent implements OnInit {
 
   private identityDemo = inject(IdentityDemoStateService);
 
-  get demoIdentityStatus(): IdentitySatelliteStatus {
+  get demoIdentityStatus() {
     return this.identityDemo.status();
   }
-
-  setDemoIdentityStatus(status: IdentitySatelliteStatus): void {
-    this.identityDemo.setStatus(status);
-  }
-
-  readonly identityStatusOptions: IdentitySatelliteStatus[] = ['sin_validar', 'pendiente', 'en_revision', 'rechazado', 'aprobado'];
-  readonly blockedAction = 'crear órdenes';
-
-  readonly identityAlerts: Record<string, { type: string; icon: string; text: string; cta: string; step: number; stateLabel: string }> = {
-    sin_validar: {
-      type: 'warning', icon: 'pi-shield', step: 1, stateLabel: 'Sin validar',
-      text: 'Para crear órdenes, verifica tu identidad primero. Es un proceso rápido que activa todas tus operaciones.',
-      cta: 'Verificar mi identidad',
-    },
-    pendiente: {
-      type: 'warning', icon: 'pi-exclamation-triangle', step: 2, stateLabel: 'Verificación incompleta',
-      text: 'Tu verificación está incompleta. Ya guardaste tus datos — solo falta el paso biométrico para terminar.',
-      cta: 'Continuar verificación',
-    },
-    en_revision: {
-      type: 'info', icon: 'pi-clock', step: 3, stateLabel: 'En revisión',
-      text: 'Tu identidad está en revisión. Mientras tanto algunas funciones están pausadas — te avisamos cuando esté aprobada.',
-      cta: 'Ver estado',
-    },
-    rechazado: {
-      type: 'error', icon: 'pi-times-circle', step: 2, stateLabel: 'Verificación rechazada',
-      text: 'Tu verificación fue rechazada. Puedes intentarlo de nuevo — revisa la guía para asegurarte el éxito esta vez.',
-      cta: 'Reintentar verificación',
-    },
-  };
 
   filterToggles = {
     favoritos: false,
@@ -113,10 +83,6 @@ export class CatalogComponent implements OnInit {
 
   formatPrice(value: number): string {
     return '$ ' + value.toLocaleString('es-CO');
-  }
-
-  get identityAlert() {
-    return this.demoIdentityStatus !== 'aprobado' ? this.identityAlerts[this.demoIdentityStatus] : null;
   }
 
   enviarACliente(product: Product): void {
