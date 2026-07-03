@@ -58,80 +58,94 @@ Una excepción real y permanente: la **Regla de Validación Nula** en Etapa 1 (S
 
 ## Mermaid — journey consolidado
 
+Convenciones usadas en todos los diagramas de este documento (tomadas del board de Figma "Validación de identidad · Convenciones"): círculo negro = inicio/fin, rectángulo verde = pantalla que ve el usuario, rectángulo naranja = pantalla que abre un flujo nuevo/obligatorio, rectángulo morado = acción del sistema (no es una pantalla), rombo amarillo = decisión, rectángulo azul = modal, verde intenso = resultado positivo, rojo = resultado negativo/bloqueo.
+
 ```mermaid
 flowchart TD
-    subgraph ENTRY[Puntos de entrada]
-      E1[Home / Pedidos / Wallet - soft banner]
-      E2[Retiro / DropiCard / Transferencia - hard gate]
-      E3[Cuenta - dueño de cuenta]
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef pantallaNueva fill:#fbc98b,stroke:#c77b1e,color:#1a1a1a,stroke-width:2px
+    classDef accion fill:#e4c7f5,stroke:#9b4fd1,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
+    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
+    classDef modal fill:#a8d4f5,stroke:#4a90d9,color:#1a1a1a,stroke-width:2px
+
+    subgraph ENTRY[Dónde puede aparecer]
+      E1[Home, Pedidos o Wallet]
+      E2[Retiro, DropiCard o Transferencia]
+      E3[Mi cuenta]
       E4[Datos de facturación]
-      E5[Registro/Login - Fase 1 bloqueo cruzado]
+      E5[Registro o inicio de sesión]
     end
 
-    E5 -->|email en lista negra cruzada país| BAN[Modal bloqueo total, no dismissable, sin reintento]
-    E1 -->|showSoftTouchpoints| SOFT[IdentitySoftBannerComponent - dismissable]
-    E2 -->|status distinto de aprobado| GATE[IdentityGateComponent - bloqueado/en_revision/rechazado]
+    E5 -->|correo en lista negra| BAN[Bloqueo total, sin salida]
+    E1 -->|tiene algo pendiente| SOFT[Aviso suave, se puede cerrar]
+    E2 -->|no está aprobado| GATE[Bloqueo: hay que verificar para continuar]
     E3 --> GATE
     E4 --> GATE
 
-    SOFT -->|CTA| OPEN
-    GATE -->|CTA screen0/2/3| OPEN[IdentityModalService.open]
+    SOFT -->|Verificar ahora| OPEN
+    GATE -->|Verificar identidad| OPEN[Abre el formulario de verificación]
 
-    OPEN --> BRANCH{País == Colombia AND tipo == natural?}
-    BRANCH -->|Sí, Fase 2+| TRUORA[Motor: Truora - KYC natural CO]
-    BRANCH -->|No: resto LATAM o CO jurídica Fase3+| SUMSUB[Motor: Sumsub WebSDK]
+    OPEN --> BRANCH{Es Colombia y persona natural?}
+    BRANCH -->|Sí| TRUORA[Se usa Truora]
+    BRANCH -->|No| SUMSUB[Se usa Sumsub]
 
     TRUORA --> STEP1
     SUMSUB --> STEP1
 
-    subgraph WEBSDK[6 pasos - KYC del dueño de cuenta]
-      STEP1[1. Email si no está precargado]
-      STEP2[2. OTP email]
-      STEP3[3. Doc frente+reverso - autodetección de tipo]
-      STEP4[4. Liveness / selfie]
-      STEP5[5. Teléfono + OTP]
+    subgraph WEBSDK[6 pasos para verificar al dueño de la cuenta]
+      STEP1[1. Confirmar correo]
+      STEP2[2. Código enviado al correo]
+      STEP3[3. Foto del documento, frente y reverso]
+      STEP4[4. Prueba de vida]
+      STEP5[5. Código enviado al celular]
       STEP1 --> STEP2 --> STEP3 --> STEP4 --> STEP5
     end
 
-    STEP5 --> RESULT_KYC{Resultado KYC dueño}
-    RESULT_KYC -->|rechazado| R3REJ[Rechazado + 12 motivos categorizados]
-    RESULT_KYC -->|en revisión| R3REV[En revisión]
-    RESULT_KYC -->|aprobado| BILLQ[6. Pregunta de facturación]
+    STEP5 --> RESULT_KYC{Resultado de la verificación}
+    RESULT_KYC -->|Rechazado| R3REJ[Rechazado, se explica el motivo]
+    RESULT_KYC -->|En revisión| R3REV[Queda en revisión]
+    RESULT_KYC -->|Aprobado| BILLQ{Para quién es la factura?}
 
-    BILLQ --> BQ_A{a: Mis propios datos}
-    BILLQ --> BQ_B{b: Otra persona natural}
-    BILLQ --> BQ_C{c: Persona jurídica}
-
-    BQ_A -->|reutiliza KYC dueño, 1 sola validación| FISCAL
-    BQ_B -->|dispara 2da validación KYC independiente| KYC2[Sub-flujo KYC tercero: repite pasos 1-5]
+    BILLQ -->|Para mí mismo| FISCAL
+    BILLQ -->|Para otra persona| KYC2[Verificación de la otra persona: mismos 5 pasos]
     KYC2 --> FISCAL
-    BQ_C -->|dispara flujo KYB| KYB[País + nombre empresa -> Sumsub devuelve NIT/rep.legal/mesa accionaria]
-    KYB --> RN20{RN-20: rep. legal ya es usuario Dropi validado?}
-    RN20 -->|Sí| REUSE[Reutiliza KYC existente]
-    RN20 -->|No| KYCREP[Dispara nuevo KYC para rep. legal]
+    BILLQ -->|Para una empresa| KYB[Elige país y nombre, el sistema trae los datos reales]
+    KYB --> RN20{El representante ya está validado?}
+    RN20 -->|Sí| REUSE[Se reutiliza su verificación]
+    RN20 -->|No| KYCREP[Se le pide verificarse también]
     REUSE --> FISCAL
     KYCREP --> FISCAL
-    KYB -->|KYB falla| RN23[RN-23: estado pj_pendiente, conserva datos, no degrada a natural]
+    KYB -->|no se pudo validar la empresa| RN23[Queda pendiente, no se pierden los datos]
 
-    FISCAL[Cuestionario fiscal por país - 9 países, campos exactos del Excel]
-    FISCAL --> WEBHOOK{Fase 4 - Caso Ecuador: guardar solo si webhook confirma en tiempo real}
-    WEBHOOK -->|confirmado| PROCESANDO[Procesando]
-    WEBHOOK -->|no confirmado| BLOQUEA[No guarda datos fiscales, vuelve al cuestionario]
+    FISCAL[Preguntas de facturación según el país]
+    FISCAL --> WEBHOOK{Se pudo confirmar con la autoridad fiscal?}
+    WEBHOOK -->|Sí| PROCESANDO[Procesando]
+    WEBHOOK -->|No| BLOQUEA[No se guarda nada, vuelve a preguntar]
     PROCESANDO --> R3OK[Aprobado]
 
-    R3OK --> UPDATE_STATE[stateSvc.setStatus aprobado, vuelve a página origen]
-    UPDATE_STATE --> EDIT[Fase 5: Edición post-validación]
+    R3OK --> UPDATE_STATE[Vuelve a la pantalla de origen, ya aprobado]
+    UPDATE_STATE --> EDIT[Más adelante: edición de datos ya validados]
 
-    EDIT --> RN14{Campo editado es sensible? nombre/tipo persona/tipo-num doc/adjunto}
-    RN14 -->|No: email fact./dirección/ciudad/tel| SAVE_DIRECT[Guarda directo, sin re-validar]
-    RN14 -->|Sí| REVAL[Dispara re-validación obligatoria, bloquea acciones financieras]
+    EDIT --> RN14{El campo que cambia es sensible?}
+    RN14 -->|No, ej. dirección o teléfono| SAVE_DIRECT[Se guarda directo]
+    RN14 -->|Sí, ej. nombre o documento| REVAL[Pide verificar de nuevo y bloquea movimientos de dinero]
 
-    EDIT --> RN11{Campo es del Dueño de cuenta?}
-    RN11 -->|Sí, menos de 6 meses desde última validación| LOCKED[Bloqueado para edición]
-    RN11 -->|Responsable Tributario| NOLOCK[Sin bloqueo temporal, pero cambio sensible re-valida]
+    EDIT --> RN11{Es el dueño de la cuenta?}
+    RN11 -->|Sí, hace menos de 6 meses| LOCKED[No se puede editar todavía]
+    RN11 -->|Es el responsable de facturación| NOLOCK[Se puede editar cuando sea, pero si es sensible re-valida]
 
-    EDIT --> RN10{Score de riesgo fue Medio?}
-    RN10 -->|Sí| MONITOR[Monitoreo periódico 3/4/6 meses, solo micro-controles ej. liveness rápido]
+    EDIT --> RN10{Su riesgo fue medio?}
+    RN10 -->|Sí| MONITOR[Cada cierto tiempo se le pide una prueba rápida]
+
+    class E1,E2,E3,E4,E5,SOFT,STEP1,STEP2,STEP3,STEP4,STEP5,R3REV,REUSE,FISCAL,PROCESANDO,UPDATE_STATE,EDIT,MONITOR pantalla
+    class GATE,KYC2,KYB,KYCREP,REVAL pantallaNueva
+    class TRUORA,SUMSUB accion
+    class BRANCH,RESULT_KYC,BILLQ,RN20,WEBHOOK,RN14,RN11,RN10 decision
+    class OPEN,BAN modal
+    class R3OK,SAVE_DIRECT,NOLOCK si
+    class R3REJ,RN23,BLOQUEA,LOCKED no
 ```
 
 ## Matriz maestra: cobertura acumulativa por Fase × Etapa del usuario
@@ -158,36 +172,46 @@ Este segundo diagrama reemplaza la versión anterior (que enrutaba cada Etapa a 
 
 ```mermaid
 flowchart TD
-    subgraph E1[Etapa 1 - Setup]
-      E1_ALL["Todas las Fases (0-5): Regla de Validación Nula — permanente, nunca se sustituye"]
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef pantallaNueva fill:#fbc98b,stroke:#c77b1e,color:#1a1a1a,stroke-width:2px
+    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
+
+    subgraph E1[Etapa 1 · Setup]
+      E1_ALL[Nunca se pide documento, en ninguna Fase]
     end
 
-    subgraph E2[Etapa 2 - Activación/Aha]
-      E2_F0["Fase 0+: Soft touchpoint (0-A) - nativo desde el día 1, nunca se retira"]
-      E2_F2["Fase 2+: además dispara el formulario unificado Truora si es CO-natural"]
+    subgraph E2[Etapa 2 · Primera venta]
+      E2_F0[Fase 0: aviso suave tras la primera venta]
+      E2_F2[Fase 2: si es Colombia natural, ya pide el formulario completo]
       E2_F0 --> E2_F2
     end
 
-    subgraph E3[Etapa 3 - Habit / salidas de dinero]
-      E3_F0["Fase 0: sin bloqueo de producto - 100% manual vía Backoffice WhatsApp/Intercom, 40% sin SLA"]
-      E3_F2["Fase 2+: CO-natural pasa a hard gate automatizado con Truora"]
-      E3_F3["Fase 3+: el resto de países/jurídica pasa a hard gate automatizado con Sumsub - se retira el fallback manual salvo excepciones"]
+    subgraph E3[Etapa 3 · Quiere retirar dinero]
+      E3_F0[Fase 0: todavía no hay bloqueo, lo resuelve Backoffice a mano]
+      E3_F2[Fase 2: Colombia natural ya queda bloqueado hasta verificarse con Truora]
+      E3_F3[Fase 3: el resto de países y empresas también quedan bloqueados, ahora con Sumsub]
       E3_F0 --> E3_F2 --> E3_F3
     end
 
-    subgraph E4[Etapa 4 - Cross-Border / Profesionalización]
-      E4_F0["Fase 0: KYB no existe - solo proveedores exclusivos validados manualmente ad-hoc"]
-      E4_F3["Fase 3+: KYB fricción cero + RN-20 + ruteo dual + KYT - reemplaza el proceso ad-hoc"]
-      E4_F5["Fase 5+: cambios de responsable tributario/empresa con re-validación inteligente RN-14/15"]
+    subgraph E4[Etapa 4 · Empresa o varios países]
+      E4_F0[Fase 0: no existe verificación de empresas, se hace caso por caso]
+      E4_F3[Fase 3: ya se puede verificar la empresa buscándola por nombre]
+      E4_F5[Fase 5: cambiar de dueño o de empresa ya pide re-verificación cuando toca]
       E4_F0 --> E4_F3 --> E4_F5
     end
 
-    subgraph E5[Etapa 5 - Mantenimiento / Migración]
-      E5_F0["Fase 0: segmentación por riesgo + campaña + carga silenciosa - primer barrido, no sistemático"]
-      E5_F4["Fase 4+: migración masiva ZIP + ventanas pedagógicas por cohorte - cobertura sistemática del resto de la base"]
-      E5_F5["Fase 5+: monitoreo periódico por score de riesgo RN-10 para los ya migrados"]
+    subgraph E5[Etapa 5 · Usuarios antiguos]
+      E5_F0[Fase 0: se les avisa según su riesgo, uno por uno]
+      E5_F4[Fase 4: se migran todos en bloques, con aviso previo]
+      E5_F5[Fase 5: a los de riesgo medio se les pide una prueba rápida cada tanto]
       E5_F0 --> E5_F4 --> E5_F5
     end
+
+    class E1_ALL pantalla
+    class E2_F0,E3_F0,E4_F0,E5_F0 no
+    class E2_F2,E3_F2,E4_F3,E5_F4 pantallaNueva
+    class E3_F3,E4_F5,E5_F5 si
 ```
 
 ## Flujo explícito de usuario por fase, con wiretext
@@ -212,25 +236,45 @@ Esta sección responde específicamente a qué ve y qué hace el usuario en cada
 
 ```mermaid
 flowchart TD
-    START([Usuario entra a Fase 0]) --> SEG{Segmento del usuario}
-    SEG -->|Nuevo| REG[Registro + recarga wallet + crea órdenes]
-    REG --> NOFIELD[Sin campos de identidad - Regla Validación Nula]
-    NOFIELD --> ORDER{Primera orden entregada?}
-    ORDER -->|No todavía| NOFIELD
-    ORDER -->|Sí, Aha Moment| SOFT[Wiretext 0-A: soft touchpoint]
-    SOFT --> DISMISS{Usuario hace clic}
-    DISMISS -->|Más tarde| IGNORE[No pasa nada más en Fase 0 - happy path sin fricción]
-    DISMISS -->|Configurar ahora| NEXTPHASE[Continúa a Fase 2/3 cuando exista bloqueo duro]
+    classDef inicioFin fill:#1a1a1a,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
+    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
+    classDef whatsapp fill:#7fd99a,stroke:#2f8a4f,color:#1a1a1a,stroke-width:2px
 
-    SEG -->|Activo/antiguo de riesgo| RISK{Más de 50 órdenes o comportamiento de riesgo?}
+    START((Inicio)) --> SEG{Qué tipo de usuario es?}
+    SEG -->|Nuevo| REG[Se registra, recarga y crea órdenes]
+    REG --> NOFIELD[No se le pide ningún documento]
+    NOFIELD --> ORDER{Ya le entregaron su primera venta?}
+    ORDER -->|Todavía no| NOFIELD
+    ORDER -->|Sí| SOFT[Aviso: configura tus datos para poder retirar]
+    SOFT --> DISMISS{Qué hace}
+    DISMISS -->|Más tarde| IGNORE[Sigue usando la plataforma normal]
+    DISMISS -->|Configurar ahora| NEXTPHASE[Sigue a la verificación cuando ya exista bloqueo]
+    IGNORE --> FIN1((Fin))
+    NEXTPHASE --> FIN1
+
+    SEG -->|Usuario antiguo, con riesgo| RISK{Tiene más de 50 órdenes o algo sospechoso?}
     RISK -->|No| NOFIELD
-    RISK -->|Sí| CAMP[Wiretext 0-B: campaña Semana de la seguridad]
-    CAMP --> SILENT[Carga masiva silenciosa a Sumsub en paralelo, sin acción del usuario]
-    CAMP --> VALIDATE{Usuario decide validarse}
-    VALIDATE -->|Ignora la campaña| EXPIRE[Vence la campaña, sigue segmentado para el próximo ciclo]
-    VALIDATE -->|Aprueba| OK[Estado aprobado, sin fricción adicional - happy path]
-    VALIDATE -->|Falla por foto borrosa u otro error recuperable| RETRY[Se pide reintento normal]
-    VALIDATE -->|Falla por antecedentes graves AML| GENERIC[Wiretext 0-C: rechazo genérico, nunca revela investigación]
+    RISK -->|Sí| CAMP[Le llega: Semana de la seguridad]
+    CAMP --> SILENT[En paralelo, si ya estaba validado antes, se sube solo]
+    CAMP --> VALIDATE{Qué hace con la campaña}
+    VALIDATE -->|La ignora| EXPIRE[Se queda como estaba, se le vuelve a avisar después]
+    VALIDATE -->|Se valida y aprueba| OK[Queda aprobado]
+    VALIDATE -->|Falla por foto borrosa| RETRY[Se le pide intentar de nuevo]
+    VALIDATE -->|Falla por antecedentes graves| GENERIC[Se le dice que incumplió las políticas, sin más detalle]
+    OK --> FIN2((Fin))
+    RETRY --> FIN2
+    GENERIC --> FIN2
+    EXPIRE --> FIN2
+
+    class START,FIN1,FIN2 inicioFin
+    class SEG,ORDER,DISMISS,RISK,VALIDATE decision
+    class REG,NOFIELD,IGNORE,NEXTPHASE,SILENT,RETRY,SOFT pantalla
+    class CAMP,EXPIRE whatsapp
+    class OK si
+    class GENERIC no
 ```
 
 **Flujo — usuario nuevo:**
@@ -330,16 +374,33 @@ Demo-panel: el toggle "Email en lista negra" es independiente de `momentoUsuario
 
 ```mermaid
 flowchart TD
-    START([Usuario intenta registrarse o iniciar sesión]) --> CHECK{Correo cruza contra lista negra global de todos los países?}
-    CHECK -->|No hay coincidencia| CONTINUE[Continúa normalmente a Fase 0/2 - happy path]
-    CHECK -->|Coincidencia encontrada| BLOCK[Wiretext 1-A: bloqueo total full-screen]
-    BLOCK --> NORETRY[Sin botón Reintentar ni Cerrar - intencional]
-    NORETRY --> SUPPORT{Usuario escribe a soporte@dropi.co?}
-    SUPPORT -->|Sí, caso genuino de error| MANUAL[Backoffice revisa manualmente y decide si desbloquea]
-    MANUAL --> MANUALRESULT{Decisión de Backoffice}
-    MANUALRESULT -->|Confirma que es error| UNLOCK[Se desbloquea la cuenta, usuario reintenta registro/login]
-    MANUALRESULT -->|Confirma el baneo| STUCK[Cuenta permanece bloqueada]
+    classDef inicioFin fill:#1a1a1a,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
+    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
+    classDef modal fill:#a8d4f5,stroke:#4a90d9,color:#1a1a1a,stroke-width:2px
+
+    START((Inicio)) --> CHECK{Su correo está en la lista negra de algún país?}
+    CHECK -->|No| CONTINUE[Sigue normal]
+    CHECK -->|Sí| BLOCK[Bloqueo total en pantalla completa]
+    BLOCK --> NORETRY[No hay botón para reintentar ni cerrar, es a propósito]
+    NORETRY --> SUPPORT{Escribe a soporte?}
+    SUPPORT -->|Sí, cree que es un error| MANUAL[Backoffice revisa el caso]
+    MANUAL --> MANUALRESULT{Backoffice decide}
+    MANUALRESULT -->|Sí era un error| UNLOCK[Se desbloquea, puede volver a intentar]
+    MANUALRESULT -->|El bloqueo era correcto| STUCK[Sigue bloqueada]
     SUPPORT -->|No escribe| STUCK
+    CONTINUE --> FIN((Fin))
+    UNLOCK --> FIN
+    STUCK --> FIN
+
+    class START,FIN inicioFin
+    class CHECK,SUPPORT,MANUALRESULT decision
+    class CONTINUE,MANUAL pantalla
+    class BLOCK,NORETRY modal
+    class UNLOCK si
+    class STUCK no
 ```
 
 **Flujo:**
@@ -405,22 +466,42 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    START([Usuario CO-natural intenta retirar/transferir/DropiCard]) --> GATE[IdentityGateComponent - bloqueo duro sobre esa acción]
-    GATE --> REST[Catálogo, órdenes y recargas siguen funcionando sin restricción - la regla del motor]
-    GATE --> CTA[CTA Verificar identidad - Wiretext 2-A]
-    CTA --> FORM1[Wiretext 2-B: Paso 1/2 datos personales - branding Truora]
-    FORM1 --> CHECKBOX{Mantiene el checkbox mismos datos para facturación?}
-    CHECKBOX -->|Sí, Escenario Base| FORM2[Wiretext 2-C: Paso 2/2 régimen fiscal CO]
-    CHECKBOX -->|Usuario lo desmarca| NOTE[Fase 2 no cubre bifurcación de facturación - eso lo resuelve Fase 3]
-    FORM2 --> DOCS{Documentos cargados correctamente?}
-    DOCS -->|Sí| SUBMIT[Envía a validación Truora]
-    DOCS -->|Foto/RUT ilegible| RETRYDOC[Pide volver a cargar el documento]
-    SUBMIT --> RESULT{Resultado Truora}
-    RESULT -->|Aprobado - happy path| SAVE[Datos quedan en tabla identidad + facturación, no se repiten]
-    RESULT -->|En revisión| REVIEW[Usuario espera, salidas de dinero siguen bloqueadas]
-    RESULT -->|Rechazado| REJECT{Intentos usados}
-    REJECT -->|Menos de 3, RN-09| RETRYFORM[Puede reintentar el formulario]
-    REJECT -->|3 intentos agotados| LOCKOUT[Bloqueo temporal, debe escalar a soporte]
+    classDef inicioFin fill:#1a1a1a,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef pantallaNueva fill:#fbc98b,stroke:#c77b1e,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
+    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
+
+    START((Inicio)) --> GATE[Colombia natural quiere retirar, transferir o usar DropiCard]
+    GATE --> REST[El resto de la plataforma sigue funcionando igual]
+    GATE --> CTA[Botón: Verificar identidad]
+    CTA --> FORM1[Paso 1 de 2: datos personales, con Truora]
+    FORM1 --> CHECKBOX{Mantiene la casilla mismos datos para facturar?}
+    CHECKBOX -->|Sí| FORM2[Paso 2 de 2: datos tributarios]
+    CHECKBOX -->|La desmarca| NOTE[Todavía no se puede elegir otra persona, eso llega después]
+    FORM2 --> DOCS{Los documentos se cargaron bien?}
+    DOCS -->|Sí| SUBMIT[Se envía a validar con Truora]
+    DOCS -->|Foto ilegible| RETRYDOC[Se le pide subirla de nuevo]
+    SUBMIT --> RESULT{Resultado}
+    RESULT -->|Aprobado| SAVE[Queda guardado como identidad y como facturación]
+    RESULT -->|En revisión| REVIEW[Espera, sigue sin poder retirar mientras tanto]
+    RESULT -->|Rechazado| REJECT{Cuántas veces lo ha intentado?}
+    REJECT -->|Menos de 3| RETRYFORM[Puede volver a intentarlo]
+    REJECT -->|Ya intentó 3 veces| LOCKOUT[Queda bloqueado, debe escribir a soporte]
+    NOTE --> FORM2
+    RETRYDOC --> DOCS
+    SAVE --> FIN((Fin))
+    REVIEW --> FIN
+    RETRYFORM --> FIN
+    LOCKOUT --> FIN
+
+    class START,FIN inicioFin
+    class CHECKBOX,DOCS,RESULT,REJECT decision
+    class REST,REVIEW,RETRYFORM,RETRYDOC pantalla
+    class GATE,CTA,FORM1,FORM2,SUBMIT pantallaNueva
+    class SAVE si
+    class NOTE,LOCKOUT no
 ```
 
 **Flujo:**
@@ -534,61 +615,71 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    START([Usuario país distinto de CO-natural intenta salida de dinero]) --> GATE[IdentityGateComponent - motor Sumsub]
-    GATE --> S1[Paso 1: Email]
-    S1 -->|Ya precargado, se salta| S2
-    S1 -->|No precargado, usuario lo ingresa - Wiretext 3-A| S2[Paso 2: OTP email - Wiretext 3-B]
+    classDef inicioFin fill:#1a1a1a,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef pantallaNueva fill:#fbc98b,stroke:#c77b1e,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
+    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
+
+    START((Inicio)) --> GATE[Quiere retirar dinero, y no es Colombia natural]
+    GATE --> S1[Paso 1: confirmar correo]
+    S1 -->|Ya lo tenía, se salta| S2
+    S1 -->|Lo escribe| S2[Paso 2: código al correo]
     S2 --> OTP1{Código correcto?}
-    OTP1 -->|Sí| S3[Paso 3: Documento frente/reverso - Wiretext 3-C]
-    OTP1 -->|No, quedan intentos| S2
-    OTP1 -->|3 intentos fallidos, RN-09| LOCK1[Bloqueo temporal del paso, debe reiniciar]
-    OTP1 -->|Timeout 10 min WebSDK, RN-07| TIMEOUT1[Sesión expira, debe reabrir el modal]
-    S3 --> DETECT{Autodetección de tipo de documento}
-    DETECT -->|Foto legible - happy path| S4[Paso 4: Liveness - Wiretext 3-D]
-    DETECT -->|Foto borrosa/ilegible| RETRY3[Pide repetir foto de frente o reverso]
-    S4 --> LIVE{Prueba de vida exitosa?}
-    LIVE -->|Sí| S5[Paso 5: Teléfono + OTP - Wiretext 3-E]
-    LIVE -->|No, rostro no coincide o mala luz| RETRY4[Pide repetir liveness]
+    OTP1 -->|Sí| S3[Paso 3: foto del documento]
+    OTP1 -->|No, le quedan intentos| S2
+    OTP1 -->|Agotó 3 intentos| LOCK1[Debe reiniciar la verificación]
+    OTP1 -->|Pasaron 10 minutos| TIMEOUT1[Se vence, debe abrir el formulario otra vez]
+    S3 --> DETECT{La foto se ve bien?}
+    DETECT -->|Sí| S4[Paso 4: prueba de vida]
+    DETECT -->|Está borrosa| RETRY3[Se le pide repetirla]
+    S4 --> LIVE{La prueba de vida salió bien?}
+    LIVE -->|Sí| S5[Paso 5: código al celular]
+    LIVE -->|No, no coincide con la foto| RETRY4[Se le pide repetirla]
     S5 --> OTP2{Código correcto?}
-    OTP2 -->|Sí| KYCRESULT{Resultado KYC del dueño}
-    OTP2 -->|No, agota intentos, RN-09| LOCK2[Bloqueo temporal]
-    KYCRESULT -->|Rechazado| REJ[Rechazado + 12 motivos categorizados]
-    KYCRESULT -->|En revisión, definición en 24h - RN-07| REV[En revisión, usuario espera]
-    KYCRESULT -->|Aprobado - happy path| S6[Paso 6: Wiretext 3-F, pregunta de facturación]
+    OTP2 -->|Sí| KYCRESULT{Resultado de la verificación}
+    OTP2 -->|Agotó los intentos| LOCK2[Debe reiniciar]
+    KYCRESULT -->|Rechazado| REJ[Rechazado, se explica el motivo]
+    KYCRESULT -->|En revisión| REV[Queda en revisión hasta 24 horas]
+    KYCRESULT -->|Aprobado| BILLQ{Para quién es la factura?}
 
-    S6 --> BQA{a: Mis propios datos}
-    S6 --> BQB{b: Otra persona natural}
-    S6 --> BQC{c: Persona jurídica}
+    BILLQ -->|Para mí mismo| FISCALOK[Pasa directo a las preguntas de facturación]
 
-    BQA --> FISCALOK[Reutiliza KYC, 1 sola validación, va a cuestionario fiscal - happy path]
-
-    BQB --> KYC2START[Sub-flujo KYC tercero: repite pasos 1-5 para esa persona]
-    KYC2START --> KYC2RESULT{Resultado KYC tercero}
+    BILLQ -->|Para otra persona| KYC2START[Se verifica también a esa persona: mismos 5 pasos]
+    KYC2START --> KYC2RESULT{Resultado de esa verificación}
     KYC2RESULT -->|Aprobado| FISCALOK
-    KYC2RESULT -->|Rechazado o en revisión| KYC2FAIL[Mismo tratamiento que el KYC del dueño: 12 motivos o espera]
+    KYC2RESULT -->|Rechazado o en revisión| KYC2FAIL[Se trata igual que un rechazo del dueño]
 
-    BQC --> KYBSEARCH[Wiretext 3-G: país + nombre empresa, sin digitar NIT]
-    KYBSEARCH --> KYBFOUND{Sumsub encuentra la empresa?}
-    KYBFOUND -->|Sí| KYBCONFIRM[Usuario confirma Esta es mi empresa]
-    KYBFOUND -->|No encuentra o nombre ambiguo| KYBRETRY[Pide refinar el nombre / reintentar búsqueda]
+    BILLQ -->|Para una empresa| KYBSEARCH[Busca la empresa por país y nombre, sin digitar NIT]
+    KYBSEARCH --> KYBFOUND{La encuentra?}
+    KYBFOUND -->|Sí| KYBCONFIRM[Confirma que es su empresa]
+    KYBFOUND -->|No la encuentra| KYBRETRY[Se le pide ajustar el nombre]
     KYBRETRY --> KYBSEARCH
-    KYBCONFIRM --> RN20{RN-20: representante legal ya es usuario Dropi validado?}
-    RN20 -->|Sí, Wiretext 3-H| REUSE[Reutiliza KYC existente sin pedir nada más]
-    RN20 -->|No, Wiretext 3-H'| KYCREP[Dispara nuevo KYC para el representante legal]
-    KYCREP --> KYCREPRESULT{Resultado KYC representante}
+    KYBCONFIRM --> RN20{El representante legal ya está validado en Dropi?}
+    RN20 -->|Sí| REUSE[Se reutiliza esa verificación]
+    RN20 -->|No| KYCREP[Se le pide verificarse también]
+    KYCREP --> KYCREPRESULT{Resultado}
     KYCREPRESULT -->|Aprobado| REUSE
     KYCREPRESULT -->|Rechazado| KYBFAIL
-    REUSE --> KYBRESULT{Resultado KYB de la empresa}
-    KYBRESULT -->|Aprobado - happy path| FISCALOK
-    KYBRESULT -->|Falla, Wiretext 3-I, RN-23| KYBFAIL[Estado pj_pendiente, conserva datos, NO degrada a natural]
-    KYBFAIL --> KYBRETRYDIRECT[Reintentar validación directamente sin perder lo avanzado]
+    REUSE --> KYBRESULT{Se pudo validar la empresa?}
+    KYBRESULT -->|Sí| FISCALOK
+    KYBRESULT -->|No| KYBFAIL[Queda pendiente, no pierde los datos ni pasa a persona natural]
+    KYBFAIL --> KYBRETRYDIRECT[Puede reintentar directo, sin perder lo avanzado]
     KYBRETRYDIRECT --> KYBSEARCH
 
-    FISCALOK --> USDT{Movimiento involucra USDT?}
-    USDT -->|Sí| KYT{Screening OFAC/ONU}
-    KYT -->|Riesgo alto| KYTBLOCK[Wiretext 3-J: suspensión sin revelar la investigación]
-    KYT -->|Sin riesgo - happy path| CONTINUE[Continúa flujo normal]
+    FISCALOK --> USDT{El movimiento es en USDT?}
+    USDT -->|Sí| KYT{Pasa el control de listas internacionales?}
+    KYT -->|No| KYTBLOCK[Se suspende la cuenta, sin explicar el motivo]
+    KYT -->|Sí| CONTINUE[Sigue el flujo normal]
     USDT -->|No| CONTINUE
+
+    class START inicioFin
+    class S1,S2,S3,S4,S5,REV,KYBCONFIRM,KYBRETRY,KYBRETRYDIRECT,RETRY3,RETRY4,CONTINUE pantalla
+    class GATE,KYC2START,KYBSEARCH,KYCREP pantallaNueva
+    class OTP1,DETECT,LIVE,OTP2,KYCRESULT,BILLQ,KYC2RESULT,KYBFOUND,RN20,KYCREPRESULT,KYBRESULT,USDT,KYT decision
+    class FISCALOK,REUSE si
+    class LOCK1,TIMEOUT1,LOCK2,REJ,KYC2FAIL,KYBFAIL,KYTBLOCK no
 ```
 
 **Flujo — cualquier país ≠ CO-natural (o CO-jurídica):**
@@ -817,29 +908,45 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    START([Usuario legacy en base existente]) --> TIPO{Tipo de validación legacy}
-    TIPO -->|Validado automáticamente con Truora| ZIP[Backend migra vía ZIP a Sumsub, sin acción del usuario]
-    ZIP --> INVISIBLE[Conserva estado aprobado, sin pantalla nueva - happy path silencioso]
+    classDef inicioFin fill:#1a1a1a,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef pantallaNueva fill:#fbc98b,stroke:#c77b1e,color:#1a1a1a,stroke-width:2px
+    classDef accion fill:#e4c7f5,stroke:#9b4fd1,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
+    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
 
-    TIPO -->|Validado manualmente, decisión Legal pendiente| LEGALHOLD[Estado retenido hasta decisión de Legal/Compliance - RN-25]
+    START((Inicio)) --> TIPO{Cómo estaba validado antes?}
+    TIPO -->|Ya validado con Truora| ZIP[Se migra solo por detrás, sin que el usuario haga nada]
+    ZIP --> INVISIBLE[Sigue aprobado, no ve ninguna pantalla nueva]
+
+    TIPO -->|Validado a mano, falta decisión de Legal| LEGALHOLD[Se espera la decisión de Legal antes de tocarlo]
     LEGALHOLD --> LEGALDEC{Legal decide}
     LEGALDEC -->|Se acepta como válido| INVISIBLE
-    LEGALDEC -->|Se exige re-validación| BANNER
+    LEGALDEC -->|Debe re-validarse| BANNER
 
-    TIPO -->|Sin validación alguna| BANNER[Wiretext 4-A: banner pedagógico 1-2 semanas antes]
-    BANNER --> ACT{Usuario actúa antes de vencer la ventana?}
-    ACT -->|Sí, valida ahora| GATE[Entra al IdentityGateComponent de Fase 2/3]
-    ACT -->|No, ignora - Recordar luego| WAIT[Ventana pedagógica sigue corriendo, sin bloqueo inmediato]
-    WAIT --> EXPIRE{Vence la ventana de 1-2 semanas?}
+    TIPO -->|Nunca se validó| BANNER[Aviso: actualiza tus datos antes de tal fecha]
+    BANNER --> ACT{Actúa antes de que se cumpla el plazo?}
+    ACT -->|Sí, se valida ya| GATE[Entra a la verificación normal]
+    ACT -->|No, lo deja para después| WAIT[Sigue operando normal por ahora]
+    WAIT --> EXPIRE{Se cumplió el plazo?}
     EXPIRE -->|Sí| GATE
-    EXPIRE -->|No todavía| BANNER
+    EXPIRE -->|Todavía no| BANNER
 
-    GATE --> FISCAL[Formulario fiscal - Caso Ecuador aplica transversalmente a cualquier país]
-    FISCAL --> WEBHOOK[Wiretext 4-B, estado 1: Confirmando datos con la autoridad fiscal]
-    WEBHOOK --> WHRESULT{Webhook de Sumsub confirma en tiempo real?}
-    WHRESULT -->|Confirmado - happy path| SAVE[Guarda datos fiscales, libera wallet]
-    WHRESULT -->|No confirmado| REJECTSAVE[Wiretext 4-B, estado 2: no guarda nada, vuelve al cuestionario]
+    GATE --> FISCAL[Preguntas de facturación, de cualquier país]
+    FISCAL --> WEBHOOK[Confirmando los datos con la autoridad fiscal]
+    WEBHOOK --> WHRESULT{Se confirmaron en tiempo real?}
+    WHRESULT -->|Sí| SAVE[Se guardan los datos y se libera la wallet]
+    WHRESULT -->|No| REJECTSAVE[No se guarda nada, vuelve a preguntar]
     REJECTSAVE --> FISCAL
+
+    class START inicioFin
+    class TIPO,LEGALDEC,ACT,EXPIRE,WHRESULT decision
+    class ZIP,LEGALHOLD,WAIT,FISCAL,WEBHOOK accion
+    class GATE pantallaNueva
+    class BANNER pantalla
+    class INVISIBLE,SAVE si
+    class REJECTSAVE no
 ```
 
 **Flujo — usuario legacy validado automáticamente con Truora (candidato a migración masiva):**
@@ -924,33 +1031,46 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    START([Usuario ya validado entra a editar sus datos]) --> WHICH{Qué sección edita?}
+    classDef inicioFin fill:#1a1a1a,stroke:#000000,color:#ffffff,stroke-width:2px
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef pantallaNueva fill:#fbc98b,stroke:#c77b1e,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
+    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
 
-    WHICH -->|Mi cuenta - Dueño de cuenta| RN11{Menos de 6 meses desde última validación?}
-    RN11 -->|Sí| LOCKED[Wiretext 5-A: campos sensibles bloqueados con tooltip]
-    LOCKED --> LOCKEDEND[Usuario no puede editar nombre/documento/fecha nac. sin excepción]
-    RN11 -->|No, ya pasaron 6 meses| UNLOCKED[Campos desbloqueados]
-    UNLOCKED --> EDITOWNER{Usuario edita nombre/documento/fecha nac.?}
-    EDITOWNER -->|Sí| REVALFULL[Dispara re-validación completa con Sumsub]
+    START((Inicio)) --> WHICH{Qué quiere editar?}
+
+    WHICH -->|Sus datos en Mi cuenta| RN11{Pasaron menos de 6 meses desde que se validó?}
+    RN11 -->|Sí| LOCKED[No puede tocar nombre, documento ni fecha de nacimiento]
+    RN11 -->|No| UNLOCKED[Puede editar esos campos]
+    UNLOCKED --> EDITOWNER{Cambia alguno de esos datos?}
+    EDITOWNER -->|Sí| REVALFULL[Se le pide verificarse de nuevo, completo]
     REVALFULL --> REVALFULLRESULT{Resultado}
-    REVALFULLRESULT -->|Aprobado - happy path| SAVEDOWNER[Guarda cambios, reinicia el contador de 6 meses]
-    REVALFULLRESULT -->|Rechazado| KEEPOLDOWNER[Conserva datos anteriores]
-    EDITOWNER -->|No edita nada sensible| NOCHANGE[Sin cambios, sin re-validación]
+    REVALFULLRESULT -->|Aprobado| SAVEDOWNER[Se guarda y vuelve a contar los 6 meses]
+    REVALFULLRESULT -->|Rechazado| KEEPOLDOWNER[Se quedan los datos anteriores]
+    EDITOWNER -->|No| NOCHANGE[No pasa nada]
 
-    WHICH -->|Datos de facturación - Responsable Tributario| RN1415{Campo es sensible? nombre/tipo persona/tipo-num doc}
-    RN1415 -->|No: email fact./dirección/ciudad/tel| SAVEDIRECT[Wiretext 5-B, botón Guardar cambios no sensibles: guarda directo - happy path]
-    RN1415 -->|Sí| REVALSENS[Wiretext 5-B, botón Guardar y re-validar: dispara Sumsub]
-    REVALSENS --> BLOCKFIN[Bloquea acciones financieras mientras se revisa]
-    BLOCKFIN --> REVALRESULT{Resultado re-validación}
-    REVALRESULT -->|Aprobado| UPDATED[Datos actualizados, se desbloquean acciones financieras]
-    REVALRESULT -->|Rechazado| KEEPOLD[Conserva datos anteriores, usuario puede reintentar]
+    WHICH -->|Sus datos de facturación| RN1415{El campo que cambia es sensible?}
+    RN1415 -->|No, ej. dirección o teléfono| SAVEDIRECT[Se guarda directo]
+    RN1415 -->|Sí, ej. nombre o tipo de documento| REVALSENS[Se le pide verificarse de nuevo]
+    REVALSENS --> BLOCKFIN[Mientras tanto, no puede retirar ni transferir]
+    BLOCKFIN --> REVALRESULT{Resultado}
+    REVALRESULT -->|Aprobado| UPDATED[Se actualizan los datos y se desbloquea]
+    REVALRESULT -->|Rechazado| KEEPOLD[Se quedan los datos anteriores, puede reintentar]
 
-    START -->|En paralelo, si riskScore fue Medio| RN10{Vence el ciclo de monitoreo 3/4/6 meses?}
-    RN10 -->|Sí| MICRO[Wiretext 5-C: micro-control, ej. selfie rápida]
-    RN10 -->|No todavía| WAITMONITOR[Sigue operando normal, sin interrupciones]
-    MICRO --> MICRORESULT{Selfie coincide con el documento?}
-    MICRORESULT -->|Sí - happy path| CONTINUEOK[Continúa sin fricción adicional]
-    MICRORESULT -->|No coincide| ESCALATE[Escala a re-validación completa]
+    START -->|Si su riesgo quedó en Medio| RN10{Ya toca su control periódico?}
+    RN10 -->|Sí| MICRO[Se le pide una selfie rápida]
+    RN10 -->|No todavía| WAITMONITOR[Sigue operando normal]
+    MICRO --> MICRORESULT{La selfie coincide con su documento?}
+    MICRORESULT -->|Sí| CONTINUEOK[Sigue sin más trámite]
+    MICRORESULT -->|No| ESCALATE[Se le pide verificarse completo de nuevo]
+
+    class START inicioFin
+    class WHICH,RN11,EDITOWNER,REVALFULLRESULT,RN1415,REVALRESULT,RN10,MICRORESULT decision
+    class UNLOCKED,NOCHANGE,WAITMONITOR pantalla
+    class REVALFULL,REVALSENS,MICRO,ESCALATE pantallaNueva
+    class SAVEDOWNER,SAVEDIRECT,UPDATED,CONTINUEOK si
+    class LOCKED,KEEPOLDOWNER,BLOCKFIN,KEEPOLD no
 ```
 
 **Flujo — edición de datos del Dueño de cuenta (Cuenta):**
