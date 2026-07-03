@@ -1,0 +1,14 @@
+{
+  "title": "Home · Inicio",
+  "module": "inicio",
+  "slug": "home-inicio",
+  "route": "/inicio",
+  "description": "Pantalla de inicio de Dropi con activation popover de identidad. Popover flotante bottom-right que aparece 1.5s después de cargar y cambia según el estado de validación del usuario.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-06-22",
+  "thumbnail": "thumbnail.png",
+  "architecture": "old",
+  "folder": "verificacion-identidad",
+  "badge": "Nuevo"
+}

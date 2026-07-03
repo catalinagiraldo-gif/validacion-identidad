@@ -1,0 +1,13 @@
+{
+  "title": "Retiro de Saldo — Identidad bloqueadora",
+  "module": "configuraciones",
+  "slug": "retiro-saldo",
+  "route": "/configuraciones/retiros-de-saldo",
+  "description": "Formulario de retiro de saldo con alerta de identidad. Campos y botón Procesar bloqueados hasta validación. Muestra saldo disponible mock y modal bloqueador con lista de funciones desbloqueables.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-06-22",
+  "thumbnail": "thumbnail.png",
+  "architecture": "old",
+  "folder": "verificacion-identidad"
+}

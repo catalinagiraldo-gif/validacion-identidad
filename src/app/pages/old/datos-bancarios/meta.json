@@ -1,0 +1,13 @@
+{
+  "title": "Datos Bancarios — Identidad bloqueadora",
+  "module": "configuraciones",
+  "slug": "datos-bancarios",
+  "route": "/configuraciones/datos-bancarios",
+  "description": "Vista de cuentas bancarias con alerta de identidad. Agregar y eliminar cuentas bloqueado hasta que la identidad esté validada. Incluye modal bloqueador contextual y demo toolbar de estados.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-06-22",
+  "thumbnail": "thumbnail.png",
+  "architecture": "old",
+  "folder": "verificacion-identidad"
+}

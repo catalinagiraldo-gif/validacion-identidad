@@ -2,6 +2,11 @@
   "title": "Validación de identidad — Flujo por país",
   "slug": "validacion-identidad-pais",
   "module": "configuraciones",
+  "route": "/configuraciones/validacion-identidad-pais",
+  "description": "Vista educativa: qué datos recolecta Dropi vs Sumsub/Truora según el país. Country switcher CO/MX/AR/CL/EC + split Dropi vs proveedor + progressive disclosure del resultado. Sin estado ni journeys.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "thumbnail": "thumbnail.png",
   "folder": "verificacion-identidad",
   "dateAdded": "2026-06-17 · 10:30",
   "architecture": "old"

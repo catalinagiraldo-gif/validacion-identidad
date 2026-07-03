@@ -17,11 +17,6 @@ interface FolderGroup {
 }
 
 const FOLDER_META: Record<string, { label: string; icon: string; description: string }> = {
-  gali: {
-    label: 'Gali ✦',
-    icon: '✦',
-    description: 'Plataforma AI de Dropi — V2, V3 y V5',
-  },
   'verificacion-identidad': {
     label: 'Migración Sumsub — KYC/KYB',
     icon: '🪪',

@@ -1,0 +1,14 @@
+{
+  "title": "Hub de Activación de Identidad",
+  "module": "configuraciones",
+  "slug": "identidad-hub",
+  "route": "/identidad/hub",
+  "description": "Pantalla de entrada al prototipo de validación de identidad. Hero con CTA, grid de 7 módulos con estado en tiempo real, popover persuasivo y tarjetas de beneficio. Controla la experiencia cross-módulo de identidad.",
+  "profiles": ["dropshipper"],
+  "owner": "producto@dropi.co",
+  "dateAdded": "2026-06-22",
+  "thumbnail": "thumbnail.png",
+  "architecture": "old",
+  "folder": "verificacion-identidad",
+  "badge": "Nuevo"
+}
