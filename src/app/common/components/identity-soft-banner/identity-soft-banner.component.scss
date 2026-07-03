@@ -1,0 +1,116 @@
+@use 'styles/variables' as *;
+
+.soft-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $size-4;
+  border-radius: $radius-xl;
+  padding: $size-4 $size-5;
+  margin-bottom: $size-5;
+  border: 1.5px solid rgba($primary-500, 0.2);
+  background: linear-gradient(135deg, rgba($primary-500, 0.06) 0%, rgba($primary-500, 0.02) 100%);
+  animation: fadeSlideDown 0.35s ease;
+
+  &--pedidos {
+    background: linear-gradient(135deg, rgba($primary-500, 0.08) 0%, rgba($primary-300, 0.04) 100%);
+    padding: $size-5 $size-6;
+  }
+
+  @media (max-width: $bp-md) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $size-3;
+  }
+}
+
+.soft-banner__left {
+  display: flex;
+  align-items: flex-start;
+  gap: $size-3;
+  flex: 1;
+}
+
+.soft-banner__emoji {
+  font-size: 28px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.soft-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: $size-1;
+}
+
+.soft-banner__titulo {
+  font-family: $font-primary;
+  font-weight: $font-semibold;
+  font-size: $font-base;
+  color: $gray-800;
+  margin: 0;
+}
+
+.soft-banner__subtitulo {
+  font-size: $font-sm;
+  color: $gray-500;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.soft-banner__actions {
+  display: flex;
+  align-items: center;
+  gap: $size-3;
+  flex-shrink: 0;
+
+  @media (max-width: $bp-md) {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.soft-banner__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: $size-2;
+  background: $primary-500;
+  color: white;
+  border: none;
+  border-radius: $radius-md;
+  padding: $size-3 $size-5;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  font-family: $font-primary;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+
+  &:hover { background: $primary-600; }
+
+  i { font-size: 12px; }
+}
+
+.soft-banner__dismiss {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid $gray-200;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $gray-400;
+  flex-shrink: 0;
+  transition: background 0.15s;
+
+  &:hover { background: $gray-50; color: $gray-600; }
+
+  i { font-size: 12px; }
+}
+
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

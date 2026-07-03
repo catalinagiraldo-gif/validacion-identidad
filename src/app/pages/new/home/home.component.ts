@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { IdentitySoftBannerComponent } from '../../../common/components/identity-soft-banner/identity-soft-banner.component';
 
 interface Provider {
   name: string;
@@ -13,135 +14,19 @@ interface QuickAction {
   icon: string;
 }
 
-interface CountryChip {
-  code: string;
-  label: string;
-  special: boolean;
-}
-
-interface StatChip {
-  value: string;
-  label: string;
-}
-
-interface ProjectCard {
-  name: string;
-  subtitle: string;
-  description: string;
-  dateCreated: string;
-  status: string;
-  countries: CountryChip[];
-  keyDifferences: string[];
-  stats: StatChip[];
-  folderQuery: string;
-}
-
-interface ProtoCard {
-  title: string;
-  tag: string;
-  description: string;
-  route: string;
-  statusColor: 'green' | 'orange' | 'gray';
-  statusLabel: string;
-  icon: string;
-}
-
 @Component({
   selector: 'app-home-new',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, IdentitySoftBannerComponent],
   styleUrls: ['./home.component.scss'],
   template: `
     <div class="page-wrapper">
+      <app-identity-soft-banner variant="home" />
       <h1 class="greeting">{{ greeting }}</h1>
 
       <div class="home-layout">
         <!-- LEFT COLUMN (765px) -->
         <div class="home-main">
-
-          <!-- RPP Active Projects -->
-          <section class="rpp-projects">
-            <h2 class="section-label">Proyecto activo</h2>
-            <a
-              *ngFor="let p of activeProjects; let i = index"
-              class="project-card"
-              [routerLink]="['/gallery']"
-              [queryParams]="{ folder: p.folderQuery }"
-              [style.animation-delay]="(i * 80 + 120) + 'ms'"
-            >
-              <div class="project-card__header">
-                <span class="project-card__status-badge">{{ p.status }}</span>
-                <span class="project-card__type-tag">KYC · KYB · KYT</span>
-              </div>
-
-              <div class="project-card__title-row">
-                <span class="project-card__icon">🪪</span>
-                <div>
-                  <h3 class="project-card__name">{{ p.name }}</h3>
-                  <p class="project-card__subtitle">{{ p.subtitle }}</p>
-                </div>
-              </div>
-
-              <p class="project-card__desc">{{ p.description }}</p>
-
-              <div class="project-card__countries">
-                <span
-                  *ngFor="let c of p.countries"
-                  class="country-chip"
-                  [class.country-chip--special]="c.special"
-                  [title]="c.special ? 'Colombia: flujo mixto Truora + Sumsub' : 'Sumsub puro'"
-                >{{ c.code }}</span>
-              </div>
-
-              <div class="project-card__diff-alert">
-                <i class="pi pi-info-circle"></i>
-                <div class="diff-lines">
-                  <span *ngFor="let d of p.keyDifferences">{{ d }}</span>
-                </div>
-              </div>
-
-              <div class="project-card__stats">
-                <div class="stat-chip" *ngFor="let s of p.stats">
-                  <span class="stat-chip__value">{{ s.value }}</span>
-                  <span class="stat-chip__label">{{ s.label }}</span>
-                </div>
-              </div>
-
-              <div class="project-card__footer">
-                <span class="project-card__date">
-                  <i class="pi pi-calendar"></i> {{ p.dateCreated }}
-                </span>
-                <span class="project-card__cta">
-                  Ver prototipos <i class="pi pi-arrow-right"></i>
-                </span>
-              </div>
-            </a>
-          </section>
-
-          <!-- Prototipos acceso rápido -->
-          <section class="proto-section">
-            <div class="proto-section__header">
-              <h2 class="section-label">Prototipos · acceso directo</h2>
-              <a [routerLink]="['/gallery']" class="proto-section__see-all">Ver todos <i class="pi pi-arrow-right"></i></a>
-            </div>
-            <div class="proto-grid">
-              <a
-                *ngFor="let p of protoCards; let i = index"
-                class="proto-card"
-                [routerLink]="[p.route]"
-                [style.animation-delay]="(i * 60 + 100) + 'ms'"
-              >
-                <div class="proto-card__top">
-                  <span class="proto-card__icon">{{ p.icon }}</span>
-                  <span class="proto-card__status" [class]="'proto-card__status--' + p.statusColor">{{ p.statusLabel }}</span>
-                </div>
-                <h3 class="proto-card__title">{{ p.title }}</h3>
-                <p class="proto-card__tag">{{ p.tag }}</p>
-                <p class="proto-card__desc">{{ p.description }}</p>
-                <span class="proto-card__cta">Abrir prototipo <i class="pi pi-external-link"></i></span>
-              </a>
-            </div>
-          </section>
 
           <!-- Alert banner (765x68) -->
           <div class="alert-banner">
@@ -243,63 +128,6 @@ export class HomeNewComponent {
   alertMessage =
     '🚨¡Nueva actualizacion Dropify - Tienda Nube! Ahora puedes configurar tus pagos';
 
-  activeProjects: ProjectCard[] = [
-    {
-      name: 'Flujo de Validación · v5',
-      subtitle: 'KYC · KYB · 15 vistas · 2026-06-18',
-      description:
-        'Prototipo completo basado en spec Plan1.md: flujo end-to-end de 15 vistas — entrada, datos readonly, solicitud de actualización (MFA), formulario 2 pasos, confirmación pre-Sumsub, WebSDK mock, 6 estados y apelación.',
-      dateCreated: '18 de junio, 2026',
-      status: 'Nuevo',
-      folderQuery: 'verificacion-identidad',
-      countries: [
-        { code: 'CO', label: 'Colombia', special: true },
-        { code: 'CL', label: 'Chile', special: false },
-        { code: 'EC', label: 'Ecuador', special: false },
-        { code: 'MX', label: 'México', special: false },
-        { code: 'AR', label: 'Argentina', special: false },
-      ],
-      keyDifferences: [
-        'Vista 7 nueva: confirmación antes de disparar Sumsub (prevención de errores críticos)',
-        'Vista 3 nueva: solicitud de actualización en autoservicio (reemplaza Intercom)',
-        'Vista 10: motivo de rechazo categorizado + contador de intentos',
-      ],
-      stats: [
-        { value: '15', label: 'vistas' },
-        { value: '5', label: 'países' },
-        { value: '6', label: 'estados' },
-        { value: '2', label: 'pasos form' },
-      ],
-    },
-    {
-      name: 'Migración Sumsub',
-      subtitle: 'Validación KYC / KYB',
-      description:
-        'Migrar la validación de identidad de Truora a Sumsub para obtener cobertura global (240+ países), flujos KYC/KYB/KYT unificados y reducción de la validación manual del 40% actual en Colombia.',
-      dateCreated: '13 de enero, 2026',
-      status: 'En revisión',
-      folderQuery: 'verificacion-identidad',
-      countries: [
-        { code: 'CO', label: 'Colombia', special: true },
-        { code: 'CL', label: 'Chile', special: false },
-        { code: 'EC', label: 'Ecuador', special: false },
-        { code: 'MX', label: 'México', special: false },
-        { code: 'AR', label: 'Argentina', special: false },
-      ],
-      keyDifferences: [
-        'Colombia: Truora (KYC natural) + Sumsub (KYB) — único país con flujo mixto',
-        'Resto de países: Sumsub puro (KYC + KYB)',
-        'Info tributaria: solo CO (régimen + responsabilidad), MX (régimen fiscal) y AR (IVA)',
-      ],
-      stats: [
-        { value: '4', label: 'prototipos' },
-        { value: '3', label: 'flujos' },
-        { value: '14', label: 'campos comunes' },
-        { value: '5', label: 'países' },
-      ],
-    },
-  ];
-
   quickActions: QuickAction[] = [
     { label: 'Encuentra productos', icon: 'action-encuentra.png' },
     { label: 'Gestionar ordenes', icon: 'action-gestionar.png' },
@@ -312,44 +140,5 @@ export class HomeNewComponent {
     { name: 'Faka Store', avatar: 'avatar-faka.png', badge: 'star' },
     { name: 'D&S GROUP COLOMBIA', avatar: 'avatar-dsg.png', badge: 'verified' },
     { name: 'Perfumeria Glow', avatar: 'avatar-cachy.png', badge: 'star' },
-  ];
-
-  protoCards: ProtoCard[] = [
-    {
-      title: 'Flujo de Validación de Identidad · v5',
-      tag: 'Configuraciones · Dropshipper · CO / MX / AR / CL / EC',
-      description: '12 vistas + 6 modales. 3 selectores: tipo de usuario, estado y país. Cubre todos los flujos KYC/KYB del FigJam.',
-      route: '/configuraciones/flujo-identidad-2026-06-18',
-      statusColor: 'green',
-      statusLabel: 'Nuevo',
-      icon: '🪪',
-    },
-    {
-      title: 'CAS · Bandeja de soporte',
-      tag: 'CAS · Dropshipper',
-      description: 'Bandeja de entrada con panel de conversaciones, chat y gestión de tickets de soporte.',
-      route: '/cas/bandeja',
-      statusColor: 'orange',
-      statusLabel: 'Activo',
-      icon: '💬',
-    },
-    {
-      title: 'Mis Pedidos',
-      tag: 'Pedidos · Dropshipper',
-      description: 'Listado de órdenes con tabla, filtros, acciones masivas y detalle por fila.',
-      route: '/mis-pedidos/mis-pedidos',
-      statusColor: 'orange',
-      statusLabel: 'Activo',
-      icon: '📦',
-    },
-    {
-      title: 'Catálogo de Productos',
-      tag: 'Productos · Dropshipper',
-      description: 'Catálogo con búsqueda semántica IA, filtros avanzados, carrusel de proveedores y grid de product cards.',
-      route: '/productos/catalogo',
-      statusColor: 'orange',
-      statusLabel: 'Activo',
-      icon: '🛍️',
-    },
   ];
 }

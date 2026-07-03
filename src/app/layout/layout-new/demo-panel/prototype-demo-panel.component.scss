@@ -1,0 +1,154 @@
+@use 'styles/variables' as *;
+
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.demo-panel {
+  background: $gray-900;
+  color: white;
+  font-family: $font-primary;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.demo-panel__bar {
+  display: flex;
+  align-items: center;
+  gap: $size-4;
+  padding: $size-2 $size-4;
+  flex-wrap: wrap;
+
+  .demo-panel--collapsed & {
+    padding: $size-2 $size-4;
+  }
+}
+
+.demo-panel__brand {
+  display: flex;
+  align-items: center;
+  gap: $size-2;
+  font-size: $font-xs;
+  font-weight: $font-bold;
+  color: $primary-300;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  i { font-size: 12px; }
+}
+
+.demo-panel__controls {
+  display: flex;
+  align-items: center;
+  gap: $size-4;
+  flex: 1;
+  flex-wrap: wrap;
+
+  @media (max-width: $bp-lg) {
+    gap: $size-3;
+  }
+}
+
+.demo-control {
+  display: flex;
+  align-items: center;
+  gap: $size-2;
+}
+
+.demo-control__label {
+  font-size: 9px;
+  font-weight: $font-bold;
+  color: $gray-400;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+.demo-control__chips {
+  display: flex;
+  gap: $size-1;
+  flex-wrap: wrap;
+}
+
+.chip {
+  background: rgba(white, 0.08);
+  border: 1px solid rgba(white, 0.12);
+  color: $gray-300;
+  border-radius: $radius-pill;
+  padding: 3px 10px;
+  font-size: $font-xs;
+  font-family: $font-primary;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+
+  &:hover { background: rgba(white, 0.15); color: white; }
+
+  &--active {
+    background: $primary-500;
+    border-color: $primary-500;
+    color: white;
+    font-weight: $font-semibold;
+  }
+
+  &--sm { padding: 2px 8px; font-size: 11px; }
+
+  &--aprobado.chip--active    { background: $success; border-color: $success; }
+  &--en_revision.chip--active { background: $warning; border-color: $warning; color: $gray-900; }
+  &--rechazado.chip--active   { background: $error;   border-color: $error; }
+}
+
+.demo-panel__status-badge {
+  font-size: 10px;
+  font-weight: $font-semibold;
+  border-radius: $radius-pill;
+  padding: 2px 8px;
+  letter-spacing: 0.3px;
+
+  &.status--approved { background: rgba($success, 0.2); color: lighten($success, 20%); }
+  &.status--review   { background: rgba($warning, 0.2); color: $warning; }
+  &.status--rejected { background: rgba($error,   0.2); color: lighten($error, 20%); }
+  &.status--none     { background: rgba(white, 0.08); color: $gray-400; }
+}
+
+.demo-panel__meta {
+  display: flex;
+  align-items: center;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    font-size: 11px;
+    color: $gray-500;
+
+    i { font-size: 12px; }
+
+    &.meta--on { color: $success; }
+  }
+}
+
+.demo-panel__toggle {
+  background: none;
+  border: 1px solid rgba(white, 0.15);
+  color: $gray-300;
+  border-radius: $radius-pill;
+  padding: 3px 12px;
+  font-size: $font-xs;
+  font-family: $font-primary;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: $size-1;
+  margin-left: auto;
+  white-space: nowrap;
+  transition: border-color 0.15s;
+  flex-shrink: 0;
+
+  &:hover { border-color: rgba(white, 0.3); color: white; }
+
+  i { font-size: 10px; }
+}

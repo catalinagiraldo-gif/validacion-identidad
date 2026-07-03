@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IdentityDemoStateService } from '../../../../common/services/identity-demo-state.service';
+import { IdentityModalService } from '../../../../common/services/identity-modal.service';
 
 const AVATAR_ICON = 'https://www.figma.com/api/mcp/asset/7e9163eb-de22-4728-845a-0e2ffbf9b37d';
 const ICON_CALENDAR = 'https://www.figma.com/api/mcp/asset/18dc5cd0-37c6-440e-992a-c36bd2132906';
@@ -28,17 +30,61 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
       <!-- Title row -->
       <div class="page-header">
         <h1 class="page-title">Información de cuenta</h1>
-        <span class="tag-pendiente">Validación Pendiente</span>
+        @if (isAprobado()) {
+          <span class="tag-aprobado"><i class="pi pi-shield"></i> Identidad verificada</span>
+        } @else if (status() === 'en_revision') {
+          <span class="tag-revision"><i class="pi pi-clock"></i> En revisión</span>
+        } @else {
+          <span class="tag-pendiente">Validación Pendiente</span>
+        }
       </div>
 
-      <!-- Top alert -->
-      <div class="alert-top">
-        <i class="pi pi-exclamation-circle alert-icon"></i>
-        <p class="alert-text">
-          <span class="alert-bold">Faltan tus datos personales. </span>
-          <span>Complétalos para continuar con la validación.</span>
-        </p>
-      </div>
+      <!-- Alert / CTA según estado -->
+      @if (isAprobado()) {
+        <div class="alert-success">
+          <i class="pi pi-check-circle alert-icon"></i>
+          <div class="alert-body">
+            <p class="alert-text">
+              <span class="alert-bold">Tu identidad fue verificada por Sumsub. </span>
+              <span>Los campos marcados con 🔒 no son editables por 6 meses.</span>
+            </p>
+          </div>
+        </div>
+      } @else if (status() === 'en_revision') {
+        <div class="alert-review">
+          <i class="pi pi-clock alert-icon"></i>
+          <p class="alert-text">
+            <span class="alert-bold">Tu verificación está siendo revisada. </span>
+            <span>En 1-3 días hábiles te notificaremos por email.</span>
+          </p>
+        </div>
+      } @else if (status() === 'rechazado') {
+        <div class="alert-top alert-top--error">
+          <i class="pi pi-times-circle alert-icon"></i>
+          <div class="alert-body">
+            <p class="alert-text">
+              <span class="alert-bold">Tu verificación fue rechazada. </span>
+              <span>El documento no fue legible. Puedes reintentar.</span>
+            </p>
+            <button class="btn-identity-cta btn-identity-cta--sm" type="button" (click)="abrirModal('screen2')">
+              <i class="pi pi-refresh"></i> Reintentar verificación
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="alert-top">
+          <i class="pi pi-exclamation-circle alert-icon"></i>
+          <div class="alert-body">
+            <p class="alert-text">
+              <span class="alert-bold">Completa la verificación de identidad. </span>
+              <span>Es necesaria para poder retirar tus ganancias. Toma ~5 min.</span>
+            </p>
+            <button class="btn-identity-cta" type="button" (click)="abrirModal('screen0')">
+              <i class="pi pi-shield"></i> Iniciar verificación de identidad
+            </button>
+          </div>
+        </div>
+      }
 
       <!-- Main layout: avatar + form -->
       <div class="cuenta-layout">
@@ -74,22 +120,34 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
           <div class="form-block">
             <div class="form-row">
               <div class="field-group">
-                <label class="field-label">Primer nombre</label>
-                <input type="text" class="field-input" placeholder="" [(ngModel)]="primerNombre" />
+                <label class="field-label">
+                  Primer nombre
+                  @if (isAprobado()) { <span class="lock-badge">🔒 Validado</span> }
+                </label>
+                <input type="text" class="field-input" [class.field-locked]="isAprobado()" placeholder="" [(ngModel)]="primerNombre" [readonly]="isAprobado()" />
               </div>
               <div class="field-group">
-                <label class="field-label">Segundo nombre (Opcional)</label>
-                <input type="text" class="field-input" placeholder="" [(ngModel)]="segundoNombre" />
+                <label class="field-label">
+                  Segundo nombre (Opcional)
+                  @if (isAprobado()) { <span class="lock-badge">🔒 Validado</span> }
+                </label>
+                <input type="text" class="field-input" [class.field-locked]="isAprobado()" placeholder="" [(ngModel)]="segundoNombre" [readonly]="isAprobado()" />
               </div>
             </div>
             <div class="form-row">
               <div class="field-group">
-                <label class="field-label">Primer apellido</label>
-                <input type="text" class="field-input" placeholder="" [(ngModel)]="primerApellido" />
+                <label class="field-label">
+                  Primer apellido
+                  @if (isAprobado()) { <span class="lock-badge">🔒 Validado</span> }
+                </label>
+                <input type="text" class="field-input" [class.field-locked]="isAprobado()" placeholder="" [(ngModel)]="primerApellido" [readonly]="isAprobado()" />
               </div>
               <div class="field-group">
-                <label class="field-label">Segundo apellido (Opcional)</label>
-                <input type="text" class="field-input" placeholder="" [(ngModel)]="segundoApellido" />
+                <label class="field-label">
+                  Segundo apellido (Opcional)
+                  @if (isAprobado()) { <span class="lock-badge">🔒 Validado</span> }
+                </label>
+                <input type="text" class="field-input" [class.field-locked]="isAprobado()" placeholder="" [(ngModel)]="segundoApellido" [readonly]="isAprobado()" />
               </div>
             </div>
             <div class="form-row">
@@ -183,22 +241,46 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
   `,
 })
 export class CuentaNewComponent {
+  private stateSvc = inject(IdentityDemoStateService);
+  private modalSvc = inject(IdentityModalService);
+
   readonly avatarIcon = AVATAR_ICON;
   readonly iconCalendar = ICON_CALENDAR;
   readonly flagCo = FLAG_CO;
   readonly iconChevron = ICON_CHEVRON;
 
-  primerNombre = '';
-  segundoNombre = '';
-  primerApellido = '';
+  readonly status     = this.stateSvc.status;
+  readonly isAprobado = this.stateSvc.isApproved;
+
+  primerNombre    = '';
+  segundoNombre   = '';
+  primerApellido  = '';
   segundoApellido = '';
   fechaNacimiento = '';
-  nacionalidad = '';
-  tipoDocumento = '';
-  documento = '';
-  emailContacto = '';
-  telefono = '';
-  direccion = '';
+  nacionalidad    = '';
+  tipoDocumento   = '';
+  documento       = '';
+  emailContacto   = '';
+  telefono        = '';
+  direccion       = '';
+
+  constructor() {
+    effect(() => {
+      if (this.isAprobado()) {
+        this.primerNombre   = 'Laura';
+        this.primerApellido = 'Martínez';
+        this.segundoApellido = 'López';
+        this.tipoDocumento  = 'cc';
+        this.documento      = '1.023.456.789';
+        this.emailContacto  = 'laura.martinez@email.com';
+        this.telefono       = '3101234567';
+      }
+    }, { allowSignalWrites: true });
+  }
+
+  abrirModal(screen: 'screen0' | 'screen2' | 'screen3'): void {
+    this.modalSvc.open('cuenta', screen);
+  }
 
   onGuardar(): void {}
 }

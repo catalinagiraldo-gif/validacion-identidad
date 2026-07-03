@@ -1,0 +1,71 @@
+import { Component, Input, inject, computed, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { IdentityDemoStateService } from '../../services/identity-demo-state.service';
+import { IdentityModalService, OrigenModal } from '../../services/identity-modal.service';
+
+export type BannerVariant = 'pedidos' | 'home' | 'wallet';
+
+@Component({
+  selector: 'app-identity-soft-banner',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './identity-soft-banner.component.html',
+  styleUrls: ['./identity-soft-banner.component.scss'],
+})
+export class IdentitySoftBannerComponent {
+  @Input() variant: BannerVariant = 'home';
+
+  private stateSvc = inject(IdentityDemoStateService);
+  private modalSvc = inject(IdentityModalService);
+
+  dismissed = signal(false);
+
+  readonly isVisible = computed(() =>
+    !this.dismissed() &&
+    this.stateSvc.showSoftTouchpoints()
+  );
+
+  readonly titulo = computed(() => {
+    const m: Record<BannerVariant, string> = {
+      pedidos: '¡Tu primera venta fue entregada! 🎉',
+      home:    'Ya tienes ganancias en camino',
+      wallet:  'COP 45.000 disponibles en tu wallet',
+    };
+    return m[this.variant];
+  });
+
+  readonly subtitulo = computed(() => {
+    const m: Record<BannerVariant, string> = {
+      pedidos: 'COP 45.000 van a llegar a tu wallet. Para poder retirarlos, configura tu identidad ahora. Toma solo ~5 min.',
+      home:    'Para retirar tus ganancias, activa tus retiros completando tu verificación de identidad.',
+      wallet:  'Para retirar este dinero, valida quién eres. Solo una vez, ~5 min.',
+    };
+    return m[this.variant];
+  });
+
+  readonly ctaLabel = computed(() => {
+    const m: Record<BannerVariant, string> = {
+      pedidos: 'Activar mis retiros',
+      home:    'Activar retiros',
+      wallet:  'Activar retiros',
+    };
+    return m[this.variant];
+  });
+
+  private get origenFromVariant(): OrigenModal {
+    const map: Record<BannerVariant, OrigenModal> = {
+      pedidos: 'pedidos',
+      home:    'home',
+      wallet:  'wallet',
+    };
+    return map[this.variant];
+  }
+
+  onCta(): void {
+    this.modalSvc.open(this.origenFromVariant, 'screen0');
+  }
+
+  dismiss(): void {
+    this.dismissed.set(true);
+  }
+}

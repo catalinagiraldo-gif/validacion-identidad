@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IdentityDemoStateService } from '../../../../common/services/identity-demo-state.service';
+import { IdentityModalService } from '../../../../common/services/identity-modal.service';
+import { ACTIVIDAD_ECONOMICA_OPTIONS } from '../../../../common/models/identity-flow.models';
 
 const FLAG_CO = 'https://www.figma.com/api/mcp/asset/0aabaf73-3af0-43f5-94f6-6db627b8f389';
 const ICON_TOOLTIP = 'https://www.figma.com/api/mcp/asset/1ce765f3-b9db-4f9a-83b1-be1c7989342b';
@@ -27,18 +30,39 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
       <!-- Page title -->
       <div class="page-header">
         <h1 class="page-title">Datos de facturación</h1>
-        <span class="tag-pendiente">Pendiente</span>
+        @if (isAprobado()) {
+          <span class="tag-completo"><i class="pi pi-check-circle"></i> Completado por Sumsub</span>
+        } @else {
+          <span class="tag-pendiente">Pendiente</span>
+        }
         <button class="link-tutorial" type="button">Ver tutorial</button>
       </div>
 
-      <!-- Alert -->
-      <div class="alert-warning">
-        <i class="pi pi-exclamation-circle alert-icon"></i>
-        <p class="alert-text">
-          <span class="alert-bold">Evita confusiones en tu factura: </span>
-          <span>ingresa tus datos de facturación o usaremos los que registraste al validar tu cuenta.</span>
-        </p>
-      </div>
+      <!-- Banner según estado -->
+      @if (isAprobado()) {
+        <div class="alert-sumsub">
+          <i class="pi pi-check-circle alert-icon"></i>
+          <div class="alert-body">
+            <p class="alert-text">
+              <span class="alert-bold">Sumsub completó tu información de entidad automáticamente. </span>
+              <span>Los campos de entidad están bloqueados. Completa los datos fiscales y guarda.</span>
+            </p>
+          </div>
+        </div>
+      } @else {
+        <div class="alert-warning">
+          <i class="pi pi-info-circle alert-icon"></i>
+          <div class="alert-body">
+            <p class="alert-text">
+              <span class="alert-bold">Para que tus facturas sean válidas, primero valida tu identidad. </span>
+              <span>Los datos de entidad quedarán completados automáticamente por Sumsub.</span>
+            </p>
+            <button class="btn-identity-cta" type="button" (click)="abrirModal()">
+              <i class="pi pi-shield"></i> Validar identidad ahora
+            </button>
+          </div>
+        </div>
+      }
 
       <!-- Form content -->
       <div class="form-content">
@@ -103,19 +127,24 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
 
         <div class="section-divider"></div>
 
-        <!-- Sección 2: Información de Empresa -->
-        <section class="form-section">
-          <h2 class="section-title">Información de Empresa</h2>
+        <!-- Sección 2: Entidad de facturación (locked post-Sumsub) -->
+        <section class="form-section" [class.form-section--locked]="isAprobado()">
+          <div class="section-header-row">
+            <h2 class="section-title">Entidad de facturación</h2>
+            @if (isAprobado()) {
+              <span class="section-lock-badge">🔒 Completado por Sumsub · No editable</span>
+            }
+          </div>
 
           <div class="form-row">
             <div class="field-group">
               <label class="field-label">Nombre o razón social</label>
-              <input type="text" class="field-input" placeholder="Nombre de tu empresa" [(ngModel)]="razonSocial" />
+              <input type="text" class="field-input" [class.field-locked]="isAprobado()" placeholder="Nombre de tu empresa" [(ngModel)]="razonSocial" [readonly]="isAprobado()" />
             </div>
             <div class="field-group">
               <label class="field-label">Tipo de persona</label>
               <div class="select-wrap">
-                <select class="field-select" [(ngModel)]="tipoPersona">
+                <select class="field-select" [class.field-locked]="isAprobado()" [(ngModel)]="tipoPersona" [disabled]="isAprobado()">
                   <option value="">Seleccionar tipo de persona</option>
                   <option value="natural">Persona natural</option>
                   <option value="juridica">Persona jurídica</option>
@@ -129,7 +158,7 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
             <div class="field-group">
               <label class="field-label">Tipo de documento</label>
               <div class="select-wrap">
-                <select class="field-select" [(ngModel)]="tipoDocumento">
+                <select class="field-select" [class.field-locked]="isAprobado()" [(ngModel)]="tipoDocumento" [disabled]="isAprobado()">
                   <option value="">Seleccionar documento</option>
                   <option value="cc">Cédula de ciudadanía</option>
                   <option value="nit">NIT</option>
@@ -141,7 +170,7 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
             </div>
             <div class="field-group">
               <label class="field-label">Número de documento</label>
-              <input type="text" class="field-input" placeholder="Escribe el número" [(ngModel)]="numDocumento" />
+              <input type="text" class="field-input" [class.field-locked]="isAprobado()" placeholder="Escribe el número" [(ngModel)]="numDocumento" [readonly]="isAprobado()" />
             </div>
           </div>
         </section>
@@ -218,22 +247,63 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
   `,
 })
 export class DatosFacturacionNewComponent {
-  readonly flagCo = FLAG_CO;
+  private stateSvc = inject(IdentityDemoStateService);
+  private modalSvc = inject(IdentityModalService);
+
+  readonly flagCo      = FLAG_CO;
   readonly iconTooltip = ICON_TOOLTIP;
   readonly iconChevron = ICON_CHEVRON;
 
-  pais = 'colombia';
-  municipio = '';
-  direccion = '';
-  email = '';
-  telefono = '';
-  razonSocial = '';
-  tipoPersona = '';
-  tipoDocumento = '';
-  numDocumento = '';
-  tipoRegimen = '';
+  readonly isAprobado = this.stateSvc.isApproved;
+
+  pais                = 'colombia';
+  municipio           = '';
+  direccion           = '';
+  email               = '';
+  telefono            = '';
+  razonSocial         = '';
+  tipoPersona         = '';
+  tipoDocumento       = '';
+  numDocumento        = '';
+  tipoRegimen         = '';
   tipoResponsabilidad = '';
-  impuesto = '';
+  impuesto            = '';
+
+  constructor() {
+    effect(() => {
+      if (this.isAprobado()) {
+        // Identidad bloqueada — capturada por Sumsub según tipo de persona
+        const tp = this.stateSvc.tipoPersona();
+        if (tp === 'juridica') {
+          this.razonSocial   = 'TechStore SAS';
+          this.tipoPersona   = 'juridica';
+          this.tipoDocumento = 'nit';
+          this.numDocumento  = '900.123.456-7';
+        } else {
+          this.razonSocial   = 'Laura Martínez López';
+          this.tipoPersona   = 'natural';
+          this.tipoDocumento = 'cc';
+          this.numDocumento  = '1.023.456.789';
+        }
+
+        // Datos fiscales del cuestionario Sumsub (si el usuario completó el modal)
+        const fiscal = this.stateSvc.datosFiscales();
+        if (fiscal) {
+          this.email         = fiscal.emailFacturacion;
+          this.municipio     = fiscal.municipio;
+          this.tipoRegimen   = fiscal.tipoRegimen ?? '';
+        } else {
+          // Fallback si se aprobó vía demo panel sin pasar por el modal
+          this.email     = 'facturacion@email.com';
+          this.telefono  = '3101234567';
+        }
+      }
+    }, { allowSignalWrites: true });
+  }
+
+  abrirModal(): void {
+    this.modalSvc.open('facturacion', 'screen0');
+  }
 
   onGuardar(): void {}
 }

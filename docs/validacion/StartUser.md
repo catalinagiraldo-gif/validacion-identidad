@@ -1,5 +1,5 @@
 🗺️ Journey Expandido PLG: Identidad y Conversión (AS-IS vs TO-BE)
-📍 Fase 1: Adquisición y Setup Moment (Exploración Inicial)
+📍 Etapa 1: Adquisición y Setup Moment (Exploración Inicial)
 El usuario entra a la plataforma para evaluar si Dropi resuelve su problema de generar ingresos o escalar su logística
 .
 Arquetipos: Novato Aprendiendo (ej. Cristhian, alta fricción técnica), Rebuscador Digital, Inactivo en Riesgo
@@ -19,7 +19,7 @@ El producto debe permitir operar, crear órdenes y hacer recargas (top-ups) a la
 Desde el inicio zonas de transferencia entre wallets, retiro de saldo y dropi card estan bloqueadas solo se da cuenta el usuario al ver notificación en cada sección
 
 .
-📍 Fase 2: Activación y Aha Moment (La Primera Victoria)
+📍 Etapa 2: Activación y Aha Moment (La Primera Victoria)
 El usuario logra vender su primer producto y el dinero de la ganancia entra a su cuenta. El producto le demuestra valor real
 .
 Arquetipos: Entrada Extra (ej. Duvan, Leidy), Joven Visionario
@@ -37,7 +37,7 @@ Formulario Unificado (El Escenario Base): Aplica la regla de negocio donde el du
 Delegación al SDK: Desde este momento, dirige al usuario al Web SDK de Sumsub integrado en Dropi, permitiendo que la plataforma aliada se encargue de la captura de documentos, eliminando la necesidad de que diseñemos pantallas de carga de fotos.
 
 .
-📍 Fase 3: Compromiso y Habit Moment (Escalamiento y Restricción)
+📍 Etapa 3: Compromiso y Habit Moment (Escalamiento y Restricción)
 El usuario pasa de la logística a preocuparse por el flujo de caja. Necesita retirar dinero constantemente para reinvertir en publicidad o pagar deudas
 .
 Arquetipos: Negocio Constante (ej. Octavio, Estefanía)
@@ -60,7 +60,7 @@ Bifurcación de validaciones: Si el usuario decide que la responsabilidad tribut
 Autoguardado y bloqueo de edición: Una vez que la validación sea exitosa mediante la API de Sumsub, precarga esa información en Dropi y bloquea la edición de esos campos específicos para evitar que el usuario los altere accidentalmente o de forma fraudulenta.
 
 .
-📍 Fase 4: Profesionalización y Cross-Border (Cambios y Empresa)
+📍 Etapa 4: Profesionalización y Cross-Border (Cambios y Empresa)
 Usuarios de altísimo volumen que necesitan formalizar sus empresas, cambiar de responsabilidades tributarias o que operan internacionalmente
 .
 Arquetipos: Experimentado Escalando, Power Users / Proveedores VIP (Jeferson Mora), Operadores Cross-Border (Yohandra Peroza, operando Venezuela-Colombia)
@@ -83,7 +83,7 @@ Validación dinámica internacional: Utiliza un campo genérico llamado "Documen
 Actualizaciones sin fricción (OTP): Si un usuario avanzado solo necesita actualizar su número de teléfono o correo electrónico, no lo obligues a pasar por todo el flujo biométrico; resuélvelo rápidamente mediante un código OTP.
 
 .
-📍 Fase 5: Mantenimiento y Migración de Base Existente (Resurrección y Retención)
+📍 Etapa 5: Mantenimiento y Migración de Base Existente (Resurrección y Retención)
 La necesidad de actualizar a los miles de usuarios que ya operan dentro de Dropi, limpiando las bases de datos "basura" sin provocar una fuga masiva de clientes (Churn)
 .
 Arquetipos: Aplica a toda la base instalada actual de usuarios activos y Dormant users (usuarios inactivos con potencial de regreso)

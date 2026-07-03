@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IdentityDemoStateService } from '../../../../common/services/identity-demo-state.service';
+import { IdentityModalService } from '../../../../common/services/identity-modal.service';
+import { IdentitySoftBannerComponent } from '../../../../common/components/identity-soft-banner/identity-soft-banner.component';
 
 interface Transaction {
   date: string;
@@ -18,10 +21,12 @@ interface Transaction {
 @Component({
   selector: 'app-wallet-new',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IdentitySoftBannerComponent],
   styleUrls: ['./wallet.component.scss'],
   template: `
     <div class="page-wrapper">
+      <app-identity-soft-banner variant="wallet" />
+
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
         <span class="breadcrumb-item"><i class="pi pi-home"></i></span>
@@ -37,11 +42,11 @@ interface Transaction {
       <div class="page-header">
         <h1 class="page-title">Historial de wallet</h1>
         <div class="page-header__actions">
-          <button class="btn-secondary">
+          <button class="btn-secondary" (click)="onTransferir()">
             <i class="pi pi-arrows-h"></i>
             <span>Transferir entre cuentas</span>
           </button>
-          <button class="btn-primary">
+          <button class="btn-primary" (click)="onRetirar()">
             <i class="pi pi-download"></i>
             <span>Retirar</span>
           </button>
@@ -243,6 +248,9 @@ interface Transaction {
   `,
 })
 export class WalletNewComponent {
+  private stateSvc = inject(IdentityDemoStateService);
+  private modalSvc = inject(IdentityModalService);
+
   saldoDisponible = 245800;
   montoMinRetiro = 50000;
 
@@ -524,5 +532,18 @@ export class WalletNewComponent {
 
   toggleExpandAll(): void {
     this.transactions.forEach(tx => (tx.expanded = this.expandAll));
+  }
+
+  onTransferir(): void {
+    if (!this.stateSvc.isApproved()) {
+      this.modalSvc.open('wallet', 'screen0');
+    }
+    // si aprobado: aquí iría el modal de transferencia (no implementado en este prototipo)
+  }
+
+  onRetirar(): void {
+    if (!this.stateSvc.isApproved()) {
+      this.modalSvc.open('retiro', 'screen0');
+    }
   }
 }

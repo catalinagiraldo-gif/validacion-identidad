@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IdentityGateComponent } from '../../../../common/components/identity-gate/identity-gate.component';
 
 @Component({
   selector: 'app-retiros-saldo-new',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IdentityGateComponent],
   styleUrls: ['./retiros-saldo.component.scss'],
   template: `
     <div class="page-wrapper">
@@ -23,6 +24,8 @@ import { FormsModule } from '@angular/forms';
         <h1 class="page-title">Retiros de Saldo</h1>
         <button class="btn-outline" type="button">Historial de Retiros</button>
       </div>
+
+      <app-identity-gate contexto="retiro" />
 
       <div class="form-section">
         <div class="form-row">

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IdentitySoftBannerComponent } from '../../../../common/components/identity-soft-banner/identity-soft-banner.component';
 
 interface Order {
   id: number;
@@ -15,10 +16,12 @@ interface Order {
 @Component({
   selector: 'app-ordenes-new',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IdentitySoftBannerComponent],
   styleUrls: ['./ordenes.component.scss'],
   template: `
     <div class="page-wrapper">
+      <app-identity-soft-banner variant="pedidos" />
+
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
         <span class="breadcrumb-item"><i class="pi pi-home"></i></span>

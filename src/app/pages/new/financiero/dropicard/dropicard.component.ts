@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IdentityGateComponent } from '../../../../common/components/identity-gate/identity-gate.component';
 
 interface Transaction {
   id: number;
@@ -12,7 +13,7 @@ interface Transaction {
 @Component({
   selector: 'app-dropicard-new',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IdentityGateComponent],
   styleUrls: ['./dropicard.component.scss'],
   template: `
     <div class="dropicard-page">
@@ -33,6 +34,8 @@ interface Transaction {
 
       <!-- Title -->
       <h1 class="page-title">Dropicard</h1>
+
+      <app-identity-gate contexto="dropicard" />
 
       <!-- Card + Details grid -->
       <div class="card-section" *ngIf="hasCard">

@@ -1,0 +1,84 @@
+<div class="demo-panel" [class.demo-panel--collapsed]="collapsed()">
+  <div class="demo-panel__bar">
+    <div class="demo-panel__brand">
+      <i class="pi pi-cog"></i>
+      <span>MODO PROTOTIPO</span>
+    </div>
+
+    @if (!collapsed()) {
+      <div class="demo-panel__controls">
+        <!-- Fases -->
+        <div class="demo-control">
+          <span class="demo-control__label">FASE</span>
+          <div class="demo-control__chips">
+            @for (fase of fases; track fase.id) {
+              <button
+                class="chip"
+                [class.chip--active]="currentFase() === fase.id"
+                (click)="setFase(fase.id)"
+                [title]="fase.dia">
+                {{ fase.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Identidad -->
+        <div class="demo-control">
+          <span class="demo-control__label">IDENTIDAD</span>
+          <div class="demo-control__chips">
+            @for (s of statusOptions; track s.value) {
+              <button
+                class="chip"
+                [class.chip--active]="resultadoModal() === s.value"
+                [class]="'chip chip--' + s.value + (resultadoModal() === s.value ? ' chip--active' : '')"
+                (click)="setIdentidadStatus(s.value)">
+                {{ s.label }}
+              </button>
+            }
+          </div>
+          <span class="demo-panel__status-badge" [class]="statusClass()">
+            {{ identityStatusLabel() }}
+          </span>
+        </div>
+
+        <!-- País -->
+        <div class="demo-control">
+          <span class="demo-control__label">PAÍS</span>
+          <div class="demo-control__chips">
+            @for (p of paisOptions; track p) {
+              <button
+                class="chip chip--sm"
+                [class.chip--active]="currentPais() === p"
+                (click)="setPais(p)">
+                {{ p }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Tipo persona -->
+        <div class="demo-control">
+          <span class="demo-control__label">PERSONA</span>
+          <div class="demo-control__chips">
+            <button class="chip chip--sm" [class.chip--active]="currentTipo() === 'natural'" (click)="setTipo('natural')">Natural</button>
+            <button class="chip chip--sm" [class.chip--active]="currentTipo() === 'juridica'" (click)="setTipo('juridica')">Jurídica</button>
+          </div>
+        </div>
+
+        <!-- Primera orden -->
+        <div class="demo-panel__meta">
+          <span [class.meta--on]="primeraOrden()">
+            <i class="pi" [class.pi-check-circle]="primeraOrden()" [class.pi-circle]="!primeraOrden()"></i>
+            Primera orden entregada
+          </span>
+        </div>
+      </div>
+    }
+
+    <button class="demo-panel__toggle" (click)="toggle()">
+      {{ collapsed() ? 'Controles demo' : 'Ocultar' }}
+      <i class="pi" [class.pi-chevron-down]="collapsed()" [class.pi-chevron-up]="!collapsed()"></i>
+    </button>
+  </div>
+</div>

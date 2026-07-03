@@ -1,0 +1,23 @@
+@if (isVisible()) {
+  <div class="soft-banner" [class]="'soft-banner--' + variant">
+    <div class="soft-banner__left">
+      <span class="soft-banner__emoji">
+        @if (variant === 'pedidos') { 🎉 }
+        @else if (variant === 'wallet') { 💰 }
+        @else { ✨ }
+      </span>
+      <div class="soft-banner__text">
+        <p class="soft-banner__titulo">{{ titulo() }}</p>
+        <p class="soft-banner__subtitulo">{{ subtitulo() }}</p>
+      </div>
+    </div>
+    <div class="soft-banner__actions">
+      <button class="soft-banner__cta" (click)="onCta()">
+        {{ ctaLabel() }} <i class="pi pi-arrow-right"></i>
+      </button>
+      <button class="soft-banner__dismiss" (click)="dismiss()" aria-label="Cerrar">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+  </div>
+}
