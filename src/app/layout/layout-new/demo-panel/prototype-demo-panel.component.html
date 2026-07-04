@@ -7,17 +7,50 @@
 
     @if (!collapsed()) {
       <div class="demo-panel__controls">
-        <!-- Fases -->
+        <!-- Fase de entrega (rollout del proyecto) -->
         <div class="demo-control">
-          <span class="demo-control__label">FASE</span>
+          <span class="demo-control__label">FASE DE ENTREGA</span>
+          <div class="demo-control__chips">
+            @for (fase of fasesProyecto; track fase) {
+              <button
+                class="chip chip--sm"
+                [class.chip--active]="faseProyecto() === fase"
+                (click)="setFaseProyecto(fase)">
+                {{ faseProyectoLabel(fase) }}
+              </button>
+            }
+          </div>
+          <span class="demo-panel__mecanismo" [class.demo-panel__mecanismo--heredado]="mecanismoVigente().tipo === 'heredado'">
+            {{ mecanismoVigente().tipo === 'nativo' ? '🟢 Nativo' : '🟠 Heredado' }}: {{ mecanismoVigente().descripcion }}
+          </span>
+        </div>
+
+        <!-- Momento del usuario (Etapa PLG) -->
+        <div class="demo-control">
+          <span class="demo-control__label">MOMENTO DEL USUARIO</span>
           <div class="demo-control__chips">
             @for (fase of fases; track fase.id) {
               <button
                 class="chip"
                 [class.chip--active]="currentFase() === fase.id"
-                (click)="setFase(fase.id)"
+                (click)="setMomentoUsuario(fase.id)"
                 [title]="fase.dia">
-                {{ fase.label }}
+                {{ momentoLabel(fase.id) }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Segmento -->
+        <div class="demo-control">
+          <span class="demo-control__label">SEGMENTO</span>
+          <div class="demo-control__chips">
+            @for (s of segmentos; track s) {
+              <button
+                class="chip chip--sm"
+                [class.chip--active]="segmentoUsuario() === s"
+                (click)="setSegmento(s)">
+                {{ segmentoLabel(s) }}
               </button>
             }
           </div>
@@ -30,7 +63,6 @@
             @for (s of statusOptions; track s.value) {
               <button
                 class="chip"
-                [class.chip--active]="resultadoModal() === s.value"
                 [class]="'chip chip--' + s.value + (resultadoModal() === s.value ? ' chip--active' : '')"
                 (click)="setIdentidadStatus(s.value)">
                 {{ s.label }}
@@ -42,29 +74,68 @@
           </span>
         </div>
 
-        <!-- País -->
+        <!-- País (9) -->
         <div class="demo-control">
           <span class="demo-control__label">PAÍS</span>
           <div class="demo-control__chips">
-            @for (p of paisOptions; track p) {
+            @for (p of paisesV2; track p) {
               <button
                 class="chip chip--sm"
-                [class.chip--active]="currentPais() === p"
+                [class.chip--active]="paisV2() === p"
                 (click)="setPais(p)">
-                {{ p }}
+                {{ p }}@if (p === 'PY') { <span class="chip__warn">⚠</span> }
               </button>
             }
           </div>
         </div>
 
-        <!-- Tipo persona -->
+        <!-- Tipo persona (3) -->
         <div class="demo-control">
           <span class="demo-control__label">PERSONA</span>
           <div class="demo-control__chips">
-            <button class="chip chip--sm" [class.chip--active]="currentTipo() === 'natural'" (click)="setTipo('natural')">Natural</button>
-            <button class="chip chip--sm" [class.chip--active]="currentTipo() === 'juridica'" (click)="setTipo('juridica')">Jurídica</button>
+            <button class="chip chip--sm" [class.chip--active]="tipoPersonaV2() === 'natural'" (click)="setTipoPersonaV2('natural')">Natural</button>
+            <button class="chip chip--sm" [class.chip--active]="tipoPersonaV2() === 'juridica'" (click)="setTipoPersonaV2('juridica')">Jurídica</button>
+            <button class="chip chip--sm" [class.chip--active]="tipoPersonaV2() === 'extranjera'" (click)="setTipoPersonaV2('extranjera')">Extranjera</button>
           </div>
         </div>
+
+        <!-- Motor (badge de solo lectura) -->
+        <div class="demo-control">
+          <span class="demo-control__label">MOTOR</span>
+          <span class="demo-panel__motor-badge">{{ motorBadge().icon }} {{ motorBadge().label }}</span>
+        </div>
+
+        <!-- Toggles condicionales -->
+        @if (showEmailBaneadoToggle()) {
+          <div class="demo-control">
+            <span class="demo-control__label">LISTA NEGRA</span>
+            <button class="chip chip--sm chip--toggle" [class.chip--active]="emailEnListaNegra()" (click)="toggleEmailBaneado()">
+              {{ emailEnListaNegra() ? '✅ Email en lista negra' : 'Email en lista negra' }}
+            </button>
+          </div>
+        }
+
+        @if (showRepLegalToggle()) {
+          <div class="demo-control">
+            <span class="demo-control__label">RN-20</span>
+            <button class="chip chip--sm chip--toggle" [class.chip--active]="representanteLegalValidado()" (click)="toggleRepLegal()">
+              {{ representanteLegalValidado() ? '✅ Representante ya validado' : 'Representante ya validado' }}
+            </button>
+            @if (estadoKyb() === 'pj_pendiente') {
+              <span class="demo-panel__pj-pendiente">🕐 pj_pendiente</span>
+            }
+          </div>
+        }
+
+        @if (showWebhookToggle()) {
+          <div class="demo-control">
+            <span class="demo-control__label">WEBHOOK ECUADOR</span>
+            <div class="demo-control__chips">
+              <button class="chip chip--sm" [class.chip--active]="webhookConfirmed()" (click)="setWebhook(true)">✅ Confirma</button>
+              <button class="chip chip--sm" [class.chip--active]="!webhookConfirmed()" (click)="setWebhook(false)">❌ No confirma</button>
+            </div>
+          </div>
+        }
 
         <!-- Primera orden -->
         <div class="demo-panel__meta">
