@@ -121,6 +121,13 @@
   &:hover {
     background: $primary-50;
   }
+
+  &--gated {
+    border-color: $gray-300;
+    color: $gray-500;
+
+    &:hover { background: $gray-50; }
+  }
 }
 
 .btn-tertiary {

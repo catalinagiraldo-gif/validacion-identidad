@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IdentityDemoStateService } from '../../../../common/services/identity-demo-state.service';
@@ -42,8 +42,13 @@ interface Transaction {
       <div class="page-header">
         <h1 class="page-title">Historial de wallet</h1>
         <div class="page-header__actions">
-          <button class="btn-secondary" (click)="onTransferir()">
-            <i class="pi pi-arrows-h"></i>
+          <button
+            class="btn-secondary"
+            [class.btn-secondary--gated]="transferBloqueado()"
+            [title]="transferBloqueado() ? 'Verifica tu identidad para transferir entre wallets' : ''"
+            (click)="onTransferir()"
+          >
+            <i class="pi" [class.pi-lock]="transferBloqueado()" [class.pi-arrows-h]="!transferBloqueado()"></i>
             <span>Transferir entre cuentas</span>
           </button>
           <button class="btn-primary" (click)="onRetirar()">
@@ -250,6 +255,9 @@ interface Transaction {
 export class WalletNewComponent {
   private stateSvc = inject(IdentityDemoStateService);
   private modalSvc = inject(IdentityModalService);
+
+  /** Transferencias entre wallets se bloquean igual que retiros/DropiCard (regla de negocio, Plan2.md). */
+  readonly transferBloqueado = computed(() => !this.stateSvc.isApproved());
 
   saldoDisponible = 245800;
   montoMinRetiro = 50000;
