@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IdentityDemoStateService } from '../../../../common/services/identity-demo-state.service';
 import { IdentityModalService } from '../../../../common/services/identity-modal.service';
 import { IdentitySoftBannerComponent } from '../../../../common/components/identity-soft-banner/identity-soft-banner.component';
+import { IdentityMigrationBannerComponent } from '../../../../common/components/identity-migration-banner/identity-migration-banner.component';
 
 interface Transaction {
   date: string;
@@ -21,10 +22,11 @@ interface Transaction {
 @Component({
   selector: 'app-wallet-new',
   standalone: true,
-  imports: [CommonModule, FormsModule, IdentitySoftBannerComponent],
+  imports: [CommonModule, FormsModule, IdentitySoftBannerComponent, IdentityMigrationBannerComponent],
   styleUrls: ['./wallet.component.scss'],
   template: `
     <div class="page-wrapper">
+      <app-identity-migration-banner />
       <app-identity-soft-banner variant="wallet" />
 
       <!-- Breadcrumb -->

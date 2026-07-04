@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { IdentitySoftBannerComponent } from '../../../common/components/identity-soft-banner/identity-soft-banner.component';
+import { IdentityMigrationBannerComponent } from '../../../common/components/identity-migration-banner/identity-migration-banner.component';
 
 interface Provider {
   name: string;
@@ -17,10 +18,11 @@ interface QuickAction {
 @Component({
   selector: 'app-home-new',
   standalone: true,
-  imports: [CommonModule, RouterModule, IdentitySoftBannerComponent],
+  imports: [CommonModule, RouterModule, IdentitySoftBannerComponent, IdentityMigrationBannerComponent],
   styleUrls: ['./home.component.scss'],
   template: `
     <div class="page-wrapper">
+      <app-identity-migration-banner />
       <app-identity-soft-banner variant="home" />
       <h1 class="greeting">{{ greeting }}</h1>
 

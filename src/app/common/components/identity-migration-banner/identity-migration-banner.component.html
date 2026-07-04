@@ -1,0 +1,15 @@
+@if (isVisible()) {
+  <div class="migration-banner">
+    <div class="migration-banner__left">
+      <span class="migration-banner__emoji">⏳</span>
+      <div class="migration-banner__text">
+        <p class="migration-banner__titulo">Actualiza tus datos antes del 15 de julio</p>
+        <p class="migration-banner__subtitulo">A partir de esa fecha necesitarás validar tu identidad para seguir retirando tu saldo.</p>
+      </div>
+    </div>
+    <div class="migration-banner__actions">
+      <button class="migration-banner__cta" (click)="onValidar()">Validar ahora</button>
+      <button class="migration-banner__dismiss" (click)="dismiss()">Recordar luego</button>
+    </div>
+  </div>
+}

@@ -298,9 +298,36 @@ function limpiarNumeroDocumento(v: string): string {
           </div>
         </section>
 
+        <!-- Fase 4 — Gate de webhook, "Caso Ecuador": nunca se guarda sin confirmación real -->
+        @if (guardarEstado() === 'confirmando') {
+          <div class="webhook-gate webhook-gate--pending">
+            <span class="webhook-gate__spinner">⏳</span>
+            <div>
+              <p class="webhook-gate__title">Confirmando tus datos con la autoridad fiscal…</p>
+              <p class="webhook-gate__subtitle">Esto puede tardar unos minutos. No cierres esta ventana todavía.</p>
+            </div>
+          </div>
+        }
+        @if (guardarEstado() === 'rechazado') {
+          <div class="webhook-gate webhook-gate--error">
+            <i class="pi pi-exclamation-circle"></i>
+            <div>
+              <p class="webhook-gate__title">No pudimos confirmar estos datos</p>
+              <p class="webhook-gate__subtitle">Revisa que el número de documento/NIT sea correcto e inténtalo de nuevo. No se guardó ninguna información.</p>
+            </div>
+            <button class="btn-outline-danger" type="button" (click)="reintentarGuardado()">Volver a intentar</button>
+          </div>
+        }
+        @if (guardarEstado() === 'guardado') {
+          <div class="webhook-gate webhook-gate--success">
+            <i class="pi pi-check-circle"></i>
+            <p class="webhook-gate__title">Datos de facturación guardados y confirmados</p>
+          </div>
+        }
+
         <!-- CTA -->
         <div class="form-actions">
-          <button class="btn-save" type="button" [disabled]="!formValido()" (click)="onGuardar()">Guardar facturación</button>
+          <button class="btn-save" type="button" [disabled]="!formValido() || guardarEstado() === 'confirmando'" (click)="onGuardar()">Guardar facturación</button>
         </div>
 
       </div>
@@ -337,6 +364,9 @@ export class DatosFacturacionNewComponent {
   documentosSubidos = signal<boolean[]>([]);
   aceptaTerminos    = signal(false);
   aceptaTratamiento = signal(false);
+
+  /** Fase 4 — estado del gate de webhook al guardar (Caso Ecuador). */
+  guardarEstado = signal<'idle' | 'confirmando' | 'guardado' | 'rechazado'>('idle');
 
   readonly billingConfig = computed(() => PAIS_BILLING_FIELDS[this.pais()]);
   readonly phoneCode = computed(() => PHONE_CODE[this.pais()]);
@@ -418,5 +448,21 @@ export class DatosFacturacionNewComponent {
     this.modalSvc.open('facturacion', 'screen0');
   }
 
-  onGuardar(): void {}
+  /**
+   * Fase 4 — Prevención del "Caso Ecuador" (Plan2.md líneas 1078, 1093-1113):
+   * el formulario de datos fiscales nunca guarda nada hasta que el webhook de
+   * la autoridad fiscal confirme el estado real. Si no confirma, no se
+   * persiste ningún dato ingresado — el usuario vuelve a intentar sin perder
+   * lo que ya escribió en pantalla.
+   */
+  onGuardar(): void {
+    this.guardarEstado.set('confirmando');
+    setTimeout(() => {
+      this.guardarEstado.set(this.stateV2.webhookConfirmed() ? 'guardado' : 'rechazado');
+    }, 1400);
+  }
+
+  reintentarGuardado(): void {
+    this.guardarEstado.set('idle');
+  }
 }

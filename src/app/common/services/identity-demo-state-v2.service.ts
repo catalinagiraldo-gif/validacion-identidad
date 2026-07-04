@@ -30,6 +30,7 @@ const STATUS_KEY          = 'dropi.identityV2.status';
 const ESTADO_KYB_KEY      = 'dropi.identityV2.estadoKyb';
 const EMAIL_BANEADO_KEY   = 'dropi.identityV2.emailEnListaNegra';
 const REP_LEGAL_VALIDADO_KEY = 'dropi.identityV2.representanteLegalValidado';
+const WEBHOOK_CONFIRMED_KEY  = 'dropi.identityV2.webhookConfirmed';
 
 @Injectable({ providedIn: 'root' })
 export class IdentityDemoStateV2Service {
@@ -42,6 +43,8 @@ export class IdentityDemoStateV2Service {
   private readonly _estadoKyb     = signal<EstadoKyb>(this.loadEstadoKyb());
   private readonly _emailEnListaNegra = signal<boolean>(this.loadEmailEnListaNegra());
   private readonly _representanteLegalValidado = signal<boolean>(this.loadRepLegalValidado());
+  /** Fase 4 — "Caso Ecuador": el webhook de la autoridad fiscal debe confirmar antes de guardar cualquier dato fiscal. */
+  private readonly _webhookConfirmed = signal<boolean>(this.loadWebhookConfirmed());
 
   readonly faseProyecto   = this._faseProyecto.asReadonly();
   readonly momentoUsuario = this._momentoUsuario.asReadonly();
@@ -52,6 +55,16 @@ export class IdentityDemoStateV2Service {
   readonly estadoKyb      = this._estadoKyb.asReadonly();
   readonly emailEnListaNegra = this._emailEnListaNegra.asReadonly();
   readonly representanteLegalValidado = this._representanteLegalValidado.asReadonly();
+  readonly webhookConfirmed = this._webhookConfirmed.asReadonly();
+
+  /** Banner pedagógico de migración (wiretext 4-A) — solo Fase 4+, Etapa legacy, segmento migrado. */
+  readonly mostrarAvisoMigracion = computed(() =>
+    this._faseProyecto() !== 'fase0' && this._faseProyecto() !== 'fase1' &&
+    this._faseProyecto() !== 'fase2' && this._faseProyecto() !== 'fase3' &&
+    this._momentoUsuario() === 'legacy' &&
+    this._segmentoUsuario() === 'migrado-legacy' &&
+    this._status() !== 'aprobado'
+  );
 
   /** Mecanismo vigente para la celda Fase × Etapa actual — nunca N/A (línea 265). */
   readonly mecanismoVigente = computed<MecanismoVigente>(() =>
@@ -122,6 +135,11 @@ export class IdentityDemoStateV2Service {
     sessionStorage.setItem(REP_LEGAL_VALIDADO_KEY, String(value));
   }
 
+  setWebhookConfirmed(value: boolean): void {
+    this._webhookConfirmed.set(value);
+    sessionStorage.setItem(WEBHOOK_CONFIRMED_KEY, String(value));
+  }
+
   private loadFaseProyecto(): FaseProyecto {
     const v = sessionStorage.getItem(FASE_PROYECTO_KEY);
     return (FASES_PROYECTO as string[]).includes(v ?? '') ? (v as FaseProyecto) : 'fase0';
@@ -167,5 +185,10 @@ export class IdentityDemoStateV2Service {
 
   private loadRepLegalValidado(): boolean {
     return sessionStorage.getItem(REP_LEGAL_VALIDADO_KEY) === 'true';
+  }
+
+  private loadWebhookConfirmed(): boolean {
+    const v = sessionStorage.getItem(WEBHOOK_CONFIRMED_KEY);
+    return v === null ? true : v === 'true';
   }
 }

@@ -1,0 +1,106 @@
+@use 'styles/variables-new' as *;
+
+.migration-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  border-radius: $radius-4;
+  padding: $space-4 $space-5;
+  margin-bottom: $space-5;
+  border: 1.5px solid rgba($warning-500, 0.35);
+  background: linear-gradient(135deg, rgba($warning-500, 0.1) 0%, rgba($warning-500, 0.03) 100%);
+  animation: fadeSlideDown 0.35s ease;
+
+  @media (max-width: $bp-md) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $space-3;
+  }
+}
+
+.migration-banner__left {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  flex: 1;
+}
+
+.migration-banner__emoji {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.migration-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+}
+
+.migration-banner__titulo {
+  font-family: $font-primary;
+  font-weight: $font-semibold;
+  font-size: $font-base;
+  color: $gray-800;
+  margin: 0;
+}
+
+.migration-banner__subtitulo {
+  font-size: $font-sm;
+  color: $gray-500;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.migration-banner__actions {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  flex-shrink: 0;
+
+  @media (max-width: $bp-md) {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.migration-banner__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  background: $warning-600;
+  color: white;
+  border: none;
+  border-radius: $radius-2;
+  padding: $space-3 $space-5;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  font-family: $font-primary;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+
+  &:hover { background: $warning-700; }
+}
+
+.migration-banner__dismiss {
+  background: none;
+  border: 1px solid $gray-200;
+  color: $gray-600;
+  border-radius: $radius-2;
+  padding: $space-3 $space-4;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  font-family: $font-primary;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+
+  &:hover { background: $gray-50; }
+}
+
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

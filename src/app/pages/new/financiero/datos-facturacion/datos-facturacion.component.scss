@@ -538,3 +538,69 @@ $warning-700: #ab8036;
     &:hover { background: #ffa067; }
   }
 }
+
+// ── Fase 4 — Gate de webhook (Caso Ecuador) ───────────────────────────────────
+.webhook-gate {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  margin-top: -8px;
+
+  &--pending {
+    background: $warning-50;
+    border: 1px solid $warning-500;
+  }
+
+  &--error {
+    background: rgba($error-500, 0.06);
+    border: 1px solid rgba($error-500, 0.35);
+
+    i { color: $error-500; font-size: 20px; flex-shrink: 0; }
+  }
+
+  &--success {
+    background: rgba(#4caf50, 0.07);
+    border: 1px solid rgba(#4caf50, 0.25);
+
+    i { color: #4caf50; font-size: 20px; flex-shrink: 0; }
+  }
+}
+
+.webhook-gate__spinner { font-size: 20px; flex-shrink: 0; }
+
+.webhook-gate__title {
+  font-family: $font-primary;
+  font-size: 14px;
+  font-weight: 600;
+  color: $gray-700;
+  margin: 0;
+}
+
+.webhook-gate__subtitle {
+  font-family: $font-primary;
+  font-size: 13px;
+  color: $gray-500;
+  margin: 4px 0 0;
+  line-height: 1.4;
+}
+
+.btn-outline-danger {
+  margin-left: auto;
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 14px;
+  background: none;
+  border: 1px solid $error-500;
+  color: $error-500;
+  border-radius: 8px;
+  font-family: $font-primary;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+
+  &:hover { background: rgba($error-500, 0.08); }
+}
