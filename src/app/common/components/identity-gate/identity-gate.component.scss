@@ -1,13 +1,13 @@
-@use 'styles/variables' as *;
+@use 'styles/variables-new' as *;
 
 .identity-gate {
   display: flex;
   align-items: flex-start;
-  gap: $size-5;
-  border-radius: $radius-xl;
-  padding: $size-6;
+  gap: $space-5;
+  border-radius: $radius-4;
+  padding: $space-6;
   border: 1.5px solid;
-  margin-bottom: $size-6;
+  margin-bottom: $space-6;
 
   &--bloqueado {
     background: rgba($primary-500, 0.05);
@@ -17,26 +17,26 @@
   }
 
   &--en_revision {
-    background: rgba($warning, 0.05);
-    border-color: rgba($warning, 0.25);
+    background: rgba($warning-500, 0.05);
+    border-color: rgba($warning-500, 0.25);
 
-    .identity-gate__icon { color: $warning; background: rgba($warning, 0.1); }
-    .identity-gate__cta  { background: $warning; }
-    .identity-gate__cta:hover { background: darken($warning, 8%); }
+    .identity-gate__icon { color: $warning-500; background: rgba($warning-500, 0.1); }
+    .identity-gate__cta  { background: $warning-500; }
+    .identity-gate__cta:hover { background: darken($warning-500, 8%); }
   }
 
   &--rechazado {
-    background: rgba($error, 0.05);
-    border-color: rgba($error, 0.2);
+    background: rgba($error-500, 0.05);
+    border-color: rgba($error-500, 0.2);
 
-    .identity-gate__icon { color: $error; background: rgba($error, 0.1); }
-    .identity-gate__cta  { background: $error; }
-    .identity-gate__cta:hover { background: darken($error, 8%); }
+    .identity-gate__icon { color: $error-500; background: rgba($error-500, 0.1); }
+    .identity-gate__cta  { background: $error-500; }
+    .identity-gate__cta:hover { background: darken($error-500, 8%); }
   }
 
   @media (max-width: $bp-sm) {
     flex-direction: column;
-    gap: $size-4;
+    gap: $space-4;
   }
 }
 
@@ -56,7 +56,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: $size-3;
+  gap: $space-3;
 }
 
 .identity-gate__titulo {
@@ -78,26 +78,26 @@
 .identity-gate__motivo {
   display: flex;
   align-items: flex-start;
-  gap: $size-2;
-  background: rgba($error, 0.08);
-  border-radius: $radius-md;
-  padding: $size-3 $size-4;
+  gap: $space-2;
+  background: rgba($error-500, 0.08);
+  border-radius: $radius-2;
+  padding: $space-3 $space-4;
   font-size: $font-sm;
   color: $gray-700;
 
-  i { color: $error; flex-shrink: 0; margin-top: 2px; }
+  i { color: $error-500; flex-shrink: 0; margin-top: 2px; }
 }
 
 .identity-gate__cta {
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
-  gap: $size-2;
+  gap: $space-2;
   background: $primary-500;
   color: white;
   border: none;
-  border-radius: $radius-md;
-  padding: $size-3 $size-5;
+  border-radius: $radius-2;
+  padding: $space-3 $space-5;
   font-size: $font-sm;
   font-weight: $font-semibold;
   font-family: $font-primary;

@@ -3,28 +3,35 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IdentityModalService } from '../../services/identity-modal.service';
-import { IdentityDemoStateService, ResultadoModal } from '../../services/identity-demo-state.service';
-import { ACTIVIDAD_ECONOMICA_OPTIONS } from '../../models/identity-flow.models';
+import { IdentityDemoStateService } from '../../services/identity-demo-state.service';
+import { IdentityDemoStateV2Service } from '../../services/identity-demo-state-v2.service';
+import { PAIS_BILLING_FIELDS } from '../../models/identity-flow-v2.models';
+
+// Reordenado según Plan2.md (docs/validacion/Plan2.md, Parte 2 / Fase 3,
+// líneas 700-913): el KYC del dueño de cuenta corre completo — email, OTP
+// email, documento (autodetección, sin selector manual), prueba de vida,
+// celular + OTP — ANTES de preguntar nada de facturación. La pregunta de
+// facturación de 3 vías (Parte 3) y el formulario fiscal por país (Parte 4)
+// se implementan en un paso posterior de este plan; este modal termina en
+// el resultado del KYC (aprobado / en revisión / rechazado).
 
 type Screen = 'screen0' | 'screen1' | 'screen2' | 'screen3';
-type SubStep = 'bienvenida' | 'doc-tipo' | 'doc-frente' | 'doc-reverso' | 'selfie' | 'empresa' | 'cuestionario-fiscal' | 'procesando';
-type TipoFacturacion = 'personal' | 'empresa';
+type SubStep =
+  | 'email'
+  | 'otp-email'
+  | 'doc-frente'
+  | 'doc-reverso'
+  | 'liveness'
+  | 'telefono'
+  | 'otp-telefono'
+  | 'procesando';
 
-const DOC_TYPES: Record<string, string[]> = {
-  CO: ['Cédula de ciudadanía', 'Cédula de extranjería', 'Pasaporte'],
-  MX: ['INE / IFE', 'Pasaporte', 'Cédula profesional'],
-  AR: ['DNI', 'Pasaporte', 'LC / LE'],
-  CL: ['RUT', 'Pasaporte'],
-  EC: ['Cédula de identidad', 'Pasaporte', 'RUC'],
-};
+const STEPS: SubStep[] = ['email', 'otp-email', 'doc-frente', 'doc-reverso', 'liveness', 'telefono', 'otp-telefono', 'procesando'];
 
-const EMPRESAS_MOCK: Record<string, string[]> = {
-  CO: ['TechStore SAS', 'Distribuidora Sur SAS', 'Comercial Norte Ltda.'],
-  MX: ['Comercial MX SA de CV', 'Distribuidora Bajío SA', 'Tech Solutions SAPI'],
-  AR: ['Distribuidora Sur S.A.', 'Importadora Norte SRL', 'Comercial Delta SA'],
-  CL: ['Distribuciones Santiago SpA', 'Comercial Pacífico Ltda.'],
-  EC: ['Distribuidora Quito Cía. Ltda.', 'Comercial Guayas S.A.'],
-};
+const OTP_MAX_INTENTOS = 3;
+const OTP_RESEND_SECONDS = 60;
+/** Código "incorrecto" reservado para poder demostrar el estado de error en el prototipo. */
+const OTP_CODE_WRONG_DEMO = '000000';
 
 @Component({
   selector: 'app-identity-sumsub-modal',
@@ -36,60 +43,67 @@ const EMPRESAS_MOCK: Record<string, string[]> = {
 export class IdentitySumsubModalComponent {
   private modalSvc  = inject(IdentityModalService);
   private stateSvc  = inject(IdentityDemoStateService);
+  private stateV2   = inject(IdentityDemoStateV2Service);
   private router    = inject(Router);
 
-  readonly isOpen   = this.modalSvc.isOpen;
-  readonly config   = this.modalSvc.config;
+  readonly isOpen    = this.modalSvc.isOpen;
+  readonly config    = this.modalSvc.config;
   readonly resultado = this.stateSvc.resultadoModal;
-  readonly paisCode  = this.stateSvc.pais;
 
-  currentScreen = signal<Screen>('screen0');
-  currentSubStep = signal<SubStep>('bienvenida');
-  tipoFacturacion = signal<TipoFacturacion>('personal');
-  selectedDocType = signal('');
-  docFrenteCapturado = signal(false);
-  docReversoCapturado = signal(false);
-  selfieCapturada = signal(false);
-  empresaBusqueda = signal('');
-  empresasFiltradas = signal<string[]>([]);
-  empresaSeleccionada = signal('');
-  procesandoProgress = signal(0);
-  exitConfirm = signal(false);
+  /** Motor de validación: Truora solo con CO + Natural desde Fase 2; Sumsub el resto desde Fase 3. */
+  readonly motorLabel = computed(() => (this.stateV2.motorValidacion() === 'truora' ? 'Truora' : 'Sumsub'));
+  readonly esTruora    = computed(() => this.stateV2.motorValidacion() === 'truora');
+
+  readonly documentoPrincipalLabel = computed(() =>
+    PAIS_BILLING_FIELDS[this.stateV2.pais()]?.documentoPrincipal ?? 'documento de identidad'
+  );
+
+  currentScreen  = signal<Screen>('screen0');
+  currentSubStep = signal<SubStep>('email');
+  exitConfirm    = signal(false);
   checklistItems = signal([false, false, false, false, false]);
 
-  // Cuestionario fiscal
-  emailFacturacion = signal('');
-  municipio = signal('');
-  tipoRegimen = signal('');
-  actividadEconomica = signal('');
-  regimenFiscalMX = signal('');
-  codigoPostalMX = signal('');
-  condicionIVA_AR = signal('');
-  provinciaAR = signal('');
+  // Paso 1/2 — Email + OTP
+  emailCorreo       = signal('');
+  otpEmailCode      = signal('');
+  otpEmailError     = signal(false);
+  otpEmailIntentos  = signal(OTP_MAX_INTENTOS);
+  otpEmailBloqueado = signal(false);
+  otpEmailResendIn  = signal(OTP_RESEND_SECONDS);
+  private otpEmailTimer?: ReturnType<typeof setInterval>;
 
-  readonly actividadesEconomicas = ACTIVIDAD_ECONOMICA_OPTIONS;
+  // Paso 3 — Documento (autodetección, sin selector manual — anti-hallucination rule)
+  docFrenteCapturado  = signal(false);
+  docReversoCapturado = signal(false);
+
+  // Paso 4 — Prueba de vida
+  livenessCapturada = signal(false);
+
+  // Paso 5 — Teléfono + OTP
+  telefono            = signal('');
+  otpTelefonoCode     = signal('');
+  otpTelefonoError    = signal(false);
+  otpTelefonoIntentos = signal(OTP_MAX_INTENTOS);
+  otpTelefonoBloqueado = signal(false);
+  otpTelefonoResendIn = signal(OTP_RESEND_SECONDS);
+  private otpTelefonoTimer?: ReturnType<typeof setInterval>;
+
+  procesandoProgress = signal(0);
 
   constructor() {
     effect(() => {
       if (this.isOpen()) {
-        const start = this.config().startScreen;
-        this.currentScreen.set(start);
-        this.currentSubStep.set('bienvenida');
+        this.currentScreen.set(this.config().startScreen);
+        this.currentSubStep.set('email');
         this.exitConfirm.set(false);
+        this.checklistItems.set([false, false, false, false, false]);
+        this.emailCorreo.set('');
+        this.resetOtp('email');
         this.docFrenteCapturado.set(false);
         this.docReversoCapturado.set(false);
-        this.selfieCapturada.set(false);
-        this.empresaBusqueda.set('');
-        this.empresaSeleccionada.set('');
-        this.checklistItems.set([false, false, false, false, false]);
-        this.emailFacturacion.set('');
-        this.municipio.set('');
-        this.tipoRegimen.set('');
-        this.actividadEconomica.set('');
-        this.regimenFiscalMX.set('');
-        this.codigoPostalMX.set('');
-        this.condicionIVA_AR.set('');
-        this.provinciaAR.set('');
+        this.livenessCapturada.set(false);
+        this.telefono.set('');
+        this.resetOtp('telefono');
       }
     }, { allowSignalWrites: true });
   }
@@ -99,18 +113,19 @@ export class IdentitySumsubModalComponent {
     return map[this.currentScreen()];
   });
 
-  readonly subStepIndex = computed(() => {
-    const steps = this.subStepsForPersona();
-    return steps.indexOf(this.currentSubStep());
-  });
+  readonly subStepIndex = computed(() => STEPS.indexOf(this.currentSubStep()));
 
-  readonly subStepLabel = computed(() => {
-    const i = this.subStepIndex();
-    const total = this.subStepsForPersona().length;
-    return `${i + 1} / ${total}`;
-  });
+  readonly subStepLabel = computed(() => `${this.subStepIndex() + 1} / ${STEPS.length}`);
 
-  readonly docTypes = computed(() => DOC_TYPES[this.paisCode()] ?? DOC_TYPES['CO']);
+  readonly nextButtonLabel = computed(() => {
+    switch (this.currentSubStep()) {
+      case 'email': return 'Enviar código';
+      case 'telefono': return 'Enviar código';
+      case 'otp-email':
+      case 'otp-telefono': return 'Verificar código';
+      default: return 'Siguiente';
+    }
+  });
 
   readonly origenTexto = computed(() => {
     const o = this.config().origen;
@@ -126,12 +141,6 @@ export class IdentitySumsubModalComponent {
     return map[o] ?? 'Necesitamos verificar tu identidad';
   });
 
-  readonly facturaPreview = computed(() =>
-    this.tipoFacturacion() === 'personal'
-      ? 'Tus facturas dirán: LAURA MARTÍNEZ'
-      : 'Tus facturas dirán: NOMBRE DE TU EMPRESA'
-  );
-
   readonly returnLabel = computed(() => {
     const o = this.config().origen;
     const map: Record<string, string> = {
@@ -146,19 +155,12 @@ export class IdentitySumsubModalComponent {
     return map[o] ?? 'Volver';
   });
 
-  subStepsForPersona(): SubStep[] {
-    if (this.tipoFacturacion() === 'empresa') {
-      return ['bienvenida', 'doc-tipo', 'doc-frente', 'doc-reverso', 'selfie', 'empresa', 'cuestionario-fiscal', 'procesando'];
-    }
-    return ['bienvenida', 'doc-tipo', 'doc-frente', 'doc-reverso', 'selfie', 'cuestionario-fiscal', 'procesando'];
-  }
-
   readonly checklistLabels = [
     'Documento de identidad vigente y original (no fotocopias)',
     'Buena iluminación y cámara disponible',
     'Espacio tranquilo sin interrupciones (~5-10 min)',
     'Conexión estable a internet',
-    'Para empresa: nombre de tu compañía listo para buscar',
+    'Tu celular a la mano para recibir un código',
   ];
 
   get allChecked(): boolean { return this.checklistItems().every(Boolean); }
@@ -172,7 +174,7 @@ export class IdentitySumsubModalComponent {
   goNext(): void {
     const s = this.currentScreen();
     if (s === 'screen0') { this.currentScreen.set('screen1'); return; }
-    if (s === 'screen1') { this.currentScreen.set('screen2'); this.currentSubStep.set('bienvenida'); return; }
+    if (s === 'screen1') { this.currentScreen.set('screen2'); this.currentSubStep.set('email'); this.startResendCountdown('email'); return; }
     if (s === 'screen2') { this.advanceSubStep(); return; }
   }
 
@@ -180,35 +182,109 @@ export class IdentitySumsubModalComponent {
     const s = this.currentScreen();
     if (s === 'screen1') { this.currentScreen.set('screen0'); return; }
     if (s === 'screen2') {
-      const steps = this.subStepsForPersona();
-      const i = steps.indexOf(this.currentSubStep());
+      const i = STEPS.indexOf(this.currentSubStep());
       if (i === 0) { this.currentScreen.set('screen1'); return; }
-      this.currentSubStep.set(steps[i - 1]);
+      this.currentSubStep.set(STEPS[i - 1]);
       return;
     }
   }
 
   private advanceSubStep(): void {
-    const steps = this.subStepsForPersona();
-    const i = steps.indexOf(this.currentSubStep());
-    if (i < steps.length - 1) {
-      const next = steps[i + 1];
+    const current = this.currentSubStep();
+
+    if (current === 'otp-email') {
+      if (!this.validateOtp('email')) return;
+      this.stopResendCountdown('email');
+    }
+    if (current === 'otp-telefono') {
+      if (!this.validateOtp('telefono')) return;
+      this.stopResendCountdown('telefono');
+    }
+
+    const i = STEPS.indexOf(current);
+    if (i < STEPS.length - 1) {
+      const next = STEPS[i + 1];
       this.currentSubStep.set(next);
+      if (next === 'otp-email') this.startResendCountdown('email');
+      if (next === 'otp-telefono') this.startResendCountdown('telefono');
       if (next === 'procesando') this.startProcesando();
     }
   }
 
+  private validateOtp(kind: 'email' | 'telefono'): boolean {
+    const code = kind === 'email' ? this.otpEmailCode() : this.otpTelefonoCode();
+    if (code === OTP_CODE_WRONG_DEMO) {
+      const intentosSignal = kind === 'email' ? this.otpEmailIntentos : this.otpTelefonoIntentos;
+      const errorSignal = kind === 'email' ? this.otpEmailError : this.otpTelefonoError;
+      const bloqueadoSignal = kind === 'email' ? this.otpEmailBloqueado : this.otpTelefonoBloqueado;
+      const restantes = intentosSignal() - 1;
+      intentosSignal.set(restantes);
+      errorSignal.set(true);
+      if (restantes <= 0) bloqueadoSignal.set(true);
+      return false;
+    }
+    return true;
+  }
+
+  private resetOtp(kind: 'email' | 'telefono'): void {
+    this.stopResendCountdown(kind);
+    if (kind === 'email') {
+      this.otpEmailCode.set('');
+      this.otpEmailError.set(false);
+      this.otpEmailIntentos.set(OTP_MAX_INTENTOS);
+      this.otpEmailBloqueado.set(false);
+      this.otpEmailResendIn.set(OTP_RESEND_SECONDS);
+    } else {
+      this.otpTelefonoCode.set('');
+      this.otpTelefonoError.set(false);
+      this.otpTelefonoIntentos.set(OTP_MAX_INTENTOS);
+      this.otpTelefonoBloqueado.set(false);
+      this.otpTelefonoResendIn.set(OTP_RESEND_SECONDS);
+    }
+  }
+
+  private startResendCountdown(kind: 'email' | 'telefono'): void {
+    this.stopResendCountdown(kind);
+    const resendSignal = kind === 'email' ? this.otpEmailResendIn : this.otpTelefonoResendIn;
+    resendSignal.set(OTP_RESEND_SECONDS);
+    const timer = setInterval(() => {
+      const v = resendSignal() - 1;
+      if (v <= 0) {
+        resendSignal.set(0);
+        clearInterval(timer);
+      } else {
+        resendSignal.set(v);
+      }
+    }, 1000);
+    if (kind === 'email') this.otpEmailTimer = timer;
+    else this.otpTelefonoTimer = timer;
+  }
+
+  private stopResendCountdown(kind: 'email' | 'telefono'): void {
+    const timer = kind === 'email' ? this.otpEmailTimer : this.otpTelefonoTimer;
+    if (timer) clearInterval(timer);
+  }
+
+  reenviarCodigo(kind: 'email' | 'telefono'): void {
+    const resendSignal = kind === 'email' ? this.otpEmailResendIn : this.otpTelefonoResendIn;
+    if (resendSignal() > 0) return;
+    if (kind === 'email') { this.otpEmailError.set(false); this.otpEmailCode.set(''); }
+    else { this.otpTelefonoError.set(false); this.otpTelefonoCode.set(''); }
+    this.startResendCountdown(kind);
+  }
+
+  reiniciarVerificacion(): void {
+    this.currentSubStep.set('email');
+    this.emailCorreo.set('');
+    this.resetOtp('email');
+    this.docFrenteCapturado.set(false);
+    this.docReversoCapturado.set(false);
+    this.livenessCapturada.set(false);
+    this.telefono.set('');
+    this.resetOtp('telefono');
+  }
+
   private startProcesando(): void {
-    this.stateSvc.setDatosFiscales({
-      emailFacturacion: this.emailFacturacion(),
-      municipio:        this.municipio(),
-      tipoRegimen:      this.tipoRegimen()        || undefined,
-      actividadEconomica: this.actividadEconomica() || undefined,
-      regimenFiscal:    this.regimenFiscalMX()    || undefined,
-      codigoPostal:     this.codigoPostalMX()     || undefined,
-      condicionIVA:     this.condicionIVA_AR()    || undefined,
-      provincia:        this.provinciaAR()        || undefined,
-    });
     this.procesandoProgress.set(0);
     const interval = setInterval(() => {
       const v = this.procesandoProgress() + 12;
@@ -222,37 +298,17 @@ export class IdentitySumsubModalComponent {
     }, 220);
   }
 
-  buscarEmpresa(): void {
-    const q = this.empresaBusqueda().toLowerCase();
-    if (!q) { this.empresasFiltradas.set([]); return; }
-    const opts = EMPRESAS_MOCK[this.paisCode()] ?? EMPRESAS_MOCK['CO'];
-    this.empresasFiltradas.set(opts.filter(e => e.toLowerCase().includes(q)));
-  }
-
-  selectEmpresa(e: string): void {
-    this.empresaSeleccionada.set(e);
-    this.empresaBusqueda.set(e);
-    this.empresasFiltradas.set([]);
-  }
-
   get canNextScreen0(): boolean { return true; }
   get canNextScreen1(): boolean { return this.allChecked; }
   get canNextSubStep(): boolean {
     const s = this.currentSubStep();
-    if (s === 'bienvenida') return true;
-    if (s === 'doc-tipo') return !!this.selectedDocType();
+    if (s === 'email') return /\S+@\S+\.\S+/.test(this.emailCorreo());
+    if (s === 'otp-email') return this.otpEmailCode().length === 6 && !this.otpEmailBloqueado();
     if (s === 'doc-frente') return this.docFrenteCapturado();
     if (s === 'doc-reverso') return this.docReversoCapturado();
-    if (s === 'selfie') return this.selfieCapturada();
-    if (s === 'empresa') return !!this.empresaSeleccionada();
-    if (s === 'cuestionario-fiscal') {
-      if (!this.emailFacturacion() || !this.municipio()) return false;
-      const p = this.paisCode();
-      if (p === 'CO') return !!this.tipoRegimen() && !!this.actividadEconomica();
-      if (p === 'MX') return !!this.regimenFiscalMX();
-      if (p === 'AR') return !!this.condicionIVA_AR();
-      return true;
-    }
+    if (s === 'liveness') return this.livenessCapturada();
+    if (s === 'telefono') return this.telefono().length >= 7;
+    if (s === 'otp-telefono') return this.otpTelefonoCode().length === 6 && !this.otpTelefonoBloqueado();
     return false;
   }
 
@@ -296,9 +352,6 @@ export class IdentitySumsubModalComponent {
 
   onReintentar(): void {
     this.currentScreen.set('screen2');
-    this.currentSubStep.set('bienvenida');
-    this.docFrenteCapturado.set(false);
-    this.docReversoCapturado.set(false);
-    this.selfieCapturada.set(false);
+    this.reiniciarVerificacion();
   }
 }

@@ -6,7 +6,7 @@
       <div class="exit-confirm">
         <div class="exit-confirm__box">
           <p class="exit-confirm__title">¿Seguro que quieres salir?</p>
-          <p class="exit-confirm__text">Tu progreso en Sumsub se guarda. Puedes continuar desde donde quedaste.</p>
+          <p class="exit-confirm__text">Tu progreso en {{ motorLabel() }} se guarda. Puedes continuar desde donde quedaste.</p>
           <div class="exit-confirm__actions">
             <button class="btn-secondary" (click)="cancelExit()">Continuar verificación</button>
             <button class="btn-text-danger" (click)="confirmExit()">Salir</button>
@@ -39,7 +39,7 @@
     <!-- Modal Content -->
     <div class="modal-body">
 
-      <!-- SCREEN 0 — ¿Con qué nombre en tus facturas? -->
+      <!-- SCREEN 0 — Hard gate: verifica tu identidad (wiretext 2-A / 3) -->
       @if (currentScreen() === 'screen0') {
         <div class="screen screen0">
           <div class="screen__context-badge">
@@ -47,44 +47,22 @@
             <span>{{ origenTexto() }}</span>
           </div>
 
-          <h2 class="screen__title">¿Con qué nombre quieres aparecer en tus facturas?</h2>
-          <p class="screen__subtitle">Esta información define cómo se emitirán tus facturas en Dropi.</p>
+          <h2 class="screen__title">Verifica tu identidad para continuar</h2>
+          <p class="screen__subtitle">Por seguridad, necesitamos validar quién eres antes de que puedas sacar tu dinero. Toma ~5 minutos.</p>
 
-          <div class="tipo-options">
-            <label class="tipo-option" [class.tipo-option--selected]="tipoFacturacion() === 'personal'" (click)="tipoFacturacion.set('personal')">
-              <div class="tipo-option__radio">
-                <span class="radio-circle" [class.radio-circle--checked]="tipoFacturacion() === 'personal'"></span>
-              </div>
-              <div class="tipo-option__content">
-                <span class="tipo-option__title">Con mi nombre personal</span>
-                <span class="tipo-option__desc">Facturarás como persona natural</span>
-              </div>
-              <span class="tipo-option__badge tipo-option__badge--green">Más rápido · 1 verificación</span>
-            </label>
-
-            <label class="tipo-option" [class.tipo-option--selected]="tipoFacturacion() === 'empresa'" (click)="tipoFacturacion.set('empresa')">
-              <div class="tipo-option__radio">
-                <span class="radio-circle" [class.radio-circle--checked]="tipoFacturacion() === 'empresa'"></span>
-              </div>
-              <div class="tipo-option__content">
-                <span class="tipo-option__title">Con el nombre de mi empresa</span>
-                <span class="tipo-option__desc">Facturarás como persona jurídica</span>
-              </div>
-              <span class="tipo-option__badge">2 verificaciones</span>
-            </label>
+          <div class="motor-brand-card">
+            <span class="motor-brand-card__label">Verificación segura por</span>
+            <span class="motor-brand-card__logo">{{ motorLabel() }}</span>
           </div>
 
-          <div class="factura-preview">
-            <span class="factura-preview__label">Vista previa de tus facturas</span>
-            <div class="factura-preview__box">
-              <i class="pi pi-file"></i>
-              <span>{{ facturaPreview() }}</span>
-            </div>
+          <div class="reassurance-note">
+            <i class="pi pi-check-circle"></i>
+            <span>Puedes seguir vendiendo y creando órdenes mientras tanto — eso nunca se bloquea.</span>
           </div>
         </div>
       }
 
-      <!-- SCREEN 1 — Checklist pre-Sumsub -->
+      <!-- SCREEN 1 — Checklist pre-verificación -->
       @if (currentScreen() === 'screen1') {
         <div class="screen screen1">
           <div class="screen1__icon">🛡️</div>
@@ -114,64 +92,84 @@
         </div>
       }
 
-      <!-- SCREEN 2 — SDK Sumsub simulado -->
+      <!-- SCREEN 2 — WebSDK simulado: 6 pasos, orden fijo (Plan2.md líneas 803-817) -->
       @if (currentScreen() === 'screen2') {
         <div class="screen screen2">
 
           <!-- Sub-step progress -->
           <div class="substep-bar">
-            @for (step of subStepsForPersona(); track step) {
-              <span class="substep-dot" [class.substep-dot--active]="currentSubStep() === step" [class.substep-dot--done]="subStepIndex() > subStepsForPersona().indexOf(step)"></span>
+            @for (step of ['email','otp-email','doc-frente','doc-reverso','liveness','telefono','otp-telefono','procesando']; track step) {
+              <span class="substep-dot" [class.substep-dot--active]="currentSubStep() === step" [class.substep-dot--done]="subStepIndex() > $index"></span>
             }
             <span class="substep-label">{{ subStepLabel() }}</span>
           </div>
 
-          <!-- Sumsub branding strip -->
+          <!-- Motor branding strip -->
           <div class="sumsub-brand">
             <span class="sumsub-brand__text">Verificación segura por</span>
-            <span class="sumsub-brand__logo">Sumsub</span>
+            <span class="sumsub-brand__logo">{{ motorLabel() }}</span>
           </div>
 
-          <!-- 2a: Bienvenida -->
-          @if (currentSubStep() === 'bienvenida') {
+          <!-- Paso 1: Confirmar correo -->
+          @if (currentSubStep() === 'email') {
             <div class="substep-content">
-              <div class="substep-icon">🔐</div>
-              <h3>Verificación de identidad</h3>
-              <p>Vamos a verificar tu identidad de forma segura. El proceso incluye:</p>
-              <ul class="steps-list">
-                <li><i class="pi pi-id-card"></i> Foto de tu documento de identidad</li>
-                <li><i class="pi pi-camera"></i> Selfie para confirmar que eres tú</li>
-                @if (tipoFacturacion() === 'empresa') {
-                  <li><i class="pi pi-building"></i> Búsqueda y confirmación de tu empresa</li>
-                }
-              </ul>
-              <p class="substep-note">Tus datos están protegidos bajo cifrado AES-256. Sumsub cumple con GDPR e ISO 27001.</p>
-            </div>
-          }
-
-          <!-- 2b: Tipo de documento -->
-          @if (currentSubStep() === 'doc-tipo') {
-            <div class="substep-content">
-              <h3>Selecciona tu documento</h3>
-              <p>Elige el tipo de documento que vas a fotografiar.</p>
-              <div class="doc-options">
-                @for (doc of docTypes(); track doc) {
-                  <button class="doc-option" [class.doc-option--selected]="selectedDocType() === doc" (click)="selectedDocType.set(doc)">
-                    <i class="pi pi-id-card"></i>
-                    <span>{{ doc }}</span>
-                    @if (selectedDocType() === doc) {
-                      <i class="pi pi-check doc-option__check"></i>
-                    }
-                  </button>
-                }
+              <div class="substep-icon">✉️</div>
+              <h3>Antes de empezar, confirma tu correo</h3>
+              <p>Te enviaremos un código de 6 dígitos para verificar que es tuyo.</p>
+              <div class="input-field">
+                <label class="input-field__label">Correo electrónico</label>
+                <input
+                  type="email"
+                  class="input-field__control"
+                  placeholder="tucorreo@ejemplo.com"
+                  [ngModel]="emailCorreo()"
+                  (ngModelChange)="emailCorreo.set($event)"
+                />
               </div>
             </div>
           }
 
-          <!-- 2c: Captura frente -->
+          <!-- Paso 2: OTP correo -->
+          @if (currentSubStep() === 'otp-email') {
+            <div class="substep-content">
+              <div class="substep-icon">🔢</div>
+              <h3>Enviamos un código a {{ emailCorreo() || 'tu correo' }}</h3>
+              <p>Ingresa el código de 6 dígitos que recibiste.</p>
+              <div class="otp-field">
+                <input
+                  type="text"
+                  maxlength="6"
+                  inputmode="numeric"
+                  class="otp-field__control"
+                  [class.otp-field__control--error]="otpEmailError()"
+                  placeholder="000000"
+                  [ngModel]="otpEmailCode()"
+                  (ngModelChange)="otpEmailCode.set($event); otpEmailError.set(false)"
+                  [disabled]="otpEmailBloqueado()"
+                />
+              </div>
+              @if (otpEmailBloqueado()) {
+                <p class="otp-field__error">Agotaste los intentos. Debes reiniciar la verificación.</p>
+                <button class="btn-text-danger" (click)="reiniciarVerificacion()">Reiniciar verificación</button>
+              } @else {
+                @if (otpEmailError()) {
+                  <p class="otp-field__error">Código incorrecto, te quedan {{ otpEmailIntentos() }} intento(s)</p>
+                }
+                <button class="btn-text" [disabled]="otpEmailResendIn() > 0" (click)="reenviarCodigo('email')">
+                  @if (otpEmailResendIn() > 0) {
+                    Reenviar código en 0:{{ otpEmailResendIn() < 10 ? '0' + otpEmailResendIn() : otpEmailResendIn() }}
+                  } @else {
+                    Reenviar código
+                  }
+                </button>
+              }
+            </div>
+          }
+
+          <!-- Paso 3a: Captura frente (autodetección, sin selector manual de tipo) -->
           @if (currentSubStep() === 'doc-frente') {
             <div class="substep-content">
-              <h3>Foto del frente del documento</h3>
+              <h3>Foto del frente de tu documento</h3>
               <p>Asegúrate de que el documento sea legible y esté bien iluminado.</p>
               <div class="capture-area" [class.capture-area--done]="docFrenteCapturado()" (click)="docFrenteCapturado.set(true)">
                 @if (!docFrenteCapturado()) {
@@ -182,14 +180,15 @@
                 } @else {
                   <div class="capture-area__success">
                     <i class="pi pi-check-circle"></i>
-                    <span>¡Foto tomada!</span>
+                    <span>¡Foto tomada! Detectamos: {{ documentoPrincipalLabel() }}</span>
                   </div>
                 }
               </div>
+              <p class="substep-note">No necesitas indicarnos qué tipo de documento es — lo detectamos automáticamente.</p>
             </div>
           }
 
-          <!-- 2d: Captura reverso -->
+          <!-- Paso 3b: Captura reverso -->
           @if (currentSubStep() === 'doc-reverso') {
             <div class="substep-content">
               <h3>Foto del reverso del documento</h3>
@@ -210,238 +209,89 @@
             </div>
           }
 
-          <!-- 2e: Selfie -->
-          @if (currentSubStep() === 'selfie') {
+          <!-- Paso 4: Prueba de vida -->
+          @if (currentSubStep() === 'liveness') {
             <div class="substep-content">
-              <h3>Selfie de verificación</h3>
-              <p>Mira directo a la cámara. Quita gafas de sol y sombrero.</p>
-              <div class="selfie-area" [class.selfie-area--done]="selfieCapturada()" (click)="selfieCapturada.set(true)">
-                @if (!selfieCapturada()) {
+              <h3>Ahora, una prueba de vida rápida</h3>
+              <p>Mira directo a la cámara y sigue las instrucciones en pantalla.</p>
+              <div class="selfie-area" [class.selfie-area--done]="livenessCapturada()" (click)="livenessCapturada.set(true)">
+                @if (!livenessCapturada()) {
                   <div class="selfie-oval">
                     <div class="selfie-oval__ring"></div>
-                    <span class="selfie-oval__hint">Toca para simular selfie</span>
+                    <span class="selfie-oval__hint">Toca para simular prueba de vida</span>
                   </div>
                 } @else {
                   <div class="selfie-area__success">
                     <i class="pi pi-check-circle"></i>
-                    <span>Selfie verificada</span>
+                    <span>Prueba de vida verificada</span>
                   </div>
                 }
               </div>
             </div>
           }
 
-          <!-- 2f: Empresa (solo jurídica) -->
-          @if (currentSubStep() === 'empresa') {
+          <!-- Paso 5a: Teléfono -->
+          @if (currentSubStep() === 'telefono') {
             <div class="substep-content">
-              <h3>Busca tu empresa</h3>
-              <p>Escribe el nombre de tu empresa y selecciónala de los resultados.</p>
-              <div class="empresa-search">
-                <div class="empresa-search__input-wrap">
-                  <i class="pi pi-search"></i>
-                  <input
-                    type="text"
-                    placeholder="Ej: TechStore SAS"
-                    [ngModel]="empresaBusqueda()"
-                    (ngModelChange)="empresaBusqueda.set($event); buscarEmpresa()"
-                    class="empresa-search__input"
-                  />
-                </div>
-                @if (empresasFiltradas().length > 0) {
-                  <div class="empresa-results">
-                    @for (e of empresasFiltradas(); track e) {
-                      <button class="empresa-result" (click)="selectEmpresa(e)">
-                        <i class="pi pi-building"></i>
-                        <span>{{ e }}</span>
-                        <i class="pi pi-chevron-right"></i>
-                      </button>
-                    }
-                  </div>
-                }
-                @if (empresaSeleccionada()) {
-                  <div class="empresa-selected">
-                    <i class="pi pi-check-circle"></i>
-                    <span>Empresa seleccionada: <strong>{{ empresaSeleccionada() }}</strong></span>
-                  </div>
-                }
+              <div class="substep-icon">📱</div>
+              <h3>Ahora tu número de celular</h3>
+              <p>Te enviaremos un código de 6 dígitos por SMS.</p>
+              <div class="input-field">
+                <label class="input-field__label">Número de teléfono</label>
+                <input
+                  type="tel"
+                  class="input-field__control"
+                  placeholder="Ej: 3001234567"
+                  [ngModel]="telefono()"
+                  (ngModelChange)="telefono.set($event)"
+                />
               </div>
             </div>
           }
 
-          <!-- 2g: Cuestionario fiscal (dentro del SDK Sumsub) -->
-          @if (currentSubStep() === 'cuestionario-fiscal') {
+          <!-- Paso 5b: OTP teléfono -->
+          @if (currentSubStep() === 'otp-telefono') {
             <div class="substep-content">
-              <div class="fiscal-header">
-                <div class="fiscal-header__icon">📋</div>
-                <div>
-                  <h3 class="fiscal-header__title">Cuestionario tributario</h3>
-                  <p class="fiscal-header__sub">Sumsub requiere estos datos antes de procesar tu verificación.</p>
-                </div>
+              <div class="substep-icon">🔢</div>
+              <h3>Enviamos un código por SMS</h3>
+              <p>Ingresa el código de 6 dígitos que recibiste en {{ telefono() || 'tu celular' }}.</p>
+              <div class="otp-field">
+                <input
+                  type="text"
+                  maxlength="6"
+                  inputmode="numeric"
+                  class="otp-field__control"
+                  [class.otp-field__control--error]="otpTelefonoError()"
+                  placeholder="000000"
+                  [ngModel]="otpTelefonoCode()"
+                  (ngModelChange)="otpTelefonoCode.set($event); otpTelefonoError.set(false)"
+                  [disabled]="otpTelefonoBloqueado()"
+                />
               </div>
-
-              <div class="fiscal-form">
-                <div class="fiscal-row">
-                  <div class="fiscal-field fiscal-field--full">
-                    <label class="fiscal-label">
-                      Email para facturas
-                      <span class="fiscal-required">*</span>
-                    </label>
-                    <input
-                      class="fiscal-input"
-                      type="email"
-                      [(ngModel)]="emailFacturacion"
-                      placeholder="ejemplo@correo.com"
-                    />
-                  </div>
-                </div>
-
-                <div class="fiscal-row">
-                  <div class="fiscal-field fiscal-field--full">
-                    <label class="fiscal-label">
-                      Ciudad / Municipio
-                      <span class="fiscal-required">*</span>
-                    </label>
-                    <input
-                      class="fiscal-input"
-                      type="text"
-                      [(ngModel)]="municipio"
-                      placeholder="Ej: Bogotá, CDMX, Buenos Aires..."
-                    />
-                  </div>
-                </div>
-
-                @if (paisCode() === 'CO') {
-                  <div class="fiscal-divider">
-                    <span class="fiscal-divider__label">Datos tributarios Colombia</span>
-                  </div>
-                  <div class="fiscal-row">
-                    <div class="fiscal-field fiscal-field--full">
-                      <label class="fiscal-label">
-                        Régimen tributario
-                        <span class="fiscal-required">*</span>
-                        <span class="fiscal-hint">Ver sección 53 de tu RUT</span>
-                      </label>
-                      <div class="fiscal-select-wrap">
-                        <select class="fiscal-select" [(ngModel)]="tipoRegimen">
-                          <option value="">Seleccionar régimen...</option>
-                          <option value="simplificado">Régimen simplificado</option>
-                          <option value="comun">Régimen común</option>
-                          <option value="especial">Régimen especial</option>
-                        </select>
-                        <i class="pi pi-chevron-down fiscal-select-arrow"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="fiscal-row">
-                    <div class="fiscal-field fiscal-field--full">
-                      <label class="fiscal-label">
-                        Actividad económica principal (CIIU)
-                        <span class="fiscal-required">*</span>
-                      </label>
-                      <div class="fiscal-select-wrap">
-                        <select class="fiscal-select" [(ngModel)]="actividadEconomica">
-                          <option value="">Seleccionar actividad...</option>
-                          @for (act of actividadesEconomicas; track act.codigo) {
-                            <option [value]="act.codigo">{{ act.codigo }} — {{ act.label }}</option>
-                          }
-                        </select>
-                        <i class="pi pi-chevron-down fiscal-select-arrow"></i>
-                      </div>
-                    </div>
-                  </div>
+              @if (otpTelefonoBloqueado()) {
+                <p class="otp-field__error">Agotaste los intentos. Debes reiniciar la verificación.</p>
+                <button class="btn-text-danger" (click)="reiniciarVerificacion()">Reiniciar verificación</button>
+              } @else {
+                @if (otpTelefonoError()) {
+                  <p class="otp-field__error">Código incorrecto, te quedan {{ otpTelefonoIntentos() }} intento(s)</p>
                 }
-
-                @if (paisCode() === 'MX') {
-                  <div class="fiscal-divider">
-                    <span class="fiscal-divider__label">Datos tributarios México</span>
-                  </div>
-                  <div class="fiscal-row">
-                    <div class="fiscal-field fiscal-field--full">
-                      <label class="fiscal-label">
-                        Régimen fiscal (SAT)
-                        <span class="fiscal-required">*</span>
-                      </label>
-                      <div class="fiscal-select-wrap">
-                        <select class="fiscal-select" [(ngModel)]="regimenFiscalMX">
-                          <option value="">Seleccionar régimen...</option>
-                          <option value="resico">Régimen simplificado de confianza (RESICO)</option>
-                          <option value="general">General de ley personas morales</option>
-                          <option value="actividad">Actividad empresarial y profesional</option>
-                          <option value="arrendamiento">Arrendamiento</option>
-                        </select>
-                        <i class="pi pi-chevron-down fiscal-select-arrow"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="fiscal-row">
-                    <div class="fiscal-field fiscal-field--full">
-                      <label class="fiscal-label">
-                        Código postal
-                        <span class="fiscal-hint">Opcional</span>
-                      </label>
-                      <input
-                        class="fiscal-input"
-                        type="text"
-                        [(ngModel)]="codigoPostalMX"
-                        placeholder="5 dígitos"
-                        maxlength="5"
-                      />
-                    </div>
-                  </div>
-                }
-
-                @if (paisCode() === 'AR') {
-                  <div class="fiscal-divider">
-                    <span class="fiscal-divider__label">Datos tributarios Argentina</span>
-                  </div>
-                  <div class="fiscal-row">
-                    <div class="fiscal-field fiscal-field--full">
-                      <label class="fiscal-label">
-                        Condición frente al IVA (AFIP)
-                        <span class="fiscal-required">*</span>
-                      </label>
-                      <div class="fiscal-select-wrap">
-                        <select class="fiscal-select" [(ngModel)]="condicionIVA_AR">
-                          <option value="">Seleccionar condición...</option>
-                          <option value="monotributo">Responsable Monotributo</option>
-                          <option value="inscripto">IVA Responsable Inscripto</option>
-                          <option value="no_responsable">No Responsable</option>
-                          <option value="exento">IVA Exento</option>
-                        </select>
-                        <i class="pi pi-chevron-down fiscal-select-arrow"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="fiscal-row">
-                    <div class="fiscal-field fiscal-field--full">
-                      <label class="fiscal-label">
-                        Provincia
-                        <span class="fiscal-hint">Opcional</span>
-                      </label>
-                      <input
-                        class="fiscal-input"
-                        type="text"
-                        [(ngModel)]="provinciaAR"
-                        placeholder="Buenos Aires, CABA, Córdoba..."
-                      />
-                    </div>
-                  </div>
-                }
-
-                <div class="fiscal-note">
-                  <i class="pi pi-lock"></i>
-                  <span>Estos datos son procesados y cifrados por Sumsub. Dropi los recibe vía webhook una vez aprobada la verificación.</span>
-                </div>
-              </div>
+                <button class="btn-text" [disabled]="otpTelefonoResendIn() > 0" (click)="reenviarCodigo('telefono')">
+                  @if (otpTelefonoResendIn() > 0) {
+                    Reenviar código en 0:{{ otpTelefonoResendIn() < 10 ? '0' + otpTelefonoResendIn() : otpTelefonoResendIn() }}
+                  } @else {
+                    Reenviar código
+                  }
+                </button>
+              }
             </div>
           }
 
-          <!-- 2h: Procesando -->
+          <!-- Procesando -->
           @if (currentSubStep() === 'procesando') {
             <div class="substep-content substep-content--center">
               <div class="procesando-icon">⏳</div>
               <h3>Verificando tu información</h3>
-              <p>Sumsub está procesando tus datos. No cierres esta ventana.</p>
+              <p>{{ motorLabel() }} está procesando tus datos. No cierres esta ventana.</p>
               <div class="procesando-bar">
                 <div class="procesando-bar__fill" [style.width.%]="procesandoProgress()"></div>
               </div>
@@ -452,7 +302,7 @@
         </div>
       }
 
-      <!-- SCREEN 3 — Resultado -->
+      <!-- SCREEN 3 — Resultado del KYC -->
       @if (currentScreen() === 'screen3') {
         <div class="screen screen3">
 
@@ -460,7 +310,7 @@
             <div class="resultado resultado--aprobado">
               <div class="resultado__icon resultado__icon--success">✓</div>
               <h2 class="resultado__title">¡Tu identidad fue verificada!</h2>
-              <p class="resultado__text">Tus datos fueron guardados automáticamente en tu cuenta y en tus datos de facturación. Ya puedes retirar tus ganancias.</p>
+              <p class="resultado__text">Ya puedes retirar tus ganancias. A continuación te preguntaremos para quién es tu factura.</p>
               <div class="resultado__benefits">
                 <div class="benefit-chip"><i class="pi pi-wallet"></i> Retiros habilitados</div>
                 <div class="benefit-chip"><i class="pi pi-credit-card"></i> DropiCard activa</div>
@@ -477,10 +327,10 @@
             <div class="resultado resultado--revision">
               <div class="resultado__icon resultado__icon--pending">🕐</div>
               <h2 class="resultado__title">Validación en proceso</h2>
-              <p class="resultado__text">Recibimos tu solicitud. En <strong>1-3 días hábiles</strong> te avisaremos por email con el resultado.</p>
+              <p class="resultado__text">Recibimos tu solicitud. En <strong>hasta 24 horas</strong> te avisaremos por email con el resultado.</p>
               <div class="revision-timeline">
                 <div class="timeline-item timeline-item--done"><span>Documentos enviados</span><i class="pi pi-check"></i></div>
-                <div class="timeline-item timeline-item--active"><span>En revisión por Sumsub</span><div class="timeline-dot"></div></div>
+                <div class="timeline-item timeline-item--active"><span>En revisión por {{ motorLabel() }}</span><div class="timeline-dot"></div></div>
                 <div class="timeline-item"><span>Resultado por email</span><div class="timeline-dot timeline-dot--pending"></div></div>
               </div>
               <div class="resultado__actions">
@@ -523,34 +373,19 @@
 
         @if (currentScreen() === 'screen0') {
           <button class="btn-primary" (click)="goNext()" [disabled]="!canNextScreen0">
-            Siguiente <i class="pi pi-arrow-right"></i>
+            Verificar identidad <i class="pi pi-arrow-right"></i>
           </button>
         } @else if (currentScreen() === 'screen1') {
           <button class="btn-primary" (click)="goNext()" [disabled]="!canNextScreen1">
             Iniciar verificación <i class="pi pi-shield"></i>
           </button>
         } @else if (currentScreen() === 'screen2') {
-          @if (currentSubStep() === 'bienvenida') {
-            <button class="btn-primary" (click)="goNext()">Comenzar <i class="pi pi-arrow-right"></i></button>
-          } @else {
-            <button class="btn-primary" (click)="goNext()" [disabled]="!canNextSubStep">
-              Siguiente <i class="pi pi-arrow-right"></i>
-            </button>
-          }
+          <button class="btn-primary" (click)="goNext()" [disabled]="!canNextSubStep">
+            {{ nextButtonLabel() }} <i class="pi pi-arrow-right"></i>
+          </button>
         }
       </div>
     }
 
   </div>
 }
-
-<!-- Labels for checklist (used in component) -->
-<ng-template #checklistLabelsRef>
-  <span hidden>
-    Documento de identidad vigente y original (no fotocopias)
-    Buena iluminación y cámara disponible
-    Espacio tranquilo sin interrupciones (~5-10 min)
-    Conexión estable a internet
-    Para empresa: nombre de tu compañía listo para buscar
-  </span>
-</ng-template>

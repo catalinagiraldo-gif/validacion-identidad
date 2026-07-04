@@ -1,33 +1,33 @@
-@use 'styles/variables' as *;
+@use 'styles/variables-new' as *;
 
 .soft-banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: $size-4;
-  border-radius: $radius-xl;
-  padding: $size-4 $size-5;
-  margin-bottom: $size-5;
+  gap: $space-4;
+  border-radius: $radius-4;
+  padding: $space-4 $space-5;
+  margin-bottom: $space-5;
   border: 1.5px solid rgba($primary-500, 0.2);
   background: linear-gradient(135deg, rgba($primary-500, 0.06) 0%, rgba($primary-500, 0.02) 100%);
   animation: fadeSlideDown 0.35s ease;
 
   &--pedidos {
     background: linear-gradient(135deg, rgba($primary-500, 0.08) 0%, rgba($primary-300, 0.04) 100%);
-    padding: $size-5 $size-6;
+    padding: $space-5 $space-6;
   }
 
   @media (max-width: $bp-md) {
     flex-direction: column;
     align-items: flex-start;
-    gap: $size-3;
+    gap: $space-3;
   }
 }
 
 .soft-banner__left {
   display: flex;
   align-items: flex-start;
-  gap: $size-3;
+  gap: $space-3;
   flex: 1;
 }
 
@@ -40,7 +40,7 @@
 .soft-banner__text {
   display: flex;
   flex-direction: column;
-  gap: $size-1;
+  gap: $space-1;
 }
 
 .soft-banner__titulo {
@@ -61,7 +61,7 @@
 .soft-banner__actions {
   display: flex;
   align-items: center;
-  gap: $size-3;
+  gap: $space-3;
   flex-shrink: 0;
 
   @media (max-width: $bp-md) {
@@ -73,12 +73,12 @@
 .soft-banner__cta {
   display: inline-flex;
   align-items: center;
-  gap: $size-2;
+  gap: $space-2;
   background: $primary-500;
   color: white;
   border: none;
-  border-radius: $radius-md;
-  padding: $size-3 $size-5;
+  border-radius: $radius-2;
+  padding: $space-3 $space-5;
   font-size: $font-sm;
   font-weight: $font-semibold;
   font-family: $font-primary;
