@@ -1,0 +1,171 @@
+import { Injectable, signal, computed } from '@angular/core';
+import {
+  FaseProyecto,
+  FASES_PROYECTO,
+  MomentoUsuario,
+  MOMENTOS_USUARIO,
+  Pais9,
+  PAISES_9,
+  TipoPersonaV2,
+  SegmentoUsuario,
+  MecanismoVigente,
+  MECANISMO_MATRIZ,
+  MotorValidacion,
+  EstadoKyb,
+  IdentitySatelliteStatus,
+} from '../models/identity-flow-v2.models';
+
+// Additive demo-panel state for Plan2.md (docs/validacion/Plan2.md), Parte 1.
+// This service NEVER reads from or writes to IdentityDemoStateService's
+// sessionStorage keys — it is a parallel, independent state store scoped to
+// /new/* pages built against the 7-part rediseño (Fase de entrega × Etapa del
+// usuario × país × tipo de persona, ver Matriz maestra líneas 251-267).
+
+const FASE_PROYECTO_KEY   = 'dropi.identityV2.faseProyecto';
+const MOMENTO_KEY         = 'dropi.identityV2.momentoUsuario';
+const PAIS_KEY            = 'dropi.identityV2.pais';
+const TIPO_PERSONA_KEY    = 'dropi.identityV2.tipoPersona';
+const SEGMENTO_KEY        = 'dropi.identityV2.segmentoUsuario';
+const STATUS_KEY          = 'dropi.identityV2.status';
+const ESTADO_KYB_KEY      = 'dropi.identityV2.estadoKyb';
+const EMAIL_BANEADO_KEY   = 'dropi.identityV2.emailEnListaNegra';
+const REP_LEGAL_VALIDADO_KEY = 'dropi.identityV2.representanteLegalValidado';
+
+@Injectable({ providedIn: 'root' })
+export class IdentityDemoStateV2Service {
+  private readonly _faseProyecto  = signal<FaseProyecto>(this.loadFaseProyecto());
+  private readonly _momentoUsuario = signal<MomentoUsuario>(this.loadMomentoUsuario());
+  private readonly _pais          = signal<Pais9>(this.loadPais());
+  private readonly _tipoPersona   = signal<TipoPersonaV2>(this.loadTipoPersona());
+  private readonly _segmentoUsuario = signal<SegmentoUsuario>(this.loadSegmentoUsuario());
+  private readonly _status        = signal<IdentitySatelliteStatus>(this.loadStatus());
+  private readonly _estadoKyb     = signal<EstadoKyb>(this.loadEstadoKyb());
+  private readonly _emailEnListaNegra = signal<boolean>(this.loadEmailEnListaNegra());
+  private readonly _representanteLegalValidado = signal<boolean>(this.loadRepLegalValidado());
+
+  readonly faseProyecto   = this._faseProyecto.asReadonly();
+  readonly momentoUsuario = this._momentoUsuario.asReadonly();
+  readonly pais           = this._pais.asReadonly();
+  readonly tipoPersona    = this._tipoPersona.asReadonly();
+  readonly segmentoUsuario = this._segmentoUsuario.asReadonly();
+  readonly status         = this._status.asReadonly();
+  readonly estadoKyb      = this._estadoKyb.asReadonly();
+  readonly emailEnListaNegra = this._emailEnListaNegra.asReadonly();
+  readonly representanteLegalValidado = this._representanteLegalValidado.asReadonly();
+
+  /** Mecanismo vigente para la celda Fase × Etapa actual — nunca N/A (línea 265). */
+  readonly mecanismoVigente = computed<MecanismoVigente>(() =>
+    MECANISMO_MATRIZ[this._faseProyecto()][this._momentoUsuario()]
+  );
+
+  readonly esCoNatural = computed(() => this._pais() === 'CO' && this._tipoPersona() === 'natural');
+
+  /**
+   * Motor de validación: Truora solo aparece con CO + Natural desde Fase 2
+   * (línea 610); Sumsub se vuelve nativo para el resto recién en Fase 3
+   * (línea 710). Antes de eso, todo cae al fallback manual de Fase 0/1.
+   */
+  readonly motorValidacion = computed<MotorValidacion>(() => {
+    const fase = this._faseProyecto();
+    if (fase === 'fase0' || fase === 'fase1') return 'manual-backoffice';
+    if (fase === 'fase2') return this.esCoNatural() ? 'truora' : 'manual-backoffice';
+    return this.esCoNatural() ? 'truora' : 'sumsub';
+  });
+
+  readonly isApproved = computed(() => this._status() === 'aprobado');
+
+  /** RN-23: KYB fallido queda pj_pendiente, nunca degrada a persona natural. */
+  readonly isPjPendiente = computed(() => this._estadoKyb() === 'pj_pendiente');
+
+  setFaseProyecto(fase: FaseProyecto): void {
+    this._faseProyecto.set(fase);
+    sessionStorage.setItem(FASE_PROYECTO_KEY, fase);
+  }
+
+  setMomentoUsuario(momento: MomentoUsuario): void {
+    this._momentoUsuario.set(momento);
+    sessionStorage.setItem(MOMENTO_KEY, momento);
+  }
+
+  setPais(pais: Pais9): void {
+    this._pais.set(pais);
+    sessionStorage.setItem(PAIS_KEY, pais);
+  }
+
+  setTipoPersona(tipo: TipoPersonaV2): void {
+    this._tipoPersona.set(tipo);
+    sessionStorage.setItem(TIPO_PERSONA_KEY, tipo);
+  }
+
+  setSegmentoUsuario(segmento: SegmentoUsuario): void {
+    this._segmentoUsuario.set(segmento);
+    sessionStorage.setItem(SEGMENTO_KEY, segmento);
+  }
+
+  setStatus(status: IdentitySatelliteStatus): void {
+    this._status.set(status);
+    sessionStorage.setItem(STATUS_KEY, status);
+  }
+
+  setEstadoKyb(estado: EstadoKyb): void {
+    this._estadoKyb.set(estado);
+    sessionStorage.setItem(ESTADO_KYB_KEY, estado);
+  }
+
+  setEmailEnListaNegra(value: boolean): void {
+    this._emailEnListaNegra.set(value);
+    sessionStorage.setItem(EMAIL_BANEADO_KEY, String(value));
+  }
+
+  setRepresentanteLegalValidado(value: boolean): void {
+    this._representanteLegalValidado.set(value);
+    sessionStorage.setItem(REP_LEGAL_VALIDADO_KEY, String(value));
+  }
+
+  private loadFaseProyecto(): FaseProyecto {
+    const v = sessionStorage.getItem(FASE_PROYECTO_KEY);
+    return (FASES_PROYECTO as string[]).includes(v ?? '') ? (v as FaseProyecto) : 'fase0';
+  }
+
+  private loadMomentoUsuario(): MomentoUsuario {
+    const v = sessionStorage.getItem(MOMENTO_KEY);
+    return (MOMENTOS_USUARIO as string[]).includes(v ?? '') ? (v as MomentoUsuario) : 'setup';
+  }
+
+  private loadPais(): Pais9 {
+    const v = sessionStorage.getItem(PAIS_KEY);
+    return (PAISES_9 as string[]).includes(v ?? '') ? (v as Pais9) : 'CO';
+  }
+
+  private loadTipoPersona(): TipoPersonaV2 {
+    const v = sessionStorage.getItem(TIPO_PERSONA_KEY);
+    if (v === 'natural' || v === 'juridica' || v === 'extranjera') return v;
+    return 'natural';
+  }
+
+  private loadSegmentoUsuario(): SegmentoUsuario {
+    const v = sessionStorage.getItem(SEGMENTO_KEY);
+    const valid: SegmentoUsuario[] = ['dropshipper-natural', 'proveedor-juridica', 'baneado-cross-country', 'migrado-legacy'];
+    return valid.includes(v as SegmentoUsuario) ? (v as SegmentoUsuario) : 'dropshipper-natural';
+  }
+
+  private loadStatus(): IdentitySatelliteStatus {
+    const v = sessionStorage.getItem(STATUS_KEY);
+    if (v === 'sin_validar' || v === 'pendiente' || v === 'en_revision' || v === 'rechazado' || v === 'aprobado') return v;
+    return 'sin_validar';
+  }
+
+  private loadEstadoKyb(): EstadoKyb {
+    const v = sessionStorage.getItem(ESTADO_KYB_KEY);
+    const valid: EstadoKyb[] = ['no_iniciado', 'en_progreso', 'aprobado', 'pj_pendiente', 'rechazado'];
+    return valid.includes(v as EstadoKyb) ? (v as EstadoKyb) : 'no_iniciado';
+  }
+
+  private loadEmailEnListaNegra(): boolean {
+    return sessionStorage.getItem(EMAIL_BANEADO_KEY) === 'true';
+  }
+
+  private loadRepLegalValidado(): boolean {
+    return sessionStorage.getItem(REP_LEGAL_VALIDADO_KEY) === 'true';
+  }
+}
