@@ -11,7 +11,7 @@ Esto generó gaps concretos contra las reglas de negocio reales (`docs/validacio
 
 - El modal actual pide el tipo de facturación (personal/empresa) **antes** de capturar documento — el orden correcto que pidió el usuario es: correo → OTP correo → foto documento (detección automática de tipo) → prueba de vida → celular + OTP → **recién ahí** la pregunta de facturación con 3 rutas (mis datos / tercero persona natural / persona jurídica). Hoy solo existen 2 rutas (falta "tercero natural").
 - No existe la distinción **Colombia-natural usa Truora / resto usa Sumsub** (Fase 2) — el modal está 100% marcado como Sumsub sin importar país/tipo de persona.
-- El cuestionario fiscal solo cubre CO/MX/AR de forma hardcodeada; el Excel real tiene reglas exactas para 9 países (Paraguay, Argentina, Colombia, Perú, Guatemala, Costa Rica, México, Ecuador, Chile) con tipos de documento, regímenes y documentos a cargar específicos por país × tipo de persona.
+- El cuestionario fiscal solo cubre CO/MX/AR de forma hardcodeada, y solo modela 2 tipos de persona (natural/jurídica); el Excel real tiene reglas exactas para 9 países (Paraguay, Argentina, Colombia, Perú, Guatemala, Costa Rica, México, Ecuador, Chile) con **3** tipos de persona por país (natural/física, jurídica/moral, y **extranjera** — con reglas de Tax ID/EIN/pasaporte, ver sección "Diferencias reales por país"), cada uno con tipos de documento, regímenes y documentos a cargar propios. Paraguay además tiene datos incompletos en el propio Excel (sin persona extranjera definida) — gap real de la fuente, no de este plan.
 - Faltan reglas de negocio clave: RN-20 (reutilizar KYC del representante legal si ya es usuario validado), RN-23 (KYB fallido → estado `pj_pendiente`, no degradar a natural), RN-11 (bloqueo de 6 meses en "Dueño de cuenta"), RN-14/15 (campos sensibles vs no sensibles en edición), RN-10 (monitoreo por score de riesgo), "Caso Ecuador" (nunca guardar datos fiscales sin confirmación real vía webhook).
 - `wallet.component.ts` no tiene bloqueo duro en transferencias entre wallets (solo banner suave), pese a que la regla de negocio dice que debe bloquearse igual que retiros/DropiCard.
 - Bug independiente: `configuraciones/flujo-identidad-2026-06-18` está registrada dos veces en `app.routes.ts`; por orden de matching de Angular, la versión `pages/old/...` es la que realmente responde, dejando la `pages/new/...` inalcanzable.
@@ -39,6 +39,8 @@ Ejemplo concreto que motivó esta corrección: durante la ventana de **Fase 0**,
 
 Una excepción real y permanente: la **Regla de Validación Nula** en Etapa 1 (Setup) no es "el mecanismo de Fase 0" que después se reemplaza — es una regla de negocio **permanente que nunca cambia en ninguna Fase** (`Reglasvalidacion.md` §2): jamás se exige documento al registrarse ni al recargar, en ninguna Fase del proyecto, para siempre.
 
+**Precisión importante sobre el alcance de esta regla (corrige una sobregeneralización de una versión anterior de este documento):** `Reglasvalidacion.md` §2 prohíbe pedir documentos específicamente "al momento del registro o recargas" — no dice que Cuenta, Datos de facturación, Wallet, Retiros o DropiCard deban quedar en silencio total para un usuario nuevo. Que no se insista en el registro/recarga **no significa que no se diga nada nunca**: significa que no se es insistente en esos dos momentos puntuales. Si el usuario entra por su cuenta a cualquiera de esas otras pantallas, el sistema sí debe recordarle que tiene datos pendientes — de lo contrario se pierde la única oportunidad real de reforzar el mensaje sin ser agresivo. Ver la sección nueva "Formulario de Cuenta/Facturación — bloqueado, nunca oculto" (antes de la Matriz maestra) para el detalle de cómo se hace esto sin contradecir la regla.
+
 ## Decisiones de alcance (sin respuesta explícita del usuario — se aplicó el default recomendado)
 
 - **Alcance**: se documentan las 7 partes completas (tipos base, modal, rama de 3 vías, formulario fiscal por país, gates de página, webhook Fase 4, demo-panel) con su orden de dependencia; la ejecución se trocea en PRs siguiendo ese orden.
@@ -55,6 +57,60 @@ Una excepción real y permanente: la **Regla de Validación Nula** en Etapa 1 (S
 - **Motor de ruteo por nacionalidad (base)**: KYC contra las bases del país de nacionalidad del usuario; KYB contra las bases del país de constitución de la empresa, no del país de operación en Dropi. Esta es la base conceptual de RN-03 (Ruteo Dual), que la Fase 3 de este plan implementa en el demo con datos simulados.
 
 **Nota para el prototipo:** ninguno de estos cuatro puntos requiere un toggle en el demo-panel — son prerequisitos organizacionales/técnicos de TI y Legal. Se documentan aquí solo para que quede explícito que si el PoC de Sumsub o el aval de seguridad cambian de alcance, las Fases 3 y 4 de este plan (que sí tienen superficie de demo) deben revisarse en consecuencia.
+
+## Diferencias reales por país (fuente: Excel `Copia de Información Datos de Facturación LATAM.xlsx`)
+
+Esta sección se agrega porque una revisión anterior del plan trataba el país como una variable casi cosmética en el demo-panel (un chip que cambia una etiqueta), cuando en realidad el Excel define diferencias sustanciales por país que deben reflejarse en los campos, documentos y reglas que ve el usuario — no solo en el badge de motor (Truora/Sumsub). Se abrió el archivo directamente (celda por celda, las 8 hojas de país + las 3 hojas generales) para que esto quede transcrito con precisión, no supuesto.
+
+### Hallazgo 1: son 3 tipos de persona por país, no 2
+
+Cada una de las 8 hojas de país (Argentina, Colombia, Perú, Guatemala, Costa Rica, México, Ecuador, Chile) define **tres** categorías de "Tipo de Persona", no dos — y el plan hasta ahora solo modelaba Natural/Jurídica. La tercera es **Persona Extranjera**, con reglas completamente distintas (documento de identidad genérico o Tax ID/EIN de LLC, régimen "no domiciliado"/"no residente", y documentos de soporte distintos a los locales). El nombre exacto de cada categoría varía por país:
+
+| País | Persona natural | Persona jurídica | Persona extranjera |
+|---|---|---|---|
+| Colombia | Persona Natural | Persona Jurídica | Persona Extranjera |
+| México | Persona Física | Persona Moral | Persona Extranjera |
+| Argentina | Persona Física | Persona Jurídica | Persona Extranjera |
+| Perú | Persona Natural | Persona Jurídica | Persona Extranjera |
+| Guatemala | Persona Individual | Persona Jurídica | Persona Extranjera |
+| Costa Rica | Persona Física | Persona Jurídica | Persona Extranjera |
+| Ecuador | Persona Natural | Persona Jurídica | Persona Extranjera |
+| Chile | Persona Natural | Persona Jurídica | Persona Extranjera |
+| Paraguay | Persona Física | Persona Jurídica | **No definida en el Excel** (ver Hallazgo 2) |
+
+Esto implica que en todo el documento (Fase 2, Fase 3, demo-panel, `identity-flow-v2.models.ts`) `TipoPersona` debe pasar de `'natural' | 'juridica'` a `'natural' | 'juridica' | 'extranjera'`, y que el chip "PERSONA" del demo-panel necesita una tercera opción, no solo Natural/Jurídica.
+
+**No confundir con la Etapa 4 (Cross-Border/Profesionalización) de la Matriz maestra:** esa etapa describe el *momento del journey* de un usuario que opera en varios países (ej. venezolano operando en Colombia — su *identidad* se valida contra su país de nacionalidad, RN-03). "Persona Extranjera" aquí es distinto: es el *régimen fiscal de facturación* que declara el usuario en el país de operación, independiente de en qué etapa del journey esté — un usuario recién llegado (Etapa 2) y un usuario profesional (Etapa 4) pueden ambos declarar "Persona Extranjera" si corresponde.
+
+### Hallazgo 2: Paraguay tiene datos incompletos en el propio Excel
+
+`Historia.md` lista 9 países, y los 9 aparecen en la hoja resumen "DATOS FACTURACIÓN" del Excel — pero Paraguay es el único que **no tiene hoja propia** (las otras 8 sí) y **no tiene fila de "Persona Extranjera"** definida en ningún lado del archivo. Además se encontró un error de copy-paste en la hoja de Colombia (celda F4) que literalmente dice "Cédula paraguaya no supera 9 dígitos" — un residuo de haber copiado la plantilla de Paraguay al armar la hoja de Colombia. Esto se documenta como lo que es: **un gap real en la fuente**, no un error de este plan — Paraguay + Persona Extranjera queda marcado como pendiente de definición por Legal/PO, igual que otros gaps que `Historia.md` ya reconoce explícitamente (KYT, Guatemala/Panamá nativo, marca propia).
+
+### Hallazgo 3: reglas de comportamiento del formulario, iguales para los 9 países (hoja "Flujo Condicional" + "Campos del Formulario")
+
+Estas reglas no varían por país — son el comportamiento general del formulario que hoy tampoco está en el plan:
+
+- **C-01 — Cascada País → Localidad:** al elegir país, el campo de localidad (municipio/provincia/cantón/comuna, la etiqueta exacta varía por país) se habilita y muestra solo las opciones de ese país.
+- **C-02 — Tipo de persona desbloquea el resto:** Régimen fiscal, Tipo de documento y la sección de "Documentos a subir" están deshabilitados hasta que el usuario elige Natural/Jurídica/Extranjera. Antes de esa elección, no se puede tocar nada más.
+- **C-05 — Régimen fiscal es un selector dependiente del país** (las opciones cambian completamente, ver tabla país por país en el Excel).
+- **C-06/C-07 — Tipo y número de documento:** el tipo de documento deshabilita el campo de número hasta que se elige; y el número de documento se limpia automáticamente (quita guiones, puntos y espacios) **antes** de validar el formato — el formato validado si cambia por país (ver ejemplos en la tabla siguiente).
+- **C-08/C-09 — Checkboxes de consentimiento obligatorios:** el botón "Guardar/Continuar" permanece deshabilitado hasta que ambos checkboxes (términos y condiciones, tratamiento de datos) estén marcados **y** todos los campos sean válidos — los links de esos checkboxes los debe entregar Legal por país (pendiente, según nota del propio Excel).
+
+### Tabla resumen por país (solo Persona Natural/Física — el detalle completo de las 3 personas × 9 países vive en el Excel, no se duplica aquí para no hacer este documento inmanejable)
+
+| País | Documento principal | Régimen fiscal (opciones) | Documento a subir |
+|---|---|---|---|
+| Colombia | CC / NIT | Régimen Ordinario · Simple (RST) · No responsable de IVA | Cédula + RUT actualizado |
+| México | CSF (Constancia de Situación Fiscal) | Actividad empresarial · Física Resico · Sueldos y salarios | Constancia de Situación Fiscal |
+| Argentina | CUIT / CUIL / DNI | Monotributista · Responsable Inscripto · Exento | Constancia de Inscripción ARCA + DNI |
+| Perú | DNI / RUC Persona Natural | NRUS · RER/MYPE Tributario · Régimen General | Ficha RUC (SUNAT) + DNI |
+| Guatemala | NIT / DPI | Pequeño Contribuyente · Régimen Opcional Simplificado · Régimen General | Constancia de RTU + DPI |
+| Costa Rica | Cédula de Identidad Física / NITE | Régimen Simplificado · Régimen Tradicional | Cédula (ambos lados) |
+| Ecuador | RUC / Cédula | Régimen RIMPE (Popular o Emprendedor) · Régimen General | Cédula + RUC (si aplica) |
+| Chile | RUN / RUT | Afecto a IVA · No afecto a IVA (2ª categoría) | Cédula + Carpeta Tributaria SII (si emite facturas) |
+| Paraguay | RUC / Cédula | General | Constancia del RUC + Cédula (frente y dorso) |
+
+**Nota de implementación:** esta tabla y la de Persona Jurídica/Extranjera (no reproducida aquí por espacio) son exactamente lo que `PAIS_BILLING_FIELDS` debe transcribir — la fuente de verdad sigue siendo el Excel, esta sección es solo la referencia rápida para quien lee este plan sin abrirlo.
 
 ## Mermaid — journey consolidado
 
@@ -78,13 +134,14 @@ flowchart TD
       E5[Registro o inicio de sesión]
     end
 
-    E5 -->|correo en lista negra| BAN[Bloqueo total, sin salida]
-    E1 -->|tiene algo pendiente| SOFT[Aviso suave, se puede cerrar]
-    E2 -->|no está aprobado| GATE[Bloqueo: hay que verificar para continuar]
-    E3 --> GATE
-    E4 --> GATE
+    E5 -->|correo en lista negra| BAN[Bloqueo total en pantalla completa, sin botón de salida]
+    E1 -->|tiene saldo o pedidos pendientes de cobrar| SOFT[Aviso: configura tus datos para poder retirar tu saldo]
+    E2 -->|no está aprobado| GATE[Bloqueo: debes verificar tu identidad para continuar esta acción]
+    E3 -->|no está aprobado| FORM_LOCK[Formulario visible pero bloqueado, con botón para verificar identidad]
+    E4 -->|no está aprobado| FORM_LOCK
 
     SOFT -->|Verificar ahora| OPEN
+    FORM_LOCK -->|Verificar identidad| OPEN
     GATE -->|Verificar identidad| OPEN[Abre el formulario de verificación]
 
     OPEN --> BRANCH{Es Colombia y persona natural?}
@@ -140,13 +197,56 @@ flowchart TD
     RN10 -->|Sí| MONITOR[Cada cierto tiempo se le pide una prueba rápida]
 
     class E1,E2,E3,E4,E5,SOFT,STEP1,STEP2,STEP3,STEP4,STEP5,R3REV,REUSE,FISCAL,PROCESANDO,UPDATE_STATE,EDIT,MONITOR pantalla
-    class GATE,KYC2,KYB,KYCREP,REVAL pantallaNueva
+    class GATE,FORM_LOCK,KYC2,KYB,KYCREP,REVAL pantallaNueva
     class TRUORA,SUMSUB accion
     class BRANCH,RESULT_KYC,BILLQ,RN20,WEBHOOK,RN14,RN11,RN10 decision
     class OPEN,BAN modal
     class R3OK,SAVE_DIRECT,NOLOCK si
     class R3REJ,RN23,BLOQUEA,LOCKED no
 ```
+
+## Formulario de Cuenta/Facturación — bloqueado, nunca oculto (regla transversal)
+
+Esta regla aplica igual en cualquier Fase de entrega — lo único que cambia entre fases es qué motor de verificación (Truora/Sumsub) atiende el CTA, nunca el comportamiento del formulario en sí. Se documenta aquí, antes de la Matriz maestra, porque es transversal a todas las Fases (0-5) y a las dos páginas afectadas (`cuenta.component.ts` / "Información de cuenta", `datos-facturacion.component.ts` / "Datos de facturación").
+
+**Por qué existe esta regla:** hoy en el código ambos formularios se renderizan siempre editables, sin ninguna condición — cualquiera puede escribir sus datos ahí manualmente desde el día 1, y recién se bloquean *después* de aprobado (RN-11). Eso es al revés de lo que pide Historia.md/Consideraciones.md: Sumsub/Truora ya captura esos mismos datos por OCR de forma inteligente cuando el usuario se verifica — pedirle llenar el mismo formulario manualmente antes, para luego repetirlo dentro de Sumsub, es fricción redundante y contradice el "Flujo Invertido: validar → precargar" que Fase 3 ya documenta.
+
+**La regla:** el formulario **nunca desaparece del DOM** — no se oculta, porque si un usuario ya había escrito algo ahí (bajo el comportamiento actual del código, antes de este cambio), verlo desaparecer de golpe generaría exactamente la reacción que hay que evitar: "¿dónde están mis datos? ¿qué pasó?". En vez de eso, se **bloquea visualmente**: campos deshabilitados/grises, un banner explicando el motivo exacto según el estado, y un botón que abre el flujo de verificación. Se desbloquea (editable) únicamente cuando `status === 'aprobado'` — y ahí entran a regir las reglas ya documentadas en Fase 5 (RN-11: bloqueo de 6 meses en campos del Dueño de cuenta; RN-14/15: sensible vs. no sensible en facturación) — un mecanismo de bloqueo **distinto y posterior**, no el mismo.
+
+| Estado (`IdentitySatelliteStatus`) | Formulario | Banner | CTA |
+|---|---|---|---|
+| `sin_validar` | Bloqueado, campos grises | "Verifica tu identidad para poder guardar esta información" | Abre el modal de Sumsub/Truora |
+| `pendiente` | Bloqueado, campos grises | "Ya empezaste tu verificación — termínala para continuar" | Abre el modal donde se quedó |
+| `en_revision` | Bloqueado, campos grises | "Tu verificación está en revisión, te avisamos cuando termine" | Sin CTA (nada que hacer todavía) |
+| `rechazado` | Bloqueado, campos grises | "No pudimos validar tu identidad — vuelve a intentarlo" | Abre el modal para reintentar |
+| `aprobado` | Desbloqueado (sujeto a RN-11/14/15 de Fase 5) | Sin banner de bloqueo | — |
+
+**Wiretext — Datos de facturación, formulario bloqueado (`sin_validar`):**
+```
+┌───────────────────────────────────────────────────┐
+│  Datos de facturación                                │
+│  ──────────────────────────────────────────────     │
+│  🔒 Verifica tu identidad para poder guardar esta      │
+│     información. Toma ~5 minutos.                       │
+│                                                      │
+│                          [ Verificar identidad → ]      │
+│  ──────────────────────────────────────────────     │
+│  País                [___________]  (bloqueado, gris)  │
+│  Dirección            [___________]  (bloqueado, gris)  │
+│  Razón social         [___________]  (bloqueado, gris)  │
+│  Tipo/núm. documento  [___________]  (bloqueado, gris)  │
+│  Régimen fiscal       [___________]  (bloqueado, gris)  │
+└───────────────────────────────────────────────────┘
+```
+- El mismo patrón (banner arriba + campos grises debajo) aplica igual en "Información de cuenta", cambiando solo los campos mostrados.
+- El botón "Verificar identidad" abre el mismo modal de Sumsub/Truora ya documentado en Fase 2/3 — no es una pantalla nueva.
+
+**Nota sobre la simulación de redirección:** en producción, este CTA saldría del SPA hacia el WebSDK real de Sumsub o Truora. En el prototipo eso no es posible técnicamente (no hay una app externa real a la que redirigir) — se usa el modal ya existente (`IdentitySumsubModalComponent`), que al ocupar toda la pantalla ya se siente como una salida del contexto actual. No se construye ningún mecanismo nuevo de "redirección" — es una decisión de alcance explícita, no una limitación oculta.
+
+**Refuerzo del mensaje en otras pantallas (para no perder la insistencia sin ser agresivo):**
+- **Wallet (incluye su historial):** el soft banner ya existente (`identity-soft-banner`) debe reaparecer cada vez que el usuario visita la página mientras no esté aprobado — esto ya es el comportamiento real del código hoy (el banner se recalcula en cada carga del componente), se documenta aquí como intencional, no accidental.
+- **Datos de facturación:** el banner de bloqueo de esta misma sección ya cumple ese refuerzo — no se agrega una pantalla adicional.
+- **Retiros de saldo / DropiCard:** siguen con el hard gate ya documentado desde Fase 2/3 (bloqueo total de la acción específica) — es la forma más fuerte posible de recordatorio, no necesita nada adicional.
 
 ## Matriz maestra: cobertura acumulativa por Fase × Etapa del usuario
 
@@ -465,7 +565,7 @@ flowchart TD
 **Mermaid — flujo de usuario (Fase 2, happy path + casos no felices):**
 
 ```mermaid
-flowchart TD
+flowchart LR
     classDef inicioFin fill:#1a1a1a,stroke:#000000,color:#ffffff,stroke-width:2px
     classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
     classDef pantallaNueva fill:#fbc98b,stroke:#c77b1e,color:#1a1a1a,stroke-width:2px
@@ -582,8 +682,8 @@ flowchart TD
 ├────────────────────────────────────────────────────────────────────────────┤
 │ FASE DE ENTREGA      [ Fase 0 ] [ Fase 1 ] [●Fase 2] [ Fase 3 ] [ Fase 4 ] [ Fase 5 ]    │
 │ MOMENTO DEL USUARIO  [ Setup ] [●Activación] [●Habit] [ Cross-Border ] [ Legacy ]         │
-│ PAÍS                 [●CO] [ MX ] [ AR ] [ CL ] [ EC ] [ +4 países ]                       │
-│ PERSONA              [●Natural] [ Jurídica ]                                               │
+│ PAÍS                 [●CO] [ MX ] [ AR ] [ CL ] [ EC ] [ PE ] [ GT ] [ CR ] [ PY ⚠ ]        │
+│ PERSONA              [●Natural] [ Jurídica ] [ Extranjera ]                                 │
 │ MOTOR                [ 🟢 Truora ]  ← so lo aparece así con CO + Natural                     │
 │ IDENTIDAD            [ Aprobado ] [ En revisión ] [ Rechazado ]                             │
 └────────────────────────────────────────────────────────────────────────────┘
@@ -611,7 +711,25 @@ flowchart TD
 | **Etapa 4 — Cross-Border/Profesionalización** | **Nativo (caso central de esta Fase):** KYB fricción cero + RN-20 (rep. legal) + RN-23 (`pj_pendiente`) + ruteo dual RN-03 + KYT en USDT (3-G a 3-J) — reemplaza el KYB ad-hoc heredado de Fase 0. Demo-panel: `faseProyecto = fase3`, `momentoUsuario = profesional`, con el toggle de representante legal (RN-20) y el estado `pj_pendiente` disponibles. |
 | **Etapa 5 — Mantenimiento/Migración** | Heredado de Fase 0: sigue la segmentación por riesgo/campaña para el universo aún no migrado. Un legacy que se active durante esta ventana ya usa Truora o Sumsub según corresponda (los mecanismos nativos ya existen), pero la migración masiva sistemática todavía no existe — eso es Fase 4. |
 
-**Mermaid — flujo de usuario (Fase 3, happy path + todos los casos no felices):**
+**Mermaid — los 5 pasos del WebSDK, vista rápida (solo el happy path, de izquierda a derecha):**
+
+```mermaid
+flowchart LR
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
+
+    S1[1. Confirmar correo] --> S2[2. Código al correo]
+    S2 --> S3[3. Foto del documento]
+    S3 --> S4[4. Prueba de vida]
+    S4 --> S5[5. Código al celular]
+    S5 --> RESULT{Resultado de la verificación}
+
+    class S1,S2,S3,S4,S5 pantalla
+    class RESULT decision
+```
+- Esta vista solo muestra el camino feliz de los 5 pasos, en orden — para todos los casos de error, timeouts y ramas (documento, liveness, facturación, KYB, KYT) ver el diagrama completo a continuación.
+
+**Mermaid — flujo de usuario completo (Fase 3, happy path + todos los casos no felices):**
 
 ```mermaid
 flowchart TD
@@ -877,8 +995,8 @@ flowchart TD
 ├──────────────────────────────────────────────────────────────────────────────┤
 │ FASE DE ENTREGA      [ Fase 0 ] [ Fase 1 ] [ Fase 2 ] [●Fase 3] [ Fase 4 ] [ Fase 5 ]  │
 │ MOMENTO DEL USUARIO  [ Setup ] [ Activación ] [●Habit] [●Cross-Border] [ Legacy ]       │
-│ PAÍS                 [ CO ] [●MX] [ AR ] [ CL ] [●EC] [ +4 países ]                      │
-│ PERSONA              [ Natural ] [●Jurídica]                                             │
+│ PAÍS                 [ CO ] [●MX] [ AR ] [ CL ] [●EC] [ PE ] [ GT ] [ CR ] [ PY ⚠ ]         │
+│ PERSONA              [ Natural ] [●Jurídica] [ Extranjera ]                               │
 │ MOTOR                [ 🔵 Sumsub ]                                                        │
 │ IDENTIDAD            [ Aprobado ] [ En revisión ] [ Rechazado ] [●pj_pendiente]           │
 │ REP. LEGAL (RN-20)   [●Ya validado en Dropi] [ Desconocido - dispara nuevo KYC ]          │
@@ -887,6 +1005,7 @@ flowchart TD
 - `Habit` + país≠CO reproduce el WebSDK completo de 6 pasos (3-A a 3-F); `Cross-Border` + `Jurídica` reproduce el caso central de KYB (3-G a 3-J).
 - El toggle "REP. LEGAL" alterna entre los wiretext 3-H (coincide) y 3-H' (dispara KYC nuevo) sin salir del demo-panel.
 - El chip `pj_pendiente` en IDENTIDAD fuerza directamente el estado terminal de RN-23 (wiretext 3-I) para inspeccionarlo sin tener que fallar el KYB manualmente.
+- `PERSONA = Extranjera` cambia el cuestionario fiscal (paso 6/6, wiretext 3-F en adelante) a los campos de esa categoría según el país elegido (ej. Tax ID/EIN + pasaporte en vez de RUT/NIT local) — ver "Diferencias reales por país". Seleccionar `PY ⚠` + `Extranjera` es la única combinación sin datos reales en el Excel; el demo debe mostrar un estado "Pendiente de definir con Legal", nunca inventar campos.
 
 ---
 
@@ -1102,6 +1221,7 @@ flowchart TD
 │     validación (prevención de fraude/lavado).            │
 └───────────────────────────────────────────────────┘
 ```
+- **No confundir con el bloqueo de la sección "Formulario de Cuenta/Facturación — bloqueado, nunca oculto"** (antes de la Matriz maestra): ese es un bloqueo *previo* a la primera aprobación (mientras `status ≠ aprobado`, para no duplicar lo que Sumsub/Truora ya captura). Este 5-A es un bloqueo *distinto y posterior*: ya está `aprobado`, y se bloquea temporalmente por 6 meses (RN-11) para prevenir fraude — son dos mecanismos con motivos diferentes que comparten el patrón visual de campos grises, pero no son el mismo.
 
 **Wiretext 5-B — Datos de facturación, campos mixtos (no sensibles editables, sensibles con fricción):**
 ```
@@ -1126,6 +1246,7 @@ flowchart TD
 └───────────────────────────────────────────────────┘
 ```
 - Los dos botones están deliberadamente separados: guardar lo no sensible nunca debe esperar a que el usuario decida tocar un campo sensible.
+- Este wiretext 5-B es el estado del formulario **después** de `aprobado` (edición con re-validación inteligente). Antes de la primera aprobación, esta misma pantalla de Datos de facturación se ve como el wiretext de la sección "Formulario de Cuenta/Facturación — bloqueado, nunca oculto" (campos grises, sin distinción sensible/no sensible todavía porque nada es editable).
 
 **Wiretext 5-C — Monitoreo periódico por riesgo medio (RN-10, micro-control):**
 ```
@@ -1179,7 +1300,7 @@ flowchart TD
 | 12 | 6c — KYB empresa | Substep existente extendido | país + razón social → confirmación (NIT/rep legal/mesa accionaria) | `EMPRESAS_MOCK` con shape estructurado | Solo confirmar, sin digitar NIT |
 | 13 | RN-20 — chequeo de reutilización KYC del rep. legal | Substep del modal | nuevo `SubStep = 'rep-legal-check'` | comparación contra `MockUserData` existente | Si coincide, se salta; si no, dispara KYC nuevo |
 | 14 | RN-23 — estado `pj_pendiente` | Estado terminal persistente | nuevo valor en `IdentitySatelliteStatus` | conserva `datosFiscales`/`empresaSeleccionada` | No degrada a persona natural |
-| 15 | Cuestionario fiscal (9 países) | Substep del modal | reescrito data-driven desde `PAIS_BILLING_FIELDS` | ver mocks abajo | Formulario dinámico, no ramas hardcodeadas |
+| 15 | Cuestionario fiscal (9 países × 3 tipos de persona) | Substep del modal | reescrito data-driven desde `PAIS_BILLING_FIELDS` | ver mocks abajo | Formulario dinámico, no ramas hardcodeadas; incluye Persona Extranjera |
 | 16 | Webhook Fase 4 (caso Ecuador) | Lógica interna, sin vista nueva | `startProcesando()` | `webhookConfirmed` (nuevo, togglable desde demo-panel) | Bloquea guardado hasta confirmación real |
 | 17 | Estados finales | Modal | rechazo con taxonomía de 12 motivos portada de `flujo-identidad` | `RejectionReasonCode` | aprobado/en_revision/rechazado/pj_pendiente |
 | 18 | Cuenta (dueño de cuenta) | Página | `cuenta.component.ts` | `lastValidatedAt` (nuevo) | 🔒 si aprobado Y <6 meses (RN-11) |
@@ -1214,10 +1335,12 @@ Estas páginas leen `identityDemo.status()` y lo usan contra sus propios mapas l
 ## Cambios por archivo
 
 **`src/app/common/models/identity-flow-v2.models.ts` (nuevo archivo, no modifica el existente)**
-- `PaisV2 = Pais | 'PY' | 'PE' | 'GT'` (unión aditiva: reexporta el `Pais` de 5 países ya existente + agrega Paraguay/Perú/Guatemala/Costa Rica hasta completar los 9 del Excel — nunca se edita el `Pais` original).
+- `PaisV2 = Pais | 'PY' | 'PE' | 'GT' | 'CR'` (unión aditiva: reexporta el `Pais` de 5 países ya existente + agrega Paraguay/Perú/Guatemala/Costa Rica hasta completar los 9 del Excel — nunca se edita el `Pais` original).
+- `TipoPersonaV2 = 'natural' | 'juridica' | 'extranjera'` (unión aditiva sobre `TipoPersona`; ver "Diferencias reales por país" — las 8 hojas de país del Excel definen esta tercera categoría con reglas propias de Tax ID/EIN/pasaporte).
 - `IdentitySatelliteStatusV2 = IdentitySatelliteStatus | 'pj_pendiente'` (unión aditiva sobre el tipo existente, RN-23).
 - `MotorValidacion = 'truora' | 'sumsub'` + función `getMotor(pais, tipoPersona)` con la regla CO-natural→Truora, resto→Sumsub.
-- `PAIS_BILLING_FIELDS: Record<PaisV2, Record<TipoPersona, PaisBillingFieldConfig>>` transcrita exactamente del Excel (documento, regex/regla de formato, opciones de régimen, documentos requeridos, etiqueta de localidad) — vive aparte de los campos fiscales planos (`co_*`, `mx_*`, `ar_*`) que `MOCK_USERS`/`/old/` siguen usando sin tocar.
+- `PAIS_BILLING_FIELDS: Record<PaisV2, Record<TipoPersonaV2, PaisBillingFieldConfig>>` transcrita exactamente del Excel (documento, regex/regla de formato, opciones de régimen, documentos requeridos, etiqueta de localidad) — vive aparte de los campos fiscales planos (`co_*`, `mx_*`, `ar_*`) que `MOCK_USERS`/`/old/` siguen usando sin tocar. `PY.extranjera` queda explícitamente como `undefined`/placeholder marcado "pendiente de Legal" — el Excel no lo define, no se inventa.
+- `PAIS_FORM_BEHAVIOR` (nuevo, transcrito de las hojas "Flujo Condicional"/"Campos del Formulario", igual para los 9 países): reglas de cascada (país→localidad, tipo de persona→resto de campos), limpieza automática del número de documento antes de validar, y la condición de habilitar "Guardar" solo con ambos checkboxes de consentimiento marcados.
 - `RejectionReasonCode` (12 valores) + `REJECTION_REASON_COPY`, portados de `flujo-identidad.component.ts`.
 - `TipoFacturacion = 'mismo-dueno' | 'tercero-natural' | 'empresa'` (nuevo tipo, no reemplaza ningún binario existente porque ese binario no existía como tipo compartido — vivía embebido en el modal).
 - `MockThirdPartyPersona` + instancias mock.
@@ -1251,16 +1374,19 @@ Estas páginas leen `identityDemo.status()` y lo usan contra sus propios mapas l
 - Fila nueva "Fase de entrega" (0-5), fila renombrada "Momento del usuario" (la actual FASE PLG, sigue leyendo el servicio base sin cambios).
 - Fila "Segmento" (dropshipper natural / proveedor jurídica / migrado legacy / baneado cross-country) que también fija país/persona/fase por defecto razonables.
 - Badge de solo lectura "Motor" (Truora/Sumsub) visible sin abrir el modal.
-- Extender chips de país de 5 a 9 (usando `PaisV2` del servicio nuevo, sin tocar los chips que ya delegan al servicio base).
+- Extender chips de país de 5 a 9 (usando `PaisV2` del servicio nuevo, sin tocar los chips que ya delegan al servicio base). El chip de Paraguay lleva un indicador visual ("⚠ datos parciales") porque el Excel no define su combinación con Persona Extranjera.
+- **Extender el chip "PERSONA" de 2 a 3 opciones: Natural / Jurídica / Extranjera** (`tipoPersonaV2`). Este es el cambio que hacía que el país se sintiera cosmético: hasta ahora, cambiar PAÍS solo movía el badge de Motor, pero no revelaba que cada país también tiene un régimen y documentos distintos para "Persona Extranjera". Al agregar esta tercera opción, el cuestionario fiscal (Fase 2/3) y "Datos de facturación" deben re-renderizar sus campos, régimen y documentos requeridos desde `PAIS_BILLING_FIELDS[paisV2][tipoPersonaV2]` — no un simple cambio de label.
 - Toggle "Webhook Ecuador" (solo visible si `faseProyecto >= fase4` y `pais === 'EC'`).
 - Chip "Riesgo" (bajo/medio/alto) + stepper de "meses desde última validación" para demostrar RN-10/RN-11.
 
 **`src/app/pages/new/financiero/datos-facturacion/datos-facturacion.component.ts`**
+- **Cambio de comportamiento (invierte la lógica actual):** hoy el formulario se renderiza siempre editable y solo se bloquea *después* de `aprobado`. Se invierte: mientras `status !== 'aprobado'` (`sin_validar`, `pendiente`, `en_revision`, `rechazado`), el formulario se muestra siempre en el DOM pero con todos los campos deshabilitados + banner superior con el copy específico por estado (ver tabla en "Formulario de Cuenta/Facturación — bloqueado, nunca oculto") + CTA que abre `IdentitySumsubModalComponent`. Nunca se oculta el formulario ni se reemplaza por otra pantalla.
 - Inyecta `IdentityDemoStateV2Service`. Extender opciones de país y bloques tributarios por país (hoy solo CO), renderizando desde `PAIS_BILLING_FIELDS` para consistencia con el modal.
-- Implementar RN-14/15: campos no sensibles (email, dirección, municipio, teléfono) guardan directo con un `onGuardar()` real (hoy stub vacío); campos sensibles (razón social, tipo de persona, tipo/número de documento) abren el modal en modo re-validación y bloquean acciones financieras durante `en_revision`.
+- Una vez `aprobado`: implementar RN-14/15 (ya documentado) — campos no sensibles (email, dirección, municipio, teléfono) guardan directo con un `onGuardar()` real (hoy stub vacío); campos sensibles (razón social, tipo de persona, tipo/número de documento) abren el modal en modo re-validación y bloquean acciones financieras durante `en_revision`.
 
 **`src/app/pages/new/configurar/cuenta/cuenta.component.ts`**
-- Inyecta `IdentityDemoStateV2Service`. Implementar RN-11: bloqueo de edición solo si `aprobado` Y dentro de 6 meses desde `lastValidatedAt`, con tooltip explicando el motivo (fraude/lavado).
+- **Mismo cambio de comportamiento que en datos-facturación:** formulario siempre visible, bloqueado con banner + CTA mientras `status !== 'aprobado'`.
+- Inyecta `IdentityDemoStateV2Service`. Una vez `aprobado`: implementar RN-11 (ya documentado) — bloqueo de edición solo si dentro de 6 meses desde `lastValidatedAt`, con tooltip explicando el motivo (fraude/lavado). Este es un bloqueo distinto y posterior al bloqueo pre-verificación de arriba.
 
 **`src/app/pages/new/financiero/wallet/wallet.component.ts`**
 - Montar `<app-identity-gate contexto="transferencia">` (hoy falta, solo hay soft banner) para que transferencias entre wallets sean bloqueo duro real, igual que retiro/DropiCard. Mantener el soft banner para el nudge general de la página. `IdentityGateComponent` sigue leyendo el servicio base sin cambios — ya se confirmó que es exclusivo de `/new/`.
@@ -1277,12 +1403,13 @@ Estas páginas leen `identityDemo.status()` y lo usan contra sus propios mapas l
 
 ## Datos mock a agregar
 
-1. `PAIS_BILLING_FIELDS` — tabla de 9 países × 2 tipos de persona transcrita exactamente del Excel `Copia de Información Datos de Facturación LATAM.xlsx` (documento, formato/regla, régimen fiscal, documentos a subir), con campos compartidos (`localidadLabel` variable por país, dirección, email de facturación, teléfono, nombre/razón social, checkboxes de T&C y tratamiento de datos).
-2. `mocks/identity-billing-field-map.json` — extender de 3 países (CO/MX/AR) a los 9.
-3. `MockThirdPartyPersona` — 1-2 registros para la ruta "tercero persona natural".
-4. Escenarios KYB pareados para RN-20: uno donde el representante legal coincide con un `MOCK_USERS` ya validado (reutiliza KYC) y otro donde es un desconocido (dispara KYC nuevo). `EMPRESAS_MOCK` pasa a tener shape estructurado por país.
-5. `RejectionReasonCode` (12 códigos) + copy, portado de `flujo-identidad.component.ts`.
-6. `riskScore` + fecha de próximo monitoreo, para demo de RN-10.
+1. `PAIS_BILLING_FIELDS` — tabla de 9 países × **3** tipos de persona (natural, jurídica, extranjera — no 2) transcrita exactamente del Excel `Copia de Información Datos de Facturación LATAM.xlsx` (documento, formato/regla, régimen fiscal, documentos a subir), con campos compartidos (`localidadLabel` variable por país, dirección, email de facturación, teléfono, nombre/razón social, checkboxes de T&C y tratamiento de datos). Paraguay × extranjera queda como placeholder "pendiente de Legal" — no está en el Excel, no se inventa.
+2. `mocks/identity-billing-field-map.json` — extender de 3 países (CO/MX/AR) a los 9, y de 2 a 3 tipos de persona por país.
+3. `PAIS_FORM_BEHAVIOR` — reglas de comportamiento del formulario transcritas de las hojas "Flujo Condicional"/"Campos del Formulario" (cascada país→localidad, tipo de persona desbloquea el resto de campos, limpieza automática del número de documento, checkboxes de consentimiento obligatorios para habilitar "Guardar"). Son las mismas para los 9 países — una sola tabla, no una por país.
+4. `MockThirdPartyPersona` — 1-2 registros para la ruta "tercero persona natural".
+5. Escenarios KYB pareados para RN-20: uno donde el representante legal coincide con un `MOCK_USERS` ya validado (reutiliza KYC) y otro donde es un desconocido (dispara KYC nuevo). `EMPRESAS_MOCK` pasa a tener shape estructurado por país.
+6. `RejectionReasonCode` (12 códigos) + copy, portado de `flujo-identidad.component.ts`.
+7. `riskScore` + fecha de próximo monitoreo, para demo de RN-10.
 
 ## Orden de entrega sugerido (PRs independientes y revisables)
 
