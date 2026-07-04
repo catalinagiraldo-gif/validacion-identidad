@@ -415,6 +415,142 @@
   margin: 0 0 $space-3;
 }
 
+// ── Paso 6 — Vía de facturación (3 opciones) ──────────────────────────────────
+.via-options {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.via-option {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  border: 1.5px solid $gray-200;
+  border-radius: $radius-2;
+  padding: $space-4 $space-5;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &--selected {
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.12);
+  }
+
+  &:hover:not(.via-option--selected) { border-color: $gray-300; }
+}
+
+.radio-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid $gray-300;
+  display: block;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+  position: relative;
+
+  &--checked {
+    border-color: $primary-500;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: $primary-500;
+    }
+  }
+}
+
+.via-option__text {
+  font-size: $font-base;
+  font-weight: $font-medium;
+  color: $gray-800;
+}
+
+.via-confirm-card {
+  background: $gray-50;
+  border-radius: $radius-2;
+  padding: $space-4 $space-5;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.via-confirm-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  font-size: $font-sm;
+
+  span { color: $gray-500; }
+  strong { color: $gray-800; font-weight: $font-semibold; }
+}
+
+// ── KYB — búsqueda de empresa ──────────────────────────────────────────────────
+.kyb-search { margin-top: $space-3; }
+
+.kyb-search__row {
+  display: flex;
+  gap: $space-2;
+}
+
+.kyb-search__btn { width: auto; flex-shrink: 0; }
+
+.empresa-results {
+  border: 1px solid $gray-200;
+  border-radius: $radius-2;
+  overflow: hidden;
+  margin-top: $space-3;
+}
+
+.empresa-result {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-4 $space-5;
+  background: none;
+  border: none;
+  border-bottom: 1px solid $gray-100;
+  cursor: pointer;
+  font-size: $font-sm;
+  color: $gray-700;
+  text-align: left;
+  transition: background 0.15s;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: $gray-50; }
+
+  &--selected { background: rgba($primary-500, 0.06); color: $primary-600; }
+
+  i:first-child { color: $primary-500; flex-shrink: 0; }
+  span { flex: 1; }
+  i:last-child { color: $primary-500; }
+}
+
+.kyb-no-resultados {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-2;
+  text-align: center;
+  padding: $space-5;
+  background: $gray-50;
+  border-radius: $radius-2;
+  margin-top: $space-3;
+  color: $gray-500;
+  font-size: $font-sm;
+
+  i { color: $warning-500; font-size: 24px; }
+}
+
 .capture-area {
   height: 220px;
   border: 2px dashed $gray-300;

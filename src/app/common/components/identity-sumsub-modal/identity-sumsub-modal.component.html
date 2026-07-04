@@ -96,13 +96,22 @@
       @if (currentScreen() === 'screen2') {
         <div class="screen screen2">
 
-          <!-- Sub-step progress -->
-          <div class="substep-bar">
-            @for (step of ['email','otp-email','doc-frente','doc-reverso','liveness','telefono','otp-telefono','procesando']; track step) {
-              <span class="substep-dot" [class.substep-dot--active]="currentSubStep() === step" [class.substep-dot--done]="subStepIndex() > $index"></span>
-            }
-            <span class="substep-label">{{ subStepLabel() }}</span>
-          </div>
+          <!-- Sub-step progress: barra del KYC principal, o del KYC modular de un tercero -->
+          @if (isMainKycStep()) {
+            <div class="substep-bar">
+              @for (step of ['email','otp-email','doc-frente','doc-reverso','liveness','telefono','otp-telefono','procesando']; track step) {
+                <span class="substep-dot" [class.substep-dot--active]="currentSubStep() === step" [class.substep-dot--done]="subStepIndex() > $index"></span>
+              }
+              <span class="substep-label">{{ subStepLabel() }}</span>
+            </div>
+          } @else if (['via-tercero-email','via-tercero-otp-email','via-tercero-doc-frente','via-tercero-doc-reverso','via-tercero-liveness','via-tercero-procesando'].includes(currentSubStep())) {
+            <div class="substep-bar">
+              @for (step of ['via-tercero-email','via-tercero-otp-email','via-tercero-doc-frente','via-tercero-doc-reverso','via-tercero-liveness','via-tercero-procesando']; track step) {
+                <span class="substep-dot" [class.substep-dot--active]="currentSubStep() === step" [class.substep-dot--done]="terceroSubStepIndex() > $index"></span>
+              }
+              <span class="substep-label">Verificando a {{ terceroLabel() }} · {{ terceroSubStepLabel() }}</span>
+            </div>
+          }
 
           <!-- Motor branding strip -->
           <div class="sumsub-brand">
@@ -299,6 +308,272 @@
             </div>
           }
 
+          <!-- Paso 6 — Pregunta de facturación, 3 vías (Plan2.md líneas 806-817) -->
+          @if (currentSubStep() === 'via-facturacion') {
+            <div class="substep-content">
+              <div class="substep-icon">✓</div>
+              <h3>Ya verificamos tu identidad</h3>
+              <p>¿Deseas usar tus datos personales como datos de facturación, o prefieres facturar con datos diferentes?</p>
+              <div class="via-options">
+                <label class="via-option" [class.via-option--selected]="viaFacturacion() === 'mis-datos'" (click)="viaFacturacion.set('mis-datos')">
+                  <span class="radio-circle" [class.radio-circle--checked]="viaFacturacion() === 'mis-datos'"></span>
+                  <span class="via-option__text">Usar mis propios datos</span>
+                </label>
+                <label class="via-option" [class.via-option--selected]="viaFacturacion() === 'otra-persona-natural'" (click)="viaFacturacion.set('otra-persona-natural')">
+                  <span class="radio-circle" [class.radio-circle--checked]="viaFacturacion() === 'otra-persona-natural'"></span>
+                  <span class="via-option__text">Facturar a nombre de otra persona natural</span>
+                </label>
+                <label class="via-option" [class.via-option--selected]="viaFacturacion() === 'persona-juridica'" (click)="viaFacturacion.set('persona-juridica')">
+                  <span class="radio-circle" [class.radio-circle--checked]="viaFacturacion() === 'persona-juridica'"></span>
+                  <span class="via-option__text">Facturar a nombre de una empresa</span>
+                </label>
+              </div>
+            </div>
+          }
+
+          <!-- Vía (a): confirmación con datos ya verificados -->
+          @if (currentSubStep() === 'via-confirmar-mis-datos') {
+            <div class="substep-content">
+              <div class="substep-icon">🧾</div>
+              <h3>Confirma tus datos de facturación</h3>
+              <p>Usaremos los mismos datos que acabas de verificar — no necesitas escribirlos de nuevo.</p>
+              <div class="via-confirm-card">
+                <div class="via-confirm-card__row"><span>Correo</span><strong>{{ emailCorreo() || '—' }}</strong></div>
+                <div class="via-confirm-card__row"><span>Teléfono</span><strong>{{ telefono() || '—' }}</strong></div>
+                <div class="via-confirm-card__row"><span>Documento</span><strong>{{ documentoPrincipalLabel() }}</strong></div>
+              </div>
+            </div>
+          }
+
+          <!-- Vía (b)/(c representante): KYC modular de un tercero, mismos 5 pasos -->
+          @if (currentSubStep() === 'via-tercero-email') {
+            <div class="substep-content">
+              <div class="substep-icon">✉️</div>
+              <h3>Verificación de {{ terceroLabel() }}</h3>
+              <p>Necesitamos confirmar el correo de {{ terceroLabel() }} antes de continuar.</p>
+              <div class="input-field">
+                <label class="input-field__label">Correo electrónico</label>
+                <input
+                  type="email"
+                  class="input-field__control"
+                  placeholder="tucorreo@ejemplo.com"
+                  [ngModel]="terceroEmail()"
+                  (ngModelChange)="terceroEmail.set($event)"
+                />
+              </div>
+            </div>
+          }
+
+          @if (currentSubStep() === 'via-tercero-otp-email') {
+            <div class="substep-content">
+              <div class="substep-icon">🔢</div>
+              <h3>Enviamos un código a {{ terceroEmail() || 'ese correo' }}</h3>
+              <p>Ingresa el código de 6 dígitos recibido.</p>
+              <div class="otp-field">
+                <input
+                  type="text"
+                  maxlength="6"
+                  inputmode="numeric"
+                  class="otp-field__control"
+                  [class.otp-field__control--error]="terceroOtpError()"
+                  placeholder="000000"
+                  [ngModel]="terceroOtpCode()"
+                  (ngModelChange)="terceroOtpCode.set($event); terceroOtpError.set(false)"
+                  [disabled]="terceroOtpBloqueado()"
+                />
+              </div>
+              @if (terceroOtpBloqueado()) {
+                <p class="otp-field__error">Se agotaron los intentos. Debes reiniciar esta verificación.</p>
+                <button class="btn-text-danger" (click)="reiniciarVerificacionTercero()">Reiniciar verificación</button>
+              } @else {
+                @if (terceroOtpError()) {
+                  <p class="otp-field__error">Código incorrecto, quedan {{ terceroOtpIntentos() }} intento(s)</p>
+                }
+                <button class="btn-text" [disabled]="terceroOtpResendIn() > 0" (click)="reenviarCodigo('tercero')">
+                  @if (terceroOtpResendIn() > 0) {
+                    Reenviar código en 0:{{ terceroOtpResendIn() < 10 ? '0' + terceroOtpResendIn() : terceroOtpResendIn() }}
+                  } @else {
+                    Reenviar código
+                  }
+                </button>
+              }
+            </div>
+          }
+
+          @if (currentSubStep() === 'via-tercero-doc-frente') {
+            <div class="substep-content">
+              <h3>Foto del frente del documento de {{ terceroLabel() }}</h3>
+              <p>Asegúrate de que el documento sea legible y esté bien iluminado.</p>
+              <div class="capture-area" [class.capture-area--done]="terceroDocFrenteCapturado()" (click)="terceroDocFrenteCapturado.set(true)">
+                @if (!terceroDocFrenteCapturado()) {
+                  <div class="capture-area__guide">
+                    <div class="capture-frame"></div>
+                    <span>Toca para simular captura</span>
+                  </div>
+                } @else {
+                  <div class="capture-area__success">
+                    <i class="pi pi-check-circle"></i>
+                    <span>¡Foto tomada!</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          @if (currentSubStep() === 'via-tercero-doc-reverso') {
+            <div class="substep-content">
+              <h3>Foto del reverso del documento</h3>
+              <p>Voltea el documento y toma la foto del reverso.</p>
+              <div class="capture-area" [class.capture-area--done]="terceroDocReversoCapturado()" (click)="terceroDocReversoCapturado.set(true)">
+                @if (!terceroDocReversoCapturado()) {
+                  <div class="capture-area__guide">
+                    <div class="capture-frame capture-frame--back"></div>
+                    <span>Toca para simular captura</span>
+                  </div>
+                } @else {
+                  <div class="capture-area__success">
+                    <i class="pi pi-check-circle"></i>
+                    <span>¡Foto tomada!</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          @if (currentSubStep() === 'via-tercero-liveness') {
+            <div class="substep-content">
+              <h3>Prueba de vida de {{ terceroLabel() }}</h3>
+              <p>Pide a esa persona que mire directo a la cámara.</p>
+              <div class="selfie-area" [class.selfie-area--done]="terceroLivenessCapturada()" (click)="terceroLivenessCapturada.set(true)">
+                @if (!terceroLivenessCapturada()) {
+                  <div class="selfie-oval">
+                    <div class="selfie-oval__ring"></div>
+                    <span class="selfie-oval__hint">Toca para simular prueba de vida</span>
+                  </div>
+                } @else {
+                  <div class="selfie-area__success">
+                    <i class="pi pi-check-circle"></i>
+                    <span>Prueba de vida verificada</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          @if (currentSubStep() === 'via-tercero-procesando') {
+            <div class="substep-content substep-content--center">
+              <div class="procesando-icon">⏳</div>
+              <h3>Verificando a {{ terceroLabel() }}</h3>
+              <p>{{ motorLabel() }} está procesando esta verificación.</p>
+              <div class="procesando-bar">
+                <div class="procesando-bar__fill" [style.width.%]="terceroProcesandoProgress()"></div>
+              </div>
+              <span class="procesando-pct">{{ terceroProcesandoProgress() }}%</span>
+            </div>
+          }
+
+          @if (currentSubStep() === 'via-tercero-resultado') {
+            <div class="substep-content substep-content--center">
+              <div class="capture-area__success">
+                <i class="pi pi-check-circle"></i>
+                <span>Identidad de {{ terceroLabel() }} verificada</span>
+              </div>
+              <button class="btn-primary" (click)="goNext()" style="margin-top: 16px;">Continuar <i class="pi pi-arrow-right"></i></button>
+            </div>
+          }
+
+          <!-- Vía (c): KYB — búsqueda de empresa sin digitar NIT (Plan2.md líneas 772-786) -->
+          @if (currentSubStep() === 'via-kyb-buscar') {
+            <div class="substep-content">
+              <h3>Datos de tu empresa</h3>
+              <p>Busca tu empresa por país y nombre — no necesitas escribir el NIT.</p>
+              <div class="input-field">
+                <label class="input-field__label">País de constitución</label>
+                <select class="input-field__control" [ngModel]="kybPais()" (ngModelChange)="kybPais.set($event)">
+                  @for (p of ['CO','MX','AR','PE','GT','CR','EC','CL','PY']; track p) {
+                    <option [value]="p">{{ p }}</option>
+                  }
+                </select>
+              </div>
+              <div class="input-field kyb-search">
+                <label class="input-field__label">Nombre de la empresa</label>
+                <div class="kyb-search__row">
+                  <input
+                    type="text"
+                    class="input-field__control"
+                    placeholder="Ej: TechStore SAS"
+                    [ngModel]="kybNombreEmpresa()"
+                    (ngModelChange)="kybNombreEmpresa.set($event)"
+                  />
+                  <button class="btn-secondary kyb-search__btn" (click)="buscarEmpresa()">Buscar</button>
+                </div>
+              </div>
+
+              @if (kybResultados().length > 0) {
+                <div class="empresa-results">
+                  @for (e of kybResultados(); track e) {
+                    <button class="empresa-result" [class.empresa-result--selected]="kybEmpresaSeleccionada() === e" (click)="seleccionarEmpresa(e)">
+                      <i class="pi pi-building"></i>
+                      <span>{{ e }}</span>
+                      @if (kybEmpresaSeleccionada() === e) {
+                        <i class="pi pi-check"></i>
+                      }
+                    </button>
+                  }
+                </div>
+              } @else if (kybBuscado()) {
+                <div class="kyb-no-resultados">
+                  <i class="pi pi-exclamation-circle"></i>
+                  <span>No encontramos resultados para "{{ kybNombreEmpresa() }}".</span>
+                  <button class="btn-text" (click)="marcarEmpresaNoEncontrada()">No encuentro mi empresa</button>
+                </div>
+              }
+            </div>
+          }
+
+          @if (currentSubStep() === 'via-kyb-confirmar') {
+            <div class="substep-content">
+              <h3>Confirma tu empresa</h3>
+              <div class="via-confirm-card">
+                <div class="via-confirm-card__row"><span>🏢</span><strong>{{ kybEmpresaSeleccionada() }}</strong></div>
+                <div class="via-confirm-card__row"><span>País</span><strong>{{ kybPais() }}</strong></div>
+                <div class="via-confirm-card__row"><span>Representante legal</span><strong>Juan Pérez</strong></div>
+                <div class="via-confirm-card__row"><span>Mesa accionaria</span><strong>3 socios</strong></div>
+              </div>
+            </div>
+          }
+
+          @if (currentSubStep() === 'via-kyb-representante-info') {
+            <div class="substep-content">
+              <h3>Verificación del representante legal</h3>
+              @if (representanteYaValidado()) {
+                <p>Juan Pérez ya está validado en Dropi ✓. Reutilizaremos su verificación de identidad — no necesita repetir el proceso.</p>
+              } @else {
+                <p>Necesitamos validar la identidad de Juan Pérez como representante legal de {{ kybEmpresaSeleccionada() }}. Esto es una segunda verificación, independiente de la tuya.</p>
+              }
+            </div>
+          }
+
+          @if (currentSubStep() === 'via-kyb-procesando') {
+            <div class="substep-content substep-content--center">
+              <div class="procesando-icon">⏳</div>
+              <h3>Validando tu empresa</h3>
+              <p>Estamos confirmando los datos de {{ kybEmpresaSeleccionada() }}.</p>
+            </div>
+          }
+
+          @if (currentSubStep() === 'via-kyb-pendiente') {
+            <div class="substep-content substep-content--center">
+              <div class="resultado__icon resultado__icon--pending">🕐</div>
+              <h3>Tu empresa queda pendiente</h3>
+              <p>No pudimos validar tu empresa todavía. No perdiste los datos que ya ingresaste — puedes ajustar el nombre e intentar de nuevo.</p>
+              <div class="resultado__actions">
+                <button class="btn-primary" (click)="reintentarKyb()">Reintentar búsqueda</button>
+                <button class="btn-secondary" (click)="cambiarViaFacturacion()">Cambiar vía de facturación</button>
+              </div>
+            </div>
+          }
+
         </div>
       }
 
@@ -310,7 +585,7 @@
             <div class="resultado resultado--aprobado">
               <div class="resultado__icon resultado__icon--success">✓</div>
               <h2 class="resultado__title">¡Tu identidad fue verificada!</h2>
-              <p class="resultado__text">Ya puedes retirar tus ganancias. A continuación te preguntaremos para quién es tu factura.</p>
+              <p class="resultado__text">Tus datos fueron guardados automáticamente en tu cuenta y en tus datos de facturación. Ya puedes retirar tus ganancias.</p>
               <div class="resultado__benefits">
                 <div class="benefit-chip"><i class="pi pi-wallet"></i> Retiros habilitados</div>
                 <div class="benefit-chip"><i class="pi pi-credit-card"></i> DropiCard activa</div>
@@ -360,8 +635,8 @@
 
     </div>
 
-    <!-- Modal Footer (screens 0, 1, 2 pre-procesando) -->
-    @if (currentScreen() !== 'screen3' && currentSubStep() !== 'procesando') {
+    <!-- Modal Footer (screens 0, 1, 2 con footer estándar) -->
+    @if (currentScreen() !== 'screen3' && hasStandardFooter()) {
       <div class="modal-footer">
         @if (currentScreen() !== 'screen0') {
           <button class="btn-text" (click)="goBack()">
