@@ -57,7 +57,7 @@
 
 ## FASE 0: Onboarding Suave
 
-**Usuarios:** Usuarios Nuevos sin historial.
+**Usuarios:** Usuarios Nuevos sin historial — entran por primera vez al Home/Dashboard de Dropi.
 
 **Tarea** (secuencia horizontal):
 1. ⚫ Inicio — *(conector vertical hacia Canales, etiqueta "Inicia Onboarding")*
@@ -71,7 +71,7 @@
 2. ⚪ Correo (CRM) (ícono de correo) — *(flecha horizontal índigo: "Canales F0.5")*
 
 **Front stage → Acciones:**
-1. 🔵 Panel Lateral — Headline: **"Verifica tu cuenta cuando quieras"**. Body: *"Hacerlo ahora evita que tengas que detenerte más adelante para retirar tu dinero o pedir tu DropiCard."* Botón: **"Verificar ahora"**. Ocupa 25% de pantalla, con botón 'X' visible (`aria-label="Cerrar, verificar más tarde"`). *(Sin incentivo monetario aquí — es solo pedagógico. El bono de fletes, masterclasses y "Kit Dropi" es exclusivo de "Semana de la Seguridad" en Fase 0.5/Activos-Riesgo. Fuente: mesa 7-jul, Consideraciones.md. Copy y justificación de tono: ver `UX-Writing-Modales-UserPilot.md`)*
+1. 🔵 Panel Lateral (aparece al entrar al Home por primera vez) — Headline: **"Verifica tu cuenta cuando quieras"**. Body: *"Hazlo ahora y ahórrate pasos el día que quieras sacar el dinero de tus ventas."* Botón: **"Verificar ahora"**. Ocupa 25% de pantalla, con botón 'X' visible (`aria-label="Cerrar, verificar más tarde"`). *(Sin incentivo monetario aquí — es solo pedagógico. El bono de fletes, masterclasses y "Kit Dropi" es exclusivo de "Semana de la Seguridad" en Fase 0.5/Activos-Riesgo. Fuente: mesa 7-jul, Consideraciones.md. Copy ajustada: se quitan "DropiCard" y el detalle de "retirar" — un usuario que recién entra al Home no ha vendido nada todavía y no sabe qué son esas cosas. Justificación completa: ver `UX-Writing-Modales-UserPilot.md`)*
 2. 🟣 Sutil: Permite navegación total. Usuario puede ignorarlo y seguir comprando. — *(flecha horizontal índigo: "FS F0.5")*
 
 **Back stage → Acciones:**

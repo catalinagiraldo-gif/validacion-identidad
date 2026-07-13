@@ -19,20 +19,21 @@ El tono debe subir en firmeza a medida que sube la coerción, pero **nunca cruza
 
 ## 1. FASE 0 — Banner lateral "Completa tus datos"
 
-**Contexto:** ocupa 25% de pantalla, botón X visible, 100% pedagógico (sin bono ni incentivo monetario — eso es exclusivo de la Semana de la Seguridad en Fase 0.5/Activos). El usuario puede ignorarlo y seguir comprando.
+**Contexto:** aparece al entrar al Home/Dashboard por primera vez. Ocupa 25% de pantalla, botón X visible, 100% pedagógico (sin bono ni incentivo monetario — eso es exclusivo de la Semana de la Seguridad en Fase 0.5/Activos). El usuario puede ignorarlo y seguir comprando.
 
 | Elemento | Copy |
 |---|---|
 | Headline | **Verifica tu cuenta cuando quieras** |
-| Body | Hacerlo ahora evita que tengas que detenerte más adelante para retirar tu dinero o pedir tu DropiCard. |
+| Body | Hazlo ahora y ahórrate pasos el día que quieras sacar el dinero de tus ventas. |
 | Botón primario | **Verificar ahora** |
 | Botón secundario / cierre | Ícono X con `aria-label="Cerrar, verificar más tarde"` |
 
 **Antes → Después**
-- Antes: "Completa tus datos" (genérico, no dice para qué ni qué pasa si no lo hace)
-- Después: headline en beneficio propio + body que anticipa la fricción futura, sin presionar
+- V1: "Completa tus datos" (genérico, no dice para qué ni qué pasa si no lo hace)
+- V2: "Hacerlo ahora evita que tengas que detenerte más adelante para retirar tu dinero o pedir tu DropiCard." — mencionaba "DropiCard", un producto que un usuario recién llegado al Home todavía no conoce, porque no ha hecho ninguna venta.
+- V3 (actual): reemplaza "DropiCard" y el detalle de "retirar" por algo que cualquier usuario nuevo entiende sin contexto previo: que algún día va a vender y va a querer sacar ese dinero. Cero jerga de producto en el primer contacto.
 
-**Justificación de tono:** es un nudge, no un bloqueo — el usuario puede seguir navegando y comprando sin fricción. El tono es invitacional y de bajo riesgo ("cuando quieras" en vez de "ahora mismo"), y el body convierte la validación en una decisión racional (evitar fricción futura) en lugar de una obligación. Nada de urgencia artificial: sería inconsistente con que el propio flujo permita ignorarlo.
+**Justificación de tono:** es un nudge, no un bloqueo — el usuario puede seguir navegando y comprando sin fricción. El tono es invitacional y de bajo riesgo ("cuando quieras" en vez de "ahora mismo"), y el body convierte la validación en una decisión racional (evitar fricción futura) en lugar de una obligación. Nada de urgencia artificial: sería inconsistente con que el propio flujo permita ignorarlo. Además, al ser el primer contacto del usuario con Dropi, el copy no debe asumir vocabulario de producto ("DropiCard") ni de operación financiera ("retiro") que todavía no aprendió — eso genera la misma confusión que un dead-end: el usuario no sabe qué es lo que está evitando.
 
 ---
 
