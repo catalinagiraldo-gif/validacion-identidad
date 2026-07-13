@@ -31,8 +31,8 @@
 
 **Tarea** (secuencia horizontal):
 1. ⚫ Inicio
-2. 🟣 Migración: base de Guatemala (ColocaPayments→Sumsub, branding Dropi) + carga silenciosa de validados de Cartera
-3. 🟣 Setup manual: CRM + UserPilot — *(conector vertical hacia Canales, etiqueta "Activa Setup")*
+2. 🟣 Migración de Bases Históricas: se exporta en formato ZIP/Excel la base temporal de ColocaPayments (usuarios ya validados, solo Guatemala y Panamá) y el repositorio interno de Cartera (validados históricos multipaís) — ambos se cargan en Sumsub.
+3. 🟣 Setup Manual: configuración de Google Sheets y campañas en UserPilot. — *(conector vertical hacia Canales, etiqueta "Activa Setup")*
 4. 🟢 Validar operación manual — *(flecha horizontal índigo: "Ir a Fase 0")*
 
 **Front stage → Canales:**
@@ -43,9 +43,9 @@
 **Front stage → Acciones:** Ninguna intervención visual. Proceso invisible.
 
 **Back stage → Acciones:**
-1. 🟣 1. [PROCESO MANUAL] Definición Operativa en Google Sheets: Google Sheet compartido entre Legal, Admin, Cartera y CRM para centralizar y actualizar a mano los estados de validación — sin integración técnica.
-2. 🟣 2. [NO-CODE] Config Sumsub: prioridad a la existencia legal sobre la detección de IA.
-3. 🟣 3. [MANUAL] Lotes de Despliegue: UserPilot se activa país por país (GT, PA, PY, PE), regulando el volumen para que Financiero/Legal auditen a mano sin colapsar. — *(flecha horizontal índigo: "BS F0")*
+- 🟣 1. [PROCESO MANUAL] Definición operativa en Google Sheets: Legal, Admin, Cartera y CRM comparten un mismo documento donde actualizan a mano los estados de validación — sin usar Zapier, HubSpot ni ninguna integración por API.
+- 🟣 2. [NO-CODE] Config Sumsub: prioridad a la existencia legal sobre la detección de IA.
+- 🟣 3. [NO-CODE] Lotes de Despliegue MVP: se activan las campañas de UserPilot para interceptar usuarios, priorizando los países que hoy no tienen módulo de facturación (Guatemala, Panamá, Paraguay, Perú). Se regula el volumen para que Financiero/Legal puedan auditar a mano sin colapsarse. — *(flecha horizontal índigo: "BS F0")*
 
 **Herramientas:** CRM · UserPilot · Sumsub · Google Sheets.
 
@@ -75,8 +75,8 @@
 2. 🟣 Sutil: Permite navegación total. Usuario puede ignorarlo y seguir comprando. — *(flecha horizontal índigo: "FS F0.5")*
 
 **Back stage → Acciones:**
-1. 🟣 1. [MANUAL] Segmentación visual en UserPilot: filtra por fecha de registro (Nuevos).
-2. 🟣 2. [MANUAL] Envíos programados desde el CRM con correos de educación en seguridad (cadencia/tema por confirmar — Tabla Fase 0.csv solo dice "semanales"). — *(flecha horizontal índigo: "BS F0.5")*
+- 🟣 1. [MANUAL] Segmentación visual en UserPilot: filtra a los usuarios por fecha de registro para aislar a los Nuevos.
+- 🟣 2. [MANUAL] Envíos programados desde el CRM con correos de educación en seguridad (cadencia y tema exactos por confirmar — Tabla Fase 0.csv solo dice "semanales"). — *(flecha horizontal índigo: "BS F0.5")*
 
 **Herramientas:** UserPilot · CRM.
 
@@ -102,17 +102,17 @@
 2. 🔴 Sumsub WebSDK — *(flecha horizontal índigo: "Canales F1")*
 
 **Front stage → Acciones:**
-1. 🔵 Modal Interceptor Recurrente (Spam Visual) — Headline: **"Verifica tu identidad para continuar"**. Body: *"Antes de mover fondos necesitamos confirmar quién eres. Elige el tipo de cuenta que tienes en Dropi para seguir con la verificación."* Botones: **"Soy persona natural"** / **"Soy una empresa"**. El texto no varía entre reapariciones (evita apariencia de manipulación). Sin botón 'X' ni 'Continuar', obliga a ir a Sumsub. ⚠️ Atención Legal y Financiero: este pop-up es ineludible — UserPilot NO puede ser evadido por AdBlockers. Aunque no es un bloqueo a nivel de código backend, intercepta obligatoriamente la pantalla del usuario; si intenta evadirlo, el modal reaparecerá infinitamente hasta que complete la validación. *(tiene un botón de anotación "!" — ver tooltip completo en la sección Back stage de esta misma fase, punto 15 de la tabla de conectores. Copy y justificación de tono: ver `UX-Writing-Modales-UserPilot.md`)* — *(conector vertical hacia Back stage, etiqueta "Tracking")*
+1. 🔵 Modal Interceptor Recurrente (Spam Visual / No-Code) — Headline: **"Verifica tu identidad para continuar"**. Body: *"Antes de mover fondos necesitamos confirmar quién eres. Elige el tipo de cuenta que tienes en Dropi para seguir con la verificación."* Botones: **"Soy persona natural"** / **"Soy una empresa"**. El texto no varía entre reapariciones (evita apariencia de manipulación). Sin botón 'X' ni 'Continuar', obliga a ir a Sumsub. ⚠️ Atención Legal y Financiero: este pop-up es ineludible — UserPilot NO puede ser evadido por AdBlockers. Aunque no es un bloqueo a nivel de código backend, intercepta obligatoriamente la pantalla del usuario; si intenta evadirlo, el modal reaparecerá infinitamente hasta que complete la validación. *(tiene un botón de anotación "!" — ver tooltip completo en la sección Back stage de esta misma fase, punto 15 de la tabla de conectores. Copy y justificación de tono: ver `UX-Writing-Modales-UserPilot.md`)* — *(conector vertical hacia Back stage, etiqueta "Tracking")*
 2. 🟡 **[Decisión/rombo]** Muestra dos opciones ("Soy persona natural" / "Soy una empresa")
 3. 🟣 Auto-cierre y redirección automática — *(flecha horizontal índigo: "FS F1")*
 
 **Back stage → Acciones:**
-1. 🟣 "📝 DOC ENLACES (SUMSUB FORMS):" — caja con anotación (botón "!"), contenido completo:
+- 🟣 "📝 DOC ENLACES (SUMSUB FORMS)" — caja con anotación (botón "!") que define qué le pide Sumsub a cada país y tipo de cuenta:
    - **Tooltip del botón "!":** *"Arranque real del MVP (Consem2, mesa 7-jul): solo Guatemala, Panamá, Paraguay y Perú. El resto de esta lista (MX, VE, CR, Europa) se solicita a Sumsub en el setup pero entra de forma gradual (despliegue gradual, Consem2 punto 6) — no es el arranque. El bloque C (Colombia) está en evaluación, ver su propia nota."*
-   - **A. Largo (GT, PA, PY, PE, MX, VE, CR, Europa):** Nat: Liveness+Documento Identidad+Captura datos fiscales | Emp: Liveness Rep Legal+Búsqueda Empresa+Datos fiscales
-   - **B. Corto (CL, EC, AR):** Nat: Solo Liveness+Documento Identidad | Emp: Solo Liveness Rep Legal+Documento Empresa
-   - **C. Colombia (en evaluación, mesa 7-jul):** Solo KYB Jurídica vía Sumsub — Liveness RL+Cédula RL+Razón Social+NIT+RUT+Cámara. Natural sigue con Truora, fuera de este enlace.
-   - **D. Marcas Blancas (White-label links):** Enlace Sumsub sin branding Dropi. Soporte lo envía manualmente por WhatsApp/Intercom — estos usuarios no reciben pop-ups automáticos de UserPilot. **Atención Soporte/Comercial:** son responsables de enviarlo durante la atención al cliente. — *(flecha horizontal índigo: "BS F1")*
+   - **A. Largo (GT, PA, PY, PE, MX, VE, CR, Europa):** persona natural — prueba de vida (liveness) + documento de identidad + datos fiscales. Empresa — prueba de vida del representante legal + búsqueda de la empresa + datos fiscales.
+   - **B. Corto (CL, EC, AR):** persona natural — solo prueba de vida + documento de identidad. Empresa — solo prueba de vida del representante legal + documento de la empresa.
+   - **C. Colombia (en evaluación, mesa 7-jul):** solo aplica a empresas, vía KYB de Sumsub — prueba de vida del representante legal + cédula del representante legal + razón social + NIT + RUT + cámara de comercio. Las personas naturales siguen validándose con Truora, fuera de este enlace.
+   - **D. Marcas Blancas (White-label links):** enlace de Sumsub sin el branding de Dropi. Soporte lo envía a mano por WhatsApp o Intercom — estos usuarios no reciben pop-ups automáticos de UserPilot. **Atención Soporte/Comercial:** ustedes son responsables de enviarlo durante la atención al cliente. — *(flecha horizontal índigo: "BS F1")*
 
 **Herramientas:** UserPilot · Sumsub WebSDK.
 
@@ -141,9 +141,9 @@
 2. 🟣 Si es Criminal (Sumsub): Baneo total de IP y cuenta. — *(flecha horizontal índigo: "Termina")*
 
 **Back stage → Acciones:**
-1. 🟣 1. Cartera (Andrés Herrera): script Python interno cruza bases de datos para detectar saldo negativo o fraude cruzado por país y así lanzar campañas UserPilot focalizadas.
-2. 🟣 2. Si Sumsub rechaza por delito grave (lavado de activos, listas restrictivas): Legal y Financiero se reúnen y devuelven el dinero del usuario a una cuenta externa.
-3. 🟣 3. Ejecución manual y simultánea del baneo en Colombia, Chile, Ecuador, Perú y Venezuela (match por correo). Bloqueo en registro/login con correo baneado: aún sin pantalla propia (RN-16/17). — *(flecha horizontal índigo: "Termina")*
+- 🟣 1. Cartera (Andrés Herrera) corre un script interno en Python que cruza bases de datos para detectar saldo negativo o fraude por país, y con eso lanza campañas focalizadas en UserPilot.
+- 🟣 2. Si Sumsub rechaza el caso por un delito grave (lavado de activos, listas restrictivas), Legal y Financiero se reúnen y devuelven el dinero del usuario a una cuenta externa.
+- 🟣 3. El baneo se ejecuta a mano y al mismo tiempo en Colombia, Chile, Ecuador, Perú y Venezuela (cruzando por correo). El bloqueo en registro o login con correo baneado todavía no tiene pantalla propia (regla de negocio RN-16/17, pendiente de diseño). — *(flecha horizontal índigo: "Termina")*
 
 **Herramientas:** UserPilot · Python (Cartera).
 
@@ -172,13 +172,13 @@
 2. 🔵 🟦 PENDIENTE: Modal muestra **"Tu verificación sigue en proceso"** — *"Puede tardar hasta 72 horas hábiles. Te avisaremos por correo apenas esté lista — no necesitas hacer nada más."* Botón: **"Entendido"**. 🟥 RECHAZADO: Modal muestra **"No pudimos verificar tu identidad"** — *"Por seguridad, restringimos las operaciones de esta cuenta. Si crees que es un error, contáctanos y lo revisamos."* Botón: **"Contactar a soporte"** — luego expulsión (ver Fase 1). *(Copy y justificación de tono: ver `UX-Writing-Modales-UserPilot.md`)*
 
 **Back stage → Acciones:**
-1. 🟣 1. **[PROCESO 100% MANUAL — EL CUELLO DE BOTELLA]**
+- 🟣 1. **[PROCESO 100% MANUAL — EL CUELLO DE BOTELLA]**
    - **Descarga:** Legal descarga los estados desde el backoffice de Sumsub.
    - **Actualización en Google Sheets:** Legal actualiza a mano el Google Sheet compartido, marcando quién está Aprobado, Pendiente o Rechazado.
-   - **Ejecución:** Admin revisa el Sheet y actualiza manualmente UserPilot para apagar el pop-up a los Aprobados · CRM revisa el Sheet para saber a quién (Pendientes) reenviarle mensajes insistiendo en la validación · Financiero revisa el Sheet para validar datos tributarios cruzados vs. Dropi.
-   - **Capacidad:** el lanzamiento es país por país (ver "Lotes de Despliegue", PRE-FASE) — Financiero/Legal avisan si se acumulan pendientes, para pausar campañas de UserPilot.
-2. 🟣 2. ⚠️ Regla de SLA para Soporte: al ser una actualización 100% manual por Google Sheets, el pop-up no desaparece de inmediato. Soporte debe avisar a los usuarios validados que la actualización en pantalla puede tardar entre 48 y 72 horas hábiles.
-3. 🟣 3. Soporte (Daniela/Juan): Desbanea cuenta si es falso positivo.
+   - **Ejecución:** con base en ese Sheet, Admin apaga el pop-up de UserPilot a los Aprobados, CRM reenvía mensajes a los Pendientes insistiendo en la validación, y Financiero audita los datos tributarios cruzados contra Dropi.
+   - **Capacidad:** el lanzamiento es país por país (ver "Lotes de Despliegue", PRE-FASE). Si se acumulan pendientes, Financiero o Legal avisan para pausar las campañas de UserPilot.
+- 🟣 2. ⚠️ SLA para Soporte: como la actualización es 100% manual por Google Sheets, el pop-up no desaparece apenas se aprueba. Soporte debe avisarle a los usuarios ya validados que la pantalla puede tardar entre 48 y 72 horas hábiles en actualizarse.
+- 🟣 3. Soporte (Daniela/Juan) desbanea la cuenta si resulta ser un falso positivo.
 
 **Herramientas:** Sumsub Backoffice · Google Sheets · UserPilot · CRM.
 
@@ -197,14 +197,14 @@ Cada fila representa una flecha vertical (teal) que va de una caja de una fila a
 
 | # | Fase | Fila origen | Caja origen (texto) | Etiqueta de la flecha | Fila destino | Caja destino (texto) |
 |---|---|---|---|---|---|---|
-| 1 | PRE-FASE | Tarea | Setup manual: CRM + UserPilot | Activa Setup | Canales | UserPilot (id `userpilot-pre`) |
+| 1 | PRE-FASE | Tarea | Setup Manual: Google Sheets + UserPilot | Activa Setup | Canales | UserPilot (id `userpilot-pre`) |
 | 2 | FASE 0 | Tarea | Inicio (círculo) | Inicia Onboarding | Canales | UserPilot (id `userpilot-fase0`) |
 | 3 | FASE 0.5 | Tarea | Clic: "Transferir Wallet", "Registro de Datos Bancarios" o "Solicitud DropiCard" | Intercepta Clic | Canales | UserPilot (id `userpilot-fase05`) |
 | 4 | FASE 1 | Tarea | Intenta Ejecutar Retiro o Envío | Atrapa Solicitud | Canales | UserPilot (id `userpilot-fase1`) |
 | 5 | FASE CONTINUA | Tarea | Inicio (círculo) | Solicita Datos | Canales | Sumsub Backoffice (id `sumsub-continua`) |
 | 6 | PRE-FASE | Canales | CRM (ícono correo) | Silenciado | Back stage Acciones | 1. Google Sheets compartido... (id `piloto-tecnico`) |
 | 7 | PRE-FASE | Canales | UserPilot (id `userpilot-pre`) | Silenciado | Back stage Acciones | 2. Config Sumsub... (id `config-sumsub`) |
-| 8 | FASE 0 | Canales | UserPilot (id `userpilot-fase0`) | Muestra Banner | Front Acciones | Panel Lateral: "Completa tus datos" (id `panel-lateral`) |
+| 8 | FASE 0 | Canales | UserPilot (id `userpilot-fase0`) | Muestra Banner | Front Acciones | Panel Lateral: "Verifica tu cuenta cuando quieras" (id `panel-lateral`) |
 | 9 | FASE 0.5 | Canales | UserPilot (id `userpilot-fase05`) | Despliega | Front Acciones | Modal Interceptor Recurrente/Spam Visual... (id `modal-optimizado`) |
 | 10 | FASE 1 | Canales | UserPilot (id `userpilot-fase1`) | Bloquea | Front Acciones | Modal Pantalla Completa... (id `modal-pantalla`) |
 | 11 | FASE CONTINUA | Canales | Sumsub Backoffice (id `sumsub-continua`) | Datos | Front Acciones | 🟩 APROBADO... (id `aprobado`) |
@@ -221,7 +221,7 @@ Estas son las flechas índigo que van de una caja a la siguiente caja de la mism
 |---|---|---|---|---|
 | PRE-FASE | Tarea | Validar operación manual | Ir a Fase 0 | pasa a la columna FASE 0 |
 | PRE-FASE | Canales | Sumsub | Canales F0 | pasa a Canales de FASE 0 |
-| PRE-FASE | Back stage Acciones | 3. Lotes de Despliegue | BS F0 | pasa a Back stage de FASE 0 |
+| PRE-FASE | Back stage Acciones | 3. Lotes de Despliegue MVP | BS F0 | pasa a Back stage de FASE 0 |
 | FASE 0 | Tarea | Genera Primera Orden (Venta) | Ir a Fase 0.5 | pasa a la columna FASE 0.5 |
 | FASE 0 | Canales | Correo (CRM) | Canales F0.5 | pasa a Canales de FASE 0.5 |
 | FASE 0 | Front Acciones | Sutil: permite navegación total | FS F0.5 | pasa a Front Acciones de FASE 0.5 |
@@ -232,7 +232,7 @@ Estas son las flechas índigo que van de una caja a la siguiente caja de la mism
 | FASE 0.5 | Back stage Acciones | C. Colombia (bloque completo) | BS F1 | pasa a Back stage de FASE 1 |
 | FASE 1 | Canales | (caja "Termina" junto a UserPilot) | Termina | fin de flujo en esta rama |
 | FASE 1 | Front Acciones | Si es Criminal (Sumsub): Baneo total | Termina | fin de flujo en esta rama |
-| FASE 1 | Back stage Acciones | 3. Ejecución manual y simultánea del baneo | Termina | fin de flujo en esta rama |
+| FASE 1 | Back stage Acciones | 3. El baneo se ejecuta a mano y al mismo tiempo | Termina | fin de flujo en esta rama |
 
 ## Notas finales
 
