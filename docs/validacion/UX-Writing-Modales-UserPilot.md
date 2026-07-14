@@ -23,8 +23,8 @@ El tono debe subir en firmeza a medida que sube la coerción, pero **nunca cruza
 
 | Elemento | Copy |
 |---|---|
-| Headline | **Verifica tu cuenta** |
-| Body | Es parte de tu seguridad: nos ayuda a conocerte y a mantener tu cuenta al día. |
+| Headline | **Verifiquemos tu cuenta** |
+| Body | Así te conocemos mejor y cuidamos tu cuenta como se debe. |
 | Botón primario | **Verificar ahora** |
 | Botón secundario / cierre | Ícono X con `aria-label="Cerrar, verificar más tarde"` |
 
@@ -33,9 +33,10 @@ El tono debe subir en firmeza a medida que sube la coerción, pero **nunca cruza
 - V2: "Hacerlo ahora evita que tengas que detenerte más adelante para retirar tu dinero o pedir tu DropiCard." — mencionaba "DropiCard", un producto que un usuario recién llegado al Home todavía no conoce, porque no ha hecho ninguna venta.
 - V3: "Hazlo ahora y ahórrate pasos el día que quieras sacar el dinero de tus ventas." — ya no menciona DropiCard, pero seguía dando por hecho que el usuario *va a* vender y *va a* querer retirar. Un usuario nuevo no sabe todavía si eso le va a pasar.
 - V4: quita cualquier promesa sobre el futuro del usuario del body. El motivo ya no es "esto te va a servir después", sino algo que es verdad hoy mismo: es parte de su seguridad y le sirve a Dropi para conocerlo. Pero el headline todavía decía "Verifica tu cuenta cuando quieras" — "cuando quieras" suena a "esto no importa, hazlo si te da la gana", lo que reduce que alguien realmente lo haga.
-- V5 (actual): quita "cuando quieras" del headline. Queda **"Verifica tu cuenta"** — directo, sin calificar el tiempo. La urgencia real ("ahora") vive solo en el botón ("Verificar ahora"), no en el título; así el título no le da al usuario un permiso implícito para posponerlo indefinidamente.
+- V5: quita "cuando quieras" del headline. Queda "Verifica tu cuenta" — directo, sin calificar el tiempo. La urgencia real ("ahora") vive solo en el botón ("Verificar ahora"), no en el título.
+- V6 (actual): mismo criterio (sin promesas de futuro, sin "cuando quieras", sin beneficios listados), pero con un tono más cálido e invitacional. Headline pasa de imperativo ("Verifica") a colaborativo ("Verifiquemos") — invita en lugar de ordenar. El body cambia de un registro administrativo ("mantener tu cuenta al día") a uno más humano ("cuidamos tu cuenta como se debe"), sin agregar ninguna promesa de beneficio (no dice "para que puedas...", solo describe lo que Dropi hace por seguridad y por conocer al usuario).
 
-**Justificación de tono:** es un nudge, no un bloqueo — el usuario puede seguir navegando y comprando sin fricción, y el botón X sigue estando disponible. Pero el headline no debe sugerir que la acción es indiferente en el tiempo: un título neutro ("Verifica tu cuenta") invita sin prometer que da igual cuándo se haga, mientras el botón concentra la urgencia ("Verificar ahora"). Nada de urgencia artificial en el body: sería inconsistente con que el propio flujo permita ignorarlo con el botón X. Al ser el primer contacto del usuario con Dropi, el copy no debe asumir vocabulario de producto ("DropiCard") ni comportamientos futuros que el usuario no puede confirmar todavía ("vas a necesitar esto para retirar") — en su lugar, el motivo se ancla en dos hechos ciertos hoy: seguridad y que Dropi lo conozca.
+**Justificación de tono:** es un nudge, no un bloqueo — el usuario puede seguir navegando y comprando sin fricción, y el botón X sigue estando disponible. El headline colaborativo ("Verifiquemos") sugiere que es algo que se hace junto con Dropi, no un trámite unilateral que se le impone al usuario — eso lo hace más atractivo sin necesidad de vender un beneficio. La urgencia sigue concentrada en el botón ("Verificar ahora"); ni el headline ni el body prometen nada a futuro ni listan ventajas — solo explican, en tono cercano, que es por seguridad y para que Dropi conozca al usuario. Al ser el primer contacto con la plataforma, el copy tampoco asume vocabulario de producto ("DropiCard") ni comportamientos futuros que el usuario no puede confirmar todavía ("vas a necesitar esto para retirar").
 
 **Nota importante — este banner no reemplaza el interceptor de Fase 0.5:** si el usuario Nuevo hace clic en "Transferir Wallet", "Registro de Datos Bancarios" o "Solicitud DropiCard" antes de verificarse (es decir, sí intenta una de esas acciones), recibe el mismo modal interceptor recurrente que un usuario Activo — ver sección 2. El banner de Fase 0 es solo un nudge pasivo mientras el usuario no toca esos botones; en el momento en que los toca, el disparador es la acción, no su antigüedad como usuario.
 

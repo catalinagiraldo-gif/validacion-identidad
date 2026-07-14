@@ -71,7 +71,7 @@
 2. ⚪ Correo (CRM) (ícono de correo) — *(flecha horizontal índigo: "Canales F0.5")*
 
 **Front stage → Acciones:**
-1. 🔵 Panel Lateral (aparece al entrar al Home por primera vez) — Headline: **"Verifica tu cuenta"**. Body: *"Es parte de tu seguridad: nos ayuda a conocerte y a mantener tu cuenta al día."* Botón: **"Verificar ahora"**. Ocupa 25% de pantalla, con botón 'X' visible (`aria-label="Cerrar, verificar más tarde"`). *(Sin incentivo monetario aquí — es solo pedagógico. El bono de fletes, masterclasses y "Kit Dropi" es exclusivo de "Semana de la Seguridad" en Fase 0.5/Activos-Riesgo. Fuente: mesa 7-jul, Consideraciones.md. Copy ajustada: no se menciona "DropiCard" ni "retirar" — un usuario que recién entra al Home no sabe si va a usar eso algún día, así que el motivo no es "lo vas a necesitar" sino su seguridad y que Dropi lo conozca. Justificación completa: ver `UX-Writing-Modales-UserPilot.md`)*
+1. 🔵 Panel Lateral (aparece al entrar al Home por primera vez) — Headline: **"Verifiquemos tu cuenta"**. Body: *"Así te conocemos mejor y cuidamos tu cuenta como se debe."* Botón: **"Verificar ahora"**. Ocupa 25% de pantalla, con botón 'X' visible (`aria-label="Cerrar, verificar más tarde"`). *(Sin incentivo monetario aquí — es solo pedagógico. El bono de fletes, masterclasses y "Kit Dropi" es exclusivo de "Semana de la Seguridad" en Fase 0.5/Activos-Riesgo. Fuente: mesa 7-jul, Consideraciones.md. Copy ajustada: no se menciona "DropiCard" ni "retirar" — un usuario que recién entra al Home no sabe si va a usar eso algún día, así que el motivo no es "lo vas a necesitar" sino su seguridad y que Dropi lo conozca. Justificación completa: ver `UX-Writing-Modales-UserPilot.md`)*
 2. 🟣 Sutil: Permite navegación total. Usuario puede ignorarlo y seguir comprando — pero si hace clic en "Transferir Wallet", "Registro de Datos Bancarios" o "Solicitud DropiCard" antes de verificarse, salta directo al modal interceptor de Fase 0.5: mismo trato que un usuario Activo, sin importar que sea Nuevo. — *(flecha horizontal índigo: "FS F0.5")*
 
 **Back stage → Acciones:**
@@ -204,7 +204,7 @@ Cada fila representa una flecha vertical (teal) que va de una caja de una fila a
 | 5 | FASE CONTINUA | Tarea | Inicio (círculo) | Solicita Datos | Canales | Sumsub Backoffice (id `sumsub-continua`) |
 | 6 | PRE-FASE | Canales | CRM (ícono correo) | Silenciado | Back stage Acciones | 1. Google Sheets compartido... (id `piloto-tecnico`) |
 | 7 | PRE-FASE | Canales | UserPilot (id `userpilot-pre`) | Silenciado | Back stage Acciones | 2. Config Sumsub... (id `config-sumsub`) |
-| 8 | FASE 0 | Canales | UserPilot (id `userpilot-fase0`) | Muestra Banner | Front Acciones | Panel Lateral: "Verifica tu cuenta" (id `panel-lateral`) |
+| 8 | FASE 0 | Canales | UserPilot (id `userpilot-fase0`) | Muestra Banner | Front Acciones | Panel Lateral: "Verifiquemos tu cuenta" (id `panel-lateral`) |
 | 9 | FASE 0.5 | Canales | UserPilot (id `userpilot-fase05`) | Despliega | Front Acciones | Modal Interceptor Recurrente/Spam Visual... (id `modal-optimizado`) |
 | 10 | FASE 1 | Canales | UserPilot (id `userpilot-fase1`) | Bloquea | Front Acciones | Modal Pantalla Completa... (id `modal-pantalla`) |
 | 11 | FASE CONTINUA | Canales | Sumsub Backoffice (id `sumsub-continua`) | Datos | Front Acciones | 🟩 APROBADO... (id `aprobado`) |
