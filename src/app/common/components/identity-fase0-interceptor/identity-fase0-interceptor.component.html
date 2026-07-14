@@ -1,0 +1,32 @@
+@if (fase0.interceptorOpen()) {
+  <div class="fase0-interceptor" role="dialog" aria-modal="true" aria-labelledby="fase0-interceptor-title">
+    <div class="fase0-interceptor__backdrop"></div>
+
+    <div class="fase0-interceptor__card">
+      @if (fase0.redirecting()) {
+        <div class="fase0-interceptor__redirect">
+          <span class="fase0-interceptor__spinner" aria-hidden="true"></span>
+          <p class="fase0-interceptor__redirect-text">Redirigiendo a Sumsub…</p>
+        </div>
+      } @else {
+        <div class="fase0-interceptor__body">
+          <div class="fase0-interceptor__icon" aria-hidden="true">
+            <i class="pi pi-shield"></i>
+          </div>
+          <h2 id="fase0-interceptor-title" class="fase0-interceptor__headline">
+            Verifica tu identidad para continuar
+          </h2>
+          <p class="fase0-interceptor__text">
+            Antes de mover fondos necesitamos confirmar quién eres. Te llevamos a completar la verificación.
+          </p>
+        </div>
+
+        <div class="fase0-interceptor__footer">
+          <button type="button" class="fase0-interceptor__cta" (click)="continuar()">
+            Continuar a verificación
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+}

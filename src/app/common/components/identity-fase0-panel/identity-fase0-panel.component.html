@@ -1,0 +1,25 @@
+@if (isVisible()) {
+  <aside class="fase0-panel" role="complementary" aria-label="Verifica tu cuenta">
+    <button
+      type="button"
+      class="fase0-panel__close"
+      aria-label="Cerrar, verificar más tarde"
+      (click)="dismiss()"
+    >
+      <i class="pi pi-times"></i>
+    </button>
+
+    <div class="fase0-panel__body">
+      <div class="fase0-panel__icon" aria-hidden="true">
+        <i class="pi pi-shield"></i>
+      </div>
+      <h2 class="fase0-panel__headline">Verifica tu cuenta</h2>
+      <p class="fase0-panel__text">
+        En Dropi lo necesitamos para confirmar quién eres y mantener la plataforma segura.
+      </p>
+      <button type="button" class="fase0-panel__cta" (click)="verificarAhora()">
+        Verificar ahora
+      </button>
+    </div>
+  </aside>
+}

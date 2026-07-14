@@ -1,0 +1,122 @@
+@use 'styles/variables-new' as *;
+
+// Verde WhatsApp dentro del rango de tokens del DS (usamos $success-500).
+$wa-green: $success-500;
+$wa-bubble: #dcf8c6; // burbuja saliente clásica de WhatsApp (tono claro dentro de la familia verde)
+
+.crm-toast {
+  position: fixed;
+  right: $space-6;
+  bottom: $space-6;
+  z-index: 1450;
+  width: 340px;
+  max-width: calc(100vw - #{$space-8});
+  display: flex;
+  flex-direction: column;
+  background: $neutral-white;
+  border-radius: $radius-3;
+  box-shadow: $shadow-medium;
+  overflow: hidden;
+  font-family: $font-primary;
+  animation: crm-toast-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes crm-toast-in {
+  from { transform: translateY(16px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1);       opacity: 1; }
+}
+
+.crm-toast__header {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-3 $space-3 $space-3 $space-4;
+  background: $wa-green;
+}
+
+.crm-toast__avatar {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($neutral-white, 0.24);
+  color: $neutral-white;
+
+  i { font-size: $font-lg; }
+}
+
+.crm-toast__meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.crm-toast__brand {
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  color: $neutral-white;
+}
+
+.crm-toast__channel {
+  font-size: $font-xs;
+  color: rgba($neutral-white, 0.85);
+}
+
+.crm-toast__close {
+  margin-left: auto;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba($neutral-white, 0.9);
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover { background: rgba($neutral-white, 0.2); }
+  i { font-size: $font-sm; }
+}
+
+.crm-toast__bubble {
+  margin: $space-4;
+  padding: $space-3 $space-4;
+  align-self: flex-start;
+  max-width: 92%;
+  background: $wa-bubble;
+  border-radius: $radius-2;
+  border-top-left-radius: $radius-1;
+  box-shadow: $shadow-small;
+}
+
+.crm-toast__text {
+  margin: 0;
+  font-size: $font-sm;
+  color: $gray-800;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.crm-toast__time {
+  display: block;
+  margin-top: $space-1;
+  text-align: right;
+  font-size: 11px;
+  color: $gray-400;
+}
+
+// Responsive.
+@media (max-width: $bp-sm) {
+  .crm-toast {
+    right: $space-3;
+    left: $space-3;
+    bottom: $space-3;
+    width: auto;
+    max-width: none;
+  }
+}

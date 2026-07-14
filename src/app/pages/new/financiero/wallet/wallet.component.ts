@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IdentityDemoStateService } from '../../../../common/services/identity-demo-state.service';
 import { IdentityModalService } from '../../../../common/services/identity-modal.service';
+import { IdentityFase0Service } from '../../../../common/services/identity-fase0.service';
 import { IdentitySoftBannerComponent } from '../../../../common/components/identity-soft-banner/identity-soft-banner.component';
 import { IdentityMigrationBannerComponent } from '../../../../common/components/identity-migration-banner/identity-migration-banner.component';
 
@@ -257,6 +258,7 @@ interface Transaction {
 export class WalletNewComponent {
   private stateSvc = inject(IdentityDemoStateService);
   private modalSvc = inject(IdentityModalService);
+  private fase0 = inject(IdentityFase0Service);
 
   /** Transferencias entre wallets se bloquean igual que retiros/DropiCard (regla de negocio, Plan2.md). */
   readonly transferBloqueado = computed(() => !this.stateSvc.isApproved());
@@ -545,6 +547,8 @@ export class WalletNewComponent {
   }
 
   onTransferir(): void {
+    // Fase 0: transferir = Etapa 0.5 (interceptor, nunca bloqueo). fase1+ intacto.
+    if (this.fase0.tryIntercept('wallet', false)) return;
     if (!this.stateSvc.isApproved()) {
       this.modalSvc.open('wallet', 'screen0');
     }
@@ -552,6 +556,8 @@ export class WalletNewComponent {
   }
 
   onRetirar(): void {
+    // Fase 0: retiro = puede ser bloqueo Etapa 1 si saldo negativo/fraude. fase1+ intacto.
+    if (this.fase0.tryIntercept('retiro', true)) return;
     if (!this.stateSvc.isApproved()) {
       this.modalSvc.open('retiro', 'screen0');
     }

@@ -8,6 +8,7 @@ import {
 } from '../../../common/services/identity-demo-state.service';
 import { PaisPersona, IdentitySatelliteStatus } from '../../../common/models/identity-flow.models';
 import { IdentityDemoStateV2Service } from '../../../common/services/identity-demo-state-v2.service';
+import { IdentityFase0Service } from '../../../common/services/identity-fase0.service';
 import {
   FaseProyecto,
   FASES_PROYECTO,
@@ -17,6 +18,9 @@ import {
   TipoPersonaV2,
   SegmentoUsuario,
   SEGMENTOS_USUARIO,
+  Fase0ResultKind,
+  Fase0CrmKind,
+  MotivoPendiente,
 } from '../../../common/models/identity-flow-v2.models';
 
 // Controles del demo-panel extendidos según Plan2.md Parte 7: dos filas
@@ -72,6 +76,7 @@ const SEGMENTO_LABELS: Record<SegmentoUsuario, string> = {
 export class PrototypeDemoPanelComponent {
   private stateSvc = inject(IdentityDemoStateService);
   private stateV2  = inject(IdentityDemoStateV2Service);
+  private fase0    = inject(IdentityFase0Service);
 
   collapsed = signal(false);
 
@@ -130,6 +135,27 @@ export class PrototypeDemoPanelComponent {
     if (m === 'sumsub') return { icon: '🔵', label: 'Sumsub' };
     return { icon: '🟡', label: 'Gestión manual — Backoffice' };
   });
+
+  // --- Controles Fase 0 (Service Blueprint Fase 0) ---
+  readonly showFase0Controls = computed(() => this.faseProyecto() === 'fase0');
+  readonly saldoNegativoFraude = this.stateV2.saldoNegativoFraude;
+  readonly motivoPendiente = this.stateV2.motivoPendiente;
+  readonly statusV2 = this.stateV2.status;
+  readonly showMotivoPendiente = computed(() => this.stateV2.status() === 'pendiente');
+
+  readonly resultadoFase0Options: Array<{ kind: Fase0ResultKind; label: string }> = [
+    { kind: 'aprobado',            label: 'Aprobado' },
+    { kind: 'revision-financiero', label: 'Pendiente: revisión financiero' },
+    { kind: 'incompleta',          label: 'Pendiente: incompleta' },
+    { kind: 'rechazado',           label: 'Rechazado' },
+  ];
+
+  readonly crmFase0Options: Array<{ kind: Fase0CrmKind; label: string }> = [
+    { kind: 'recordatorio',        label: 'Recordatorio Etapa 0' },
+    { kind: 'aprobado',            label: 'Aprobado' },
+    { kind: 'revision-financiero', label: 'Revisión financiero' },
+    { kind: 'incompleta',          label: 'Incompleta' },
+  ];
 
   readonly showEmailBaneadoToggle = computed(() => this.faseProyecto() !== 'fase0');
   readonly showRepLegalToggle = computed(() => {
@@ -193,6 +219,48 @@ export class PrototypeDemoPanelComponent {
       const pp = tipo === 'juridica' ? PAIS_JURIDICA_MAP[pais] : PAIS_NATURAL_MAP[pais];
       this.stateSvc.setPaisPersona(pp);
     }
+  }
+
+  // --- Acciones de los controles Fase 0 ---
+
+  toggleSaldoNegativoFraude(): void {
+    const next = !this.saldoNegativoFraude();
+    this.stateV2.setSaldoNegativoFraude(next);
+    // Al apagar el segmento, resetea un bloqueo full-screen que estuviera activo.
+    if (!next) {
+      this.fase0.closeBlock();
+    }
+  }
+
+  setMotivoPendiente(motivo: MotivoPendiente): void {
+    this.stateV2.setMotivoPendiente(motivo);
+  }
+
+  /** Setea el estado coherente y dispara el modal de resultado de Etapa Continua. */
+  showResultadoFase0(kind: Fase0ResultKind): void {
+    switch (kind) {
+      case 'aprobado':
+        this.stateV2.setStatus('aprobado');
+        this.stateV2.setMotivoPendiente(null);
+        break;
+      case 'revision-financiero':
+        this.stateV2.setStatus('pendiente');
+        this.stateV2.setMotivoPendiente('revision-financiero');
+        break;
+      case 'incompleta':
+        this.stateV2.setStatus('pendiente');
+        this.stateV2.setMotivoPendiente('incompleta');
+        break;
+      case 'rechazado':
+        this.stateV2.setStatus('rechazado');
+        this.stateV2.setMotivoPendiente(null);
+        break;
+    }
+    this.fase0.showResult(kind);
+  }
+
+  simularCrm(kind: Fase0CrmKind): void {
+    this.fase0.showCrmMessage(kind);
   }
 
   toggleEmailBaneado(): void {

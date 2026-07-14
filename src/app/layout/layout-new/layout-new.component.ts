@@ -7,6 +7,10 @@ import { FabMenuComponent } from '../fab-menu/fab-menu.component';
 import { DropiToastComponent } from '../../common/components/dropi-toast/dropi-toast.component';
 import { PrototypeDemoPanelComponent } from './demo-panel/prototype-demo-panel.component';
 import { IdentitySumsubModalComponent } from '../../common/components/identity-sumsub-modal/identity-sumsub-modal.component';
+import { IdentityFase0InterceptorComponent } from '../../common/components/identity-fase0-interceptor/identity-fase0-interceptor.component';
+import { IdentityFase0BlockComponent } from '../../common/components/identity-fase0-block/identity-fase0-block.component';
+import { IdentityFase0ResultComponent } from '../../common/components/identity-fase0-result/identity-fase0-result.component';
+import { IdentityFase0CrmToastComponent } from '../../common/components/identity-fase0-crm-toast/identity-fase0-crm-toast.component';
 
 @Component({
   selector: 'app-layout-new',
@@ -20,6 +24,10 @@ import { IdentitySumsubModalComponent } from '../../common/components/identity-s
     DropiToastComponent,
     PrototypeDemoPanelComponent,
     IdentitySumsubModalComponent,
+    IdentityFase0InterceptorComponent,
+    IdentityFase0BlockComponent,
+    IdentityFase0ResultComponent,
+    IdentityFase0CrmToastComponent,
   ],
   template: `
     <div class="layout-new">
@@ -34,6 +42,10 @@ import { IdentitySumsubModalComponent } from '../../common/components/identity-s
       <app-fab-menu />
       <app-dropi-toast />
       <app-identity-sumsub-modal />
+      <app-identity-fase0-interceptor />
+      <app-identity-fase0-block />
+      <app-identity-fase0-result />
+      <app-identity-fase0-crm-toast />
     </div>
   `,
   styleUrl: './layout-new.component.scss',

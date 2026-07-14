@@ -1,0 +1,138 @@
+@use 'styles/variables-new' as *;
+
+.fase0-interceptor {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-4;
+  font-family: $font-primary;
+}
+
+.fase0-interceptor__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba($gray-900, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.fase0-interceptor__card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 460px;
+  max-height: calc(100vh - #{$space-8});
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: $neutral-white;
+  border-radius: $radius-3;
+  box-shadow: $shadow-medium;
+  animation: fase0-interceptor-in 0.28s ease both;
+}
+
+@keyframes fase0-interceptor-in {
+  from { transform: translateY(12px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1);       opacity: 1; }
+}
+
+.fase0-interceptor__body {
+  padding: $space-8 $space-8 $space-6;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $space-4;
+}
+
+.fase0-interceptor__icon {
+  width: 60px;
+  height: 60px;
+  border-radius: $radius-3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($primary-500, 0.12);
+  color: $primary-600;
+
+  i { font-size: $font-3xl; }
+}
+
+.fase0-interceptor__headline {
+  margin: 0;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  line-height: 1.25;
+}
+
+.fase0-interceptor__text {
+  margin: 0;
+  font-size: $font-base;
+  color: $gray-600;
+  line-height: 1.5;
+}
+
+.fase0-interceptor__footer {
+  flex-shrink: 0;
+  padding: $space-4 $space-8 $space-8;
+  display: flex;
+}
+
+.fase0-interceptor__cta {
+  flex: 1;
+  padding: $space-3 $space-6;
+  border: none;
+  border-radius: $radius-2;
+  background: $primary-500;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+
+  &:hover { background: $primary-600; }
+  &:active { transform: translateY(1px); }
+}
+
+// Transición de redirección a Sumsub.
+.fase0-interceptor__redirect {
+  padding: $space-10 $space-8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-5;
+}
+
+.fase0-interceptor__spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgba($primary-500, 0.2);
+  border-top-color: $primary-500;
+  animation: fase0-spin 0.8s linear infinite;
+}
+
+@keyframes fase0-spin {
+  to { transform: rotate(360deg); }
+}
+
+.fase0-interceptor__redirect-text {
+  margin: 0;
+  font-size: $font-lg;
+  font-weight: $font-medium;
+  color: $gray-700;
+}
+
+// Responsive.
+@media (max-width: $bp-sm) {
+  .fase0-interceptor__body { padding: $space-6 $space-4 $space-4; }
+  .fase0-interceptor__footer { padding: $space-4; }
+  .fase0-interceptor__headline { font-size: $font-xl; }
+  .fase0-interceptor__redirect { padding: $space-8 $space-4; }
+}

@@ -1,0 +1,106 @@
+@use 'styles/variables-new' as *;
+
+.fase0-result {
+  position: fixed;
+  inset: 0;
+  z-index: 1350;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-4;
+  font-family: $font-primary;
+}
+
+.fase0-result__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba($gray-900, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.fase0-result__card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $space-4;
+  padding: $space-8;
+  background: $neutral-white;
+  border-radius: $radius-3;
+  box-shadow: $shadow-medium;
+  border-top: 4px solid $gray-200;
+  animation: fase0-result-in 0.28s ease both;
+
+  &--aprobado   { border-top-color: $success-500; }
+  &--info       { border-top-color: $info-500; }
+  &--incompleta { border-top-color: $warning-500; }
+  &--rechazado  { border-top-color: $error-500; }
+}
+
+@keyframes fase0-result-in {
+  from { transform: translateY(12px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1);       opacity: 1; }
+}
+
+.fase0-result__icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  i { font-size: $font-3xl; }
+
+  &--aprobado   { background: rgba($success-500, 0.14); color: $success-500; }
+  &--info       { background: rgba($info-500, 0.14);    color: $info-500; }
+  &--incompleta { background: rgba($warning-500, 0.16); color: $warning-500; }
+  &--rechazado  { background: rgba($error-500, 0.14);   color: $error-500; }
+}
+
+.fase0-result__headline {
+  margin: 0;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  line-height: 1.25;
+}
+
+.fase0-result__text {
+  margin: 0;
+  font-size: $font-base;
+  color: $gray-600;
+  line-height: 1.5;
+}
+
+.fase0-result__cta {
+  margin-top: $space-2;
+  padding: $space-3 $space-8;
+  border: none;
+  border-radius: $radius-2;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.15s ease;
+
+  &:active { transform: translateY(1px); }
+  &:hover { filter: brightness(0.94); }
+
+  &--info       { background: $info-500; }
+  &--incompleta { background: $primary-500; }
+  &--rechazado  { background: $error-500; }
+}
+
+// Responsive.
+@media (max-width: $bp-sm) {
+  .fase0-result__card { padding: $space-6 $space-4; }
+  .fase0-result__headline { font-size: $font-xl; }
+  .fase0-result__cta { width: 100%; }
+}

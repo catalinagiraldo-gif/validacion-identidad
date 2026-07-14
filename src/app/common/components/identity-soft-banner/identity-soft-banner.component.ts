@@ -1,6 +1,7 @@
 import { Component, Input, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IdentityDemoStateService } from '../../services/identity-demo-state.service';
+import { IdentityDemoStateV2Service } from '../../services/identity-demo-state-v2.service';
 import { IdentityModalService, OrigenModal } from '../../services/identity-modal.service';
 
 export type BannerVariant = 'pedidos' | 'home' | 'wallet';
@@ -16,12 +17,16 @@ export class IdentitySoftBannerComponent {
   @Input() variant: BannerVariant = 'home';
 
   private stateSvc = inject(IdentityDemoStateService);
+  private stateV2 = inject(IdentityDemoStateV2Service);
   private modalSvc = inject(IdentityModalService);
 
   dismissed = signal(false);
 
+  // En Fase 0 el banner monetario desaparece (blueprint Etapa 0: el Panel Lateral
+  // cubre el rol pedagógico, sin gancho monetario). En fase1+ queda intacto.
   readonly isVisible = computed(() =>
     !this.dismissed() &&
+    this.stateV2.faseProyecto() !== 'fase0' &&
     this.stateSvc.showSoftTouchpoints()
   );
 

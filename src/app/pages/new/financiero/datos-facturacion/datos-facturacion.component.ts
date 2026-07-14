@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IdentityDemoStateService } from '../../../../common/services/identity-demo-state.service';
 import { IdentityModalService } from '../../../../common/services/identity-modal.service';
+import { IdentityFase0Service } from '../../../../common/services/identity-fase0.service';
 import { IdentityDemoStateV2Service } from '../../../../common/services/identity-demo-state-v2.service';
 import { PAIS_BILLING_FIELDS, PAISES_9, Pais9, TipoPersonaV2 } from '../../../../common/models/identity-flow-v2.models';
 
@@ -337,6 +338,7 @@ function limpiarNumeroDocumento(v: string): string {
 export class DatosFacturacionNewComponent {
   private stateSvc = inject(IdentityDemoStateService);
   private modalSvc = inject(IdentityModalService);
+  private fase0    = inject(IdentityFase0Service);
   private stateV2  = inject(IdentityDemoStateV2Service);
 
   readonly flagCo      = FLAG_CO;
@@ -445,6 +447,8 @@ export class DatosFacturacionNewComponent {
   }
 
   abrirModal(): void {
+    // Fase 0: editar datos de facturación es un trigger de Etapa 0.5 (interceptor). fase1+ intacto.
+    if (this.fase0.tryIntercept('facturacion', false)) return;
     this.modalSvc.open('facturacion', 'screen0');
   }
 

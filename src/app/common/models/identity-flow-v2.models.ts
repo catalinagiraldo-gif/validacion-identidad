@@ -268,3 +268,18 @@ export const ESTADO_FORMULARIO_CONFIG: Record<IdentitySatelliteStatus, EstadoFor
 // Facturación — 3 vías (Plan2.md líneas 806-813).
 // ---------------------------------------------------------------------------
 export type ViaFacturacion = 'mis-datos' | 'otra-persona-natural' | 'persona-juridica';
+
+// ---------------------------------------------------------------------------
+// Fase 0 — Service Blueprint Fase 0 (docs/validacion/Service_Blueprint_Diagrama Fase 0.md).
+// Tipos aditivos para el flujo NO-CODE de Fase 0 (Panel Lateral / Interceptor /
+// Bloqueo / Etapa Continua / CRM). No modifican los tipos existentes.
+// ---------------------------------------------------------------------------
+
+/** Motivo de un estado "pendiente" en Etapa Continua (blueprint: dos motivos distintos). */
+export type MotivoPendiente = 'revision-financiero' | 'incompleta' | null;
+
+/** Los 4 modales de resultado de Etapa Continua (blueprint). */
+export type Fase0ResultKind = 'aprobado' | 'revision-financiero' | 'incompleta' | 'rechazado';
+
+/** Los 4 mensajes CRM (burbuja WhatsApp) simulados en Fase 0 (blueprint). */
+export type Fase0CrmKind = 'recordatorio' | 'aprobado' | 'revision-financiero' | 'incompleta';

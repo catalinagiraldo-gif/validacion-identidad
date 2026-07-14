@@ -1,0 +1,124 @@
+@use 'styles/variables-new' as *;
+
+$header-height: 53px;
+
+.fase0-panel {
+  position: fixed;
+  top: $header-height;
+  right: 0;
+  bottom: 0;
+  width: 25vw;
+  min-width: 320px;
+  max-width: 420px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  background: $neutral-white;
+  box-shadow: $shadow-medium;
+  border-left: 1px solid $gray-100;
+  padding: $space-8;
+  font-family: $font-primary;
+  animation: fase0-panel-in 0.32s ease both;
+}
+
+@keyframes fase0-panel-in {
+  from { transform: translateX(24px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.fase0-panel__close {
+  position: absolute;
+  top: $space-4;
+  right: $space-4;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: $gray-50;
+  color: $gray-500;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: $gray-100;
+    color: $gray-700;
+  }
+
+  i { font-size: $font-sm; }
+}
+
+.fase0-panel__body {
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.fase0-panel__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: $radius-3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($primary-500, 0.12);
+  color: $primary-600;
+
+  i { font-size: $font-2xl; }
+}
+
+.fase0-panel__headline {
+  margin: 0;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $gray-900;
+  line-height: 1.25;
+}
+
+.fase0-panel__text {
+  margin: 0;
+  font-size: $font-base;
+  font-weight: $font-regular;
+  color: $gray-600;
+  line-height: 1.5;
+}
+
+.fase0-panel__cta {
+  margin-top: $space-2;
+  align-self: flex-start;
+  padding: $space-3 $space-6;
+  border: none;
+  border-radius: $radius-2;
+  background: $primary-500;
+  color: $neutral-white;
+  font-family: $font-primary;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+
+  &:hover { background: $primary-600; }
+  &:active { transform: translateY(1px); }
+}
+
+// Responsive — a $bp-md el panel pasa a ocupar todo el ancho (full overlay).
+@media (max-width: $bp-md) {
+  .fase0-panel {
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 0;
+    border-left: none;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .fase0-panel {
+    padding: $space-4;
+  }
+
+  .fase0-panel__headline { font-size: $font-xl; }
+  .fase0-panel__cta { align-self: stretch; text-align: center; }
+}

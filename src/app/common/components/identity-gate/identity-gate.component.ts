@@ -2,6 +2,7 @@ import { Component, Input, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IdentityDemoStateService } from '../../services/identity-demo-state.service';
 import { IdentityModalService, OrigenModal } from '../../services/identity-modal.service';
+import { IdentityFase0Service } from '../../services/identity-fase0.service';
 
 export type GateContexto = 'retiro' | 'dropicard' | 'transferencia' | 'facturacion';
 
@@ -17,6 +18,7 @@ export class IdentityGateComponent {
 
   private stateSvc = inject(IdentityDemoStateService);
   private modalSvc = inject(IdentityModalService);
+  private fase0 = inject(IdentityFase0Service);
 
   readonly status = this.stateSvc.status;
 
@@ -70,6 +72,10 @@ export class IdentityGateComponent {
   }
 
   onCta(): void {
+    // Fase 0: enruta por el interceptor/bloqueo NO-CODE (o bloqueo si retiro + saldo
+    // negativo/fraude). En fase1+ retorna false y sigue el flujo Sumsub heredado.
+    if (this.fase0.tryIntercept(this.origenFromContexto, this.contexto === 'retiro')) return;
+
     const s = this.stateSvc.status();
     if (s === 'en_revision') {
       this.modalSvc.open(this.origenFromContexto, 'screen3');

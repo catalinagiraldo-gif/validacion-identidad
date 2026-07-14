@@ -105,6 +105,44 @@
           <span class="demo-panel__motor-badge">{{ motorBadge().icon }} {{ motorBadge().label }}</span>
         </div>
 
+        <!-- Controles Fase 0 (Service Blueprint Fase 0) -->
+        @if (showFase0Controls()) {
+          <div class="demo-control">
+            <span class="demo-control__label">SALDO NEGATIVO / FRAUDE</span>
+            <button class="chip chip--sm chip--toggle" [class.chip--active]="saldoNegativoFraude()" (click)="toggleSaldoNegativoFraude()">
+              {{ saldoNegativoFraude() ? '✅ Segmento en riesgo' : 'Segmento en riesgo' }}
+            </button>
+          </div>
+
+          @if (showMotivoPendiente()) {
+            <div class="demo-control">
+              <span class="demo-control__label">MOTIVO PENDIENTE</span>
+              <div class="demo-control__chips">
+                <button class="chip chip--sm" [class.chip--active]="motivoPendiente() === 'revision-financiero'" (click)="setMotivoPendiente('revision-financiero')">Revisión financiero</button>
+                <button class="chip chip--sm" [class.chip--active]="motivoPendiente() === 'incompleta'" (click)="setMotivoPendiente('incompleta')">Incompleta</button>
+              </div>
+            </div>
+          }
+
+          <div class="demo-control">
+            <span class="demo-control__label">RESULTADO FASE 0</span>
+            <div class="demo-control__chips">
+              @for (r of resultadoFase0Options; track r.kind) {
+                <button class="chip chip--sm" (click)="showResultadoFase0(r.kind)">{{ r.label }}</button>
+              }
+            </div>
+          </div>
+
+          <div class="demo-control">
+            <span class="demo-control__label">SIMULAR MENSAJE CRM</span>
+            <div class="demo-control__chips">
+              @for (c of crmFase0Options; track c.kind) {
+                <button class="chip chip--sm" (click)="simularCrm(c.kind)">{{ c.label }}</button>
+              }
+            </div>
+          </div>
+        }
+
         <!-- Toggles condicionales -->
         @if (showEmailBaneadoToggle()) {
           <div class="demo-control">

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IdentityDemoStateService } from '../../../../common/services/identity-demo-state.service';
 import { IdentityModalService } from '../../../../common/services/identity-modal.service';
+import { IdentityFase0Service } from '../../../../common/services/identity-fase0.service';
 
 const AVATAR_ICON = 'https://www.figma.com/api/mcp/asset/7e9163eb-de22-4728-845a-0e2ffbf9b37d';
 const ICON_CALENDAR = 'https://www.figma.com/api/mcp/asset/18dc5cd0-37c6-440e-992a-c36bd2132906';
@@ -243,6 +244,7 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
 export class CuentaNewComponent {
   private stateSvc = inject(IdentityDemoStateService);
   private modalSvc = inject(IdentityModalService);
+  private fase0 = inject(IdentityFase0Service);
 
   readonly avatarIcon = AVATAR_ICON;
   readonly iconCalendar = ICON_CALENDAR;
@@ -279,6 +281,8 @@ export class CuentaNewComponent {
   }
 
   abrirModal(screen: 'screen0' | 'screen2' | 'screen3'): void {
+    // Fase 0: editar información de cuenta es un trigger de Etapa 0.5 (interceptor). fase1+ intacto.
+    if (this.fase0.tryIntercept('cuenta', false)) return;
     this.modalSvc.open('cuenta', screen);
   }
 

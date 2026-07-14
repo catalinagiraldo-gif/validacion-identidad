@@ -1,0 +1,19 @@
+@if (view(); as v) {
+  <div class="fase0-result" role="dialog" aria-modal="true" aria-labelledby="fase0-result-title">
+    <div class="fase0-result__backdrop"></div>
+
+    <div class="fase0-result__card" [ngClass]="'fase0-result__card--' + v.tone">
+      <div class="fase0-result__icon" [ngClass]="'fase0-result__icon--' + v.tone" aria-hidden="true">
+        <i class="pi" [ngClass]="v.icon"></i>
+      </div>
+      <h2 id="fase0-result-title" class="fase0-result__headline">{{ v.headline }}</h2>
+      <p class="fase0-result__text">{{ v.body }}</p>
+
+      @if (v.ctaLabel) {
+        <button type="button" class="fase0-result__cta" [ngClass]="'fase0-result__cta--' + v.tone" (click)="onCta()">
+          {{ v.ctaLabel }}
+        </button>
+      }
+    </div>
+  </div>
+}

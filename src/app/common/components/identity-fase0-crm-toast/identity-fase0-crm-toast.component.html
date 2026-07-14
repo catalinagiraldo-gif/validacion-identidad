@@ -1,0 +1,21 @@
+@if (fase0.crmMessage(); as msg) {
+  <div class="crm-toast" role="status" aria-live="polite">
+    <div class="crm-toast__header">
+      <span class="crm-toast__avatar" aria-hidden="true">
+        <i class="pi pi-whatsapp"></i>
+      </span>
+      <div class="crm-toast__meta">
+        <span class="crm-toast__brand">Dropi</span>
+        <span class="crm-toast__channel">WhatsApp</span>
+      </div>
+      <button type="button" class="crm-toast__close" aria-label="Cerrar mensaje" (click)="cerrar()">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+
+    <div class="crm-toast__bubble">
+      <p class="crm-toast__text">{{ msg.text }}</p>
+      <span class="crm-toast__time">9:41 a. m.</span>
+    </div>
+  </div>
+}
