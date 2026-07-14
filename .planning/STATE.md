@@ -80,6 +80,12 @@ None yet.
 - Vercel account not yet configured
 - Firebase Auth project credentials are placeholder (need real values before deploy)
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260714-0dc | Fase 0 no-code identity validation prototype | 2026-07-14 | 3d8911a | [260714-0dc-fase-0-no-code-identity-validation-proto](./quick/260714-0dc-fase-0-no-code-identity-validation-proto/) |
+
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
@@ -92,3 +98,5 @@ Last session: 2026-05-21
 Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
+
+Last activity: 2026-07-14 -- Completed quick task 260714-0dc: Fase 0 no-code identity validation prototype
