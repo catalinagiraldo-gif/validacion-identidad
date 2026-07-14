@@ -71,8 +71,8 @@
 2. ⚪ Correo (CRM) (ícono de correo) — *(flecha horizontal índigo: "Canales F0.5")*
 
 **Front stage → Acciones:**
-1. 🔵 Panel Lateral (aparece al entrar al Home por primera vez) — Headline: **"Verifica tu cuenta cuando quieras"**. Body: *"Hazlo ahora y ahórrate pasos el día que quieras sacar el dinero de tus ventas."* Botón: **"Verificar ahora"**. Ocupa 25% de pantalla, con botón 'X' visible (`aria-label="Cerrar, verificar más tarde"`). *(Sin incentivo monetario aquí — es solo pedagógico. El bono de fletes, masterclasses y "Kit Dropi" es exclusivo de "Semana de la Seguridad" en Fase 0.5/Activos-Riesgo. Fuente: mesa 7-jul, Consideraciones.md. Copy ajustada: se quitan "DropiCard" y el detalle de "retirar" — un usuario que recién entra al Home no ha vendido nada todavía y no sabe qué son esas cosas. Justificación completa: ver `UX-Writing-Modales-UserPilot.md`)*
-2. 🟣 Sutil: Permite navegación total. Usuario puede ignorarlo y seguir comprando. — *(flecha horizontal índigo: "FS F0.5")*
+1. 🔵 Panel Lateral (aparece al entrar al Home por primera vez) — Headline: **"Verifica tu cuenta cuando quieras"**. Body: *"Es parte de tu seguridad: nos ayuda a conocerte y a mantener tu cuenta al día."* Botón: **"Verificar ahora"**. Ocupa 25% de pantalla, con botón 'X' visible (`aria-label="Cerrar, verificar más tarde"`). *(Sin incentivo monetario aquí — es solo pedagógico. El bono de fletes, masterclasses y "Kit Dropi" es exclusivo de "Semana de la Seguridad" en Fase 0.5/Activos-Riesgo. Fuente: mesa 7-jul, Consideraciones.md. Copy ajustada: no se menciona "DropiCard" ni "retirar" — un usuario que recién entra al Home no sabe si va a usar eso algún día, así que el motivo no es "lo vas a necesitar" sino su seguridad y que Dropi lo conozca. Justificación completa: ver `UX-Writing-Modales-UserPilot.md`)*
+2. 🟣 Sutil: Permite navegación total. Usuario puede ignorarlo y seguir comprando — pero si hace clic en "Transferir Wallet", "Registro de Datos Bancarios" o "Solicitud DropiCard" antes de verificarse, salta directo al modal interceptor de Fase 0.5: mismo trato que un usuario Activo, sin importar que sea Nuevo. — *(flecha horizontal índigo: "FS F0.5")*
 
 **Back stage → Acciones:**
 - 🟣 1. [MANUAL] Segmentación visual en UserPilot: filtra a los usuarios por fecha de registro para aislar a los Nuevos.
@@ -88,7 +88,7 @@
 
 ## FASE 0.5: Trigger Transaccional (Activos)
 
-**Usuarios:** Usuarios Activos (Dropshippers / Proveedores).
+**Usuarios:** Usuarios Activos (Dropshippers / Proveedores) — y también Usuarios Nuevos, si intentan estas mismas acciones (Transferir Wallet, Registro de Datos Bancarios, Solicitud DropiCard) antes de verificarse en Fase 0. El disparador es la acción, no la antigüedad de la cuenta: reciben el mismo modal interceptor.
 
 **Tarea** (secuencia horizontal):
 1. 🟢 Dropshipper en Módulo Financiero

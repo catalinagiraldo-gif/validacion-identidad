@@ -24,22 +24,25 @@ El tono debe subir en firmeza a medida que sube la coerción, pero **nunca cruza
 | Elemento | Copy |
 |---|---|
 | Headline | **Verifica tu cuenta cuando quieras** |
-| Body | Hazlo ahora y ahórrate pasos el día que quieras sacar el dinero de tus ventas. |
+| Body | Es parte de tu seguridad: nos ayuda a conocerte y a mantener tu cuenta al día. |
 | Botón primario | **Verificar ahora** |
 | Botón secundario / cierre | Ícono X con `aria-label="Cerrar, verificar más tarde"` |
 
 **Antes → Después**
 - V1: "Completa tus datos" (genérico, no dice para qué ni qué pasa si no lo hace)
 - V2: "Hacerlo ahora evita que tengas que detenerte más adelante para retirar tu dinero o pedir tu DropiCard." — mencionaba "DropiCard", un producto que un usuario recién llegado al Home todavía no conoce, porque no ha hecho ninguna venta.
-- V3 (actual): reemplaza "DropiCard" y el detalle de "retirar" por algo que cualquier usuario nuevo entiende sin contexto previo: que algún día va a vender y va a querer sacar ese dinero. Cero jerga de producto en el primer contacto.
+- V3: "Hazlo ahora y ahórrate pasos el día que quieras sacar el dinero de tus ventas." — ya no menciona DropiCard, pero seguía dando por hecho que el usuario *va a* vender y *va a* querer retirar. Un usuario nuevo no sabe todavía si eso le va a pasar.
+- V4 (actual): quita cualquier promesa sobre el futuro del usuario. El motivo ya no es "esto te va a servir después", sino algo que es verdad hoy mismo: es parte de su seguridad y le sirve a Dropi para conocerlo. No presupone comportamiento futuro del usuario.
 
-**Justificación de tono:** es un nudge, no un bloqueo — el usuario puede seguir navegando y comprando sin fricción. El tono es invitacional y de bajo riesgo ("cuando quieras" en vez de "ahora mismo"), y el body convierte la validación en una decisión racional (evitar fricción futura) en lugar de una obligación. Nada de urgencia artificial: sería inconsistente con que el propio flujo permita ignorarlo. Además, al ser el primer contacto del usuario con Dropi, el copy no debe asumir vocabulario de producto ("DropiCard") ni de operación financiera ("retiro") que todavía no aprendió — eso genera la misma confusión que un dead-end: el usuario no sabe qué es lo que está evitando.
+**Justificación de tono:** es un nudge, no un bloqueo — el usuario puede seguir navegando y comprando sin fricción. El tono es invitacional y de bajo riesgo ("cuando quieras" en vez de "ahora mismo"). Nada de urgencia artificial: sería inconsistente con que el propio flujo permita ignorarlo. Al ser el primer contacto del usuario con Dropi, el copy no debe asumir vocabulario de producto ("DropiCard") ni comportamientos futuros que el usuario no puede confirmar todavía ("vas a necesitar esto para retirar") — en su lugar, el motivo se ancla en dos hechos ciertos hoy: seguridad y que Dropi lo conozca.
+
+**Nota importante — este banner no reemplaza el interceptor de Fase 0.5:** si el usuario Nuevo hace clic en "Transferir Wallet", "Registro de Datos Bancarios" o "Solicitud DropiCard" antes de verificarse (es decir, sí intenta una de esas acciones), recibe el mismo modal interceptor recurrente que un usuario Activo — ver sección 2. El banner de Fase 0 es solo un nudge pasivo mientras el usuario no toca esos botones; en el momento en que los toca, el disparador es la acción, no su antigüedad como usuario.
 
 ---
 
 ## 2. FASE 0.5 — Modal interceptor recurrente (Persona Natural / Empresa)
 
-**Contexto:** se dispara al hacer clic en "Transferir Wallet", "Registro de Datos Bancarios" o "Solicitud DropiCard". Sin botón X ni "Continuar". Reaparece indefinidamente si el usuario intenta evadirlo. Robusto ante AdBlockers.
+**Contexto:** se dispara al hacer clic en "Transferir Wallet", "Registro de Datos Bancarios" o "Solicitud DropiCard" — sin importar si quien hace clic es un usuario Activo o uno Nuevo que todavía está en Fase 0. El disparador es la acción, no la antigüedad de la cuenta. Sin botón X ni "Continuar". Reaparece indefinidamente si el usuario intenta evadirlo. Robusto ante AdBlockers.
 
 | Elemento | Copy |
 |---|---|
