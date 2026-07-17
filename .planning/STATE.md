@@ -87,6 +87,7 @@ None yet.
 | 260714-0dc | Fase 0 no-code identity validation prototype | 2026-07-14 | 3d8911a | [260714-0dc-fase-0-no-code-identity-validation-proto](./quick/260714-0dc-fase-0-no-code-identity-validation-proto/) |
 | 260717-jg9 | Mapear el proceso de soporte (widget existente) dentro del Service Blueprint de validación de identidad | 2026-07-17 | 2b39a28 | [260717-jg9-ejecutar-el-plan-ya-aprobado-en-plans-ne](./quick/260717-jg9-ejecutar-el-plan-ya-aprobado-en-plans-ne/) |
 | 260717-lyq | Refinar enrutamiento de soporte: deep-link textual al chip raíz "Validación de identidad", árbol reformateado al formato Argentina con escalamiento a asesor, responsables (Juan Camilo Rojas / Laura Sánchez) | 2026-07-17 | 315e89f | [260717-lyq-refinar-enrutamiento-de-soporte-en-servi](./quick/260717-lyq-refinar-enrutamiento-de-soporte-en-servi/) |
+| 260717-o4m | Inline el árbol de soporte directamente en el flujo del blueprint (3 cajas nuevas en HTML + 3 items nuevos en el md dentro de Etapa 1), en vez de referenciar Soporte-Validacion-Identidad.md como archivo aparte | 2026-07-17 | 461090f | [260717-o4m-inline-el-arbol-de-soporte-de-validacion](./quick/260717-o4m-inline-el-arbol-de-soporte-de-validacion/) |
 
 ## Deferred Items
 
@@ -101,4 +102,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-07-17 -- Completed quick task 260717-lyq: Refinar enrutamiento de soporte (deep-link textual al chip raíz "Validación de identidad") en el Service Blueprint de validación de identidad
+Last activity: 2026-07-17 -- Completed quick task 260717-o4m: Inline el árbol de soporte directamente en el flujo del Service Blueprint (HTML + md), retirando la dependencia de Soporte-Validacion-Identidad.md
