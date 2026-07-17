@@ -85,6 +85,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260714-0dc | Fase 0 no-code identity validation prototype | 2026-07-14 | 3d8911a | [260714-0dc-fase-0-no-code-identity-validation-proto](./quick/260714-0dc-fase-0-no-code-identity-validation-proto/) |
+| 260717-jg9 | Mapear el proceso de soporte (widget existente) dentro del Service Blueprint de validación de identidad | 2026-07-17 | 2b39a28 | [260717-jg9-ejecutar-el-plan-ya-aprobado-en-plans-ne](./quick/260717-jg9-ejecutar-el-plan-ya-aprobado-en-plans-ne/) |
 
 ## Deferred Items
 
@@ -99,4 +100,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-07-14 -- Completed quick task 260714-0dc: Fase 0 no-code identity validation prototype
+Last activity: 2026-07-17 -- Completed quick task 260717-jg9: Mapear el proceso de soporte (widget existente) dentro del Service Blueprint de validación de identidad
