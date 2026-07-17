@@ -86,7 +86,7 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 260714-0dc | Fase 0 no-code identity validation prototype | 2026-07-14 | 3d8911a | [260714-0dc-fase-0-no-code-identity-validation-proto](./quick/260714-0dc-fase-0-no-code-identity-validation-proto/) |
 | 260717-jg9 | Mapear el proceso de soporte (widget existente) dentro del Service Blueprint de validación de identidad | 2026-07-17 | 2b39a28 | [260717-jg9-ejecutar-el-plan-ya-aprobado-en-plans-ne](./quick/260717-jg9-ejecutar-el-plan-ya-aprobado-en-plans-ne/) |
-| 260717-lyq | Refinar enrutamiento de soporte: deep-link textual al chip raíz "Validación de identidad", árbol reformateado al formato Argentina con escalamiento a asesor, responsables (Juan Camilo Rojas / Laura Sánchez) | 2026-07-17 | PENDING | [260717-lyq-refinar-enrutamiento-de-soporte-en-servi](./quick/260717-lyq-refinar-enrutamiento-de-soporte-en-servi/) |
+| 260717-lyq | Refinar enrutamiento de soporte: deep-link textual al chip raíz "Validación de identidad", árbol reformateado al formato Argentina con escalamiento a asesor, responsables (Juan Camilo Rojas / Laura Sánchez) | 2026-07-17 | 315e89f | [260717-lyq-refinar-enrutamiento-de-soporte-en-servi](./quick/260717-lyq-refinar-enrutamiento-de-soporte-en-servi/) |
 
 ## Deferred Items
 
