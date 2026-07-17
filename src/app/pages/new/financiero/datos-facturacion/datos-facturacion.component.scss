@@ -79,6 +79,7 @@ $warning-700: #ab8036;
 .tag-pendiente {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   padding: 4px 8px;
   background: $warning-50;
   color: $warning-700;
@@ -88,6 +89,39 @@ $warning-700: #ab8036;
   font-weight: 500;
   line-height: 1.5;
   white-space: nowrap;
+}
+
+// Estados adicionales del tag de cabecera — antes solo existían "Completado"
+// (verde) y "Pendiente" (naranja), colapsando sin_validar/pendiente/en_revision/
+// rechazado/parcial/pj_pendiente en el mismo texto y color.
+.tag-revision {
+  @extend .tag-pendiente;
+  background: $info-50;
+  color: $info-700;
+}
+
+.tag-rechazado {
+  @extend .tag-pendiente;
+  background: $error-50;
+  color: $error-700;
+}
+
+.tag-parcial {
+  @extend .tag-pendiente;
+  background: $info-50;
+  color: $info-700;
+}
+
+.tag-pj-pendiente {
+  @extend .tag-pendiente;
+  background: rgba(#a78bfa, 0.14);
+  color: #6d3fd1;
+}
+
+.tag-sin-iniciar {
+  @extend .tag-pendiente;
+  background: $gray-100;
+  color: $gray-600;
 }
 
 .link-tutorial {
@@ -102,6 +136,40 @@ $warning-700: #ab8036;
   line-height: 1.1;
 
   &:hover { text-decoration: underline; }
+}
+
+// ── Estado vacío (Plan2.md Parte 8): usuario nunca tocó nada, sin datos previos ──
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 48px 24px;
+  background: #fafafa;
+  border: 1px dashed $gray-200;
+  border-radius: 16px;
+
+  &__icon {
+    font-size: 28px;
+    color: $primary-500;
+    margin-bottom: 8px;
+  }
+
+  &__text {
+    font-family: $font-primary;
+    font-size: 16px;
+    font-weight: 600;
+    color: $gray-700;
+    margin: 0;
+  }
+
+  &__subtext {
+    font-family: $font-primary;
+    font-size: 14px;
+    color: $gray-600;
+    margin: 0 0 12px 0;
+  }
 }
 
 // ── Alert ─────────────────────────────────────────────────────────────────────
@@ -503,6 +571,11 @@ $warning-700: #ab8036;
   align-items: center;
   gap: 12px;
   cursor: pointer;
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }
 
 .consent-checkbox {

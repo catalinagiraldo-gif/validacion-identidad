@@ -8,7 +8,7 @@
     @if (!collapsed()) {
       <div class="demo-panel__controls">
         <!-- Fase de entrega (rollout del proyecto) -->
-        <div class="demo-control">
+        <div class="demo-control" data-tour="fase-entrega">
           <span class="demo-control__label">FASE DE ENTREGA</span>
           <div class="demo-control__chips">
             @for (fase of fasesProyecto; track fase) {
@@ -60,10 +60,10 @@
         <div class="demo-control">
           <span class="demo-control__label">IDENTIDAD</span>
           <div class="demo-control__chips">
-            @for (s of statusOptions; track s.value) {
+            @for (s of statusOptionsV2; track s.value) {
               <button
                 class="chip"
-                [class]="'chip chip--' + s.value + (resultadoModal() === s.value ? ' chip--active' : '')"
+                [class]="'chip chip--' + s.value + (currentStatusV2() === s.value ? ' chip--active' : '')"
                 (click)="setIdentidadStatus(s.value)">
                 {{ s.label }}
               </button>
@@ -72,6 +72,19 @@
           <span class="demo-panel__status-badge" [class]="statusClass()">
             {{ identityStatusLabel() }}
           </span>
+        </div>
+
+        <!-- Datos del formulario viejo (pre-Sumsub) -->
+        <div class="demo-control">
+          <span class="demo-control__label">DATOS FORMULARIO VIEJO</span>
+          <div class="demo-control__chips">
+            <button
+              class="chip"
+              [class.chip--active]="tieneDatosFormularioAntiguo()"
+              (click)="toggleDatosFormularioAntiguo()">
+              {{ tieneDatosFormularioAntiguo() ? '✅ Tiene datos viejos (pre-Sumsub)' : '☐ Sin datos viejos' }}
+            </button>
+          </div>
         </div>
 
         <!-- País (9) -->
@@ -175,6 +188,29 @@
           </div>
         }
 
+        @if (showRiesgoControles()) {
+          <div class="demo-control">
+            <span class="demo-control__label">RIESGO</span>
+            <div class="demo-control__chips">
+              <button class="chip chip--sm" [class.chip--active]="riskScore() === 'bajo'" (click)="setRiskScore('bajo')">Bajo</button>
+              <button class="chip chip--sm" [class.chip--active]="riskScore() === 'medio'" (click)="setRiskScore('medio')">Medio</button>
+              <button class="chip chip--sm" [class.chip--active]="riskScore() === 'alto'" (click)="setRiskScore('alto')">Alto</button>
+            </div>
+            <span class="demo-panel__mecanismo">{{ riskScore() === 'medio' ? '🔄 Medio habilita el micro-control periódico (RN-10)' : '' }}</span>
+          </div>
+          <div class="demo-control">
+            <span class="demo-control__label">MESES DESDE ÚLTIMA VALIDACIÓN</span>
+            <div class="demo-control__chips">
+              @for (m of mesesOptions; track m) {
+                <button class="chip chip--sm" [class.chip--active]="mesesDesdeUltimaValidacion() === m" (click)="setMesesDesdeUltimaValidacion(m)">{{ m }}</button>
+              }
+            </div>
+            <span class="demo-panel__mecanismo" [class.demo-panel__mecanismo--heredado]="(mesesDesdeUltimaValidacion() ?? 0) < 6">
+              {{ (mesesDesdeUltimaValidacion() ?? 0) < 6 ? '🔒 <6 meses = campos del Dueño bloqueados (RN-11)' : '✏️ ≥6 meses = campos editables' }}
+            </span>
+          </div>
+        }
+
         <!-- Primera orden -->
         <div class="demo-panel__meta">
           <span [class.meta--on]="primeraOrden()">
@@ -185,9 +221,28 @@
       </div>
     }
 
+    <button class="demo-panel__tour-btn" type="button" (click)="abrirBienvenidaTour()">
+      <i class="pi pi-play-circle"></i> Ver cómo funciona
+    </button>
+
     <button class="demo-panel__toggle" (click)="toggle()">
       {{ collapsed() ? 'Controles demo' : 'Ocultar' }}
       <i class="pi" [class.pi-chevron-down]="collapsed()" [class.pi-chevron-up]="!collapsed()"></i>
     </button>
   </div>
 </div>
+
+@if (mostrarBienvenidaTour()) {
+  <div class="tour-welcome-overlay" (click)="cerrarBienvenidaTour()">
+    <div class="tour-welcome-card" (click)="$event.stopPropagation()">
+      <h2 class="tour-welcome-card__title">Cómo funciona la validación de identidad</h2>
+      <p class="tour-welcome-card__body">
+        Un recorrido de ~2 minutos por las 6 fases del proyecto: qué ve el usuario y qué problema de negocio resuelve cada una — pensado para quien no ha visto el código.
+      </p>
+      <div class="tour-welcome-card__actions">
+        <button class="btn-secondary" type="button" (click)="cerrarBienvenidaTour()">Ahora no</button>
+        <button class="btn-primary" type="button" (click)="iniciarTourStakeholder()">Empezar recorrido</button>
+      </div>
+    </div>
+  </div>
+}

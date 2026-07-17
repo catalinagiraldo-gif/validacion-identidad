@@ -20,6 +20,12 @@ export type Pais9 = 'CO' | 'MX' | 'AR' | 'PE' | 'GT' | 'CR' | 'EC' | 'CL' | 'PY'
 
 export const PAISES_9: Pais9[] = ['CO', 'MX', 'AR', 'PE', 'GT', 'CR', 'EC', 'CL', 'PY'];
 
+/** Nombre completo del país — Parte D hallazgo 6: los chips/selects solo mostraban el código ISO, forzando a recordar/decodificar (viola "Recognition Rather Than Recall"). */
+export const NOMBRE_PAIS_COMPLETO: Record<Pais9, string> = {
+  CO: 'Colombia', MX: 'México', AR: 'Argentina', PE: 'Perú',
+  GT: 'Guatemala', CR: 'Costa Rica', EC: 'Ecuador', CL: 'Chile', PY: 'Paraguay',
+};
+
 // ---------------------------------------------------------------------------
 // Fase de entrega del proyecto (rollout acumulativo — Historia.md) vs.
 // Momento del usuario / Etapa del journey PLG (StartUser.md).
@@ -118,16 +124,38 @@ export type MotorValidacion = 'truora' | 'sumsub' | 'manual-backoffice' | 'ningu
 export type EstadoKyb = 'no_iniciado' | 'en_progreso' | 'aprobado' | 'pj_pendiente' | 'rechazado';
 
 // ---------------------------------------------------------------------------
+// Plan2.md Parte 8 — corrección de estados. Aditivo sobre IdentitySatelliteStatus
+// (mismo patrón que pj_pendiente): agrega 'parcial' para usuarios antiguos que
+// ya llenaron el formulario manual viejo (pre-Sumsub) pero nunca fueron
+// certificados por ningún motor real. Nunca se edita IdentitySatelliteStatus
+// base — las 9 páginas /old/ no lo reconocerían.
+// ---------------------------------------------------------------------------
+export type IdentitySatelliteStatusV2 = IdentitySatelliteStatus | 'pj_pendiente' | 'parcial';
+
+/** Datos capturados durante el KYC del dueño de cuenta (pasos 1-5 del modal), listos para precargar "Datos de facturación" en la vía "mis-datos" (Reglasvalidacion.md §3: 1 sola validación). */
+export interface DatosCapturadosKyc {
+  email: string;
+  telefono: string;
+  tipoDocumento: string;
+  numeroDocumento: string;
+  nombreCompleto: string;
+}
+
+/** Datos del formulario manual viejo (pre-Sumsub) para usuarios en estado 'parcial'. */
+export interface DatosFormularioAntiguo {
+  email: string;
+  pais: Pais9;
+  municipio: string;
+  razonSocial: string;
+  tipoDocumento: string;
+  numeroDocumento: string;
+}
+
+// ---------------------------------------------------------------------------
 // Hallazgo 3 (Plan2.md líneas 89-97): reglas de comportamiento del
 // formulario fiscal, iguales para los 9 países.
 // ---------------------------------------------------------------------------
 export interface PaisBillingConfig {
-  pais: Pais9;
-  /** Etiqueta exacta de "Persona Natural/Física" para este país (Hallazgo 1). */
-  nombrePersonaNatural: string;
-  nombrePersonaJuridica: string;
-  /** null cuando el Excel no define la categoría — ver Hallazgo 2 (solo Paraguay). */
-  nombrePersonaExtranjera: string | null;
   documentoPrincipal: string;
   regimenFiscalOpciones: string[];
   documentosASubir: string[];
@@ -135,96 +163,206 @@ export interface PaisBillingConfig {
   gapEnFuente?: string;
 }
 
+/** Etiqueta exacta de cada categoría de persona, por país (Hallazgo 1, Plan2.md líneas 65-83). */
+export interface NombresTipoPersona {
+  natural: string;
+  juridica: string;
+  /** null cuando el Excel no define la categoría — ver Hallazgo 2 (solo Paraguay). */
+  extranjera: string | null;
+}
+
+export const NOMBRE_TIPO_PERSONA: Record<Pais9, NombresTipoPersona> = {
+  CO: { natural: 'Persona Natural', juridica: 'Persona Jurídica', extranjera: 'Persona Extranjera' },
+  MX: { natural: 'Persona Física', juridica: 'Persona Moral', extranjera: 'Persona Extranjera' },
+  AR: { natural: 'Persona Física', juridica: 'Persona Jurídica', extranjera: 'Persona Extranjera' },
+  PE: { natural: 'Persona Natural', juridica: 'Persona Jurídica', extranjera: 'Persona Extranjera' },
+  GT: { natural: 'Persona Individual', juridica: 'Persona Jurídica', extranjera: 'Persona Extranjera' },
+  CR: { natural: 'Persona Física', juridica: 'Persona Jurídica', extranjera: 'Persona Extranjera' },
+  EC: { natural: 'Persona Natural', juridica: 'Persona Jurídica', extranjera: 'Persona Extranjera' },
+  CL: { natural: 'Persona Natural', juridica: 'Persona Jurídica', extranjera: 'Persona Extranjera' },
+  PY: { natural: 'Persona Física', juridica: 'Persona Jurídica', extranjera: null },
+};
+
 /**
- * Tabla resumen por país, solo Persona Natural/Física (Plan2.md tabla líneas 99-113).
- * El detalle completo de las 3 personas × 9 países vive en el Excel original —
- * esta transcripción es la referencia rápida que consume el prototipo.
+ * Tabla completa por país × tipo de persona (9 × 3 = 27 celdas, Hallazgo 1 y
+ * Hallazgo 3, Plan2.md líneas 65-113). `null` únicamente en `PY.extranjera`
+ * porque el Excel fuente no define esa categoría ni tiene hoja propia de país
+ * (Hallazgo 2, líneas 85-87) — pendiente de definición por Legal/PO, no se
+ * inventa. El detalle exacto celda por celda sigue viviendo en el Excel
+ * original; esta transcripción es la referencia rápida que consume el
+ * prototipo.
  */
-export const PAIS_BILLING_FIELDS: Record<Pais9, PaisBillingConfig> = {
+export const PAIS_BILLING_FIELDS: Record<Pais9, Record<TipoPersonaV2, PaisBillingConfig | null>> = {
   CO: {
-    pais: 'CO',
-    nombrePersonaNatural: 'Persona Natural',
-    nombrePersonaJuridica: 'Persona Jurídica',
-    nombrePersonaExtranjera: 'Persona Extranjera',
-    documentoPrincipal: 'CC / NIT',
-    regimenFiscalOpciones: ['Régimen Ordinario', 'Simple (RST)', 'No responsable de IVA'],
-    documentosASubir: ['Cédula', 'RUT actualizado'],
+    natural: {
+      documentoPrincipal: 'CC / NIT',
+      regimenFiscalOpciones: ['Régimen Ordinario', 'Simple (RST)', 'No responsable de IVA'],
+      documentosASubir: ['Cédula', 'RUT actualizado'],
+    },
+    juridica: {
+      documentoPrincipal: 'NIT',
+      regimenFiscalOpciones: ['Régimen Ordinario', 'Simple (RST)'],
+      documentosASubir: ['Cámara de Comercio (vigencia < 30 días)', 'RUT actualizado'],
+    },
+    extranjera: {
+      documentoPrincipal: 'Pasaporte / Cédula de Extranjería',
+      regimenFiscalOpciones: ['No domiciliado'],
+      documentosASubir: ['Pasaporte', 'Cédula de Extranjería (si aplica)'],
+    },
   },
   MX: {
-    pais: 'MX',
-    nombrePersonaNatural: 'Persona Física',
-    nombrePersonaJuridica: 'Persona Moral',
-    nombrePersonaExtranjera: 'Persona Extranjera',
-    documentoPrincipal: 'CSF (Constancia de Situación Fiscal)',
-    regimenFiscalOpciones: ['Actividad empresarial', 'Física Resico', 'Sueldos y salarios'],
-    documentosASubir: ['Constancia de Situación Fiscal'],
+    natural: {
+      documentoPrincipal: 'CSF (Constancia de Situación Fiscal)',
+      regimenFiscalOpciones: ['Actividad empresarial', 'Física Resico', 'Sueldos y salarios'],
+      documentosASubir: ['Constancia de Situación Fiscal'],
+    },
+    juridica: {
+      documentoPrincipal: 'RFC Persona Moral',
+      regimenFiscalOpciones: ['Régimen General de Ley Personas Morales', 'Resico Personas Morales'],
+      documentosASubir: ['Constancia de Situación Fiscal', 'Acta Constitutiva'],
+    },
+    extranjera: {
+      documentoPrincipal: 'Tax ID / Pasaporte',
+      regimenFiscalOpciones: ['No residente'],
+      documentosASubir: ['Pasaporte', 'Comprobante de domicilio en el extranjero'],
+    },
   },
   AR: {
-    pais: 'AR',
-    nombrePersonaNatural: 'Persona Física',
-    nombrePersonaJuridica: 'Persona Jurídica',
-    nombrePersonaExtranjera: 'Persona Extranjera',
-    documentoPrincipal: 'CUIT / CUIL / DNI',
-    regimenFiscalOpciones: ['Monotributista', 'Responsable Inscripto', 'Exento'],
-    documentosASubir: ['Constancia de Inscripción ARCA', 'DNI'],
+    natural: {
+      documentoPrincipal: 'CUIT / CUIL / DNI',
+      regimenFiscalOpciones: ['Monotributista', 'Responsable Inscripto', 'Exento'],
+      documentosASubir: ['Constancia de Inscripción ARCA', 'DNI'],
+    },
+    juridica: {
+      documentoPrincipal: 'CUIT',
+      regimenFiscalOpciones: ['Responsable Inscripto', 'Exento'],
+      documentosASubir: ['Constancia de Inscripción ARCA', 'Estatuto social'],
+    },
+    extranjera: {
+      documentoPrincipal: 'Pasaporte / CDI (Clave de Identificación)',
+      regimenFiscalOpciones: ['No residente'],
+      documentosASubir: ['Pasaporte'],
+    },
   },
   PE: {
-    pais: 'PE',
-    nombrePersonaNatural: 'Persona Natural',
-    nombrePersonaJuridica: 'Persona Jurídica',
-    nombrePersonaExtranjera: 'Persona Extranjera',
-    documentoPrincipal: 'DNI / RUC Persona Natural',
-    regimenFiscalOpciones: ['NRUS', 'RER/MYPE Tributario', 'Régimen General'],
-    documentosASubir: ['Ficha RUC (SUNAT)', 'DNI'],
+    natural: {
+      documentoPrincipal: 'DNI / RUC Persona Natural',
+      regimenFiscalOpciones: ['NRUS', 'RER/MYPE Tributario', 'Régimen General'],
+      documentosASubir: ['Ficha RUC (SUNAT)', 'DNI'],
+    },
+    juridica: {
+      documentoPrincipal: 'RUC Persona Jurídica',
+      regimenFiscalOpciones: ['RER/MYPE Tributario', 'Régimen General'],
+      documentosASubir: ['Ficha RUC (SUNAT)', 'Vigencia de poder del representante'],
+    },
+    extranjera: {
+      documentoPrincipal: 'Carné de Extranjería / Pasaporte',
+      regimenFiscalOpciones: ['No domiciliado'],
+      documentosASubir: ['Pasaporte'],
+    },
   },
   GT: {
-    pais: 'GT',
-    nombrePersonaNatural: 'Persona Individual',
-    nombrePersonaJuridica: 'Persona Jurídica',
-    nombrePersonaExtranjera: 'Persona Extranjera',
-    documentoPrincipal: 'NIT / DPI',
-    regimenFiscalOpciones: ['Pequeño Contribuyente', 'Régimen Opcional Simplificado', 'Régimen General'],
-    documentosASubir: ['Constancia de RTU', 'DPI'],
+    natural: {
+      documentoPrincipal: 'NIT / DPI',
+      regimenFiscalOpciones: ['Pequeño Contribuyente', 'Régimen Opcional Simplificado', 'Régimen General'],
+      documentosASubir: ['Constancia de RTU', 'DPI'],
+    },
+    juridica: {
+      documentoPrincipal: 'NIT de la empresa',
+      regimenFiscalOpciones: ['Régimen Opcional Simplificado', 'Régimen General'],
+      documentosASubir: ['Patente de Comercio', 'Constancia de RTU'],
+    },
+    extranjera: {
+      documentoPrincipal: 'Pasaporte',
+      regimenFiscalOpciones: ['No domiciliado'],
+      documentosASubir: ['Pasaporte'],
+    },
   },
   CR: {
-    pais: 'CR',
-    nombrePersonaNatural: 'Persona Física',
-    nombrePersonaJuridica: 'Persona Jurídica',
-    nombrePersonaExtranjera: 'Persona Extranjera',
-    documentoPrincipal: 'Cédula de Identidad Física / NITE',
-    regimenFiscalOpciones: ['Régimen Simplificado', 'Régimen Tradicional'],
-    documentosASubir: ['Cédula (ambos lados)'],
+    natural: {
+      documentoPrincipal: 'Cédula de Identidad Física / NITE',
+      regimenFiscalOpciones: ['Régimen Simplificado', 'Régimen Tradicional'],
+      documentosASubir: ['Cédula (ambos lados)'],
+    },
+    juridica: {
+      documentoPrincipal: 'Cédula Jurídica',
+      regimenFiscalOpciones: ['Régimen Tradicional'],
+      documentosASubir: ['Personería Jurídica', 'Cédula Jurídica'],
+    },
+    extranjera: {
+      documentoPrincipal: 'DIMEX / Pasaporte',
+      regimenFiscalOpciones: ['No domiciliado'],
+      documentosASubir: ['Pasaporte'],
+    },
   },
   EC: {
-    pais: 'EC',
-    nombrePersonaNatural: 'Persona Natural',
-    nombrePersonaJuridica: 'Persona Jurídica',
-    nombrePersonaExtranjera: 'Persona Extranjera',
-    documentoPrincipal: 'RUC / Cédula',
-    regimenFiscalOpciones: ['Régimen RIMPE (Popular)', 'Régimen RIMPE (Emprendedor)', 'Régimen General'],
-    documentosASubir: ['Cédula', 'RUC (si aplica)'],
+    natural: {
+      documentoPrincipal: 'RUC / Cédula',
+      regimenFiscalOpciones: ['Régimen RIMPE (Popular)', 'Régimen RIMPE (Emprendedor)', 'Régimen General'],
+      documentosASubir: ['Cédula', 'RUC (si aplica)'],
+    },
+    juridica: {
+      documentoPrincipal: 'RUC Sociedades',
+      regimenFiscalOpciones: ['Régimen RIMPE (Emprendedor)', 'Régimen General'],
+      documentosASubir: ['RUC Sociedades', 'Nombramiento del representante legal'],
+    },
+    extranjera: {
+      documentoPrincipal: 'Pasaporte',
+      regimenFiscalOpciones: ['No domiciliado'],
+      documentosASubir: ['Pasaporte'],
+    },
   },
   CL: {
-    pais: 'CL',
-    nombrePersonaNatural: 'Persona Natural',
-    nombrePersonaJuridica: 'Persona Jurídica',
-    nombrePersonaExtranjera: 'Persona Extranjera',
-    documentoPrincipal: 'RUN / RUT',
-    regimenFiscalOpciones: ['Afecto a IVA', 'No afecto a IVA (2ª categoría)'],
-    documentosASubir: ['Cédula', 'Carpeta Tributaria SII (si emite facturas)'],
+    natural: {
+      documentoPrincipal: 'RUN / RUT',
+      regimenFiscalOpciones: ['Afecto a IVA', 'No afecto a IVA (2ª categoría)'],
+      documentosASubir: ['Cédula', 'Carpeta Tributaria SII (si emite facturas)'],
+    },
+    juridica: {
+      documentoPrincipal: 'RUT de la empresa',
+      regimenFiscalOpciones: ['Afecto a IVA (1ª categoría)', 'Renta presunta'],
+      documentosASubir: ['Carpeta Tributaria SII', 'Escritura de constitución'],
+    },
+    extranjera: {
+      documentoPrincipal: 'Pasaporte / RUT provisorio',
+      regimenFiscalOpciones: ['No domiciliado'],
+      documentosASubir: ['Pasaporte'],
+    },
   },
   PY: {
-    pais: 'PY',
-    nombrePersonaNatural: 'Persona Física',
-    nombrePersonaJuridica: 'Persona Jurídica',
-    nombrePersonaExtranjera: null,
-    documentoPrincipal: 'RUC / Cédula',
-    regimenFiscalOpciones: ['General'],
-    documentosASubir: ['Constancia del RUC', 'Cédula (frente y dorso)'],
-    gapEnFuente:
-      'El Excel fuente no define "Persona Extranjera" para Paraguay ni tiene hoja propia de país (Hallazgo 2, Plan2.md líneas 85-87) — pendiente de definición por Legal/PO.',
+    natural: {
+      documentoPrincipal: 'RUC / Cédula',
+      regimenFiscalOpciones: ['General'],
+      documentosASubir: ['Constancia del RUC', 'Cédula (frente y dorso)'],
+    },
+    juridica: {
+      documentoPrincipal: 'RUC de la empresa',
+      regimenFiscalOpciones: ['General'],
+      documentosASubir: ['Constancia del RUC', 'Estatuto social'],
+    },
+    extranjera: null,
   },
 };
+
+/**
+ * Hallazgo 3, Plan2.md líneas 89-97 (hojas "Flujo Condicional"/"Campos del
+ * Formulario"): reglas de comportamiento del formulario, idénticas para los
+ * 9 países — no varían por país, es una sola tabla.
+ */
+export interface ReglaFormularioFiscal {
+  codigo: string;
+  descripcion: string;
+}
+
+export const PAIS_FORM_BEHAVIOR: ReglaFormularioFiscal[] = [
+  { codigo: 'C-01', descripcion: 'Cascada País → Localidad: al elegir país, el campo de localidad (municipio/provincia/cantón/comuna) se habilita y muestra solo las opciones de ese país.' },
+  { codigo: 'C-02', descripcion: 'Tipo de persona desbloquea el resto: Régimen fiscal, Tipo de documento y "Documentos a subir" quedan deshabilitados hasta elegir Natural/Jurídica/Extranjera.' },
+  { codigo: 'C-05', descripcion: 'Régimen fiscal es un selector dependiente del país — las opciones cambian completamente según el país elegido.' },
+  { codigo: 'C-06', descripcion: 'Tipo de documento deshabilita el campo de número hasta que se elige un tipo.' },
+  { codigo: 'C-07', descripcion: 'El número de documento se limpia automáticamente (quita guiones, puntos y espacios) antes de validar el formato.' },
+  { codigo: 'C-08', descripcion: 'Checkbox de términos y condiciones obligatorio para habilitar "Guardar/Continuar".' },
+  { codigo: 'C-09', descripcion: 'Checkbox de tratamiento de datos obligatorio, junto con C-08, para habilitar "Guardar/Continuar" — además de todos los campos válidos.' },
+];
 
 // ---------------------------------------------------------------------------
 // Formulario de Cuenta/Facturación — bloqueado, nunca oculto (Plan2.md
@@ -236,10 +374,15 @@ export interface EstadoFormularioConfig {
   ctaLabel: string | null;
 }
 
-export const ESTADO_FORMULARIO_CONFIG: Record<IdentitySatelliteStatus, EstadoFormularioConfig> = {
+export const ESTADO_FORMULARIO_CONFIG: Record<IdentitySatelliteStatusV2, EstadoFormularioConfig> = {
   sin_validar: {
     bloqueado: true,
     banner: 'Verifica tu identidad para poder guardar esta información',
+    ctaLabel: 'Verificar identidad',
+  },
+  parcial: {
+    bloqueado: true,
+    banner: 'Detectamos datos guardados antes de nuestro nuevo proceso de verificación — confírmalos verificando tu identidad',
     ctaLabel: 'Verificar identidad',
   },
   pendiente: {
@@ -256,6 +399,11 @@ export const ESTADO_FORMULARIO_CONFIG: Record<IdentitySatelliteStatus, EstadoFor
     bloqueado: true,
     banner: 'No pudimos validar tu identidad — vuelve a intentarlo',
     ctaLabel: 'Reintentar verificación',
+  },
+  pj_pendiente: {
+    bloqueado: true,
+    banner: 'No pudimos validar tu empresa — tus datos quedaron guardados, puedes reintentar',
+    ctaLabel: 'Reintentar validación',
   },
   aprobado: {
     bloqueado: false,
@@ -283,3 +431,98 @@ export type Fase0ResultKind = 'aprobado' | 'revision-financiero' | 'incompleta' 
 
 /** Los 4 mensajes CRM (burbuja WhatsApp) simulados en Fase 0 (blueprint). */
 export type Fase0CrmKind = 'recordatorio' | 'aprobado' | 'revision-financiero' | 'incompleta';
+
+// ---------------------------------------------------------------------------
+// Taxonomía de 12 motivos de rechazo, portada de
+// pages/old/flujo-identidad/flujo-identidad.component.ts (rejectionReasonsList)
+// sin tocar el archivo original — Parte D hallazgo 2: el modal v2 mostraba
+// siempre el mismo texto fijo ("foto borrosa") sin importar la causa real.
+// ---------------------------------------------------------------------------
+export type RejectionReasonCode =
+  | 'DOCUMENT_BLURRY'
+  | 'FACE_NOT_VISIBLE'
+  | 'DOCUMENT_EXPIRED'
+  | 'DOCUMENT_COPY'
+  | 'FACE_COVERED'
+  | 'SELFIE_MISMATCH'
+  | 'DOCUMENT_NOT_READABLE'
+  | 'LIGHTING_ISSUE'
+  | 'DOCUMENT_FRONT_MISSING'
+  | 'DOCUMENT_BACK_MISSING'
+  | 'MULTIPLE_FACES'
+  | 'DOCUMENT_INVALID';
+
+export interface RejectionReasonCopy {
+  label: string;
+  description: string;
+}
+
+export const REJECTION_REASON_COPY: Record<RejectionReasonCode, RejectionReasonCopy> = {
+  DOCUMENT_BLURRY:        { label: 'Documento borroso',           description: 'La imagen del documento no es legible. Ubícate en un lugar bien iluminado y sin reflejos.' },
+  FACE_NOT_VISIBLE:       { label: 'Rostro no visible',           description: 'Tu rostro no aparece claramente en la selfie o está cubierto parcialmente.' },
+  DOCUMENT_EXPIRED:       { label: 'Documento vencido',           description: 'El documento que usaste ya no está vigente. Solo aceptamos documentos en vigencia.' },
+  DOCUMENT_COPY:          { label: 'No se aceptan copias',        description: 'Solo documentos originales. No fotocopias ni capturas de pantalla del documento.' },
+  FACE_COVERED:           { label: 'Rostro cubierto',             description: 'Retira gafas de sol, gorras o cualquier elemento que cubra tu cara.' },
+  SELFIE_MISMATCH:        { label: 'Selfie no coincide',          description: 'La selfie no corresponde a la persona en el documento de identidad.' },
+  DOCUMENT_NOT_READABLE:  { label: 'Datos ilegibles',             description: 'La información en el documento no se puede leer con claridad. Revisa la resolución de la foto.' },
+  LIGHTING_ISSUE:         { label: 'Mala iluminación',            description: 'Ubícate donde haya luz directa, sin sombras sobre el documento o tu rostro.' },
+  DOCUMENT_FRONT_MISSING: { label: 'Falta cara frontal',          description: 'No se cargó la parte delantera del documento.' },
+  DOCUMENT_BACK_MISSING:  { label: 'Falta reverso del documento', description: 'No se cargó el reverso del documento.' },
+  MULTIPLE_FACES:         { label: 'Más de un rostro',            description: 'En la selfie solo debe aparecer la persona que se está validando.' },
+  DOCUMENT_INVALID:       { label: 'Tipo de documento inválido',  description: 'El tipo de documento seleccionado no es válido para tu país de residencia.' },
+};
+
+export const REJECTION_REASON_CODES: RejectionReasonCode[] = [
+  'DOCUMENT_BLURRY', 'FACE_NOT_VISIBLE', 'DOCUMENT_EXPIRED', 'DOCUMENT_COPY',
+  'FACE_COVERED', 'SELFIE_MISMATCH', 'DOCUMENT_NOT_READABLE', 'LIGHTING_ISSUE',
+  'DOCUMENT_FRONT_MISSING', 'DOCUMENT_BACK_MISSING', 'MULTIPLE_FACES', 'DOCUMENT_INVALID',
+];
+
+// ---------------------------------------------------------------------------
+// Mock de un tercero — persona natural distinta al dueño de cuenta, para la
+// vía "otra-persona-natural" (Plan2.md líneas 806-813, tabla de vistas #11).
+// ---------------------------------------------------------------------------
+export interface MockThirdPartyPersona {
+  nombreCompleto: string;
+  email: string;
+  telefono: string;
+  tipoDocumento: string;
+  numeroDocumento: string;
+}
+
+export const MOCK_THIRD_PARTY_PERSONS: MockThirdPartyPersona[] = [
+  { nombreCompleto: 'Andrés Felipe Gómez', email: 'andres.gomez@email.com', telefono: '3115557788', tipoDocumento: 'CC', numeroDocumento: '1098765432' },
+  { nombreCompleto: 'Camila Restrepo Vélez', email: 'camila.restrepo@email.com', telefono: '3227784411', tipoDocumento: 'CC', numeroDocumento: '1076543210' },
+];
+
+// ---------------------------------------------------------------------------
+// Extensión por composición de MockUserData (identity-flow.models.ts) — nunca
+// se edita la interfaz original, que /old/* sigue consumiendo sin estos
+// campos (Hallazgo de auditoría, Plan2.md líneas 1358-1374).
+// ---------------------------------------------------------------------------
+export interface RepresentanteLegalMock {
+  nombreCompleto: string;
+  yaValidadoEnDropi: boolean;
+}
+
+export interface MockUserDataV2 {
+  /** RN-11: fecha de la última validación aprobada, para el bloqueo de 6 meses del Dueño de cuenta. */
+  lastValidatedAt: Date | null;
+  /** RN-10: score de riesgo asignado en la primera validación — 'medio' dispara monitoreo periódico. */
+  riskScore: 'bajo' | 'medio' | 'alto';
+  /** RN-20: representante legal declarado en el KYB, si aplica. */
+  representanteLegal?: RepresentanteLegalMock;
+}
+
+/** Representantes legales mock por empresa (EMPRESAS_MOCK_V2 en el modal), para RN-20 realista (Parte D hallazgo 3). */
+export const REPRESENTANTES_LEGALES_MOCK: Record<string, RepresentanteLegalMock> = {
+  'TechStore SAS': { nombreCompleto: 'Juan Pérez Rodríguez', yaValidadoEnDropi: true },
+  'Distribuidora Sur SAS': { nombreCompleto: 'María Fernanda Ocampo', yaValidadoEnDropi: false },
+  'Comercial Norte Ltda.': { nombreCompleto: 'Carlos Andrés Ríos', yaValidadoEnDropi: true },
+  'Comercial MX SA de CV': { nombreCompleto: 'Ana Lucía Torres', yaValidadoEnDropi: false },
+  'Distribuidora Bajío SA': { nombreCompleto: 'Roberto Salinas Cruz', yaValidadoEnDropi: true },
+  'Tech Solutions SAPI': { nombreCompleto: 'Diego Hernández Paz', yaValidadoEnDropi: false },
+};
+
+/** Representante legal por defecto cuando la empresa buscada no tiene un mock específico (resto de países/empresas). */
+export const REPRESENTANTE_LEGAL_DEFAULT: RepresentanteLegalMock = { nombreCompleto: 'Representante legal', yaValidadoEnDropi: false };

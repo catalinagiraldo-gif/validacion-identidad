@@ -151,13 +151,6 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'configuraciones/flujo-identidad-2026-06-18',
-        loadComponent: () =>
-          import('./pages/old/flujo-identidad/flujo-identidad.component').then(
-            m => m.FlujoIdentidadComponent,
-          ),
-      },
-      {
         path: 'identidad/hub',
         loadComponent: () =>
           import('./pages/old/identidad-hub/identidad-hub.component').then(

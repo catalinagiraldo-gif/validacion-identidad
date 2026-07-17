@@ -11,6 +11,7 @@ import { IdentityFase0InterceptorComponent } from '../../common/components/ident
 import { IdentityFase0BlockComponent } from '../../common/components/identity-fase0-block/identity-fase0-block.component';
 import { IdentityFase0ResultComponent } from '../../common/components/identity-fase0-result/identity-fase0-result.component';
 import { IdentityFase0CrmToastComponent } from '../../common/components/identity-fase0-crm-toast/identity-fase0-crm-toast.component';
+import { IdentidadTourComponent } from '../../common/components/identidad-tour/identidad-tour.component';
 
 @Component({
   selector: 'app-layout-new',
@@ -28,6 +29,7 @@ import { IdentityFase0CrmToastComponent } from '../../common/components/identity
     IdentityFase0BlockComponent,
     IdentityFase0ResultComponent,
     IdentityFase0CrmToastComponent,
+    IdentidadTourComponent,
   ],
   template: `
     <div class="layout-new">
@@ -46,6 +48,7 @@ import { IdentityFase0CrmToastComponent } from '../../common/components/identity
       <app-identity-fase0-block />
       <app-identity-fase0-result />
       <app-identity-fase0-crm-toast />
+      <app-identidad-tour />
     </div>
   `,
   styleUrl: './layout-new.component.scss',

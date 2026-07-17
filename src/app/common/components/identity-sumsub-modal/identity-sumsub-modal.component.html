@@ -28,7 +28,7 @@
             <span class="step-dot" [class.step-dot--active]="screenIndex() === n" [class.step-dot--done]="screenIndex() > n"></span>
           }
         </div>
-        <span class="step-label">Paso {{ screenIndex() + 1 }} de 4</span>
+        <span class="step-label">{{ screenLabel() }}</span>
       </div>
 
       <button class="modal-close" (click)="tryClose()">
@@ -158,7 +158,7 @@
                 />
               </div>
               @if (otpEmailBloqueado()) {
-                <p class="otp-field__error">Agotaste los intentos. Debes reiniciar la verificación.</p>
+                <p class="otp-field__error">Agotaste los intentos con el código de tu correo. Deberás reiniciar todo el proceso de verificación (documento, prueba de vida y códigos).</p>
                 <button class="btn-text-danger" (click)="reiniciarVerificacion()">Reiniciar verificación</button>
               } @else {
                 @if (otpEmailError()) {
@@ -278,7 +278,7 @@
                 />
               </div>
               @if (otpTelefonoBloqueado()) {
-                <p class="otp-field__error">Agotaste los intentos. Debes reiniciar la verificación.</p>
+                <p class="otp-field__error">Agotaste los intentos con el código de tu celular. Deberás reiniciar todo el proceso de verificación (documento, prueba de vida y códigos).</p>
                 <button class="btn-text-danger" (click)="reiniciarVerificacion()">Reiniciar verificación</button>
               } @else {
                 @if (otpTelefonoError()) {
@@ -383,7 +383,7 @@
                 />
               </div>
               @if (terceroOtpBloqueado()) {
-                <p class="otp-field__error">Se agotaron los intentos. Debes reiniciar esta verificación.</p>
+                <p class="otp-field__error">Se agotaron los intentos con este código. Deberás reiniciar la verificación de {{ terceroLabel() }} completa (documento, prueba de vida y códigos).</p>
                 <button class="btn-text-danger" (click)="reiniciarVerificacionTercero()">Reiniciar verificación</button>
               } @else {
                 @if (terceroOtpError()) {
@@ -490,8 +490,8 @@
               <div class="input-field">
                 <label class="input-field__label">País de constitución</label>
                 <select class="input-field__control" [ngModel]="kybPais()" (ngModelChange)="kybPais.set($event)">
-                  @for (p of ['CO','MX','AR','PE','GT','CR','EC','CL','PY']; track p) {
-                    <option [value]="p">{{ p }}</option>
+                  @for (p of paises9; track p) {
+                    <option [value]="p">{{ nombrePaisCompleto(p) }}</option>
                   }
                 </select>
               </div>
@@ -536,8 +536,8 @@
               <h3>Confirma tu empresa</h3>
               <div class="via-confirm-card">
                 <div class="via-confirm-card__row"><span>🏢</span><strong>{{ kybEmpresaSeleccionada() }}</strong></div>
-                <div class="via-confirm-card__row"><span>País</span><strong>{{ kybPais() }}</strong></div>
-                <div class="via-confirm-card__row"><span>Representante legal</span><strong>Juan Pérez</strong></div>
+                <div class="via-confirm-card__row"><span>País</span><strong>{{ nombrePaisCompleto(kybPais()) }}</strong></div>
+                <div class="via-confirm-card__row"><span>Representante legal</span><strong>{{ representanteLegalMock().nombreCompleto }}</strong></div>
                 <div class="via-confirm-card__row"><span>Mesa accionaria</span><strong>3 socios</strong></div>
               </div>
             </div>
@@ -547,9 +547,9 @@
             <div class="substep-content">
               <h3>Verificación del representante legal</h3>
               @if (representanteYaValidado()) {
-                <p>Juan Pérez ya está validado en Dropi ✓. Reutilizaremos su verificación de identidad — no necesita repetir el proceso.</p>
+                <p>{{ representanteLegalMock().nombreCompleto }} ya está validado en Dropi ✓. Reutilizaremos su verificación de identidad — no necesita repetir el proceso.</p>
               } @else {
-                <p>Necesitamos validar la identidad de Juan Pérez como representante legal de {{ kybEmpresaSeleccionada() }}. Esto es una segunda verificación, independiente de la tuya.</p>
+                <p>Necesitamos validar la identidad de {{ representanteLegalMock().nombreCompleto }} como representante legal de {{ kybEmpresaSeleccionada() }}. Esto es una segunda verificación, independiente de la tuya.</p>
               }
             </div>
           }
@@ -618,14 +618,14 @@
             <div class="resultado resultado--rechazado">
               <div class="resultado__icon resultado__icon--error">✕</div>
               <h2 class="resultado__title">Verificación rechazada</h2>
-              <p class="resultado__text">No pudimos verificar tu identidad. Motivo:</p>
+              <p class="resultado__text">No pudimos verificar tu identidad. Motivo: <strong>{{ motivoRechazoCopy().label }}</strong></p>
               <div class="rechazo-motivo">
                 <i class="pi pi-exclamation-circle"></i>
-                <span>La foto del documento está borrosa. Toma otra con mejor iluminación y sin reflejos.</span>
+                <span>{{ motivoRechazoCopy().description }}</span>
               </div>
               <div class="resultado__actions">
                 <button class="btn-primary" (click)="onReintentar()">Reintentar verificación</button>
-                <button class="btn-text" (click)="tryClose()">Solicitar revisión manual</button>
+                <button class="btn-text" (click)="onRechazadoReturn()">Solicitar revisión manual</button>
               </div>
             </div>
           }

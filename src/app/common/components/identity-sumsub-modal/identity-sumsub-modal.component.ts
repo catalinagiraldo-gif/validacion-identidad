@@ -5,7 +5,18 @@ import { Router } from '@angular/router';
 import { IdentityModalService } from '../../services/identity-modal.service';
 import { IdentityDemoStateService } from '../../services/identity-demo-state.service';
 import { IdentityDemoStateV2Service } from '../../services/identity-demo-state-v2.service';
-import { PAIS_BILLING_FIELDS, Pais9, ViaFacturacion } from '../../models/identity-flow-v2.models';
+import {
+  PAIS_BILLING_FIELDS,
+  Pais9,
+  PAISES_9,
+  ViaFacturacion,
+  RejectionReasonCode,
+  REJECTION_REASON_COPY,
+  REJECTION_REASON_CODES,
+  REPRESENTANTES_LEGALES_MOCK,
+  REPRESENTANTE_LEGAL_DEFAULT,
+  NOMBRE_PAIS_COMPLETO,
+} from '../../models/identity-flow-v2.models';
 
 // Reordenado según Plan2.md (docs/validacion/Plan2.md, Fase 3, líneas 700-913):
 // el KYC del dueño de cuenta corre completo — email, OTP email, documento
@@ -70,7 +81,7 @@ export class IdentitySumsubModalComponent {
   readonly esTruora    = computed(() => this.stateV2.motorValidacion() === 'truora');
 
   readonly documentoPrincipalLabel = computed(() =>
-    PAIS_BILLING_FIELDS[this.stateV2.pais()]?.documentoPrincipal ?? 'documento de identidad'
+    PAIS_BILLING_FIELDS[this.stateV2.pais()]?.[this.stateV2.tipoPersona()]?.documentoPrincipal ?? 'documento de identidad'
   );
 
   currentScreen  = signal<Screen>('screen0');
@@ -135,7 +146,37 @@ export class IdentitySumsubModalComponent {
 
   readonly representanteYaValidado = computed(() => this.stateV2.representanteLegalValidado());
 
+  /** Parte D hallazgo 3: nombre real del representante legal según la empresa buscada, no un string fijo ("Juan Pérez" para cualquier empresa). */
+  readonly representanteLegalMock = computed(() =>
+    REPRESENTANTES_LEGALES_MOCK[this.kybEmpresaSeleccionada() ?? ''] ?? REPRESENTANTE_LEGAL_DEFAULT
+  );
+
+  nombrePaisCompleto(p: Pais9): string { return NOMBRE_PAIS_COMPLETO[p]; }
+  readonly paises9 = PAISES_9;
+
+  /** Parte D hallazgo 4: un solo indicador de progreso legible en el header — reemplaza el "Paso X de 4" genérico (que competía con la barra de sub-pasos de screen2) por el nombre del momento actual. */
+  readonly screenLabel = computed(() => {
+    const map: Record<Screen, string> = {
+      screen0: 'Antes de empezar',
+      screen1: 'Prepárate',
+      screen2: 'Verificación de identidad',
+      screen3: 'Resultado',
+    };
+    return map[this.currentScreen()];
+  });
+
+  /** Parte D hallazgo 2: motivo de rechazo real (uno de los 12 de la taxonomía), en vez de un texto fijo siempre igual. Se fija una sola vez al llegar al resultado, no en cada render. */
+  motivoRechazo = signal<RejectionReasonCode>('DOCUMENT_BLURRY');
+  readonly motivoRechazoCopy = computed(() => REJECTION_REASON_COPY[this.motivoRechazo()]);
+
   constructor() {
+    effect(() => {
+      if (this.currentScreen() === 'screen3' && this.resultado() === 'rechazado') {
+        const codes = REJECTION_REASON_CODES;
+        this.motivoRechazo.set(codes[Math.floor(Math.random() * codes.length)]);
+      }
+    }, { allowSignalWrites: true });
+
     effect(() => {
       if (this.isOpen()) {
         this.currentScreen.set(this.config().startScreen);
@@ -310,6 +351,16 @@ export class IdentitySumsubModalComponent {
 
     if (current === 'via-confirmar-mis-datos') {
       this.stateV2.setEstadoKyb('aprobado');
+      // Plan2.md Parte 8: precarga real KYC → Datos de facturación (Reglasvalidacion.md §3,
+      // "1 sola validación" cuando factura con los mismos datos) — se guardan los datos ya
+      // capturados en los pasos 1-5 para que datos-facturacion.component.ts no los vuelva a pedir.
+      this.stateV2.setDatosCapturadosKyc({
+        email: this.emailCorreo(),
+        telefono: this.telefono(),
+        tipoDocumento: this.documentoPrincipalLabel(),
+        numeroDocumento: 'Verificado por ' + this.motorLabel(),
+        nombreCompleto: 'Verificado por ' + this.motorLabel(),
+      });
       this.currentScreen.set('screen3');
       return;
     }
@@ -574,17 +625,34 @@ export class IdentitySumsubModalComponent {
     }
   }
 
-  confirmExit(): void { this.exitConfirm.set(false); this.modalSvc.close(); }
+  /**
+   * Plan2.md Parte 8: si el usuario ya avanzó más allá del checklist (screen1)
+   * y sale sin terminar, el estado queda 'pendiente' (no 'sin_validar') — así
+   * el banner "Ya empezaste tu verificación — termínala" (ESTADO_FORMULARIO_CONFIG)
+   * es alcanzable, y stateV2 no queda desincronizado de stateSvc.
+   */
+  confirmExit(): void {
+    this.exitConfirm.set(false);
+    if (this.currentScreen() === 'screen2' && this.currentSubStep() !== 'email') {
+      this.stateSvc.setStatus('pendiente');
+      this.stateV2.setStatus('pendiente');
+    }
+    this.modalSvc.close();
+  }
   cancelExit(): void { this.exitConfirm.set(false); }
 
   onAprobadoFacturacion(): void {
     this.stateSvc.setStatus('aprobado');
+    this.stateV2.setStatus('aprobado');
+    this.stateV2.setLastValidatedAt(new Date());
     this.modalSvc.close();
     this.router.navigate(['/new/financiero/datos-facturacion']);
   }
 
   onAprobadoReturn(): void {
     this.stateSvc.setStatus('aprobado');
+    this.stateV2.setStatus('aprobado');
+    this.stateV2.setLastValidatedAt(new Date());
     this.modalSvc.close();
     const o = this.config().origen;
     const routes: Record<string, string> = {
@@ -601,6 +669,14 @@ export class IdentitySumsubModalComponent {
 
   onEnRevisionReturn(): void {
     this.stateSvc.setStatus('en_revision');
+    this.stateV2.setStatus('en_revision');
+    this.modalSvc.close();
+  }
+
+  /** Plan2.md Parte 8: "Solicitar revisión manual" en el resultado rechazado no persistía ningún estado — el rechazo se perdía al cerrar el modal. */
+  onRechazadoReturn(): void {
+    this.stateSvc.setStatus('rechazado');
+    this.stateV2.setStatus('rechazado');
     this.modalSvc.close();
   }
 

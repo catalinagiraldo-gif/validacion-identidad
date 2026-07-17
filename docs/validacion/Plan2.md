@@ -114,7 +114,41 @@ Estas reglas no varían por país — son el comportamiento general del formular
 
 ## Mermaid — journey consolidado
 
-Convenciones usadas en todos los diagramas de este documento (tomadas del board de Figma "Validación de identidad · Convenciones"): círculo negro = inicio/fin, rectángulo verde = pantalla que ve el usuario, rectángulo naranja = pantalla que abre un flujo nuevo/obligatorio, rectángulo morado = acción del sistema (no es una pantalla), rombo amarillo = decisión, rectángulo azul = modal, verde intenso = resultado positivo, rojo = resultado negativo/bloqueo.
+Convenciones usadas en todos los diagramas de este documento (tomadas del board de Figma "Validación de identidad · Convenciones"): círculo negro = inicio/fin, rectángulo verde = pantalla que ve el usuario, rectángulo naranja = pantalla que abre un flujo nuevo/obligatorio, rectángulo morado = acción del sistema (no es una pantalla), rombo amarillo = decisión, rectángulo azul = modal, verde intenso = resultado positivo, rojo = resultado negativo/bloqueo. **Ningún color se usa solo**: cada nodo de resultado lleva además un símbolo (✅/🚫/🟧/🔄) para que el significado no dependa de distinguir colores.
+
+**Legenda** (referencia para todos los diagramas de este documento — cuando un diagrama dice "ver Legenda ↑" es este bloque):
+
+```mermaid
+flowchart LR
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef pantallaNueva fill:#fbc98b,stroke:#c77b1e,color:#1a1a1a,stroke-width:2px
+    classDef accion fill:#e4c7f5,stroke:#9b4fd1,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
+    classDef modal fill:#a8d4f5,stroke:#4a90d9,color:#1a1a1a,stroke-width:2px
+    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
+
+    L1(("● Inicio/Fin"))
+    L2["Pantalla que ve el usuario"]
+    L3["🟧 Pantalla que abre un flujo nuevo/obligatorio"]
+    L4["Acción del sistema (no es pantalla)"]
+    L5{"Decisión"}
+    L6["Modal"]
+    L7["✅ Resultado positivo"]
+    L8["🚫 Resultado negativo/bloqueo"]
+
+    class L2 pantalla
+    class L3 pantallaNueva
+    class L4 accion
+    class L5 decision
+    class L6 modal
+    class L7 si
+    class L8 no
+```
+
+Este journey se divide en **3 diagramas enlazados** (antes era uno solo de ~90 líneas, difícil de seguir de una sola vez): (1) dónde puede aparecer la verificación y qué motor se elige, (2) los 6 pasos del WebSDK y las 3 rutas de facturación, y (3) qué pasa cuando el usuario edita datos ya validados. Cada uno retoma exactamente donde termina el anterior.
+
+### Diagrama 1 de 3 — Dónde aparece y qué motor se usa (ver Legenda ↑)
 
 ```mermaid
 flowchart TD
@@ -122,8 +156,6 @@ flowchart TD
     classDef pantallaNueva fill:#fbc98b,stroke:#c77b1e,color:#1a1a1a,stroke-width:2px
     classDef accion fill:#e4c7f5,stroke:#9b4fd1,color:#1a1a1a,stroke-width:2px
     classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
-    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
-    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
     classDef modal fill:#a8d4f5,stroke:#4a90d9,color:#1a1a1a,stroke-width:2px
 
     subgraph ENTRY[Dónde puede aparecer]
@@ -134,10 +166,10 @@ flowchart TD
       E5[Registro o inicio de sesión]
     end
 
-    E5 -->|correo en lista negra| BAN[Bloqueo total en pantalla completa, sin botón de salida]
+    E5 -->|correo en lista negra| BAN[🚫 Bloqueo total en pantalla completa, sin botón de salida]
     E1 -->|tiene saldo o pedidos pendientes de cobrar| SOFT[Aviso: configura tus datos para poder retirar tu saldo]
-    E2 -->|no está aprobado| GATE[Bloqueo: debes verificar tu identidad para continuar esta acción]
-    E3 -->|no está aprobado| FORM_LOCK[Formulario visible pero bloqueado, con botón para verificar identidad]
+    E2 -->|no está aprobado| GATE[🟧 Bloqueo: debes verificar tu identidad para continuar esta acción]
+    E3 -->|no está aprobado| FORM_LOCK[🟧 Formulario visible pero bloqueado, con botón para verificar identidad]
     E4 -->|no está aprobado| FORM_LOCK
 
     SOFT -->|Verificar ahora| OPEN
@@ -148,8 +180,29 @@ flowchart TD
     BRANCH -->|Sí| TRUORA[Se usa Truora]
     BRANCH -->|No| SUMSUB[Se usa Sumsub]
 
-    TRUORA --> STEP1
-    SUMSUB --> STEP1
+    TRUORA --> CONTINUA1(("Sigue en el Diagrama 2 →"))
+    SUMSUB --> CONTINUA1
+
+    class E1,E2,E3,E4,E5,SOFT pantalla
+    class GATE,FORM_LOCK pantallaNueva
+    class TRUORA,SUMSUB accion
+    class BRANCH decision
+    class OPEN,BAN modal
+```
+
+**En resumen:** el usuario puede toparse con la verificación en 5 lugares distintos; solo el correo en lista negra bloquea sin ninguna salida. Todo lo demás (retiro, DropiCard, transferencia, cuenta, facturación) muestra el mismo botón "Verificar identidad". Una vez que lo presiona, el sistema decide en silencio si usa Truora (solo Colombia + persona natural) o Sumsub (todo lo demás) — el usuario nunca elige el motor.
+
+### Diagrama 2 de 3 — Los 6 pasos del WebSDK y las 3 rutas de facturación (ver Legenda ↑)
+
+```mermaid
+flowchart TD
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef pantallaNueva fill:#fbc98b,stroke:#c77b1e,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
+    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
+
+    INICIO2(("← Viene del Diagrama 1: Truora o Sumsub")) --> STEP1
 
     subgraph WEBSDK[6 pasos para verificar al dueño de la cuenta]
       STEP1[1. Confirmar correo]
@@ -161,7 +214,7 @@ flowchart TD
     end
 
     STEP5 --> RESULT_KYC{Resultado de la verificación}
-    RESULT_KYC -->|Rechazado| R3REJ[Rechazado, se explica el motivo]
+    RESULT_KYC -->|Rechazado| R3REJ[🚫 Rechazado, se explica el motivo]
     RESULT_KYC -->|En revisión| R3REV[Queda en revisión]
     RESULT_KYC -->|Aprobado| BILLQ{Para quién es la factura?}
 
@@ -174,36 +227,57 @@ flowchart TD
     RN20 -->|No| KYCREP[Se le pide verificarse también]
     REUSE --> FISCAL
     KYCREP --> FISCAL
-    KYB -->|no se pudo validar la empresa| RN23[Queda pendiente, no se pierden los datos]
+    KYB -->|no se pudo validar la empresa| RN23[🚫 Queda pendiente, no se pierden los datos]
 
     FISCAL[Preguntas de facturación según el país]
     FISCAL --> WEBHOOK{Se pudo confirmar con la autoridad fiscal?}
     WEBHOOK -->|Sí| PROCESANDO[Procesando]
-    WEBHOOK -->|No| BLOQUEA[No se guarda nada, vuelve a preguntar]
-    PROCESANDO --> R3OK[Aprobado]
+    WEBHOOK -->|No| BLOQUEA[🚫 No se guarda nada, vuelve a preguntar]
+    PROCESANDO --> R3OK[✅ Aprobado]
 
     R3OK --> UPDATE_STATE[Vuelve a la pantalla de origen, ya aprobado]
-    UPDATE_STATE --> EDIT[Más adelante: edición de datos ya validados]
+    UPDATE_STATE --> CONTINUA2(("Sigue en el Diagrama 3 →"))
+
+    class STEP1,STEP2,STEP3,STEP4,STEP5,R3REV,REUSE,FISCAL,PROCESANDO,UPDATE_STATE pantalla
+    class KYC2,KYB,KYCREP pantallaNueva
+    class RESULT_KYC,BILLQ,RN20,WEBHOOK decision
+    class R3OK si
+    class R3REJ,RN23,BLOQUEA no
+```
+
+**En resumen:** son 6 pasos únicos y en orden fijo — nunca se le pregunta al usuario qué tipo de documento tiene, ni se le pide facturación antes de terminar su propio KYC. Recién al final, con la identidad ya aprobada, aparece la pregunta de para quién es la factura (mismo dueño / otra persona / empresa). Si elige empresa y no se puede validar, nunca se pierde lo ya escrito ni se degrada a persona natural. Los datos fiscales nunca se guardan sin que la autoridad fiscal los confirme primero.
+
+### Diagrama 3 de 3 — Edición de datos ya validados (ver Legenda ↑)
+
+```mermaid
+flowchart TD
+    classDef pantalla fill:#b9f0c6,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef pantallaNueva fill:#fbc98b,stroke:#c77b1e,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fde58a,stroke:#d9a400,color:#1a1a1a,stroke-width:2px
+    classDef si fill:#9fe6b0,stroke:#3fae5c,color:#1a1a1a,stroke-width:2px
+    classDef no fill:#f7b8b0,stroke:#e0685a,color:#1a1a1a,stroke-width:2px
+
+    INICIO3(("← Viene del Diagrama 2: ya aprobado")) --> EDIT[Más adelante: edición de datos ya validados]
 
     EDIT --> RN14{El campo que cambia es sensible?}
-    RN14 -->|No, ej. dirección o teléfono| SAVE_DIRECT[Se guarda directo]
-    RN14 -->|Sí, ej. nombre o documento| REVAL[Pide verificar de nuevo y bloquea movimientos de dinero]
+    RN14 -->|No, ej. dirección o teléfono| SAVE_DIRECT[✅ Se guarda directo]
+    RN14 -->|Sí, ej. nombre o documento| REVAL[🟧 Pide verificar de nuevo y bloquea movimientos de dinero]
 
     EDIT --> RN11{Es el dueño de la cuenta?}
-    RN11 -->|Sí, hace menos de 6 meses| LOCKED[No se puede editar todavía]
-    RN11 -->|Es el responsable de facturación| NOLOCK[Se puede editar cuando sea, pero si es sensible re-valida]
+    RN11 -->|Sí, hace menos de 6 meses| LOCKED[🚫 No se puede editar todavía]
+    RN11 -->|Es el responsable de facturación| NOLOCK[✅ Se puede editar cuando sea, pero si es sensible re-valida]
 
     EDIT --> RN10{Su riesgo fue medio?}
-    RN10 -->|Sí| MONITOR[Cada cierto tiempo se le pide una prueba rápida]
+    RN10 -->|Sí| MONITOR[🔄 Cada cierto tiempo se le pide una prueba rápida]
 
-    class E1,E2,E3,E4,E5,SOFT,STEP1,STEP2,STEP3,STEP4,STEP5,R3REV,REUSE,FISCAL,PROCESANDO,UPDATE_STATE,EDIT,MONITOR pantalla
-    class GATE,FORM_LOCK,KYC2,KYB,KYCREP,REVAL pantallaNueva
-    class TRUORA,SUMSUB accion
-    class BRANCH,RESULT_KYC,BILLQ,RN20,WEBHOOK,RN14,RN11,RN10 decision
-    class OPEN,BAN modal
-    class R3OK,SAVE_DIRECT,NOLOCK si
-    class R3REJ,RN23,BLOQUEA,LOCKED no
+    class EDIT,MONITOR pantalla
+    class REVAL pantallaNueva
+    class RN14,RN11,RN10 decision
+    class SAVE_DIRECT,NOLOCK si
+    class LOCKED no
 ```
+
+**En resumen:** editar datos no sensibles (dirección, teléfono) se guarda al instante. Editar datos sensibles (nombre, documento) siempre pide verificarse de nuevo y bloquea movimientos de dinero mientras tanto — sin excepción. El Dueño de la cuenta tiene además un candado de 6 meses que el Responsable Tributario no tiene. Quien haya salido con riesgo "Medio" recibe, aparte de todo esto, una prueba rápida periódica.
 
 ## Formulario de Cuenta/Facturación — bloqueado, nunca oculto (regla transversal)
 
@@ -1160,29 +1234,29 @@ flowchart TD
     START((Inicio)) --> WHICH{Qué quiere editar?}
 
     WHICH -->|Sus datos en Mi cuenta| RN11{Pasaron menos de 6 meses desde que se validó?}
-    RN11 -->|Sí| LOCKED[No puede tocar nombre, documento ni fecha de nacimiento]
+    RN11 -->|Sí| LOCKED[🚫 No puede tocar nombre, documento ni fecha de nacimiento]
     RN11 -->|No| UNLOCKED[Puede editar esos campos]
     UNLOCKED --> EDITOWNER{Cambia alguno de esos datos?}
     EDITOWNER -->|Sí| REVALFULL[Se le pide verificarse de nuevo, completo]
     REVALFULL --> REVALFULLRESULT{Resultado}
-    REVALFULLRESULT -->|Aprobado| SAVEDOWNER[Se guarda y vuelve a contar los 6 meses]
-    REVALFULLRESULT -->|Rechazado| KEEPOLDOWNER[Se quedan los datos anteriores]
+    REVALFULLRESULT -->|Aprobado| SAVEDOWNER[✅ Se guarda y vuelve a contar los 6 meses]
+    REVALFULLRESULT -->|Rechazado| KEEPOLDOWNER[🚫 Se quedan los datos anteriores]
     EDITOWNER -->|No| NOCHANGE[No pasa nada]
 
     WHICH -->|Sus datos de facturación| RN1415{El campo que cambia es sensible?}
-    RN1415 -->|No, ej. dirección o teléfono| SAVEDIRECT[Se guarda directo]
+    RN1415 -->|No, ej. dirección o teléfono| SAVEDIRECT[✅ Se guarda directo]
     RN1415 -->|Sí, ej. nombre o tipo de documento| REVALSENS[Se le pide verificarse de nuevo]
-    REVALSENS --> BLOCKFIN[Mientras tanto, no puede retirar ni transferir]
+    REVALSENS --> BLOCKFIN[🚫 Mientras tanto, no puede retirar ni transferir]
     BLOCKFIN --> REVALRESULT{Resultado}
-    REVALRESULT -->|Aprobado| UPDATED[Se actualizan los datos y se desbloquea]
-    REVALRESULT -->|Rechazado| KEEPOLD[Se quedan los datos anteriores, puede reintentar]
+    REVALRESULT -->|Aprobado| UPDATED[✅ Se actualizan los datos y se desbloquea]
+    REVALRESULT -->|Rechazado| KEEPOLD[🚫 Se quedan los datos anteriores, puede reintentar]
 
     START -->|Si su riesgo quedó en Medio| RN10{Ya toca su control periódico?}
-    RN10 -->|Sí| MICRO[Se le pide una selfie rápida]
+    RN10 -->|Sí| MICRO[🔄 Se le pide una selfie rápida]
     RN10 -->|No todavía| WAITMONITOR[Sigue operando normal]
     MICRO --> MICRORESULT{La selfie coincide con su documento?}
-    MICRORESULT -->|Sí| CONTINUEOK[Sigue sin más trámite]
-    MICRORESULT -->|No| ESCALATE[Se le pide verificarse completo de nuevo]
+    MICRORESULT -->|Sí| CONTINUEOK[✅ Sigue sin más trámite]
+    MICRORESULT -->|No| ESCALATE[🚫 Se le pide verificarse completo de nuevo]
 
     class START inicioFin
     class WHICH,RN11,EDITOWNER,REVALFULLRESULT,RN1415,REVALRESULT,RN10,MICRORESULT decision
@@ -1279,6 +1353,47 @@ flowchart TD
 - `Habit` + stepper `< 6 meses` reproduce 5-A (campos del Dueño bloqueados); `Cross-Border` reproduce 5-B (cambio de responsable tributario/empresa).
 - `Legacy` + `Riesgo = Medio` dispara el micro-control 5-C (monitoreo periódico), independientemente del stepper de meses.
 - Los dos botones de guardado de 5-B ("Guardar cambios no sensibles" / "Guardar y re-validar campos sensibles") no dependen de ningún control del demo-panel — deben poder probarse por separado directamente en la página de Datos de facturación.
+
+---
+
+## Parte 8 — Corrección de estados, formulario vacío y precarga (auditoría post-implementación)
+
+Esta parte se agrega después de que las Partes 1-7 ya estaban implementadas en el código (commits `844c1f2`…`eb33664`). Es una auditoría contra el uso real del prototipo, no una replanificación — documenta huecos concretos encontrados en el código ya construido.
+
+### Los 6 estados de identidad, de primera clase
+
+`IdentitySatelliteStatus` ya declaraba `sin_validar | pendiente | en_revision | rechazado | aprobado`, pero en la práctica solo 3 de esos 5 eran alcanzables desde el demo-panel o desde el modal, y no existía ningún estado para usuarios antiguos con datos del formulario manual viejo (pre-Sumsub). Se agrega `parcial` de forma aditiva (`IdentitySatelliteStatusV2`, mismo patrón que `pj_pendiente`), y se corrigen los flujos para que los 6 sean alcanzables y persistentes:
+
+| Estado | Significado | Cómo se llega |
+|---|---|---|
+| `sin_validar` | Nunca tocó nada — Etapa Setup, cero datos | Default de usuario nuevo; default al volver a "Setup" sin datos previos |
+| `parcial` | Usuario antiguo con datos del formulario manual viejo, nunca certificados por Truora/Sumsub | Toggle "Datos formulario viejo" del demo-panel + Etapa Setup |
+| `pendiente` | Abrió el modal de verificación y salió antes de terminar | `confirmExit()` del modal, si ya avanzó más allá del checklist |
+| `en_revision` | Terminó el modal, resultado en revisión | Sin cambios |
+| `rechazado` | Terminó el modal, resultado rechazado, o pidió revisión manual | Sin cambios + fix: "Solicitar revisión manual" ahora sí persiste el estado |
+| `aprobado` | Terminó el modal, aprobado | Sin cambios |
+
+### Bugs de sincronización corregidos
+
+- El modal (`identity-sumsub-modal.component.ts`) solo actualizaba `IdentityDemoStateService` (el servicio base) al terminar la verificación — nunca `IdentityDemoStateV2Service`, que es la fuente de verdad que consumen las páginas `/new/*` construidas en las Partes 1-7. Se corrigió en `onAprobadoFacturacion()`, `onAprobadoReturn()`, `onEnRevisionReturn()`, y se agregó `onRechazadoReturn()` (el botón "Solicitar revisión manual" del resultado rechazado no persistía ningún estado antes de este fix).
+- `confirmExit()` ahora fija `pendiente` en ambos servicios si el usuario ya avanzó más allá del checklist antes de salir — antes cerraba sin tocar el status, dejando el wiretext "Ya empezaste tu verificación — termínala" inalcanzable.
+- El demo-panel forzaba el status del servicio base a su default por `FaseUsuario` (`setup → sin_validar`) al cambiar "Momento del usuario", pero dejaba el status de `IdentityDemoStateV2Service` sin tocar — permitiendo que un usuario quedara en "Setup" con identidad "aprobada" en la mitad del sistema. `setMomentoUsuario('setup')` ahora llama `stateV2.resetStatusParaSetup()`, que fija `sin_validar` o `parcial` según si el usuario tiene datos del formulario viejo.
+- El control "IDENTIDAD" del demo-panel solo permitía elegir los 3 estados terminales. Se extendió a los 6 estados completos (`statusOptionsV2`).
+
+### Formulario de Cuenta/Facturación — bloqueado, nunca oculto **salvo el caso vacío**
+
+La regla transversal ya documentada (sección antes de la Matriz maestra) decía que el formulario nunca se oculta, solo se bloquea visualmente. Esa regla nunca se implementó en `cuenta.component.ts` ni `datos-facturacion.component.ts` — ambos archivos tenían la lógica de bloqueo invertida (`[readonly]="isAprobado()"`: editable por defecto, bloqueado solo tras aprobar). Se corrigió a `[readonly]="!isAprobado()"` en ambos, y además se agrega una excepción puntual a la regla original:
+
+- **`sin_validar` sin datos previos:** en vez del formulario completo bloqueado (que expondría 10+ campos grises a alguien que nunca tocó nada), se muestra un estado vacío mínimo — mensaje corto + CTA de verificar identidad. El formulario completo bloqueado se reserva para cualquier estado con algo que mostrar (`parcial` en adelante).
+- **`parcial`:** el formulario se muestra precargado con los datos del formulario viejo (mock), bloqueado de solo lectura, con el banner "Detectamos datos guardados antes de nuestro nuevo proceso de verificación — confírmalos verificando tu identidad".
+
+### Precarga real KYC → Datos de facturación (vía "mis-datos")
+
+No existía ninguna conexión de datos entre el KYC del modal y `datos-facturacion.component.ts` — la pantalla de confirmación `via-confirmar-mis-datos` era solo un resumen visual dentro del propio modal. Se agregó `datosCapturadosKyc` en `IdentityDemoStateV2Service`, escrito por el modal al completar la vía "mis-datos" (correo, teléfono, tipo de documento), y leído por `datos-facturacion.component.ts` para precargar esos campos sin volver a pedirlos — cumpliendo la Regla Condicional de Entidades (`Reglasvalidacion.md` §3: 1 sola validación cuando factura con los mismos datos). La vía "persona jurídica" (KYB) no cambia: sigue exigiendo su propia verificación de empresa, correctamente, porque es una entidad distinta a la persona natural.
+
+### Archivos modificados en esta parte
+
+`identity-flow-v2.models.ts`, `identity-demo-state-v2.service.ts`, `identity-sumsub-modal.component.ts` (+.html), `prototype-demo-panel.component.ts` (+.html), `datos-facturacion.component.ts` (+.scss), `cuenta.component.ts` (+.scss).
 
 ---
 
@@ -1421,6 +1536,7 @@ Estas páginas leen `identityDemo.status()` y lo usan contra sus propios mapas l
 6. **Webhook Fase 4** — gate en `startProcesando()`. Pequeño, después de (2).
 7. **Controles del demo-panel** — filas nuevas, badge de motor, chips de país extendidos, toggles de riesgo/webhook. Último, para no re-tocarlo en cada paso anterior.
 8. **Limpieza de navigation-map.json + fix de ruta duplicada** — independiente del resto, bajo riesgo. Nota: este es el único paso que toca la alcanzabilidad de `/old/flujo-identidad` (deja su ruta huérfana, sin borrar el componente) — ver nota de alcance en "Cambios por archivo".
+9. **Corrección de estados y precarga (Parte 8)** — estado `parcial`, sync `stateV2`/`stateSvc` en el modal y el demo-panel, gate invertido + estado vacío en `cuenta`/`datos-facturacion`, precarga KYC→facturación vía "mis-datos". Auditoría post-implementación, independiente de (1)-(8).
 
 ## Verificación
 

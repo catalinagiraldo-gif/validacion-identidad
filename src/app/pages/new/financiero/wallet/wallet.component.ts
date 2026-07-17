@@ -6,6 +6,7 @@ import { IdentityModalService } from '../../../../common/services/identity-modal
 import { IdentityFase0Service } from '../../../../common/services/identity-fase0.service';
 import { IdentitySoftBannerComponent } from '../../../../common/components/identity-soft-banner/identity-soft-banner.component';
 import { IdentityMigrationBannerComponent } from '../../../../common/components/identity-migration-banner/identity-migration-banner.component';
+import { IdentityGateComponent } from '../../../../common/components/identity-gate/identity-gate.component';
 
 interface Transaction {
   date: string;
@@ -23,12 +24,14 @@ interface Transaction {
 @Component({
   selector: 'app-wallet-new',
   standalone: true,
-  imports: [CommonModule, FormsModule, IdentitySoftBannerComponent, IdentityMigrationBannerComponent],
+  imports: [CommonModule, FormsModule, IdentitySoftBannerComponent, IdentityMigrationBannerComponent, IdentityGateComponent],
   styleUrls: ['./wallet.component.scss'],
   template: `
     <div class="page-wrapper">
       <app-identity-migration-banner />
       <app-identity-soft-banner variant="wallet" />
+      <!-- Hard gate en transferencias entre wallets (Plan2.md) — antes solo había soft banner; retiro/DropiCard ya bloqueaban duro, transferencia quedaba desprotegida. -->
+      <app-identity-gate contexto="transferencia" />
 
       <!-- Breadcrumb -->
       <nav class="breadcrumb">

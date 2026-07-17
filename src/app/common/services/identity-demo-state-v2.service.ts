@@ -12,8 +12,9 @@ import {
   MECANISMO_MATRIZ,
   MotorValidacion,
   EstadoKyb,
-  IdentitySatelliteStatus,
   MotivoPendiente,
+  IdentitySatelliteStatusV2,
+  DatosCapturadosKyc,
 } from '../models/identity-flow-v2.models';
 
 // Additive demo-panel state for Plan2.md (docs/validacion/Plan2.md), Parte 1.
@@ -34,6 +35,11 @@ const REP_LEGAL_VALIDADO_KEY = 'dropi.identityV2.representanteLegalValidado';
 const WEBHOOK_CONFIRMED_KEY  = 'dropi.identityV2.webhookConfirmed';
 const MOTIVO_PENDIENTE_KEY   = 'dropi.identityV2.motivoPendiente';
 const SALDO_NEGATIVO_FRAUDE_KEY = 'dropi.identityV2.saldoNegativoFraude';
+const TIENE_DATOS_ANTIGUOS_KEY = 'dropi.identityV2.tieneDatosFormularioAntiguo';
+const RISK_SCORE_KEY      = 'dropi.identityV2.riskScore';
+const LAST_VALIDATED_KEY  = 'dropi.identityV2.lastValidatedAt';
+
+export type RiskScore = 'bajo' | 'medio' | 'alto';
 
 @Injectable({ providedIn: 'root' })
 export class IdentityDemoStateV2Service {
@@ -42,7 +48,7 @@ export class IdentityDemoStateV2Service {
   private readonly _pais          = signal<Pais9>(this.loadPais());
   private readonly _tipoPersona   = signal<TipoPersonaV2>(this.loadTipoPersona());
   private readonly _segmentoUsuario = signal<SegmentoUsuario>(this.loadSegmentoUsuario());
-  private readonly _status        = signal<IdentitySatelliteStatus>(this.loadStatus());
+  private readonly _status        = signal<IdentitySatelliteStatusV2>(this.loadStatus());
   private readonly _estadoKyb     = signal<EstadoKyb>(this.loadEstadoKyb());
   private readonly _emailEnListaNegra = signal<boolean>(this.loadEmailEnListaNegra());
   private readonly _representanteLegalValidado = signal<boolean>(this.loadRepLegalValidado());
@@ -56,6 +62,14 @@ export class IdentityDemoStateV2Service {
    * de Bloqueo full-screen al intentar Retiro o Envío.
    */
   private readonly _saldoNegativoFraude = signal<boolean>(this.loadSaldoNegativoFraude());
+  /** Plan2.md Parte 8 — usuario antiguo con datos del formulario manual viejo (pre-Sumsub), nunca certificados. */
+  private readonly _tieneDatosFormularioAntiguo = signal<boolean>(this.loadTieneDatosFormularioAntiguo());
+  /** Plan2.md Parte 8 — datos capturados en el KYC (pasos 1-5 del modal), para precargar "Datos de facturación" en la vía "mis-datos". No persiste en sessionStorage: vive solo durante la sesión del modal/página, como el resto del flujo simulado. */
+  private readonly _datosCapturadosKyc = signal<DatosCapturadosKyc | null>(null);
+  /** RN-10: score de riesgo asignado en la primera validación — 'medio' dispara monitoreo periódico (5-C). */
+  private readonly _riskScore = signal<RiskScore>(this.loadRiskScore());
+  /** RN-11: fecha de la última validación aprobada, para el bloqueo de 6 meses del Dueño de cuenta (5-A). */
+  private readonly _lastValidatedAt = signal<Date | null>(this.loadLastValidatedAt());
 
   readonly faseProyecto   = this._faseProyecto.asReadonly();
   readonly momentoUsuario = this._momentoUsuario.asReadonly();
@@ -69,6 +83,10 @@ export class IdentityDemoStateV2Service {
   readonly webhookConfirmed = this._webhookConfirmed.asReadonly();
   readonly motivoPendiente = this._motivoPendiente.asReadonly();
   readonly saldoNegativoFraude = this._saldoNegativoFraude.asReadonly();
+  readonly tieneDatosFormularioAntiguo = this._tieneDatosFormularioAntiguo.asReadonly();
+  readonly datosCapturadosKyc = this._datosCapturadosKyc.asReadonly();
+  readonly riskScore = this._riskScore.asReadonly();
+  readonly lastValidatedAt = this._lastValidatedAt.asReadonly();
 
   /** Banner pedagógico de migración (wiretext 4-A) — solo Fase 4+, Etapa legacy, segmento migrado. */
   readonly mostrarAvisoMigracion = computed(() =>
@@ -103,6 +121,19 @@ export class IdentityDemoStateV2Service {
   /** RN-23: KYB fallido queda pj_pendiente, nunca degrada a persona natural. */
   readonly isPjPendiente = computed(() => this._estadoKyb() === 'pj_pendiente');
 
+  /**
+   * RN-11: el Dueño de cuenta no puede editar sus datos sensibles por 6 meses
+   * desde su última validación aprobada (Plan2.md wiretext 5-A). `true`
+   * significa "bloqueado" (todavía dentro de la ventana de 6 meses).
+   */
+  readonly duenoBloqueadoPorTiempo = computed(() => {
+    if (this._status() !== 'aprobado') return false;
+    const fecha = this._lastValidatedAt();
+    if (!fecha) return false;
+    const seisMesesMs = 1000 * 60 * 60 * 24 * 30 * 6;
+    return Date.now() - fecha.getTime() < seisMesesMs;
+  });
+
   setFaseProyecto(fase: FaseProyecto): void {
     this._faseProyecto.set(fase);
     sessionStorage.setItem(FASE_PROYECTO_KEY, fase);
@@ -128,14 +159,53 @@ export class IdentityDemoStateV2Service {
     sessionStorage.setItem(SEGMENTO_KEY, segmento);
   }
 
-  setStatus(status: IdentitySatelliteStatus): void {
+  setStatus(status: IdentitySatelliteStatusV2): void {
     this._status.set(status);
     sessionStorage.setItem(STATUS_KEY, status);
+  }
+
+  setTieneDatosFormularioAntiguo(value: boolean): void {
+    this._tieneDatosFormularioAntiguo.set(value);
+    sessionStorage.setItem(TIENE_DATOS_ANTIGUOS_KEY, String(value));
+  }
+
+  setDatosCapturadosKyc(datos: DatosCapturadosKyc | null): void {
+    this._datosCapturadosKyc.set(datos);
+  }
+
+  /** Setup Moment (Regla de Validación Nula): usuario nuevo → sin_validar; legacy con datos viejos sin certificar → parcial. */
+  resetStatusParaSetup(): void {
+    this.setStatus(this._tieneDatosFormularioAntiguo() ? 'parcial' : 'sin_validar');
   }
 
   setEstadoKyb(estado: EstadoKyb): void {
     this._estadoKyb.set(estado);
     sessionStorage.setItem(ESTADO_KYB_KEY, estado);
+    // RN-23: si el KYB queda pj_pendiente, reflejarlo también en `status` para
+    // que datos-facturacion/cuenta lean un solo estado consistente (antes
+    // solo vivía en estadoKyb, separado — hallazgo de auditoría).
+    if (estado === 'pj_pendiente') {
+      this.setStatus('pj_pendiente');
+    } else if (estado === 'aprobado' && this._status() === 'pj_pendiente') {
+      this.setStatus('aprobado');
+    }
+  }
+
+  setRiskScore(score: RiskScore): void {
+    this._riskScore.set(score);
+    sessionStorage.setItem(RISK_SCORE_KEY, score);
+  }
+
+  setLastValidatedAt(fecha: Date | null): void {
+    this._lastValidatedAt.set(fecha);
+    sessionStorage.setItem(LAST_VALIDATED_KEY, fecha ? fecha.toISOString() : '');
+  }
+
+  /** Helper de demo: fija la última validación a N meses atrás desde hoy (stepper del demo-panel). */
+  setMesesDesdeUltimaValidacion(meses: number): void {
+    const fecha = new Date();
+    fecha.setMonth(fecha.getMonth() - meses);
+    this.setLastValidatedAt(fecha);
   }
 
   setEmailEnListaNegra(value: boolean): void {
@@ -194,10 +264,14 @@ export class IdentityDemoStateV2Service {
     return valid.includes(v as SegmentoUsuario) ? (v as SegmentoUsuario) : 'dropshipper-natural';
   }
 
-  private loadStatus(): IdentitySatelliteStatus {
+  private loadStatus(): IdentitySatelliteStatusV2 {
     const v = sessionStorage.getItem(STATUS_KEY);
-    if (v === 'sin_validar' || v === 'pendiente' || v === 'en_revision' || v === 'rechazado' || v === 'aprobado') return v;
+    if (v === 'sin_validar' || v === 'parcial' || v === 'pendiente' || v === 'en_revision' || v === 'rechazado' || v === 'aprobado' || v === 'pj_pendiente') return v;
     return 'sin_validar';
+  }
+
+  private loadTieneDatosFormularioAntiguo(): boolean {
+    return sessionStorage.getItem(TIENE_DATOS_ANTIGUOS_KEY) === 'true';
   }
 
   private loadEstadoKyb(): EstadoKyb {
@@ -226,5 +300,17 @@ export class IdentityDemoStateV2Service {
 
   private loadSaldoNegativoFraude(): boolean {
     return sessionStorage.getItem(SALDO_NEGATIVO_FRAUDE_KEY) === 'true';
+  }
+
+  private loadRiskScore(): RiskScore {
+    const v = sessionStorage.getItem(RISK_SCORE_KEY);
+    return v === 'bajo' || v === 'medio' || v === 'alto' ? v : 'bajo';
+  }
+
+  private loadLastValidatedAt(): Date | null {
+    const v = sessionStorage.getItem(LAST_VALIDATED_KEY);
+    if (!v) return null;
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
   }
 }

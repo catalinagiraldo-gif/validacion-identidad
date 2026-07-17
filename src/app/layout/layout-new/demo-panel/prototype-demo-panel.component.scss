@@ -98,9 +98,13 @@
 
   &--toggle.chip--active { background: $success-500; border-color: $success-500; }
 
-  &--aprobado.chip--active    { background: $success-500; border-color: $success-500; }
+  /** Cada uno de los 6 estados de IDENTIDAD tiene su propio color activo — antes sin_validar/parcial/pendiente compartían el mismo naranja genérico de ".chip--active", dando la impresión de que no cambiaba nada al elegir entre ellos. */
+  &--sin_validar.chip--active { background: $gray-500;   border-color: $gray-500; }
+  &--parcial.chip--active     { background: $info-500;   border-color: $info-500; }
+  &--pendiente.chip--active   { background: $primary-500; border-color: $primary-500; }
   &--en_revision.chip--active { background: $warning-500; border-color: $warning-500; color: $gray-900; }
   &--rechazado.chip--active   { background: $error-500;   border-color: $error-500; }
+  &--aprobado.chip--active    { background: $success-500; border-color: $success-500; }
 }
 
 .chip__warn {
@@ -115,10 +119,13 @@
   padding: 2px 8px;
   letter-spacing: 0.3px;
 
-  &.status--approved { background: rgba($success-500, 0.2); color: lighten($success-500, 20%); }
-  &.status--review   { background: rgba($warning-500, 0.2); color: $warning-500; }
-  &.status--rejected { background: rgba($error-500,   0.2); color: lighten($error-500, 20%); }
-  &.status--none     { background: rgba(white, 0.08); color: $gray-400; }
+  &.status--none        { background: rgba(white, 0.08); color: $gray-400; }
+  &.status--parcial     { background: rgba($info-500, 0.2); color: lighten($info-500, 15%); }
+  &.status--pending      { background: rgba($primary-500, 0.2); color: $primary-300; }
+  &.status--review      { background: rgba($warning-500, 0.2); color: $warning-500; }
+  &.status--rejected    { background: rgba($error-500,   0.2); color: lighten($error-500, 20%); }
+  &.status--approved    { background: rgba($success-500, 0.2); color: lighten($success-500, 20%); }
+  &.status--pj-pendiente { background: rgba(#a78bfa, 0.2); color: #c4b5fd; }
 }
 
 .demo-panel__mecanismo {
@@ -179,7 +186,6 @@
   display: flex;
   align-items: center;
   gap: $space-1;
-  margin-left: auto;
   white-space: nowrap;
   transition: border-color 0.15s;
   flex-shrink: 0;
@@ -187,4 +193,102 @@
   &:hover { border-color: rgba(white, 0.3); color: white; }
 
   i { font-size: 10px; }
+}
+
+/** Parte C — explicador dedicado a stakeholders, separado del panel crudo de controles. `margin-left: auto` agrupa este botón + el de Ocultar al extremo derecho de la barra. */
+.demo-panel__tour-btn {
+  background: rgba($primary-500, 0.14);
+  border: 1px solid rgba($primary-500, 0.4);
+  color: $primary-300;
+  border-radius: 9999px;
+  padding: 3px 12px;
+  font-size: $font-xs;
+  font-family: $font-primary;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  margin-left: auto;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+
+  &:hover { background: rgba($primary-500, 0.22); border-color: $primary-500; }
+
+  i { font-size: 12px; }
+}
+
+.tour-welcome-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(#0a0a0a, 0.6);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: tour-welcome-fade 0.15s ease-out;
+}
+
+.tour-welcome-card {
+  background: white;
+  border-radius: 16px;
+  padding: $space-6;
+  max-width: 440px;
+  width: calc(100% - #{$space-6});
+  box-shadow: 0 20px 60px rgba(#0a0a0a, 0.35);
+
+  &__title {
+    font-family: $font-primary;
+    font-size: $font-lg;
+    font-weight: 700;
+    color: $gray-900;
+    margin: 0 0 $space-3;
+  }
+
+  &__body {
+    font-family: $font-primary;
+    font-size: $font-sm;
+    color: $gray-600;
+    line-height: 1.5;
+    margin: 0 0 $space-5;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $space-3;
+
+    .btn-primary, .btn-secondary {
+      font-family: $font-primary;
+      font-size: $font-sm;
+      font-weight: 600;
+      border-radius: $radius-2;
+      padding: $space-2 $space-5;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn-primary {
+      background: $primary-500;
+      color: white;
+      border: none;
+
+      &:hover { background: $primary-600; }
+    }
+
+    .btn-secondary {
+      background: none;
+      border: 1.5px solid $gray-200;
+      color: $gray-700;
+
+      &:hover { border-color: $gray-400; }
+    }
+  }
+}
+
+@keyframes tour-welcome-fade {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
 }

@@ -92,6 +92,41 @@ $warning-700: #ab8036;
   white-space: nowrap;
 }
 
+// ── Estado vacío (Plan2.md Parte 8): usuario nunca tocó nada, sin datos previos ──
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 48px 24px;
+  background: #fafafa;
+  border: 1px dashed $gray-200;
+  border-radius: 16px;
+  margin-bottom: $space-5;
+
+  &__icon {
+    font-size: 28px;
+    color: $primary-500;
+    margin-bottom: 8px;
+  }
+
+  &__text {
+    font-family: $font-primary;
+    font-size: 16px;
+    font-weight: 600;
+    color: $gray-700;
+    margin: 0;
+  }
+
+  &__subtext {
+    font-family: $font-primary;
+    font-size: 14px;
+    color: $gray-600;
+    margin: 0 0 12px 0;
+  }
+}
+
 // ── Top alert ─────────────────────────────────────────────────────────────────
 .alert-top {
   display: flex;
@@ -485,6 +520,26 @@ $warning-700: #ab8036;
   white-space: nowrap;
 }
 
+// Estados adicionales del tag de cabecera — antes rechazado/parcial/pendiente/
+// sin_validar colapsaban todos en el mismo texto "Validación Pendiente".
+.tag-rechazado {
+  @extend .tag-revision;
+  background: rgba(#f46a6b, 0.1);
+  color: #aa4849;
+}
+
+.tag-parcial {
+  @extend .tag-revision;
+  background: rgba(#50a5f1, 0.1);
+  color: #356d9e;
+}
+
+.tag-sin-iniciar {
+  @extend .tag-revision;
+  background: rgba(#69738c, 0.1);
+  color: #475066;
+}
+
 .alert-success {
   display: flex;
   align-items: flex-start;
@@ -509,6 +564,19 @@ $warning-700: #ab8036;
   margin-bottom: $space-5;
 
   .alert-icon { color: #ff9800; }
+}
+
+.alert-lock-rn11 {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(#6b6f76, 0.08);
+  border: 1px solid rgba(#6b6f76, 0.25);
+  border-radius: 8px;
+  margin-bottom: $space-5;
+
+  .alert-icon { color: #6b6f76; }
 }
 
 .alert-top--error {

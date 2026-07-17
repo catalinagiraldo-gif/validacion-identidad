@@ -4,11 +4,11 @@ import {
   IdentityDemoStateService,
   FASES,
   FaseUsuario,
-  ResultadoModal,
 } from '../../../common/services/identity-demo-state.service';
 import { PaisPersona, IdentitySatelliteStatus } from '../../../common/models/identity-flow.models';
 import { IdentityDemoStateV2Service } from '../../../common/services/identity-demo-state-v2.service';
 import { IdentityFase0Service } from '../../../common/services/identity-fase0.service';
+import { IdentidadStakeholderTourService } from '../../../common/services/identidad-stakeholder-tour.service';
 import {
   FaseProyecto,
   FASES_PROYECTO,
@@ -21,6 +21,7 @@ import {
   Fase0ResultKind,
   Fase0CrmKind,
   MotivoPendiente,
+  IdentitySatelliteStatusV2,
 } from '../../../common/models/identity-flow-v2.models';
 
 // Controles del demo-panel extendidos según Plan2.md Parte 7: dos filas
@@ -77,8 +78,11 @@ export class PrototypeDemoPanelComponent {
   private stateSvc = inject(IdentityDemoStateService);
   private stateV2  = inject(IdentityDemoStateV2Service);
   private fase0    = inject(IdentityFase0Service);
+  private stakeholderTour = inject(IdentidadStakeholderTourService);
 
   collapsed = signal(false);
+  /** Parte C — explicador dedicado a stakeholders: modal de bienvenida distinto del panel de controles. */
+  mostrarBienvenidaTour = signal(false);
 
   readonly fases         = FASES;
   readonly fasesProyecto = FASES_PROYECTO;
@@ -102,30 +106,52 @@ export class PrototypeDemoPanelComponent {
   readonly representanteLegalValidado = this.stateV2.representanteLegalValidado;
   readonly webhookConfirmed = this.stateV2.webhookConfirmed;
   readonly estadoKyb        = this.stateV2.estadoKyb;
+  readonly tieneDatosFormularioAntiguo = this.stateV2.tieneDatosFormularioAntiguo;
 
-  readonly statusOptions: Array<{ value: ResultadoModal; label: string }> = [
-    { value: 'aprobado',    label: 'Aprobado' },
+  /**
+   * Plan2.md Parte 8: el control IDENTIDAD solo dejaba elegir los 3 estados
+   * terminales (aprobado/en_revision/rechazado) -- no había forma de
+   * demostrar "nunca ha hecho nada" (sin_validar), "empezó y no terminó"
+   * (pendiente) ni el estado nuevo "parcial" (datos del formulario viejo,
+   * pre-Sumsub, nunca certificados) sin depender de un efecto colateral de
+   * otro control (Momento del usuario = Setup).
+   */
+  readonly statusOptionsV2: Array<{ value: IdentitySatelliteStatusV2; label: string }> = [
+    { value: 'sin_validar', label: 'Sin iniciar' },
+    { value: 'parcial',     label: 'Parcial (datos viejos)' },
+    { value: 'pendiente',   label: 'Pendiente' },
     { value: 'en_revision', label: 'En revisión' },
     { value: 'rechazado',   label: 'Rechazado' },
+    { value: 'aprobado',    label: 'Aprobado' },
   ];
+
+  readonly currentStatusV2 = this.stateV2.status;
 
   readonly identityStatusLabel = computed(() => {
     const map: Record<string, string> = {
       sin_validar: 'Sin iniciar',
+      parcial:     'Parcial (datos viejos)',
       pendiente:   'Pendiente',
       en_revision: 'En revisión',
       rechazado:   'Rechazado',
       aprobado:    'Aprobado',
+      pj_pendiente: 'Empresa pendiente',
     };
-    return map[this.currentStatus()] ?? this.currentStatus();
+    return map[this.currentStatusV2()] ?? this.currentStatusV2();
   });
 
+  /** Cada uno de los 7 estados tiene su propia clase/color — antes 4 de los 7 (sin_validar/parcial/pendiente/pj_pendiente) caían todos en el mismo gris "status--none", dando la impresión de que cambiar el chip IDENTIDAD no hacía nada. */
   readonly statusClass = computed(() => {
-    const s = this.currentStatus();
-    if (s === 'aprobado')    return 'status--approved';
-    if (s === 'en_revision') return 'status--review';
-    if (s === 'rechazado')   return 'status--rejected';
-    return 'status--none';
+    const map: Record<string, string> = {
+      sin_validar: 'status--none',
+      parcial: 'status--parcial',
+      pendiente: 'status--pending',
+      en_revision: 'status--review',
+      rechazado: 'status--rejected',
+      aprobado: 'status--approved',
+      pj_pendiente: 'status--pj-pendiente',
+    };
+    return map[this.currentStatusV2()] ?? 'status--none';
   });
 
   /** Badge de motor de solo lectura (Truora/Sumsub/manual), visible sin abrir el modal. */
@@ -167,6 +193,18 @@ export class PrototypeDemoPanelComponent {
     return (f === 'fase4' || f === 'fase5') && this.paisV2() === 'EC';
   });
 
+  /** A8 — RN-10/RN-11: chip de Riesgo + stepper de meses, solo relevantes desde Fase 5 (edición/re-validación). */
+  readonly showRiesgoControles = computed(() => this.faseProyecto() === 'fase5');
+  readonly riskScore = this.stateV2.riskScore;
+  readonly lastValidatedAt = this.stateV2.lastValidatedAt;
+  readonly mesesDesdeUltimaValidacion = computed(() => {
+    const fecha = this.lastValidatedAt();
+    if (!fecha) return null;
+    const dias = (Date.now() - fecha.getTime()) / (1000 * 60 * 60 * 24);
+    return Math.round(dias / 30);
+  });
+  readonly mesesOptions = [0, 2, 4, 6, 8, 12];
+
   faseProyectoLabel(f: FaseProyecto): string { return FASE_PROYECTO_LABELS[f]; }
   momentoLabel(m: MomentoUsuario): string { return MOMENTO_LABELS[m]; }
   segmentoLabel(s: SegmentoUsuario): string { return SEGMENTO_LABELS[s]; }
@@ -175,10 +213,21 @@ export class PrototypeDemoPanelComponent {
     this.stateV2.setFaseProyecto(fase);
   }
 
-  /** "Momento del usuario" -- la vieja fila FASE, renombrada; sigue delegando 1:1 al servicio base. */
+  /**
+   * "Momento del usuario" -- la vieja fila FASE, renombrada; sigue delegando
+   * 1:1 al servicio base. Plan2.md Parte 8: stateSvc.setFase() ya resetea su
+   * propio status según FASES[].defaultStatus (setup -> sin_validar), pero
+   * antes dejaba stateV2.status huérfano de ese reset -- un usuario podía
+   * quedar en "Setup" con identidad "aprobada" en la mitad del sistema. Al
+   * volver a Setup, stateV2 se resetea explícitamente (sin_validar, o
+   * 'parcial' si el usuario tiene datos del formulario viejo sin certificar).
+   */
   setMomentoUsuario(fase: FaseUsuario): void {
     this.stateSvc.setFase(fase);
     this.stateV2.setMomentoUsuario(fase as MomentoUsuario);
+    if (fase === 'setup') {
+      this.stateV2.resetStatusParaSetup();
+    }
   }
 
   setSegmento(segmento: SegmentoUsuario): void {
@@ -193,12 +242,19 @@ export class PrototypeDemoPanelComponent {
     }
   }
 
-  setIdentidadStatus(resultado: ResultadoModal): void {
-    this.stateSvc.setResultadoModal(resultado);
-    const status: IdentitySatelliteStatus =
-      resultado === 'aprobado' ? 'aprobado' : resultado === 'en_revision' ? 'en_revision' : 'rechazado';
-    this.stateSvc.setStatus(status);
+  /**
+   * Fija el estado de identidad en ambos servicios. 'parcial' no existe en el
+   * servicio base (IdentitySatelliteStatus) -- se puentea a 'sin_validar' ahí,
+   * mismo patrón que 'pj_pendiente' cae a 'en_revision' (Hallazgo de auditoría,
+   * identity-demo-state-v2.service.ts).
+   */
+  setIdentidadStatus(status: IdentitySatelliteStatusV2): void {
     this.stateV2.setStatus(status);
+    const bridged: IdentitySatelliteStatus = status === 'parcial' || status === 'pj_pendiente' ? 'sin_validar' : status;
+    this.stateSvc.setStatus(bridged);
+    if (status === 'aprobado' || status === 'en_revision' || status === 'rechazado') {
+      this.stateSvc.setResultadoModal(status);
+    }
   }
 
   /** Extiende PAÍS de 5→9; solo puentea al servicio viejo cuando /old/* reconoce el valor. */
@@ -271,11 +327,40 @@ export class PrototypeDemoPanelComponent {
     this.stateV2.setRepresentanteLegalValidado(!this.representanteLegalValidado());
   }
 
+  /** Plan2.md Parte 8: si el usuario está en Setup, refleja el toggle inmediatamente como 'parcial'/'sin_validar'. */
+  toggleDatosFormularioAntiguo(): void {
+    this.stateV2.setTieneDatosFormularioAntiguo(!this.tieneDatosFormularioAntiguo());
+    if (this.currentFase() === 'setup') {
+      this.stateV2.resetStatusParaSetup();
+    }
+  }
+
   setWebhook(confirmed: boolean): void {
     this.stateV2.setWebhookConfirmed(confirmed);
   }
 
+  setRiskScore(score: 'bajo' | 'medio' | 'alto'): void {
+    this.stateV2.setRiskScore(score);
+  }
+
+  setMesesDesdeUltimaValidacion(meses: number): void {
+    this.stateV2.setMesesDesdeUltimaValidacion(meses);
+  }
+
   toggle(): void {
     this.collapsed.set(!this.collapsed());
+  }
+
+  abrirBienvenidaTour(): void {
+    this.mostrarBienvenidaTour.set(true);
+  }
+
+  cerrarBienvenidaTour(): void {
+    this.mostrarBienvenidaTour.set(false);
+  }
+
+  iniciarTourStakeholder(): void {
+    this.mostrarBienvenidaTour.set(false);
+    this.stakeholderTour.start();
   }
 }

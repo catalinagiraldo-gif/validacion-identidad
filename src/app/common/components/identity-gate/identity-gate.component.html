@@ -1,5 +1,5 @@
 @if (isVisible()) {
-  <div class="identity-gate" [class]="'identity-gate--' + variant()">
+  <div class="identity-gate" [class]="'identity-gate--' + variant()" data-tour="identity-gate">
     <div class="identity-gate__icon">
       @if (variant() === 'bloqueado') {
         <i class="pi pi-lock"></i>
