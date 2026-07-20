@@ -91,6 +91,7 @@ None yet.
 | 260720-fw1 | Corregir copy: el modal de UserPilot no abre el widget de soporte automáticamente, solo indica al usuario que puede contactar soporte y este lo abre voluntariamente | 2026-07-20 | 95caa78 | [260720-fw1-corregir-copy-el-modal-de-userpilot-no-a](./quick/260720-fw1-corregir-copy-el-modal-de-userpilot-no-a/) |
 | 260720-gij | Quitar el botón inexistente "Contactar a soporte" del modal de Bloqueo; reemplazado por copy (ux-writing) que orienta al ícono de soporte flotante en la esquina inferior derecha | 2026-07-20 | bb389e1 | [260720-gij-el-modal-de-bloqueo-no-debe-mostrar-un-b](./quick/260720-gij-el-modal-de-bloqueo-no-debe-mostrar-un-b/) |
 | 260720-i6m | Corregir el árbol de decisiones de soporte: los chips de cierre "Es todo por hoy" / "Necesito la ayuda de un asesor" aparecen solo al final de cada opción (no desde el inicio); ninguna opción se ramifica en sub-decisión | 2026-07-20 | e141c2b | [260720-i6m-corregir-el-arbol-de-decisiones-de-sopor](./quick/260720-i6m-corregir-el-arbol-de-decisiones-de-sopor/) |
+| 260720-ivq | Agregar sección de detalle nueva (separada del grid principal) con el copy completo de las 8 opciones del árbol de soporte, chip raíz y Chips de cierre | 2026-07-20 | f5b482c | [260720-ivq-agregar-seccion-nueva-de-detalle-al-blue](./quick/260720-ivq-agregar-seccion-nueva-de-detalle-al-blue/) |
 
 ## Deferred Items
 
@@ -105,4 +106,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-07-20 -- Completed quick task 260720-i6m: El árbol de soporte deja claro que "Es todo por hoy" / "Necesito la ayuda de un asesor" aparecen solo al final de cada opción, y que ninguna opción se ramifica
+Last activity: 2026-07-20 -- Completed quick task 260720-ivq: Agregada sección de detalle con el copy completo de las 8 opciones del árbol de soporte, separada del grid principal del blueprint
