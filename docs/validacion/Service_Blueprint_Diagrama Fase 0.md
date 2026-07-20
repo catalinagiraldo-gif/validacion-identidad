@@ -140,7 +140,7 @@
 **Front stage → Acciones:**
 1. 🔵 Modal Pantalla Completa — Headline: **"Bloqueamos esta operación por seguridad"**. Body: *"Estamos revisando tu cuenta para proteger tus fondos. No podrás hacer retiros ni envíos mientras dure la revisión. ¿Tienes dudas? Comparte tu caso desde el ícono de soporte, abajo a la derecha."* Sin botón de cierre ni de contacto dentro del modal — no existe un botón "Contactar a soporte" real; permanece hasta que Legal/Financiero resuelvan el caso. La única vía de contacto es el ícono de soporte flotante que ya existe en la esquina inferior derecha de la pantalla (fuera del modal), donde el usuario puede tocar el chip raíz **"Validación de identidad"** y elegir la opción **"Mi cuenta está bloqueada"** del árbol (ver ítems 2-4 a continuación). (Bloqueo Visual: no congela el saldo por código, es UserPilot interceptando la pantalla. Copy y justificación de tono: ver `UX-Writing-Modales-UserPilot.md`) — *(conector vertical hacia Back stage, etiqueta "Reglas")*
 2. 🔵 Widget de Soporte — el usuario lo abre voluntariamente, siguiendo la indicación del modal (no hay apertura automática ni integración); chip raíz **"Validación de identidad"** en su menú principal.
-3. 🟣 Árbol de opciones (chips) — dentro del chip raíz "Validación de identidad". El agente responde primero automáticamente según la opción elegida. Ninguna de las 8 opciones se ramifica en una sub-decisión adicional — todas son respuestas terminales (texto, o texto con enlace/redirección solo en la opción 4). Solo al final de esa respuesta — nunca antes, ni desde el menú — aparecen los chips de cierre del ítem 4:
+3. 🟣 Árbol de opciones (chips) — dentro del chip raíz "Validación de identidad". El agente responde primero automáticamente según la opción elegida. Ninguna de las 8 opciones se ramifica en una sub-decisión adicional — todas son respuestas terminales (texto, o texto con enlace/redirección solo en la opción 4). Solo al final de esa respuesta — nunca antes, ni desde el menú — aparecen los chips de cierre del ítem 4 (detalle completo con el copy exacto de cada opción: ver sección "Detalle del árbol de soporte — Validación de identidad" más abajo):
    1. **Mi cuenta está bloqueada** — el bloqueo es una revisión de Legal/Financiero, no un error de código ni una sanción automática; sin ETA fijo porque depende de que Legal/Financiero resuelvan el caso a mano.
    2. **Me rechazaron la verificación** — "Rechazado" (falla del proceso) es distinto de "Bloqueado por fraude" (falla del usuario); existe vía de apelación (Soporte desbanea cuenta si es falso positivo, ver Etapa Continua, Back stage punto 3).
    3. **Mi verificación sigue en revisión** — SLA real de 48–72 horas hábiles; no necesita repetir el proceso ni reenviar documentos.
@@ -210,6 +210,32 @@
 - **CRM** — Reenvía mensajes a Pendientes.
 - **Financiero** — Auditoría de datos tributarios.
 - **Soporte** — Informa el SLA de 48–72h a validados.
+
+---
+
+## Detalle del árbol de soporte — Validación de identidad
+
+Sub-árbol de 8 opciones dentro del chip raíz "Validación de identidad" del widget de soporte (ver Etapa 1 → Front stage → Acciones arriba). Ninguna de las 8 opciones se ramifica en una sub-decisión adicional — todas son respuestas terminales (texto, o texto con enlace/redirección solo en la opción 4). El copy es el mismo ya validado en `Soporte-Validacion-Identidad.md`.
+
+**Chip raíz:** "Validación de identidad" (menú principal del widget) → el usuario elige un chip (una sola opción):
+
+1. **Mi cuenta está bloqueada** — El agente responde primero automáticamente: el bloqueo es una revisión de Legal/Financiero (Etapa 1 del blueprint), no un error de código ni una sanción automática, y no tiene ETA fijo porque depende de que Legal/Financiero resuelvan el caso a mano. Al final de esa respuesta, ofrece los chips de cierre **"Es todo por hoy"** / **"Necesito la ayuda de un asesor para mi validación de identidad"** — este último escala a un asesor humano si el usuario lo elige.
+
+2. **Me rechazaron la verificación** — El agente responde primero automáticamente: "Rechazado" (falla del proceso) es distinto de "Bloqueado por fraude" (falla del usuario), y existe la vía de apelación ya contemplada en el blueprint ("Soporte desbanea cuenta si es falso positivo", Etapa Continua, Back stage punto 3) para reenviar el caso a revisión. Al final de esa respuesta, ofrece los chips de cierre **"Es todo por hoy"** / **"Necesito la ayuda de un asesor para mi validación de identidad"** — este último escala a un asesor humano para gestionar la apelación.
+
+3. **Mi verificación sigue en revisión** — El agente responde primero automáticamente: el SLA real es de 48–72 horas hábiles (ya documentado en el blueprint, Etapa Continua Back stage punto 2, y en `UX-Writing-Modales-UserPilot.md` sección 4b), y no necesita repetir el proceso ni reenviar documentos. Al final de esa respuesta, ofrece los chips de cierre **"Es todo por hoy"** / **"Necesito la ayuda de un asesor para mi validación de identidad"** — este último escala a un asesor humano.
+
+4. **Empecé la verificación pero no la terminé** — El agente responde primero automáticamente y guía al usuario para retomar el proceso en Sumsub — redirige al flujo (mismo destino que el botón "Continuar verificación" del modal "incompleto en Sumsub"; único caso del árbol con enlace/redirección real, no solo texto). Al final de esa respuesta, ofrece los chips de cierre **"Es todo por hoy"** / **"Necesito la ayuda de un asesor para mi validación de identidad"** — este último escala a un asesor humano.
+
+5. **No sé qué proceso me aplica / qué documentos necesito** — El agente responde primero automáticamente, diferenciando por país: Colombia usa Truora (solo personas naturales; las empresas usan KYB de Sumsub, bloque C, en evaluación). El resto de países usa proceso manual vía Sumsub con variantes por persona natural/jurídica/extranjero (bloques A/B/D/E ya definidos en el blueprint). No hay video-tutorial disponible — da guía en texto paso a paso según el bloque que le aplica. Al final de esa respuesta, ofrece los chips de cierre **"Es todo por hoy"** / **"Necesito la ayuda de un asesor para mi validación de identidad"** — este último escala a un asesor humano.
+
+6. **Soy extranjero, no sé qué documento cargar** — El agente responde primero automáticamente: puede cargar pasaporte o identificación extranjera — Sumsub parametriza automáticamente el formato local del documento (Reglasvalidacion.md, regla 3 "Parametrización Automática Cross-Border"). Como este caso requiere revisión manual, junto con esa respuesta se ofrecen de inmediato los chips de cierre **"Es todo por hoy"** / **"Necesito la ayuda de un asesor para mi validación de identidad"**, con el asesor humano como vía recomendada.
+
+7. **Tengo una empresa / dudas de KYB** — El agente responde primero automáticamente: en Colombia, el KYB está "en evaluación" (bloque C del blueprint) — la vía formal aún se está definiendo. En el resto de países, sigue las reglas de persona jurídica ya definidas: prueba de vida del representante legal + búsqueda de la empresa + datos fiscales; Sumsub autocompleta por nombre (Reglasvalidacion.md, regla 3 "Regla de Cero Fricción en Empresa") — el usuario no digita NIT. Al final de esa respuesta, ofrece los chips de cierre **"Es todo por hoy"** / **"Necesito la ayuda de un asesor para mi validación de identidad"** — este último escala a un asesor humano.
+
+8. **Otro tema** — El agente ofrece directamente los chips de cierre **"Es todo por hoy"** / **"Necesito la ayuda de un asesor para mi validación de identidad"**, sin respuesta automática previa — este caso escala de inmediato a un asesor humano si el usuario lo elige.
+
+**Chips de cierre** (al final de la respuesta de la opción elegida — no antes, no desde el menú): **"Es todo por hoy"** (cierra) y **"Necesito la ayuda de un asesor para mi validación de identidad"** (escala a un asesor humano).
 
 ---
 
