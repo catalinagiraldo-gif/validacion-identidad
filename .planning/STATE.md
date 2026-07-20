@@ -92,6 +92,7 @@ None yet.
 | 260720-gij | Quitar el botón inexistente "Contactar a soporte" del modal de Bloqueo; reemplazado por copy (ux-writing) que orienta al ícono de soporte flotante en la esquina inferior derecha | 2026-07-20 | bb389e1 | [260720-gij-el-modal-de-bloqueo-no-debe-mostrar-un-b](./quick/260720-gij-el-modal-de-bloqueo-no-debe-mostrar-un-b/) |
 | 260720-i6m | Corregir el árbol de decisiones de soporte: los chips de cierre "Es todo por hoy" / "Necesito la ayuda de un asesor" aparecen solo al final de cada opción (no desde el inicio); ninguna opción se ramifica en sub-decisión | 2026-07-20 | e141c2b | [260720-i6m-corregir-el-arbol-de-decisiones-de-sopor](./quick/260720-i6m-corregir-el-arbol-de-decisiones-de-sopor/) |
 | 260720-ivq | Agregar sección de detalle nueva (separada del grid principal) con el copy completo de las 8 opciones del árbol de soporte, chip raíz y Chips de cierre | 2026-07-20 | f5b482c | [260720-ivq-agregar-seccion-nueva-de-detalle-al-blue](./quick/260720-ivq-agregar-seccion-nueva-de-detalle-al-blue/) |
+| 260720-jdi | Rediseñar el árbol de soporte: quitar "Otro tema" como opción de menú (quedan 7), árbol visual real con conectores CSS (fan-out/fan-in), y copy literal separado de la nota interna | 2026-07-20 | 817f730 | [260720-jdi-rediseniar-el-arbol-de-soporte-quitar-ot](./quick/260720-jdi-rediseniar-el-arbol-de-soporte-quitar-ot/) |
 
 ## Deferred Items
 
@@ -106,4 +107,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-07-20 -- Completed quick task 260720-ivq: Agregada sección de detalle con el copy completo de las 8 opciones del árbol de soporte, separada del grid principal del blueprint
+Last activity: 2026-07-20 -- Completed quick task 260720-jdi: Árbol de soporte rediseñado como árbol visual real de 7 opciones (sin "Otro tema"), con copy literal separado de la nota interna
