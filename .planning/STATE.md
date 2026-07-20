@@ -93,6 +93,7 @@ None yet.
 | 260720-i6m | Corregir el árbol de decisiones de soporte: los chips de cierre "Es todo por hoy" / "Necesito la ayuda de un asesor" aparecen solo al final de cada opción (no desde el inicio); ninguna opción se ramifica en sub-decisión | 2026-07-20 | e141c2b | [260720-i6m-corregir-el-arbol-de-decisiones-de-sopor](./quick/260720-i6m-corregir-el-arbol-de-decisiones-de-sopor/) |
 | 260720-ivq | Agregar sección de detalle nueva (separada del grid principal) con el copy completo de las 8 opciones del árbol de soporte, chip raíz y Chips de cierre | 2026-07-20 | f5b482c | [260720-ivq-agregar-seccion-nueva-de-detalle-al-blue](./quick/260720-ivq-agregar-seccion-nueva-de-detalle-al-blue/) |
 | 260720-jdi | Rediseñar el árbol de soporte: quitar "Otro tema" como opción de menú (quedan 7), árbol visual real con conectores CSS (fan-out/fan-in), y copy literal separado de la nota interna | 2026-07-20 | 817f730 | [260720-jdi-rediseniar-el-arbol-de-soporte-quitar-ot](./quick/260720-jdi-rediseniar-el-arbol-de-soporte-quitar-ot/) |
+| 260720-jdi (cont.) | Copy más cálido (ux-writing) en las 7 opciones; sub-ramas por país agregadas en opciones 5 y 7 (única bifurcación real del árbol, grounded en Reglasvalidacion.md) | 2026-07-20 | 2cb1deb | [260720-jdi-rediseniar-el-arbol-de-soporte-quitar-ot](./quick/260720-jdi-rediseniar-el-arbol-de-soporte-quitar-ot/) |
 
 ## Deferred Items
 
@@ -107,4 +108,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-07-20 -- Completed quick task 260720-jdi: Árbol de soporte rediseñado como árbol visual real de 7 opciones (sin "Otro tema"), con copy literal separado de la nota interna
+Last activity: 2026-07-20 -- Copy del árbol de soporte reescrito con tono cálido (ux-writing) y sub-ramas por país agregadas en las opciones 5 y 7 (única bifurcación real)
