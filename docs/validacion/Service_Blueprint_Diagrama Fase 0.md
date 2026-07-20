@@ -214,7 +214,7 @@
 
 ## Detalle del árbol de soporte — Validación de identidad
 
-Sub-árbol de 7 opciones dentro del chip raíz "Validación de identidad" del widget de soporte (ver Etapa 1 → Front stage → Acciones arriba). Son alternativas independientes — el usuario elige una sola, ninguna dispara ni encadena con otra opción; todas convergen en la misma caja "Chips de cierre". No existe una opción aparte de "Otro tema": si el tema del usuario no encaja en ninguna de las 7, usa el chip "Necesito la ayuda de un asesor" al final de la respuesta que eligió. Cada opción separa el **Copy** (mensaje literal que vería el usuario, redactado con calidez) de la **Nota interna** (regla de negocio que lo sustenta, no se le muestra al usuario). **Las opciones 5 y 7 tienen una sub-rama interna por país** (Colombia vs. resto de países) — es la única bifurcación real del árbol, porque el proceso mismo cambia por país; ambas sub-ramas siguen siendo terminales, no abren un tercer nivel. El copy es el mismo ya validado en `Soporte-Validacion-Identidad.md`.
+Sub-árbol de 7 opciones dentro del chip raíz "Validación de identidad" del widget de soporte (ver Etapa 1 → Front stage → Acciones arriba). Son alternativas independientes — el usuario elige una sola, ninguna dispara ni encadena con otra opción; todas convergen en la misma caja "Chips de cierre". No existe una opción aparte de "Otro tema": si el tema del usuario no encaja en ninguna de las 7, usa el chip "Necesito la ayuda de un asesor" al final de la respuesta que eligió. Cada opción separa el **Copy** (mensaje literal que vería el usuario, redactado con calidez) de la **Nota interna** (regla de negocio que lo sustenta, no se le muestra al usuario). **Las opciones 5 y 7 tienen una sub-rama interna por país** (Colombia vs. resto de países) — es la única bifurcación real del árbol, porque el proceso mismo cambia por país; **el widget detecta el país automáticamente (Intercom ya tiene ese dato) — nunca se le pregunta al usuario**. Ambas sub-ramas siguen siendo terminales, no abren un tercer nivel. **En toda ruta donde el usuario puede empezar o continuar su validación** (opción 4, ambas sub-ramas de la 5, opción 6, y la sub-rama "resto de países" de la 7) **el copy muestra el enlace correspondiente** (Sumsub o Truora) en vez de solo describir el proceso. El copy es el mismo ya validado en `Soporte-Validacion-Identidad.md`.
 
 **Chip raíz:** "Validación de identidad" (menú principal del widget) → el usuario elige un chip (una sola opción, sin encadenamiento):
 
@@ -234,20 +234,18 @@ Sub-árbol de 7 opciones dentro del chip raíz "Validación de identidad" del wi
    - **Copy:** *"Sin problema, puedes retomarla justo donde la dejaste — no hace falta empezar de nuevo. Toca aquí para continuar en Sumsub."* (único caso del árbol con enlace/redirección real)
    - **Nota interna:** mismo destino que el botón "Continuar verificación" del modal "incompleto en Sumsub".
 
-5. **No sé qué proceso me aplica / qué documentos necesito** — sub-rama por país:
-   - **Copy inicial:** *"Con gusto te ayudamos. El proceso depende de tu país — cuéntanos dónde estás y te guiamos paso a paso."*
-   - **Sub-rama Colombia — Copy:** *"En Colombia validamos con Truora si eres persona natural. Si tienes una empresa, esa validación aún la estamos afinando — mientras tanto la revisamos manualmente."* — **Nota interna:** Truora (personas naturales); KYB bloque C en evaluación (empresas).
-   - **Sub-rama Resto de países — Copy:** *"Fuera de Colombia el proceso es manual con Sumsub y varía si eres persona natural, empresa o extranjero — elige la opción que más se parezca a tu caso."* — **Nota interna:** proceso manual vía Sumsub, bloques A/B/D/E, sin video-tutorial.
+5. **No sé qué proceso me aplica / qué documentos necesito** — sub-rama por país (detectado automáticamente, no se pregunta):
+   - **Sub-rama Colombia — Copy:** *"En Colombia, si eres persona natural, validamos con Truora — toca aquí para comenzar. Si tienes una empresa, esa validación todavía la estamos afinando y tu caso se revisa manualmente."* — **Nota interna:** Truora para personas naturales, con enlace real; KYB bloque C en evaluación para empresas, sin enlace.
+   - **Sub-rama Resto de países — Copy:** *"Tu proceso es manual con Sumsub y varía si eres persona natural, empresa o extranjero — toca aquí para comenzar tu validación."* — **Nota interna:** enlace Sumsub del país (bloques A/B del blueprint), sin video-tutorial.
    - Ambas sub-ramas convergen en los mismos Chips de cierre — ninguna abre un tercer nivel.
 
 6. **Soy extranjero, no sé qué documento cargar**
-   - **Copy:** *"No hay problema: puedes cargar tu pasaporte o tu identificación de tu país — reconocemos el formato automáticamente, sin pasos extra de tu parte."*
-   - **Nota interna:** Sumsub parametriza el formato local (Reglasvalidacion.md, regla 3); caso requiere revisión manual, se ofrece de inmediato el chip de asesor.
+   - **Copy:** *"No hay problema: puedes cargar tu pasaporte o tu identificación de tu país — reconocemos el formato automáticamente. Toca aquí para comenzar tu validación."*
+   - **Nota interna:** Sumsub parametriza el formato local (Reglasvalidacion.md, regla 3), con enlace real; caso requiere revisión manual, se ofrece de inmediato el chip de asesor.
 
-7. **Tengo una empresa / dudas de KYB** — sub-rama por país:
-   - **Copy inicial:** *"¡Con gusto! Esto es más simple de lo que parece."*
-   - **Sub-rama Colombia — Copy:** *"Para empresas en Colombia, esta validación todavía la estamos afinando — tu caso se revisa manualmente mientras tanto."* — **Nota interna:** KYB "en evaluación" (bloque C).
-   - **Sub-rama Resto de países — Copy:** *"Solo necesitamos una prueba de vida de tu representante legal — el resto lo completamos automáticamente al buscar tu empresa por nombre, sin digitar el NIT."* — **Nota interna:** reglas de persona jurídica ya definidas (Reglasvalidacion.md regla 3 "Cero Fricción en Empresa").
+7. **Tengo una empresa / dudas de KYB** — sub-rama por país (detectado automáticamente, no se pregunta):
+   - **Sub-rama Colombia — Copy:** *"Para empresas en Colombia, esta validación todavía la estamos afinando — tu caso se revisa manualmente mientras tanto."* — **Nota interna:** KYB "en evaluación" (bloque C), sin enlace formal todavía.
+   - **Sub-rama Resto de países — Copy:** *"Solo necesitamos una prueba de vida de tu representante legal — busca tu empresa por nombre y completamos el resto automáticamente. Toca aquí para comenzar."* — **Nota interna:** reglas de persona jurídica ya definidas (Reglasvalidacion.md regla 3 "Cero Fricción en Empresa"), con enlace real.
    - Ambas sub-ramas convergen en los mismos Chips de cierre — ninguna abre un tercer nivel.
 
 **Chips de cierre** (al final de la respuesta de la opción elegida — o de su sub-rama, en las opciones 5 y 7 — no antes, no desde el menú): **"Es todo por hoy"** (cierra) y **"Necesito la ayuda de un asesor para mi validación de identidad"** (escala a un asesor humano).
