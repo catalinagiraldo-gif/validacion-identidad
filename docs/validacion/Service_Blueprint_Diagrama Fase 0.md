@@ -214,39 +214,43 @@
 
 ## Detalle del árbol de soporte — Validación de identidad
 
-Sub-árbol de 7 opciones dentro del chip raíz "Validación de identidad" del widget de soporte (ver Etapa 1 → Front stage → Acciones arriba). Son alternativas independientes — el usuario elige una sola, ninguna dispara ni encadena con otra opción; todas convergen en la misma caja "Chips de cierre". No existe una opción aparte de "Otro tema": si el tema del usuario no encaja en ninguna de las 7, usa el chip "Necesito la ayuda de un asesor" al final de la respuesta que eligió. Cada opción separa el **Copy** (mensaje literal que vería el usuario) de la **Nota interna** (regla de negocio que lo sustenta, no se le muestra al usuario). El copy es el mismo ya validado en `Soporte-Validacion-Identidad.md`.
+Sub-árbol de 7 opciones dentro del chip raíz "Validación de identidad" del widget de soporte (ver Etapa 1 → Front stage → Acciones arriba). Son alternativas independientes — el usuario elige una sola, ninguna dispara ni encadena con otra opción; todas convergen en la misma caja "Chips de cierre". No existe una opción aparte de "Otro tema": si el tema del usuario no encaja en ninguna de las 7, usa el chip "Necesito la ayuda de un asesor" al final de la respuesta que eligió. Cada opción separa el **Copy** (mensaje literal que vería el usuario, redactado con calidez) de la **Nota interna** (regla de negocio que lo sustenta, no se le muestra al usuario). **Las opciones 5 y 7 tienen una sub-rama interna por país** (Colombia vs. resto de países) — es la única bifurcación real del árbol, porque el proceso mismo cambia por país; ambas sub-ramas siguen siendo terminales, no abren un tercer nivel. El copy es el mismo ya validado en `Soporte-Validacion-Identidad.md`.
 
 **Chip raíz:** "Validación de identidad" (menú principal del widget) → el usuario elige un chip (una sola opción, sin encadenamiento):
 
 1. **Mi cuenta está bloqueada**
-   - **Copy:** *"Bloqueamos tu cuenta para proteger tus fondos mientras Legal y Financiero revisan tu caso. No tenemos una fecha exacta — te avisamos apenas esté resuelto."*
+   - **Copy:** *"Entendemos que esto es incómodo. Bloqueamos tu cuenta solo para proteger tus fondos mientras el equipo revisa tu caso — no tienes que hacer nada, te avisamos apenas esté resuelto."*
    - **Nota interna:** es una revisión de Legal/Financiero (Etapa 1), no un error de código ni una sanción automática; sin ETA fijo.
 
 2. **Me rechazaron la verificación**
-   - **Copy:** *"Un rechazo no es lo mismo que un bloqueo por fraude — puede corregirse. Si crees que fue un error, lo reenviamos a revisión."*
+   - **Copy:** *"Un rechazo no significa que hiciste algo mal — y puede corregirse. Si crees que fue un error, cuéntanos y lo reenviamos a revisión con gusto."*
    - **Nota interna:** distinción Rechazado (falla del proceso) vs Bloqueado (falla del usuario); apelación ya contemplada (Soporte desbanea si es falso positivo, Etapa Continua, Back stage punto 3).
 
 3. **Mi verificación sigue en revisión**
-   - **Copy:** *"Tu verificación puede tardar hasta 72 horas hábiles. No necesitas repetir nada ni reenviar documentos — te avisamos apenas esté lista."*
+   - **Copy:** *"Ya casi. Tu verificación puede tardar hasta 72 horas hábiles — no necesitas repetir nada ni reenviar documentos. Te avisamos apenas esté lista."*
    - **Nota interna:** SLA real 48–72h hábiles (Etapa Continua, Back stage punto 2).
 
 4. **Empecé la verificación pero no la terminé**
-   - **Copy:** *"Puedes retomar tu verificación donde la dejaste, sin empezar de nuevo. Toca aquí para continuar en Sumsub."* (único caso del árbol con enlace/redirección real)
+   - **Copy:** *"Sin problema, puedes retomarla justo donde la dejaste — no hace falta empezar de nuevo. Toca aquí para continuar en Sumsub."* (único caso del árbol con enlace/redirección real)
    - **Nota interna:** mismo destino que el botón "Continuar verificación" del modal "incompleto en Sumsub".
 
-5. **No sé qué proceso me aplica / qué documentos necesito**
-   - **Copy:** *"Depende de tu país: en Colombia validamos con Truora; en el resto, el proceso es manual con Sumsub y varía según tu caso. Te guiamos paso a paso."*
-   - **Nota interna:** Colombia = Truora (naturales; empresas = KYB Sumsub bloque C en evaluación); resto = manual vía Sumsub (bloques A/B/D/E); sin video-tutorial.
+5. **No sé qué proceso me aplica / qué documentos necesito** — sub-rama por país:
+   - **Copy inicial:** *"Con gusto te ayudamos. El proceso depende de tu país — cuéntanos dónde estás y te guiamos paso a paso."*
+   - **Sub-rama Colombia — Copy:** *"En Colombia validamos con Truora si eres persona natural. Si tienes una empresa, esa validación aún la estamos afinando — mientras tanto la revisamos manualmente."* — **Nota interna:** Truora (personas naturales); KYB bloque C en evaluación (empresas).
+   - **Sub-rama Resto de países — Copy:** *"Fuera de Colombia el proceso es manual con Sumsub y varía si eres persona natural, empresa o extranjero — elige la opción que más se parezca a tu caso."* — **Nota interna:** proceso manual vía Sumsub, bloques A/B/D/E, sin video-tutorial.
+   - Ambas sub-ramas convergen en los mismos Chips de cierre — ninguna abre un tercer nivel.
 
 6. **Soy extranjero, no sé qué documento cargar**
-   - **Copy:** *"Puedes cargar tu pasaporte o tu identificación extranjera — reconocemos el formato de tu país automáticamente."*
+   - **Copy:** *"No hay problema: puedes cargar tu pasaporte o tu identificación de tu país — reconocemos el formato automáticamente, sin pasos extra de tu parte."*
    - **Nota interna:** Sumsub parametriza el formato local (Reglasvalidacion.md, regla 3); caso requiere revisión manual, se ofrece de inmediato el chip de asesor.
 
-7. **Tengo una empresa / dudas de KYB**
-   - **Copy:** *"Para validar tu empresa solo necesitamos una prueba de vida de tu representante legal — el resto lo completamos automáticamente al buscar tu empresa por nombre."*
-   - **Nota interna:** en Colombia, KYB "en evaluación" (bloque C); resto sigue reglas persona jurídica (Reglasvalidacion.md regla 3 "Cero Fricción en Empresa"), sin digitar NIT.
+7. **Tengo una empresa / dudas de KYB** — sub-rama por país:
+   - **Copy inicial:** *"¡Con gusto! Esto es más simple de lo que parece."*
+   - **Sub-rama Colombia — Copy:** *"Para empresas en Colombia, esta validación todavía la estamos afinando — tu caso se revisa manualmente mientras tanto."* — **Nota interna:** KYB "en evaluación" (bloque C).
+   - **Sub-rama Resto de países — Copy:** *"Solo necesitamos una prueba de vida de tu representante legal — el resto lo completamos automáticamente al buscar tu empresa por nombre, sin digitar el NIT."* — **Nota interna:** reglas de persona jurídica ya definidas (Reglasvalidacion.md regla 3 "Cero Fricción en Empresa").
+   - Ambas sub-ramas convergen en los mismos Chips de cierre — ninguna abre un tercer nivel.
 
-**Chips de cierre** (al final de la respuesta de la opción elegida — no antes, no desde el menú): **"Es todo por hoy"** (cierra) y **"Necesito la ayuda de un asesor para mi validación de identidad"** (escala a un asesor humano).
+**Chips de cierre** (al final de la respuesta de la opción elegida — o de su sub-rama, en las opciones 5 y 7 — no antes, no desde el menú): **"Es todo por hoy"** (cierra) y **"Necesito la ayuda de un asesor para mi validación de identidad"** (escala a un asesor humano).
 
 ---
 
