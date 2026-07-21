@@ -98,6 +98,7 @@ None yet.
 | 260720-l7m (cont.) | El Copy de cara al usuario nunca nombra el validador (Sumsub/Truora) — esa info vive solo en la Nota interna; enlaces de las opciones 5, 6 y 7-resto de países unificados a Sumsub | 2026-07-20 | 075fb90 | [260720-l7m-corregir-arbol-de-soporte-intercom-detec](./quick/260720-l7m-corregir-arbol-de-soporte-intercom-detec/) |
 | 260720-r88 | Copys más extensos y explicativos (ux-writing) en las 9 respuestas del árbol de soporte (2-4 oraciones en vez de 1), manteniendo la regla de nunca nombrar el validador | 2026-07-21 | 73c163a | [260720-r88-hacer-mas-extensos-y-explicativos-los-co](./quick/260720-r88-hacer-mas-extensos-y-explicativos-los-co/) |
 | 260720-sbo | Replantear la opción 7 (empresa/KYB): 3 sub-ramas reales por país (Colombia / Bloque A con autocompletado / Bloque B sin autocompletado) en vez de 2, coherente con DOC ENLACES del blueprint | 2026-07-21 | c529653 | [260720-sbo-replantear-la-sub-rama-de-la-opcion-7-em](./quick/260720-sbo-replantear-la-sub-rama-de-la-opcion-7-em/) |
+| 260720-spj | Misma evaluación de coherencia aplicada a la opción 5: corregido el destino técnico de la sub-rama Colombia-persona natural (Truora, no Sumsub — DOC ENLACES bloque C la marca "fuera del enlace" de Sumsub) | 2026-07-21 | b3c05bb | [260720-spj-aplicar-la-misma-evaluacion-de-coherenci](./quick/260720-spj-aplicar-la-misma-evaluacion-de-coherenci/) |
 
 ## Deferred Items
 
@@ -112,4 +113,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-07-21 -- Completed quick task 260720-sbo: opción 7 del árbol de soporte replanteada en 3 sub-ramas reales por país (Colombia / Bloque A / Bloque B), coherente con DOC ENLACES del blueprint
+Last activity: 2026-07-21 -- Completed quick task 260720-spj: corregido el destino técnico de la sub-rama Colombia-persona natural de la opción 5 (Truora, no Sumsub) tras aplicar la misma evaluación de coherencia usada en la opción 7
