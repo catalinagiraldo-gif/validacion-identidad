@@ -96,6 +96,7 @@ None yet.
 | 260720-jdi (cont.) | Copy más cálido (ux-writing) en las 7 opciones; sub-ramas por país agregadas en opciones 5 y 7 (única bifurcación real del árbol, grounded en Reglasvalidacion.md) | 2026-07-20 | 2cb1deb | [260720-jdi-rediseniar-el-arbol-de-soporte-quitar-ot](./quick/260720-jdi-rediseniar-el-arbol-de-soporte-quitar-ot/) |
 | 260720-l7m | El widget de Intercom detecta el país automáticamente (ya no se pregunta); enlace real agregado en las rutas donde el usuario puede empezar/continuar su validación (opciones 4, 5, 6, 7-resto de países) | 2026-07-20 | 97dd42a | [260720-l7m-corregir-arbol-de-soporte-intercom-detec](./quick/260720-l7m-corregir-arbol-de-soporte-intercom-detec/) |
 | 260720-l7m (cont.) | El Copy de cara al usuario nunca nombra el validador (Sumsub/Truora) — esa info vive solo en la Nota interna; enlaces de las opciones 5, 6 y 7-resto de países unificados a Sumsub | 2026-07-20 | 075fb90 | [260720-l7m-corregir-arbol-de-soporte-intercom-detec](./quick/260720-l7m-corregir-arbol-de-soporte-intercom-detec/) |
+| 260720-r88 | Copys más extensos y explicativos (ux-writing) en las 9 respuestas del árbol de soporte (2-4 oraciones en vez de 1), manteniendo la regla de nunca nombrar el validador | 2026-07-21 | 73c163a | [260720-r88-hacer-mas-extensos-y-explicativos-los-co](./quick/260720-r88-hacer-mas-extensos-y-explicativos-los-co/) |
 
 ## Deferred Items
 
@@ -110,4 +111,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-07-20 -- El Copy de cara al usuario ya nunca nombra el validador (Sumsub/Truora); enlaces de las opciones 5, 6 y 7-resto de países unificados a Sumsub
+Last activity: 2026-07-21 -- Completed quick task 260720-r88: copys del árbol de soporte reescritos más extensos y explicativos (ux-writing), manteniendo la regla de no nombrar el validador
