@@ -236,7 +236,7 @@ Sub-árbol de 7 opciones dentro del chip raíz "Validación de identidad" del wi
 
 5. **No sé qué proceso me aplica / qué documentos necesito** — sub-rama por país (detectado automáticamente, no se pregunta):
    - **Sub-rama Colombia — Copy:** *"Si eres persona natural, tu validación es rápida y toma solo unos minutos — toca aquí para comenzarla cuando quieras. Si tienes una empresa, esa validación todavía la estamos afinando, así que tu caso lo revisa nuestro equipo manualmente; no necesitas hacer nada más por ahora, seguimos trabajando en ello."* — **Nota interna:** enlace a **Truora** para personas naturales — el blueprint indica que este caso queda "fuera del enlace" de Sumsub (DOC ENLACES bloque C); el validador nunca se nombra en el Copy. KYB bloque C en evaluación para empresas, sin enlace.
-   - **Sub-rama Resto de países — Copy:** *"Tu proceso de validación varía un poco según seas persona natural, tengas una empresa, o seas extranjero — pero en todos los casos es un formulario guiado que te indica exactamente qué subir en cada paso. Toca aquí para comenzar tu validación cuando quieras, no tiene que ser ahora mismo."* — **Nota interna:** enlace a Sumsub (bloques A/B del blueprint), sin video-tutorial.
+   - **Sub-rama Resto de países — Copy:** *"Tu validación es un formulario guiado que te indica exactamente qué subir en cada paso — no tienes que adivinar nada. Toca aquí para comenzarla cuando quieras, no tiene que ser ahora mismo."* — **Nota interna:** enlace a Sumsub (bloques A/B del blueprint), sin video-tutorial.
    - Ambas sub-ramas convergen en los mismos Chips de cierre — ninguna abre un tercer nivel.
 
 6. **Soy extranjero, no sé qué documento cargar**
