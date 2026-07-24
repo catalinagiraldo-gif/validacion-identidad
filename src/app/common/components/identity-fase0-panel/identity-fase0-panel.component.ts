@@ -1,7 +1,8 @@
-import { Component, inject, computed, signal } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IdentityDemoStateV2Service } from '../../services/identity-demo-state-v2.service';
 import { IdentityFase0Service } from '../../services/identity-fase0.service';
+import { IdentityFase0BackstageDotComponent } from '../identity-fase0-backstage-dot/identity-fase0-backstage-dot.component';
 
 // Etapa 0 del Service Blueprint Fase 0: Panel Lateral "Verifica tu cuenta".
 // Aparece al entrar al Home en fase0 (momento Setup/Activación). Ocupa 25% del
@@ -11,7 +12,7 @@ import { IdentityFase0Service } from '../../services/identity-fase0.service';
 @Component({
   selector: 'app-identity-fase0-panel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IdentityFase0BackstageDotComponent],
   templateUrl: './identity-fase0-panel.component.html',
   styleUrls: ['./identity-fase0-panel.component.scss'],
 })
@@ -19,14 +20,18 @@ export class IdentityFase0PanelComponent {
   private readonly stateV2 = inject(IdentityDemoStateV2Service);
   private readonly fase0 = inject(IdentityFase0Service);
 
-  readonly dismissed = signal(false);
-
   readonly isVisible = computed(() => {
-    const momento = this.stateV2.momentoUsuario();
+    // Blueprint: Panel Lateral es exclusivo de ETAPA 0 ("Usuarios Nuevos sin
+    // historial — entran por primera vez al Home"). Un Activo con progreso
+    // "nunca" NO lo ve — para él, el único disparador es un clic financiero
+    // (Etapa 0.5, mismo trato que un Nuevo). Eje `fase0TipoUsuario`, no
+    // `momentoUsuario` (ese es del rediseño Fase 1-5, otro eje).
     return (
       this.stateV2.faseProyecto() === 'fase0' &&
-      (momento === 'setup' || momento === 'activacion') &&
-      !this.dismissed()
+      this.stateV2.fase0TipoUsuario() === 'nuevo' &&
+      this.fase0.progreso() === 'nunca' &&
+      !this.stateV2.marcaBlanca() &&
+      !this.fase0.panelDismissed()
     );
   });
 
@@ -35,6 +40,6 @@ export class IdentityFase0PanelComponent {
   }
 
   dismiss(): void {
-    this.dismissed.set(true);
+    this.fase0.dismissPanel();
   }
 }

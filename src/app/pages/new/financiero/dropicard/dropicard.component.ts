@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IdentityGateComponent } from '../../../../common/components/identity-gate/identity-gate.component';
+import { IdentityDemoStateService } from '../../../../common/services/identity-demo-state.service';
+import { IdentityModalService } from '../../../../common/services/identity-modal.service';
+import { IdentityFase0Service } from '../../../../common/services/identity-fase0.service';
 
 interface Transaction {
   id: number;
@@ -172,6 +175,10 @@ interface Transaction {
   `,
 })
 export class DropicardNewComponent {
+  private stateSvc = inject(IdentityDemoStateService);
+  private modalSvc = inject(IdentityModalService);
+  private fase0 = inject(IdentityFase0Service);
+
   hasCard = true;
   showFullCard = false;
   showCvv = false;
@@ -233,6 +240,16 @@ export class DropicardNewComponent {
   }
 
   onRequestCard(): void {
+    // Bug real encontrado al releer el blueprint: "Solicitud DropiCard" es uno
+    // de los 6 triggers de Etapa 0.5 (mismo trato que Transferir Wallet) —
+    // este botón nunca pasaba por ningún gate, ni el interceptor de Fase 0 ni
+    // el modal heredado de Fase 1+. `identity-gate` de arriba solo decoraba
+    // la página; no bloqueaba la acción real.
+    if (this.fase0.tryIntercept('dropicard', false)) return;
+    if (this.stateSvc.status() !== 'aprobado') {
+      this.modalSvc.open('dropicard', 'screen0');
+      return;
+    }
     this.notify('Solicitud de tarjeta enviada correctamente', 'success');
     this.hasCard = true;
   }

@@ -586,6 +586,17 @@ $warning-700: #ab8036;
   .alert-icon { color: #f46a6b; }
 }
 
+// Fase 0 (blueprint): banner estático — informativo, no una alerta urgente.
+// Nunca dispara un modal: es el único gate visible en la página de
+// "Información de Cuenta" hasta que el usuario se verifique.
+.alert-top--fase0-estatico {
+  background: rgba($primary-500, 0.06);
+  border-color: rgba($primary-500, 0.3);
+  padding: $space-4;
+
+  .alert-icon { color: $primary-500; font-size: 20px; }
+}
+
 .alert-body {
   flex: 1;
   display: flex;

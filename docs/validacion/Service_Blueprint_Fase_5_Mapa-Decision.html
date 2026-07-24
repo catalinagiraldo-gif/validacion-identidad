@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa de decisión — Validación tech-native (SI → ENTONCES)</title>
+  <style>
+    :root {
+      --primary: #f49a3d; --primary-dark: #e58017; --secondary: #008dbf;
+      --gray-50: #f7f8fa; --gray-100: #eef0f4; --gray-200: #dde1ea;
+      --gray-600: #475066; --gray-800: #232938; --gray-900: #151921;
+      --white: #ffffff; --green-bg: #e8f6e9; --green-border: #81c784;
+      --purple-bg: #f0e7fb; --purple-border: #b794e3;
+      --blue-bg: #e5f4fa; --blue-border: #62bad9;
+      --red-bg: #fde9e9; --red-border: #f46a6b;
+      --yellow-bg: #fff4df; --yellow-border: #f2bc85;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.10); --indigo: #6366f1;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--gray-800); background: #f8fafc; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; }
+    .page { max-width: 1080px; margin: 0 auto; padding: 40px 40px 80px; }
+    .hero, .section { margin: 0 auto 24px; background: rgba(255,255,255,.96); border: 1px solid var(--gray-200); border-radius: 12px; box-shadow: var(--shadow); }
+    .hero { padding: 24px; border-top: 4px solid var(--indigo); }
+    .hero-kicker { color: var(--indigo); font-weight: 800; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { margin: 6px 0 8px; font-size: 28px; color: var(--gray-900); }
+    h2 { margin: 0 0 6px; font-size: 20px; color: var(--gray-900); }
+    h2 .step-no { display: inline-grid; place-items: center; width: 26px; height: 26px; margin-right: 8px; border-radius: 50%; background: var(--indigo); color: var(--white); font-size: 13px; font-weight: 800; vertical-align: middle; }
+    p { margin: 6px 0 12px; }
+    .muted { color: var(--gray-600); }
+    .section { padding: 24px; }
+    code { padding: 2px 5px; color: #7b470f; background: #fff4df; border-radius: 4px; font-family: "JetBrains Mono", monospace; font-size: .9em; }
+    .back-link { display: inline-flex; gap: 6px; margin-bottom: 4px; color: var(--secondary); font-weight: 700; font-size: 13px; text-decoration: none; }
+    .plain-answer { margin: 0 0 16px; padding: 14px 16px; border: 1px solid var(--blue-border); border-left: 5px solid var(--secondary); border-radius: 10px; background: var(--blue-bg); }
+    .plain-answer strong { color: #006589; }
+    .warn { margin: 0 0 12px; padding: 12px 14px; border: 1px solid var(--yellow-border); border-left: 5px solid var(--primary); border-radius: 10px; background: #fff8f0; font-size: 13px; }
+    .myth { margin: 12px 0; padding: 12px 14px; border-radius: 10px; background: #fff1f2; border: 1px solid #fecdd3; font-size: 13px; }
+    .diagram-wrap { margin: 10px 0 8px; padding: 12px; border: 1px solid var(--gray-200); border-radius: 10px; background: var(--gray-50); overflow-x: auto; }
+    .diagram-wrap .mermaid { min-width: 480px; }
+    .see-box { display: inline-flex; gap: 6px; margin-top: 4px; padding: 4px 10px; border: 1px dashed #a5b4fc; border-radius: 999px; background: #eef2ff; color: #4338ca; font-size: 11px; font-weight: 800; text-decoration: none; }
+    .node-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .cross-rules { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-top: 8px; }
+    .rule-card { padding: 16px; border: 1px solid var(--purple-border); border-left: 5px solid #8b5cf6; border-radius: 10px; background: var(--purple-bg); }
+    .rule-card h3 { margin: 0 0 6px; font-size: 15px; color: #4c1d95; }
+    .rule-card p { margin: 0; font-size: 13px; }
+    .rule-kicker { display: block; margin-bottom: 4px; color: #7c3aed; font-weight: 800; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+    .toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .toc a { padding: 6px 12px; border: 1px solid var(--gray-200); border-radius: 999px; background: var(--white); color: var(--gray-800); font-size: 12px; font-weight: 700; text-decoration: none; }
+    .toc a:hover { border-color: var(--indigo); color: var(--indigo); }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 10px 0; }
+    th, td { padding: 8px 10px; border: 1px solid var(--gray-200); text-align: left; vertical-align: top; }
+    th { background: var(--gray-100); }
+    .table-scroll { overflow-x: auto; }
+    @media (max-width: 720px) { .page { padding: 20px; } .cross-rules { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-kicker">Mapa de decisión · Tech-native</div>
+      <a class="back-link" href="Service_Blueprint_Diagrama_Fase_5.html">← Volver al Blueprint</a>
+      <h1>SI → ENTONCES: cómo pasamos de un lado a otro</h1>
+      <p class="muted">Condiciones exactas de cada salto. El <a href="Service_Blueprint_Diagrama_Fase_5.html">Blueprint</a> muestra la UI; aquí la lógica.</p>
+      <div class="warn"><strong>C2 · C3 · C4 son paralelos.</strong> No se leen Soft → Hard → Módulo. El usuario entra por <em>un</em> canal según lo que haga; los tres convergen en C5.</div>
+      <nav class="toc">
+        <a href="#gaps">1 · Gaps</a>
+        <a href="#canal">2 · Canal</a>
+        <a href="#pais-gap">3 · País + gap</a>
+        <a href="#webhook">4 · Webhook</a>
+        <a href="#ecclar">5 · EC/CL/AR</a>
+        <a href="#reglas-transversales">Reglas</a>
+      </nav>
+    </header>
+
+    <section class="section" id="gaps">
+      <h2><span class="step-no">1</span>Gaps y Estado API — ¿Qué le falta y en qué estado está?</h2>
+      <div class="plain-answer">
+        <strong>En una frase:</strong> antes de iniciar cualquier acción, el sistema consulta vía API el estado del usuario (Aprobado, Pendiente, Sin Iniciar). Si ya tiene identidad y facturación completas, no lo molestamos. Si le falta algo, determinamos por qué canal entra.
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>SI (Estado devuelto por API)</th><th>ENTONCES (Condición de Gap)</th><th>Destino</th></tr></thead>
+          <tbody>
+            <tr><td><code>has_identity</code> Y <code>has_billing</code> = Aprobado</td><td>Idle: sin soft, sin hard, sin modal.</td><td>Fin del flujo</td></tr>
+            <tr><td>Falta identidad y/o facturación (Sin iniciar o Incompleto)</td><td>Elegible para intervención (Nueva o Antigua cuenta).</td><td>Espera canal (Bifurcación 2)</td></tr>
+            <tr><td>Estado API = Pendiente</td><td>Validación en curso.</td><td>Bloqueo transaccional temporal → Espera Webhook (C6)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram-wrap"><pre class="mermaid">
+flowchart TD
+  start["Flags de Prep listos"] --> gaps{"¿Qué le falta?"}
+  gaps -->|"Nada"| idle["IDLE — sin UI"]
+  gaps -->|"Gap"| wait["Elegible — espera canal"]
+  gaps -->|"Pending manual B"| p["Bifurcación 5"]
+  wait --> canal["Bifurcación 2"]
+  classDef decision fill:#fff4df,stroke:#f2bc85,color:#875414;
+  classDef idle fill:#e8f6e9,stroke:#81c784,color:#245026;
+  class gaps decision;
+  class idle idle;
+      </pre></div>
+      <div class="node-links">
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#gap-idle">Rombo Blueprint</a>
+      </div>
+    </section>
+
+    <section class="section" id="canal">
+      <h2><span class="step-no">2</span>Canal — ¿Cómo entra al flujo? (Paralelos)</h2>
+      <div class="plain-answer">
+        <strong>En una frase:</strong> el gap se muestra distinto según la antigüedad del usuario y su acción. Cerrar el soft <strong>no</strong> abre el hard. El hard solo aparece al tocar dinero.
+      </div>
+      <div class="myth"><strong>Mito:</strong> Soft → Hard → Módulo.&nbsp;&nbsp;<strong>Realidad:</strong> uno de tres canales → C5.</div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>SI el usuario…</th><th>Antigüedad / Estado</th><th>ENTONCES canal</th><th>UI (Pantalla)</th><th>¿Obligatorio?</th><th>Sale a</th></tr></thead>
+          <tbody>
+            <tr><td>Recibe 1ra orden (venta) o hace 1er mov. wallet</td><td>Nuevo (Sin iniciar nada)</td><td><strong>C4d Welcome</strong></td><td>Modal de bienvenida "Verifica tu cuenta antes de operar"</td><td>No (X)</td><td>CTA → C5 / C4</td></tr>
+            <tr><td>Navega en Home / Dashboard</td><td>Antiguo (Falta alguna validación)</td><td><strong>C2 Soft</strong></td><td>Modal Slide-up (Sutil) invitando a completar datos</td><td>No (X)</td><td>CTA → C5 / C4</td></tr>
+            <tr><td>Clic en Retirar / Transferir / DropiCard</td><td>Nuevo o Antiguo (Con gaps)</td><td><strong>C3 Hard</strong></td><td>Tooltip de bloqueo + Modal restrictivo</td><td>Sí (Gate)</td><td>CTA → C5 / C4</td></tr>
+            <tr><td>Abre Info de Cuenta o Facturación</td><td>Nuevo o Antiguo (Con gaps)</td><td><strong>C4 Módulo</strong></td><td>Formulario Dropi o Link Sumsub</td><td>Según estado</td><td>CTA → C5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram-wrap"><pre class="mermaid">
+flowchart TD
+  gap["Elegible con gap"] --> canal{"¿Qué hace ahora?"}
+  canal -->|"Home / pasivo"| soft["C2 Soft"]
+  canal -->|"Retiro / transfer / DropiCard"| hard["C3 Hard"]
+  canal -->|"Abre módulo"| mod["C4 Módulo"]
+  canal -->|"1a venta"| wel["C4d Bienvenida"]
+  soft -->|"CTA"| c5["C5"]
+  hard -->|"CTA"| c5
+  mod -->|"CTA"| c5
+  wel -->|"CTA"| c5
+  soft -->|"Cierra X"| stay["Sigue — NO va a C3"]
+  classDef decision fill:#fff4df,stroke:#f2bc85,color:#875414;
+  classDef hard fill:#fde9e9,stroke:#f46a6b,color:#7a1f1f;
+  classDef soft fill:#e5f4fa,stroke:#62bad9,color:#0b4a63;
+  class canal decision;
+  class hard hard;
+  class soft,mod,wel,c5 soft;
+      </pre></div>
+      <div class="node-links">
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#soft-slideup">Slide-up</a>
+      </div>
+    </section>
+
+    <section class="section" id="pais-gap">
+      <h2><span class="step-no">3</span>País + gap — ¿A dónde lo mandamos? (Routing)</h2>
+      <div class="plain-answer">
+        <strong>En una frase:</strong> el CTA resuelve el destino según el país y el validador asignado. Colombia divide flujos (Truora/Sumsub); el resto de LATAM los unifica.
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>SI (Condición)</th><th>ENTONCES Destino</th><th>Proveedor (API)</th><th>Lo que el usuario ve / hace</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Colombia</strong> + Falta Identidad</td><td>Información de Cuenta</td><td><strong>Truora (KYC)</strong></td><td>Formulario de datos personales en Dropi + Flujo de Identidad Truora.</td></tr>
+            <tr><td><strong>Colombia</strong> + Falta Facturación</td><td>Módulo Financiero</td><td><strong>Sumsub (KYB)</strong></td><td><strong>Sin formulario en Dropi.</strong> Enlace directo al WebSDK de Sumsub para empresas.</td></tr>
+            <tr><td><strong>Otros Países</strong> + Cualquier Gap</td><td>Módulo Único</td><td><strong>Sumsub (KYC+KYB)</strong></td><td>Un solo flujo continuo dentro de Sumsub, sin separar identidad y facturación.</td></tr>
+            <tr><td><strong>Excepción: EC / CL / AR</strong> (Pending manual)</td><td>Transición a automatización</td><td><strong>Sumsub (Migración)</strong></td><td>(Por definir) Migrar casos pendientes a Sumsub o ejecutar flujo manual temporal. Una vez resuelto, pasan al flujo "Otros Países".</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram-wrap"><pre class="mermaid">
+flowchart TD
+  cta["CTA disparado"] --> country{"¿País?"}
+  country -->|Colombia| g{"¿Qué falta?"}
+  country -->|Resto| rest["C5: un Sumsub"]
+  g -->|Identidad o ambas| coId["Mi cuenta → Truora"]
+  g -->|Solo facturación| coBill["Enlace Sumsub"]
+  classDef decision fill:#fff4df,stroke:#f2bc85,color:#875414;
+  classDef co fill:#fde9e9,stroke:#f46a6b,color:#7a1f1f;
+  classDef rest fill:#e5f4fa,stroke:#62bad9,color:#0b4a63;
+  class country,g decision;
+  class coId,coBill co;
+  class rest rest;
+      </pre></div>
+      <div class="node-links">
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#route-co-id">CO 2 destinos</a>
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#route-rest">Resto 1 destino</a>
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#country-process-router">Router</a>
+      </div>
+    </section>
+
+    <section class="section" id="webhook">
+      <h2><span class="step-no">4</span>Resultado webhook — ¿Qué le mostramos y cómo queda la UI?</h2>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>SI estado webhook</th><th>ENTONCES UI (Mensaje)</th><th>Comportamiento en Módulo Dropi</th><th>Gate salidas</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Aprobado (Ambos OK)</strong></td><td>Modal: "¡Cuenta verificada!" + Confetti</td><td><strong>Datos Personales y Facturación se muestran en modo Solo Lectura (Read-only).</strong> Aparece aviso: <em>"No puedes editar esta información durante 6 meses"</em>.</td><td>Libera</td></tr>
+            <tr><td><strong>Aprobado Parcial (CO)</strong></td><td>Confirmación del paso + Cross-sell</td><td>El módulo completado se bloquea (6 meses). El módulo restante sigue abierto.</td><td>Parcial</td></tr>
+            <tr><td><strong>Rechazado</strong></td><td>"No pudimos validar tu información"</td><td>Los flujos de reintento permanecen activos.</td><td>Se mantiene</td></tr>
+            <tr><td><strong>Incompleto / Timeout</strong></td><td>"Te falta un paso"</td><td>Botón "Continuar" para retomar flujo en API.</td><td>Se mantiene</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram-wrap"><pre class="mermaid">
+flowchart TD
+  wh["Webhook firmado"] --> st{"Estado"}
+  st -->|aprobado| ok{"¿Falta otro gap CO?"}
+  ok -->|No| done["Idle"]
+  ok -->|Sí| cross["Cross-sell → C4/C5"]
+  st -->|rechazado| no["Reintento / soporte"]
+  st -->|incompleto| inc["Continuar → C5"]
+  st -->|en_revision| rev["Espera"]
+  classDef decision fill:#fff4df,stroke:#f2bc85,color:#875414;
+  classDef ok fill:#e8f6e9,stroke:#81c784,color:#245026;
+  class st,ok decision;
+  class done,cross ok;
+      </pre></div>
+      <div class="node-links">
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#identity-webhook">State machine</a>
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#state-approved">Aprobado</a>
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#state-review">En revisión</a>
+      </div>
+    </section>
+
+    <section class="section" id="ecclar">
+      <h2><span class="step-no">5</span>EC/CL/AR — pendiente manual</h2>
+      <div class="plain-answer">
+        <strong>Defecto:</strong> Prep carga Sumsub → Dropi <code>en_revision</code> → no pedir reenviar docs.<br>
+        <strong>Alternativa Legal:</strong> espera 72h sin nuevo Sumsub.
+      </div>
+      <div class="diagram-wrap"><pre class="mermaid">
+flowchart TD
+  pend["Pending manual EC/CL/AR"] --> dec{"¿Migración tech?"}
+  dec -->|"Sí defecto"| sync["C0 → Sumsub"]
+  sync --> rev["C6 en_revision"]
+  rev --> wh["Webhook"]
+  dec -->|"No Legal"| wait["Espera 72h admin"]
+  classDef decision fill:#fff4df,stroke:#f2bc85,color:#875414;
+  classDef ok fill:#e5f4fa,stroke:#62bad9,color:#0b4a63;
+  classDef alt fill:#fde9e9,stroke:#f46a6b,color:#7a1f1f;
+  class dec decision;
+  class sync,rev,wh ok;
+  class wait alt;
+      </pre></div>
+    </section>
+
+    <section class="section" id="reglas-transversales">
+      <h2>Reglas transversales</h2>
+      <div class="cross-rules">
+        <div class="rule-card">
+          <span class="rule-kicker">Regla A</span>
+          <h3>Hard gate solo salidas</h3>
+          <p>Órdenes, ventas y entradas nunca pasan por C3. Solo retiros, transferencias y DropiCard.</p>
+        </div>
+        <div class="rule-card">
+          <span class="rule-kicker">Regla B</span>
+          <h3>Webhook directo</h3>
+          <p>Sin Google Sheets en happy path. Un evento actualiza identidad + facturación.</p>
+        </div>
+        <div class="rule-card">
+          <span class="rule-kicker">Regla C</span>
+          <h3>Consolidación de EC/CL/AR (Excepción Técnica)</h3>
+          <p>TI debe definir un script de migración para los usuarios de Ecuador, Chile y Argentina que actualmente tienen KYB manual. Si el usuario está en estado manual "Aprobado", se homologará a <code>has_billing = true</code> vía base de datos. Si está "Pendiente", se inyectará en el nuevo flujo de Sumsub.</p>
+        </div>
+        <div class="rule-card">
+          <span class="rule-kicker">Regla D</span>
+          <h3>Bloqueo de UI (Regla de los 6 Meses)</h3>
+          <p>El frontend debe escuchar la variable <code>last_validation_date</code> proveniente de la base de datos tras el Webhook de aprobación. Si <code>current_date &lt; last_validation_date + 6 meses</code>, los <em>inputs</em> de Información de Cuenta y Facturación deben renderizarse como <code>disabled</code>, inyectando obligatoriamente el tooltip de advertencia de la regla de los 6 meses.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Cadena mínima para cualquier área</h2>
+      <ol>
+        <li>¿Le falta algo? (§1) → si no, idle.</li>
+        <li>¿Qué está haciendo? (§2) → soft <strong>o</strong> hard <strong>o</strong> módulo.</li>
+        <li>¿CO o resto + qué gap? (§3) → destino.</li>
+        <li>¿Qué dijo el webhook? (§4) → UI + gate.</li>
+        <li>¿Era pending B? (§5) → revisión nativa.</li>
+      </ol>
+      <p class="muted">Pareja MD: <a href="Service_Blueprint_Fase_5_Mapa-Decision.md">Mapa.md</a> · <a href="UX-Writing-Validacion-TechNative.md">UX Writing</a> · <a href="Service_Blueprint_Fase_5_Tabla.html">Tabla</a></p>
+    </section>
+
+    <footer style="text-align:center;padding:12px 0 0;">
+      <a class="back-link" href="Service_Blueprint_Diagrama_Fase_5.html">← Volver al Blueprint</a>
+    </footer>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true, theme: 'base', securityLevel: 'loose',
+      themeVariables: { primaryColor: '#eef2ff', primaryBorderColor: '#6366f1', primaryTextColor: '#232938', lineColor: '#94a3b8', fontFamily: 'Inter, sans-serif', fontSize: '13px' },
+      flowchart: { curve: 'basis', htmlLabels: true }
+    });
+  </script>
+</body>
+</html>

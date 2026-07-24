@@ -1,0 +1,92 @@
+@if (visible()) {
+  <div class="fase0-switcher" [class.fase0-switcher--expanded]="expanded()">
+    <button type="button" class="fase0-switcher__pill" (click)="toggle()">
+      <i class="pi pi-sliders-h" aria-hidden="true"></i>
+      <span class="fase0-switcher__pill-label">Estados Fase 0</span>
+      <span class="fase0-switcher__pill-current">{{ bloqueado() ? bloqueadoLabel() : (progresoActual() | titlecase) }}</span>
+      @if (hayOverlayAbierto()) {
+        <span class="fase0-switcher__pill-dot" title="Hay un overlay abierto encima"></span>
+      }
+      <i class="pi" [ngClass]="expanded() ? 'pi-chevron-down' : 'pi-chevron-up'" aria-hidden="true"></i>
+    </button>
+
+    @if (expanded()) {
+      <div class="fase0-switcher__panel">
+        <div class="fase0-switcher__section">
+          <span class="fase0-switcher__label">Tipo de usuario en Home (Etapa 0 vs 0.5)</span>
+          <div class="fase0-switcher__states">
+            @for (t of tipoUsuarioOptions; track t) {
+              <button
+                type="button"
+                class="fase0-switcher__state"
+                [class.fase0-switcher__state--active]="tipoUsuarioActual() === t"
+                (click)="setTipoUsuario(t)"
+              >
+                {{ tipoUsuarioLabel(t) }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="fase0-switcher__section">
+          <span class="fase0-switcher__label">Saltar a estado (sin perder el hilo)</span>
+          <div class="fase0-switcher__states">
+            @for (e of estados; track e.progreso) {
+              <button
+                type="button"
+                class="fase0-switcher__state"
+                [class.fase0-switcher__state--active]="progresoActual() === e.progreso && !bloqueado()"
+                (click)="irA(e.progreso)"
+              >
+                {{ e.label }}
+              </button>
+            }
+            <button
+              type="button"
+              class="fase0-switcher__state fase0-switcher__state--danger"
+              [class.fase0-switcher__state--active]="bloqueado()"
+              (click)="irABloqueo()"
+            >
+              Bloqueado (fraude)
+            </button>
+            <button
+              type="button"
+              class="fase0-switcher__state fase0-switcher__state--danger"
+              [class.fase0-switcher__state--active]="bloqueado() && fase0.blockMotivo() === 'rechazado'"
+              (click)="irABloqueoRechazado()"
+            >
+              Bloqueado (rechazado)
+            </button>
+          </div>
+        </div>
+
+        <div class="fase0-switcher__section fase0-switcher__section--actions">
+          <button type="button" class="fase0-switcher__escape" (click)="cerrarOverlay()">
+            <i class="pi pi-eye-slash" aria-hidden="true"></i>
+            Cerrar overlay y ver la página
+          </button>
+          @if (bloqueado()) {
+            <button type="button" class="fase0-switcher__escape fase0-switcher__escape--danger" (click)="quitarBloqueo()">
+              <i class="pi pi-lock-open" aria-hidden="true"></i>
+              Quitar bloqueo (solo demo)
+            </button>
+          }
+        </div>
+
+        <div class="fase0-switcher__section">
+          <span class="fase0-switcher__label">Qué pasó — eventos del blueprint</span>
+          <ul class="fase0-switcher__log">
+            @for (ev of eventos(); track ev.id) {
+              <li class="fase0-switcher__log-item">
+                <span class="fase0-switcher__log-icon">{{ tagIcon[ev.tag] }}</span>
+                <span class="fase0-switcher__log-text">{{ ev.texto }}</span>
+              </li>
+            } @empty {
+              <li class="fase0-switcher__log-empty">Interactúa con la app — cada evento del blueprint va a aparecer aquí.</li>
+            }
+          </ul>
+        </div>
+      </div>
+    }
+  </div>
+}

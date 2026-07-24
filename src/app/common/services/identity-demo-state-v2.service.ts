@@ -15,6 +15,7 @@ import {
   MotivoPendiente,
   IdentitySatelliteStatusV2,
   DatosCapturadosKyc,
+  Fase0TipoUsuario,
 } from '../models/identity-flow-v2.models';
 
 // Additive demo-panel state for Plan2.md (docs/validacion/Plan2.md), Parte 1.
@@ -35,6 +36,8 @@ const REP_LEGAL_VALIDADO_KEY = 'dropi.identityV2.representanteLegalValidado';
 const WEBHOOK_CONFIRMED_KEY  = 'dropi.identityV2.webhookConfirmed';
 const MOTIVO_PENDIENTE_KEY   = 'dropi.identityV2.motivoPendiente';
 const SALDO_NEGATIVO_FRAUDE_KEY = 'dropi.identityV2.saldoNegativoFraude';
+const MARCA_BLANCA_KEY    = 'dropi.identityV2.marcaBlanca';
+const FASE0_TIPO_USUARIO_KEY = 'dropi.identityV2.fase0TipoUsuario';
 const TIENE_DATOS_ANTIGUOS_KEY = 'dropi.identityV2.tieneDatosFormularioAntiguo';
 const RISK_SCORE_KEY      = 'dropi.identityV2.riskScore';
 const LAST_VALIDATED_KEY  = 'dropi.identityV2.lastValidatedAt';
@@ -62,6 +65,19 @@ export class IdentityDemoStateV2Service {
    * de Bloqueo full-screen al intentar Retiro o Envío.
    */
   private readonly _saldoNegativoFraude = signal<boolean>(this.loadSaldoNegativoFraude());
+  /**
+   * Fase 0 — Bloque D del blueprint (Marcas Blancas): estos usuarios no reciben
+   * pop-ups automáticos de UserPilot. Soporte/Comercial envía el enlace de
+   * Sumsub a mano por WhatsApp o Intercom durante la atención al cliente.
+   */
+  private readonly _marcaBlanca = signal<boolean>(this.loadMarcaBlanca());
+  /**
+   * Fase 0 — "Nuevos" (ETAPA 0, entra por primera vez al Home) vs "Activos"
+   * (ETAPA 0.5). Eje propio del blueprint, distinto de `momentoUsuario`
+   * (eje Fase 1-5): solo gatilla el Panel Lateral en Home — el Modal
+   * Interceptor trata a ambos igual ante un clic financiero.
+   */
+  private readonly _fase0TipoUsuario = signal<Fase0TipoUsuario>(this.loadFase0TipoUsuario());
   /** Plan2.md Parte 8 — usuario antiguo con datos del formulario manual viejo (pre-Sumsub), nunca certificados. */
   private readonly _tieneDatosFormularioAntiguo = signal<boolean>(this.loadTieneDatosFormularioAntiguo());
   /** Plan2.md Parte 8 — datos capturados en el KYC (pasos 1-5 del modal), para precargar "Datos de facturación" en la vía "mis-datos". No persiste en sessionStorage: vive solo durante la sesión del modal/página, como el resto del flujo simulado. */
@@ -83,6 +99,8 @@ export class IdentityDemoStateV2Service {
   readonly webhookConfirmed = this._webhookConfirmed.asReadonly();
   readonly motivoPendiente = this._motivoPendiente.asReadonly();
   readonly saldoNegativoFraude = this._saldoNegativoFraude.asReadonly();
+  readonly marcaBlanca = this._marcaBlanca.asReadonly();
+  readonly fase0TipoUsuario = this._fase0TipoUsuario.asReadonly();
   readonly tieneDatosFormularioAntiguo = this._tieneDatosFormularioAntiguo.asReadonly();
   readonly datosCapturadosKyc = this._datosCapturadosKyc.asReadonly();
   readonly riskScore = this._riskScore.asReadonly();
@@ -237,6 +255,16 @@ export class IdentityDemoStateV2Service {
     sessionStorage.setItem(SALDO_NEGATIVO_FRAUDE_KEY, String(value));
   }
 
+  setMarcaBlanca(value: boolean): void {
+    this._marcaBlanca.set(value);
+    sessionStorage.setItem(MARCA_BLANCA_KEY, String(value));
+  }
+
+  setFase0TipoUsuario(value: Fase0TipoUsuario): void {
+    this._fase0TipoUsuario.set(value);
+    sessionStorage.setItem(FASE0_TIPO_USUARIO_KEY, value);
+  }
+
   private loadFaseProyecto(): FaseProyecto {
     const v = sessionStorage.getItem(FASE_PROYECTO_KEY);
     return (FASES_PROYECTO as string[]).includes(v ?? '') ? (v as FaseProyecto) : 'fase0';
@@ -300,6 +328,15 @@ export class IdentityDemoStateV2Service {
 
   private loadSaldoNegativoFraude(): boolean {
     return sessionStorage.getItem(SALDO_NEGATIVO_FRAUDE_KEY) === 'true';
+  }
+
+  private loadMarcaBlanca(): boolean {
+    return sessionStorage.getItem(MARCA_BLANCA_KEY) === 'true';
+  }
+
+  private loadFase0TipoUsuario(): Fase0TipoUsuario {
+    const v = sessionStorage.getItem(FASE0_TIPO_USUARIO_KEY);
+    return v === 'activo' ? 'activo' : 'nuevo';
   }
 
   private loadRiskScore(): RiskScore {

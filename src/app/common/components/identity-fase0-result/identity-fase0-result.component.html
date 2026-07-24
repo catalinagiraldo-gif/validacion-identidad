@@ -3,16 +3,32 @@
     <div class="fase0-result__backdrop"></div>
 
     <div class="fase0-result__card" [ngClass]="'fase0-result__card--' + v.tone">
-      <div class="fase0-result__icon" [ngClass]="'fase0-result__icon--' + v.tone" aria-hidden="true">
-        <i class="pi" [ngClass]="v.icon"></i>
+      <div class="fase0-result__top">
+        <div class="fase0-result__icon" [ngClass]="'fase0-result__icon--' + v.tone" aria-hidden="true">
+          <i class="pi" [ngClass]="v.icon"></i>
+        </div>
+        <app-fase0-backstage-dot [texto]="v.backstage" label="Qué pasa por dentro en Etapa Continua" />
       </div>
       <h2 id="fase0-result-title" class="fase0-result__headline">{{ v.headline }}</h2>
       <p class="fase0-result__text">{{ v.body }}</p>
 
       @if (v.ctaLabel) {
-        <button type="button" class="fase0-result__cta" [ngClass]="'fase0-result__cta--' + v.tone" (click)="onCta()">
-          {{ v.ctaLabel }}
-        </button>
+        <div class="fase0-result__actions">
+          <button type="button" class="fase0-result__cta" [ngClass]="'fase0-result__cta--' + v.tone" (click)="onCta()">
+            {{ v.ctaLabel }}
+          </button>
+          @if (v.ctaSecundarioLabel) {
+            <button type="button" class="fase0-result__cta-secundario" (click)="onCtaSecundario()">
+              {{ v.ctaSecundarioLabel }}
+            </button>
+          }
+        </div>
+        @if (mostrarHintSoporte()) {
+          <div class="fase0-result__hint-support" role="status">
+            <i class="pi pi-comments" aria-hidden="true"></i>
+            Abre el widget de soporte flotante · chip "Validación de identidad" → "Mi verificación sigue en revisión"
+          </div>
+        }
       }
     </div>
   </div>

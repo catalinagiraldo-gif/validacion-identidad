@@ -7,11 +7,29 @@
 
     @if (!collapsed()) {
       <div class="demo-panel__controls">
+        <!-- Modo Prototipo: 0 (recorrido Fase 0 completo) vs 2 (Fases 1/2/3/4/5) -->
+        <div class="demo-control" data-tour="modo-prototipo">
+          <span class="demo-control__label">MODO PROTOTIPO</span>
+          <div class="demo-control__chips">
+            <button class="chip chip--modo" [class.chip--active]="modoPrototipo() === 'proto0'" (click)="selectPrototipo0()">
+              Prototipo 0 · Fase 0
+            </button>
+            <button class="chip chip--modo" [class.chip--active]="modoPrototipo() === 'proto2'" (click)="selectPrototipo2()">
+              Prototipo 2 · Fases 1-5
+            </button>
+          </div>
+          <span class="demo-panel__mecanismo">
+            {{ modoPrototipo() === 'proto0'
+              ? 'Recorrido completo del Service Blueprint Fase 0: overlays no-code, Sumsub simulado y CRM.'
+              : 'Fases 1, 2, 3, 4 y 5 — gates nativos, motores de validación y migraciones posteriores.' }}
+          </span>
+        </div>
+
         <!-- Fase de entrega (rollout del proyecto) -->
         <div class="demo-control" data-tour="fase-entrega">
           <span class="demo-control__label">FASE DE ENTREGA</span>
           <div class="demo-control__chips">
-            @for (fase of fasesProyecto; track fase) {
+            @for (fase of fasesProyectoVisibles(); track fase) {
               <button
                 class="chip chip--sm"
                 [class.chip--active]="faseProyecto() === fase"
@@ -120,6 +138,29 @@
 
         <!-- Controles Fase 0 (Service Blueprint Fase 0) -->
         @if (showFase0Controls()) {
+          <div class="demo-control" data-tour="fase0-tipo-usuario">
+            <span class="demo-control__label">TIPO DE USUARIO (HOME)</span>
+            <div class="demo-control__chips">
+              @for (t of fase0TipoUsuarioOptions; track t) {
+                <button class="chip chip--sm" [class.chip--active]="fase0TipoUsuario() === t" (click)="setFase0TipoUsuario(t)">
+                  {{ fase0TipoUsuarioLabel(t) }}
+                </button>
+              }
+            </div>
+            <span class="demo-panel__mecanismo">
+              {{ fase0TipoUsuario() === 'nuevo'
+                ? 'Nuevo: ve el Panel Lateral "Verifica tu cuenta" al entrar al Home (Etapa 0).'
+                : 'Activo: en Home no ve nada especial — solo un clic financiero dispara el Modal Interceptor (Etapa 0.5), igual que a un Nuevo.' }}
+            </span>
+          </div>
+
+          <div class="demo-control">
+            <span class="demo-control__label">MARCA BLANCA</span>
+            <button class="chip chip--sm chip--toggle" [class.chip--active]="marcaBlanca()" (click)="toggleMarcaBlanca()">
+              {{ marcaBlanca() ? '✅ Enlace manual de Soporte (sin pop-ups)' : 'Enlace manual de Soporte (sin pop-ups)' }}
+            </button>
+          </div>
+
           <div class="demo-control">
             <span class="demo-control__label">SALDO NEGATIVO / FRAUDE</span>
             <button class="chip chip--sm chip--toggle" [class.chip--active]="saldoNegativoFraude()" (click)="toggleSaldoNegativoFraude()">
@@ -138,7 +179,27 @@
           }
 
           <div class="demo-control">
-            <span class="demo-control__label">RESULTADO FASE 0</span>
+            <span class="demo-control__label">PROGRESO SUMSUB</span>
+            <span class="demo-panel__status-badge" [class]="progresoBadgeClass()">{{ progresoSumsubLabel() }}</span>
+            <span class="demo-panel__mecanismo">{{ sumsubBloqueLabel() }}</span>
+          </div>
+
+          <div class="demo-control demo-control--stepper">
+            <span class="demo-control__label">RECORRIDO FASE 0</span>
+            <div class="fase0-stepper">
+              @for (e of fase0Etapas; track e) {
+                <div class="fase0-stepper__step" [class.fase0-stepper__step--active]="fase0EtapaActual() === e">
+                  <button type="button" class="fase0-stepper__btn" (click)="reproducirEtapa(e)">
+                    {{ fase0EtapaLabel(e) }}
+                  </button>
+                  <app-fase0-backstage-dot [texto]="fase0EtapaNota(e)" label="Qué pasa por dentro en esta etapa" />
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="demo-control">
+            <span class="demo-control__label">FORZAR RESULTADO SUMSUB</span>
             <div class="demo-control__chips">
               @for (r of resultadoFase0Options; track r.kind) {
                 <button class="chip chip--sm" (click)="showResultadoFase0(r.kind)">{{ r.label }}</button>

@@ -57,6 +57,12 @@ $header-height: 53px;
   gap: $space-4;
 }
 
+.fase0-panel__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
 .fase0-panel__icon {
   width: 56px;
   height: 56px;

@@ -1,23 +1,28 @@
 @if (fase0.blockOpen()) {
   <div class="fase0-block" role="alertdialog" aria-modal="true" aria-labelledby="fase0-block-title">
     <div class="fase0-block__inner">
-      <div class="fase0-block__icon" aria-hidden="true">
-        <i class="pi pi-lock"></i>
+      <div class="fase0-block__top">
+        <div class="fase0-block__icon" aria-hidden="true">
+          <i class="pi" [ngClass]="fase0.blockMotivo() === 'rechazado' ? 'pi-times-circle' : 'pi-lock'"></i>
+        </div>
+        <app-fase0-backstage-dot
+          [texto]="view().backstage"
+          label="Qué pasa por dentro en el bloqueo"
+          variante="dark"
+        />
       </div>
+
       <h2 id="fase0-block-title" class="fase0-block__headline">
-        Bloqueamos esta operación por seguridad
+        {{ view().headline }}
       </h2>
       <p class="fase0-block__text">
-        Estamos revisando tu cuenta para proteger tus fondos. No podrás hacer retiros ni envíos mientras dure la revisión.
+        {{ view().texto }}
       </p>
 
-      <button type="button" class="fase0-block__cta" (click)="contactarSoporte()" [disabled]="contactando()">
-        Contactar a soporte
-      </button>
-
-      @if (contactando()) {
-        <p class="fase0-block__hint" role="status">Abriendo canal de soporte…</p>
-      }
+      <div class="fase0-block__hint-support" role="status">
+        <i class="pi pi-comments" aria-hidden="true"></i>
+        {{ view().hint }}
+      </div>
     </div>
   </div>
 }

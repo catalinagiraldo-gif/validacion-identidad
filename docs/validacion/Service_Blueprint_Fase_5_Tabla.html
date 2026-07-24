@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Blueprint — Validación tech-native · Tabla (SI → sale a)</title>
+  <style>
+    :root {
+      --primary: #f49a3d; --primary-dark: #e58017;
+      --gray-50: #f7f8fa; --gray-100: #eef0f4; --gray-200: #dde1ea;
+      --gray-400: #858ea6; --gray-600: #475066; --gray-800: #232938; --gray-900: #151921;
+      --white: #ffffff; --green-border: #81c784; --blue-border: #62bad9;
+      --red-border: #f46a6b; --yellow-border: #f2bc85; --purple-border: #b794e3;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.10);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--gray-800); background: #f8fafc; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; }
+    .page { padding: 40px; max-width: 1500px; margin: 0 auto; }
+    .hero, .section { margin: 0 auto 24px; background: rgba(255,255,255,.96); border: 1px solid var(--gray-200); border-radius: 12px; box-shadow: var(--shadow); padding: 24px; }
+    .hero { border-top: 4px solid var(--primary); }
+    .hero-kicker { color: var(--primary-dark); font-weight: 800; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { font-size: 28px; margin: 6px 0 8px; color: var(--gray-900); }
+    h2 { font-size: 18px; margin: 0 0 8px; color: var(--gray-900); }
+    p.muted { color: var(--gray-600); margin: 0 0 12px; }
+    a { color: var(--primary-dark); }
+    .warn { margin: 12px 0 0; padding: 12px 14px; border: 1px solid var(--yellow-border); border-left: 5px solid var(--primary); border-radius: 10px; background: #fff8f0; font-size: 13px; }
+    .table-scroll { width: 100%; overflow-x: auto; }
+    table { width: 100%; min-width: 1100px; border-collapse: collapse; font-size: 12.5px; }
+    th, td { padding: 12px 14px; border: 1px solid var(--gray-200); vertical-align: top; text-align: left; }
+    th { background: var(--gray-100); color: var(--gray-900); font-size: 12px; }
+    tbody tr:nth-child(even) td { background: #fbfcfd; }
+    td:first-child { font-weight: 700; background: var(--gray-50); min-width: 140px; }
+    .stage-0 td:first-child { border-left: 4px solid var(--gray-400); }
+    .stage-1 td:first-child { border-left: 4px solid var(--yellow-border); }
+    .stage-2 td:first-child, .stage-3 td:first-child, .stage-4 td:first-child { border-left: 4px solid var(--blue-border); }
+    .stage-5 td:first-child { border-left: 4px solid var(--red-border); }
+    .stage-6 td:first-child { border-left: 4px solid var(--green-border); }
+    .tag { display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 10px; font-weight: 800; }
+    .tag-seq { background: #dcfce7; color: #166534; }
+    .tag-par { background: #ffedd5; color: #9a3412; }
+    .tag-conv { background: #fee2e2; color: #991b1b; }
+    .tag-close { background: #e0e7ff; color: #3730a3; }
+    .myth { background: #fff1f2; }
+    .rules { margin: 0; padding-left: 20px; }
+    .rules li + li { margin-top: 8px; }
+    footer { max-width: 1500px; margin: 0 auto; padding: 8px 4px 28px; color: var(--gray-600); font-size: 12px; }
+    @media (max-width: 900px) { .page { padding: 16px; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-kicker">Service Blueprint · Tabla resumida</div>
+      <h1>Validación tech-native — SI entra · qué pasa · sale a</h1>
+      <p class="muted">Pareja MD: <a href="Service_Blueprint_Fase_5_Tabla.md">Tabla.md</a> · <a href="Service_Blueprint_Diagrama_Fase_5.html">Blueprint</a> · <a href="Service_Blueprint_Fase_5_Mapa-Decision.html">Mapa SI→ENTONCES</a>.</p>
+      <div class="warn"><strong>C2 · C3 · C4 son paralelos.</strong> No leas Soft → Hard → Módulo. Cada uno es un canal distinto que converge en C5.</div>
+    </header>
+
+    <section class="section">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Etapa</th>
+              <th>Tipo</th>
+              <th>SI entra cuando…</th>
+              <th>Qué pasa</th>
+              <th>Sale a</th>
+              <th>NO es</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="stage-0">
+              <td>0. Prep</td>
+              <td><span class="tag tag-seq">Secuencial</span></td>
+              <td>Jobs de sync / lote</td>
+              <td>Alinea Sumsub↔Dropi; migra pending EC/CL/AR → <code>en_revision</code></td>
+              <td><strong>C1</strong> con flags</td>
+              <td>Una pantalla de usuario</td>
+            </tr>
+            <tr class="stage-1">
+              <td>1. Segmentación</td>
+              <td><span class="tag tag-seq">Rombo</span></td>
+              <td>Flags listos (sesión)</td>
+              <td>¿Identidad? ¿Facturación? ¿Pending?</td>
+              <td>Idle <strong>o</strong> espera canal</td>
+              <td>Un modal</td>
+            </tr>
+            <tr class="stage-2">
+              <td>2. Soft</td>
+              <td><span class="tag tag-par">Canal A paralelo</span></td>
+              <td>Hay gap <strong>y</strong> Home/pasivo</td>
+              <td>Slide-up «Verifica tu cuenta»; X cierra</td>
+              <td>CTA → <strong>C5</strong> (o C4 CO id.)</td>
+              <td>El paso antes del hard</td>
+            </tr>
+            <tr class="stage-3">
+              <td>3. Hard</td>
+              <td><span class="tag tag-par">Canal B paralelo</span></td>
+              <td>Hay gap <strong>y</strong> clic retiro/transfer/DropiCard</td>
+              <td>Tooltip + modal por gap/país</td>
+              <td>CTA → <strong>C5</strong> / C4</td>
+              <td>Continuación del soft</td>
+            </tr>
+            <tr class="stage-4">
+              <td>4. Módulo</td>
+              <td><span class="tag tag-par">Canal C paralelo</span></td>
+              <td>Abre cuenta/facturación <strong>o</strong> 1ª venta</td>
+              <td>CO: form id. / enlace fact. / lista+alerta · Resto: 1 CTA · Welcome</td>
+              <td>CTA → <strong>C5</strong></td>
+              <td>«Paso 3» de una secuencia</td>
+            </tr>
+            <tr class="stage-5">
+              <td>5. Validación</td>
+              <td><span class="tag tag-conv">Convergencia</span></td>
+              <td>CTA desde C2 o C3 o C4</td>
+              <td>Abre Truora y/o Sumsub; <code>en_revision</code>; gate solo salidas</td>
+              <td>Webhook → <strong>C6</strong></td>
+              <td>Form KYB Dropi en CO</td>
+            </tr>
+            <tr class="stage-6">
+              <td>6. Resolución</td>
+              <td><span class="tag tag-close">Cierre</span></td>
+              <td>Webhook válido</td>
+              <td>UI por estado; confetti; cross-sell CO si falta el otro gap</td>
+              <td>Idle / reintento C5 / cross-sell</td>
+              <td>Sheet manual</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Matriz rápida CTA (después del canal)</h2>
+      <div class="table-scroll">
+        <table style="min-width:700px">
+          <thead><tr><th>Gap</th><th>Colombia</th><th>Resto</th><th>EC/CL/AR</th></tr></thead>
+          <tbody>
+            <tr><td>Solo identidad</td><td>Mi cuenta → Truora</td><td>Sumsub único</td><td>Sumsub o banner revisión</td></tr>
+            <tr><td>Solo facturación</td><td>Enlace Sumsub (sin form Dropi)</td><td>Sumsub único</td><td>Sumsub</td></tr>
+            <tr><td>Ambas</td><td>Identidad primero → cross-sell facturación</td><td>Un enlace</td><td>Un enlace</td></tr>
+            <tr><td>Ninguno</td><td colspan="3">Idle</td></tr>
+            <tr><td>Pending manual</td><td>N/A</td><td>N/A</td><td>Prep → Sumsub → <code>en_revision</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Mitos vs realidad</h2>
+      <div class="table-scroll">
+        <table style="min-width:600px">
+          <thead><tr><th>Mito</th><th>Realidad</th></tr></thead>
+          <tbody>
+            <tr class="myth"><td>Soft → Hard → Módulo</td><td>Tres canales paralelos → C5</td></tr>
+            <tr class="myth"><td>Cerrar soft = bloqueado</td><td>Soft es opt-out; bloqueo solo en salidas (C3)</td></tr>
+            <tr class="myth"><td>Facturación CO = form Dropi</td><td>Enlace Sumsub o lista read-only</td></tr>
+            <tr class="myth"><td>Fuera de CO también Truora+Sumsub</td><td>Un solo Sumsub</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      MD: <a href="Service_Blueprint_Fase_5_Tabla.md">Tabla.md</a> ·
+      <a href="Service_Blueprint_Diagrama_Fase_5.html">Diagrama</a> ·
+      <a href="Service_Blueprint_Fase_5_Mapa-Decision.html">Mapa</a>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,55 @@
+@if (fase0.sumsubOpen()) {
+  <div class="sumsub-standin" role="dialog" aria-modal="true" aria-labelledby="sumsub-standin-title">
+    <div class="sumsub-standin__topbar">
+      <span class="sumsub-standin__badge">Saliste de Dropi</span>
+      <span class="sumsub-standin__country">{{ paisLabel() }} · {{ bloqueLabel() }}</span>
+      <button type="button" class="sumsub-standin__exit" (click)="dejarIncompleto()">
+        <i class="pi pi-arrow-left"></i>
+        Volver a Dropi (queda incompleto)
+      </button>
+    </div>
+
+    <div class="sumsub-standin__body">
+      <div class="sumsub-standin__intro">
+        <div class="sumsub-standin__icon" aria-hidden="true">
+          <i class="pi pi-verified"></i>
+        </div>
+        <h2 id="sumsub-standin-title" class="sumsub-standin__headline">Verificación externa</h2>
+        <p class="sumsub-standin__text">
+          Este es un stand-in del prototipo: en producto, aquí el usuario sale de Dropi hacia el proveedor de verificación y completa estos pasos fuera de nuestra app.
+        </p>
+        <app-fase0-backstage-dot [texto]="backstageNota()" label="Qué pasa por dentro en Sumsub" />
+      </div>
+
+      <ol class="sumsub-standin__steps">
+        @for (paso of pasos(); track paso.titulo) {
+          <li class="sumsub-standin__step">
+            <span class="sumsub-standin__step-dot" aria-hidden="true"></span>
+            <div>
+              <span class="sumsub-standin__step-title">{{ paso.titulo }}</span>
+              <span class="sumsub-standin__step-detail">{{ paso.detalle }}</span>
+            </div>
+          </li>
+        }
+      </ol>
+    </div>
+
+    <div class="sumsub-standin__footer">
+      <span class="sumsub-standin__footer-label">Controles de demo — así vuelve el usuario a Dropi</span>
+      <div class="sumsub-standin__actions">
+        <button type="button" class="sumsub-standin__action sumsub-standin__action--incompleta" (click)="dejarIncompleto()">
+          Dejar incompleto
+        </button>
+        <button type="button" class="sumsub-standin__action sumsub-standin__action--pendiente" (click)="enviarARevision()">
+          Enviar a revisión
+        </button>
+        <button type="button" class="sumsub-standin__action sumsub-standin__action--aprobado" (click)="simularAprobacion()">
+          Simular aprobación
+        </button>
+        <button type="button" class="sumsub-standin__action sumsub-standin__action--rechazado" (click)="simularRechazo()">
+          Simular rechazo
+        </button>
+      </div>
+    </div>
+  </div>
+}

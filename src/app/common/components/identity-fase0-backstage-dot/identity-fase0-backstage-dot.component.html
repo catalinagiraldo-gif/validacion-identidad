@@ -1,0 +1,21 @@
+<span class="backstage-dot" [class.backstage-dot--dark]="variante === 'dark'" [class.backstage-dot--open]="open()">
+  <button
+    type="button"
+    class="backstage-dot__btn"
+    [attr.aria-expanded]="open()"
+    [attr.aria-label]="label"
+    (click)="toggle()"
+  >
+    !
+  </button>
+
+  @if (open()) {
+    <div class="backstage-dot__tooltip" role="tooltip">
+      <span class="backstage-dot__tag">Backstage — no lo ve el usuario</span>
+      <p class="backstage-dot__text">{{ texto }}</p>
+      <button type="button" class="backstage-dot__close" aria-label="Cerrar nota" (click)="close()">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+  }
+</span>

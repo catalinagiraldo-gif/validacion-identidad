@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Blueprint — Validación tech-native (loop gaps)</title>
+  <style>
+    :root {
+      --primary: #f49a3d;
+      --primary-dark: #e58017;
+      --secondary: #008dbf;
+      --gray-50: #f7f8fa;
+      --gray-100: #eef0f4;
+      --gray-200: #dde1ea;
+      --gray-300: #a3abbf;
+      --gray-400: #858ea6;
+      --gray-600: #475066;
+      --gray-800: #232938;
+      --gray-900: #151921;
+      --white: #ffffff;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --error: #f46a6b;
+      --green-bg: #e8f6e9;
+      --green-border: #81c784;
+      --purple-bg: #f0e7fb;
+      --purple-border: #b794e3;
+      --blue-bg: #e5f4fa;
+      --blue-border: #62bad9;
+      --red-bg: #fde9e9;
+      --red-border: #f46a6b;
+      --yellow-bg: #fff4df;
+      --yellow-border: #f2bc85;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.10);
+      --indigo: #6366f1;
+      --teal: #14b8a6;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--gray-800);
+      background: #f8fafc;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .page { padding: 40px; }
+    .hero,
+    .section {
+      max-width: none;
+      margin: 0 auto 24px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+    .hero { padding: 24px; border-top: 4px solid var(--primary); }
+    .hero-kicker {
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 { color: var(--gray-900); line-height: 1.25; }
+    h1 { margin: 6px 0 8px; font-size: 30px; }
+    h2 { margin: 0 0 12px; font-size: 20px; }
+
+    /* ---- Accordion: collapsed by default, used for content that isn't
+       the first thing to read (detailed per-column logic) ---- */
+    .accordion summary {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--gray-900);
+      line-height: 1.25;
+      cursor: pointer;
+      list-style: none;
+    }
+    .accordion summary::-webkit-details-marker { display: none; }
+    .accordion summary::before {
+      content: "▸";
+      display: inline-block;
+      width: 14px;
+      margin-right: 6px;
+      color: var(--primary);
+      transition: transform 0.15s ease;
+    }
+    .accordion[open] summary::before { transform: rotate(90deg); }
+    .accordion[open] summary { margin-bottom: 16px; }
+    .accordion-hint { font-size: 13px; font-weight: 500; color: var(--gray-600); }
+    h3 { margin: 20px 0 8px; font-size: 16px; }
+    p { margin: 6px 0 12px; }
+    code {
+      padding: 2px 5px;
+      color: #7b470f;
+      background: #fff4df;
+      border-radius: 4px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.9em;
+    }
+    .muted { color: var(--gray-600); }
+    .section { padding: 24px; }
+
+    .automation-banner {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border: 1px solid var(--blue-border);
+      border-left: 5px solid var(--secondary);
+      border-radius: 10px;
+      background: var(--blue-bg);
+    }
+    .automation-banner strong { color: #006589; }
+    .icon {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--white);
+      background: var(--secondary);
+      font-weight: 800;
+    }
+
+    /* ---- Cross-link banner to the dedicated decision map (branch logic
+       lives there now, not duplicated inline in every cell) ---- */
+    .decision-map-banner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      padding: 12px 16px;
+      border: 1px solid #a5b4fc;
+      border-left: 5px solid #6366f1;
+      border-radius: 10px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 13px;
+      line-height: 1.45;
+      text-decoration: none;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .decision-map-banner:hover { background: #e0e7ff; border-color: #818cf8; }
+    .decision-map-banner .map-icon {
+      display: grid;
+      flex: none;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 50%;
+      background: #6366f1;
+      color: var(--white);
+      font-size: 15px;
+    }
+    .decision-map-banner strong { color: #312e81; }
+    .decision-map-banner u { color: #4338ca; font-weight: 800; text-decoration: underline; }
+
+    /* ---- Small inline chip inside a Back Acciones box, pointing to the
+       matching branch node in the decision map ---- */
+    .decision-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      padding: 3px 9px;
+      border: 1px dashed #a5b4fc;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      font-size: 10px;
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .decision-link:hover { background: #e0e7ff; }
+
+    /* ---- Internal note: business "why" behind a Front Acciones box, same
+       spirit as the Justificación in UX-Writing-Modales-UserPilot.md, kept
+       visually separate (dashed rule + muted italic) from the user-facing
+       Headline/Body/Botón copy above it ---- */
+    .internal-note {
+      display: block;
+      margin-top: 7px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--gray-200);
+      color: var(--gray-600);
+      font-size: 10.5px;
+      font-style: italic;
+      line-height: 1.4;
+    }
+    .internal-note b {
+      font-style: normal;
+      font-weight: 800;
+      color: var(--gray-400);
+    }
+
+    /* ---- Compact single-line legend above the diagram (replaces the old
+       "Fuente de verdad" section + full-size .legend block) ---- */
+    .legend-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin: 0 auto 16px;
+      padding: 10px 14px;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      background: var(--gray-50);
+    }
+    .legend-strip > span:not(.format-tag) {
+      padding: 4px 9px;
+      border: 1px solid;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .legend-strip .format-tag { display: inline-block; margin: 0; }
+    .legend-strip .legend-sep { border: 0; background: none; color: var(--gray-400); padding: 0 2px; font-weight: 400; }
+    .user { background: var(--green-bg); border-color: var(--green-border); color: #25662a; }
+    .system { background: var(--purple-bg); border-color: var(--purple-border); color: #58318a; }
+    .native { background: var(--blue-bg); border-color: var(--blue-border); color: #006589; }
+    .engine { background: var(--red-bg); border-color: var(--red-border); color: #9d3031; }
+    .decision { background: var(--yellow-bg); border-color: var(--yellow-border); color: #875414; }
+    .support { background: var(--gray-100); border-color: var(--gray-200); color: var(--gray-600); }
+
+    .blueprint-shell {
+      max-width: none;
+      margin: 0 auto 24px;
+      overflow-x: auto;
+      overflow-y: visible;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+      scrollbar-color: var(--gray-400) var(--gray-100);
+    }
+    .blueprint {
+      display: grid;
+      grid-template-columns: 40px 140px repeat(7, max-content);
+      min-width: max-content;
+    }
+    .cell {
+      min-width: 168px;
+      min-height: 132px;
+      /* Extra bottom clearance so connector-v (arrow + label, ~40px tall)
+         never overlaps the box in the row below when this cell's box is
+         the tallest in its row. */
+      padding: 12px 12px 34px;
+      border-right: 1px solid var(--gray-200);
+      border-bottom: 1px dashed var(--gray-400);
+      background: var(--white);
+    }
+    .cell p:last-child,
+    .cell ul:last-child { margin-bottom: 0; }
+    .cell ul { margin: 8px 0 0; padding-left: 18px; }
+    .cell li + li { margin-top: 5px; }
+    .column-head {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-width: 168px;
+      min-height: 96px;
+      padding: 12px;
+      color: var(--gray-900);
+      background: var(--yellow-bg);
+      border-right: 1px solid var(--yellow-border);
+      border-bottom: 2px solid var(--primary);
+      box-shadow: 0 4px 10px rgba(35, 41, 56, 0.08);
+    }
+    .column-head small {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--primary-dark);
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .corner {
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 30;
+      grid-column: span 2;
+      background: var(--gray-800);
+      color: var(--white);
+      border-color: var(--gray-600);
+    }
+    .group,
+    .lane {
+      position: sticky;
+      z-index: 10;
+      display: flex;
+      min-height: 132px;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      color: var(--gray-900);
+      border-right: 1px solid var(--gray-300);
+      border-bottom: 1px dashed var(--gray-400);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      box-shadow: 4px 0 10px rgba(35, 41, 56, 0.06);
+      text-align: center;
+    }
+    .group {
+      left: 0;
+      width: 40px;
+      color: var(--white);
+      background: #8b5cf6;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      z-index: 12;
+    }
+    .group.full {
+      grid-column: span 2;
+      width: 180px;
+      writing-mode: horizontal-tb;
+      transform: none;
+    }
+    .group.front { grid-row: span 2; }
+    .group.support-processes { grid-row: span 2; background: #3b82f6; }
+    .group.task { background: #c3f4d4; color: #136631; }
+    .group.users { background: #e0cffc; color: #4b1a99; }
+    .lane {
+      left: 40px;
+      width: 140px;
+      background: var(--gray-100);
+    }
+    .lane span {
+      display: block;
+      color: var(--gray-600);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+    .box {
+      position: relative;
+      width: calc(100% - 4px);
+      max-width: 150px;
+      min-height: 50px;
+      margin: 0 auto;
+      padding: 8px;
+      border: 2px solid;
+      border-radius: 6px;
+      font-size: 10px;
+      line-height: 1.3;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(35, 41, 56, 0.08);
+    }
+    .box strong { display: block; margin-bottom: 5px; color: inherit; }
+    /* Fase 0 stacks a separate .box per distinct outcome/message instead of
+       cramming several messages into one box; give stacked boxes breathing
+       room when a cell has more than one. */
+    .box + .box { margin-top: 10px; }
+    /* Bullet lists inside a centered .box read poorly centered (bullet glyph
+       floats away from centered text); left-align them for legibility. */
+    .box ul { text-align: left; }
+    /* Box that continues horizontally to the next column: fills the cell
+       content width so .connector-h can reach the next cell's border,
+       exactly like Fase 0's Tarea/Back-Acciones boxes. */
+    .box.flow { width: 100%; max-width: none; }
+
+    .terminal {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 7px;
+      color: var(--gray-800);
+      background: var(--white);
+      border: 1px dashed var(--gray-400);
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .terminal.inline { margin: 0 0 0 6px; vertical-align: middle; }
+
+    /* ---- Format tags: same color-by-shape convention Fase 0 uses for
+       Modal / Banner / Toast / Notificación / Silencioso ---- */
+    .format-tag {
+      display: block;
+      width: max-content;
+      margin: 0 auto 6px;
+      padding: 2px 7px;
+      border: 1px solid;
+      border-radius: 4px;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .format-tag.modal { color: #004799; background: #D1E8FF; border-color: #73B8FF; }
+    .format-tag.banner { color: #166534; background: #DCFCE7; border-color: #86EFAC; }
+    .format-tag.toast { color: #0F766E; background: #CCFBF1; border-color: #5EEAD4; }
+    .format-tag.notification { color: #374151; background: #E5E7EB; border-color: #9CA3AF; }
+    .format-tag.silent { color: #64748B; background: #F1F5F9; border-color: #CBD5E1; border-style: dashed; }
+    .copy-line {
+      display: block;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px dashed rgba(35, 41, 56, 0.15);
+      font-size: 10px;
+      font-style: italic;
+      line-height: 1.35;
+    }
+    .copy-line strong { display: inline; font-style: normal; }
+    .copy-line.spaced { margin-top: 10px; padding-top: 8px; }
+
+    /* ---- Country tag: marca si una caja aplica a Colombia o al resto de
+       países — ahora cada país tiene su propia caja apilada (.box + .box) ---- */
+    .box.wide { max-width: 232px; }
+    .country-tag {
+      display: inline-block;
+      margin-bottom: 3px;
+      padding: 2px 6px;
+      border: 1px solid;
+      border-radius: 4px;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .country-tag.co { background: var(--blue-bg); border-color: var(--blue-border); color: #006589; }
+    .country-tag.rest { background: var(--gray-100); border-color: var(--gray-200); color: var(--gray-600); }
+
+    /* ---- Fork: un solo webhook escribe en 2 módulos nativos de Dropi ---- */
+    .fork-wrap {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(35, 41, 56, 0.15);
+      text-align: center;
+    }
+    .fork-note { display: block; margin-bottom: 4px; font-size: 8.5px; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.04em; }
+    .fork-stem { width: 2px; height: 10px; background: #14b8a6; margin: 0 auto; }
+    .fork-branches { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 2px; }
+    .fork-branches .mini-box { width: 92px; }
+
+    /* ---- Connector primitives (mirrors Service_Blueprint_Diagrama.html) ---- */
+    .connector-v {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 2px;
+      pointer-events: none;
+    }
+    .connector-v .conn-line { width: 2px; height: 18px; background: #14b8a6; }
+    .connector-v .conn-arrow {
+      width: 0; height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid #14b8a6;
+    }
+    .connector-v .conn-label {
+      margin-top: 3px;
+      padding: 2px 6px;
+      border: 1px solid #5eead4;
+      border-radius: 4px;
+      background: #f0fdfa;
+      color: #115e59;
+      font-size: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 1px 2px rgba(35, 41, 56, 0.10);
+    }
+
+    .connector-h {
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      width: 30px;
+      pointer-events: none;
+    }
+    .connector-h.wide { width: 360px; }
+    .connector-h .conn-line { flex: 1; height: 2px; background: #6366f1; }
+    .connector-h .conn-arrow {
+      flex: none;
+      width: 0; height: 0;
+      margin-left: -1px;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 6px solid #6366f1;
+    }
+    .connector-h .conn-label {
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 2px 6px;
+      border: 1px solid #a5b4fc;
+      border-radius: 4px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 1px 2px rgba(35, 41, 56, 0.10);
+    }
+
+    .chain-row {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 0;
+      margin: 0 auto;
+    }
+    .mini-box {
+      position: relative;
+      flex: none;
+      width: 104px;
+      min-height: 58px;
+      padding: 6px;
+      border: 2px solid;
+      border-radius: 6px;
+      font-size: 9px;
+      line-height: 1.25;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(35, 41, 56, 0.08);
+    }
+    .connector-chain {
+      display: flex;
+      flex: none;
+      width: 22px;
+      align-items: center;
+      justify-content: center;
+    }
+    .connector-chain .conn-line { width: 100%; height: 2px; background: #94a3b8; }
+    .connector-chain .conn-arrow {
+      flex: none;
+      width: 0; height: 0;
+      margin-left: -1px;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 6px solid #94a3b8;
+    }
+    .decision-wrap,
+    .chain-wrap {
+      position: relative;
+    }
+    .chain-wrap { width: max-content; margin: 0 auto; }
+    .decision-diamond {
+      width: 86px;
+      min-height: 86px;
+      margin: 8px auto 18px;
+      transform: rotate(45deg);
+      border: 2px solid var(--yellow-border);
+      border-radius: 8px;
+      background: var(--yellow-bg);
+      box-shadow: 0 4px 12px rgba(35, 41, 56, 0.10);
+    }
+    .decision-diamond > span {
+      display: grid;
+      width: 100%;
+      min-height: 82px;
+      place-items: center;
+      padding: 8px;
+      transform: rotate(-45deg);
+      color: #875414;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .branches {
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+    }
+    .branches > span { position: relative; display: block; padding: 6px; border-radius: 6px; }
+    .branches .none { background: var(--gray-100); }
+    .branches .safe { background: var(--green-bg); }
+    .branches .sensitive { background: var(--red-bg); }
+
+    .table-scroll { width: 100%; overflow-x: auto; }
+    table {
+      width: 100%;
+      min-width: 860px;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 10px 12px;
+      border: 1px solid var(--gray-200);
+      vertical-align: top;
+      text-align: left;
+    }
+    th { color: var(--gray-900); background: var(--gray-100); }
+    tbody tr:nth-child(even) td { background: #fbfcfd; }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .detail-card {
+      padding: 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      background: var(--gray-50);
+    }
+    .detail-card h3 { margin-top: 0; }
+    .state-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(230px, 1fr));
+      gap: 12px;
+      min-width: 1020px;
+    }
+    .state {
+      padding: 16px;
+      border: 1px solid;
+      border-radius: 10px;
+    }
+    .state h3 { margin-top: 0; }
+    .state.review { background: var(--blue-bg); border-color: var(--blue-border); }
+    .state.approved { background: var(--green-bg); border-color: var(--green-border); }
+    .state.rejected { background: var(--red-bg); border-color: var(--red-border); }
+    .state.incomplete { background: var(--yellow-bg); border-color: var(--yellow-border); }
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .checklist { margin: 0; padding-left: 20px; }
+    .checklist li + li { margin-top: 7px; }
+    footer {
+      max-width: 2200px;
+      margin: 0 auto;
+      padding: 8px 4px 28px;
+      color: var(--gray-600);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1200px) {
+      .details-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .two-col { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 900px) {
+      .page { padding: 16px; }
+      .hero, .section { padding: 20px; }
+      .details-grid { grid-template-columns: 1fr; }
+      .cell, .column-head { min-width: 168px; }
+    }
+    @media (max-width: 600px) {
+      .page { padding: 8px; }
+      .hero, .section, .blueprint-shell { border-radius: 10px; }
+      h1 { font-size: 24px; }
+      .automation-banner { grid-template-columns: 1fr; }
+    }
+    @media print {
+      body { background: var(--white); }
+      .page { padding: 0; }
+      .blueprint-shell { max-height: none; overflow: visible; box-shadow: none; }
+      .column-head, .corner, .group, .lane { position: static; }
+      .section, .hero { break-inside: avoid; box-shadow: none; }
+    }
+  </style>
+  <style>
+    .table-scroll { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 10px 12px; border: 1px solid var(--gray-200); text-align: left; vertical-align: top; }
+    th { background: var(--gray-100); }
+    footer a { color: var(--primary-dark); }
+    .read-guide {
+      margin: 0 auto 16px;
+      padding: 18px 20px;
+      border: 1px solid var(--indigo, #6366f1);
+      border-left: 5px solid var(--indigo, #6366f1);
+      border-radius: 12px;
+      background: #eef2ff;
+      max-width: none;
+    }
+    .read-guide h2 { margin: 0 0 8px; font-size: 16px; color: #312e81; }
+    .read-guide p { margin: 0 0 10px; font-size: 13px; color: #3730a3; }
+    .read-guide .flow-ascii {
+      margin: 0 0 12px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #c7d2fe;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11.5px;
+      line-height: 1.45;
+      color: #1e1b4b;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .read-guide .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .read-guide .chip {
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid;
+    }
+    .chip-seq { background: #e8f6e9; border-color: #81c784; color: #245026; }
+    .chip-par { background: #fff4df; border-color: #f2bc85; color: #875414; }
+    .chip-conv { background: #fde9e9; border-color: #f46a6b; color: #7a1f1f; }
+    .col-type {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .col-type.seq { background: #dcfce7; color: #166534; }
+    .col-type.par { background: #ffedd5; color: #9a3412; }
+    .col-type.conv { background: #fee2e2; color: #991b1b; }
+    .col-type.close { background: #e0e7ff; color: #3730a3; }
+    .conn-table td:first-child { font-weight: 800; white-space: nowrap; }
+    .myth { background: #fff1f2; }
+    .myth td { border-color: #fecdd3; }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-kicker">Service Blueprint · Identidad</div>
+      <h1>Validación tech-native — Loop único de completar gaps</h1>
+      <p class="muted">Matriz de <strong>7 columnas × 7 carriles</strong>. El archivo se llama Fase_5 por historial del repo; <strong>no es la Fase 5 de edición</strong> de <code>Historia.md</code>. Ver addendum al final. Fuente de copies: <code>UX-Writing-Validacion-TechNative.md</code>.</p>
+      <div class="automation-banner">
+        <span class="icon" aria-hidden="true">✓</span>
+        <div><strong>Mismo journey que Fase 0, con tecnología.</strong> Soft slide-up → hard gate en salidas → módulos nativos → Truora/Sumsub → webhook. Sin UserPilot ni Google Sheets en el happy path. Eje: <em>qué le falta</em> (identidad / facturación) × país.</div>
+      </div>
+      <div class="automation-banner" style="margin-top:10px;border-left-color:var(--primary);background:#fff8f0;border-color:#f2bc85;">
+        <span class="icon" style="background:var(--primary);" aria-hidden="true">!</span>
+        <div><strong>Anti-confusión de naming.</strong> Completar gaps = este diagrama. Edición post-aprobación (RN-11 + field_diff) = addendum / flujo hermano — no las columnas principales.</div>
+      </div>
+    </header>
+
+    <div class="legend-strip" aria-label="Leyenda">
+      <span class="user">🟢 Usuario</span>
+      <span class="system">🟣 Sistema</span>
+      <span class="native">🔵 UI nativa</span>
+      <span class="engine">🔴 Motor / hard gate</span>
+      <span class="decision">🟡 Decisión</span>
+      <span class="support">⚪ Herramienta</span>
+      <span class="legend-sep">·</span>
+      <span class="format-tag modal">Modal</span>
+      <span class="format-tag banner">Banner / Slide-up</span>
+      <span class="format-tag toast">Toast</span>
+      <span class="format-tag silent">Silencioso</span>
+    </div>
+
+    <section class="read-guide" aria-label="Cómo leer este blueprint">
+      <h2>Cómo leer (evita la confusión)</h2>
+      <p><strong>No es Soft → Hard → Módulo en fila.</strong> C2, C3 y C4 son <em>canales en paralelo</em>: el usuario entra por uno según lo que haga. Los tres convergen en C5.</p>
+      <div class="flow-ascii">C0 Prep → C1 ¿Qué le falta?
+              ├─ ambos OK ──────────────► IDLE
+              └─ hay gap ──► canal?
+                    │  C2 Soft   (Home / pasivo)     ⎫
+                    │  C3 Hard   (quiere sacar $$)   ⎬ paralelos
+                    │  C4 Módulo (cuenta / fact. / 1ª venta) ⎭
+                    └──────────► C5 Validación → C6 Webhook</div>
+      <div class="chips">
+        <span class="chip chip-seq">Secuencial: C0 → C1 → C5 → C6</span>
+        <span class="chip chip-par">Paralelo: C2 · C3 · C4 (elige uno)</span>
+        <span class="chip chip-conv">Convergencia: todo CTA → C5</span>
+      </div>
+    </section>
+
+    <a class="decision-map-banner" href="Service_Blueprint_Fase_5_Mapa-Decision.html">
+      <span class="map-icon" aria-hidden="true">🧭</span>
+      <span><strong>¿Buscas SI → ENTONCES por rama?</strong> Condiciones de cada salto (gaps, canal, país, webhook, EC/CL/AR) en el <u>Mapa de decisión →</u></span>
+    </a>
+
+    <section class="blueprint-shell" aria-label="Blueprint 7 columnas">
+      <div class="blueprint">
+        <div class="column-head corner"><small>Tech-native</small>Loop / carril</div>
+        <div class="column-head"><small>Columna 0</small><strong>Prep</strong><br>Sync Sumsub ↔ Dropi<span class="col-type seq">Secuencial</span></div>
+        <div class="column-head"><small>Columna 1</small><strong>Segmentación</strong><br>¿Qué le falta?<span class="col-type seq">Rombo</span></div>
+        <div class="column-head"><small>Columna 2</small><strong>Canal A · Soft</strong><br>SI navega Home<span class="col-type par">Paralelo</span></div>
+        <div class="column-head"><small>Columna 3</small><strong>Canal B · Hard</strong><br>SI quiere sacar $$<span class="col-type par">Paralelo</span></div>
+        <div class="column-head"><small>Columna 4</small><strong>Canal C · Módulo</strong><br>SI abre cuenta/fact. / 1ª venta<span class="col-type par">Paralelo</span></div>
+        <div class="column-head"><small>Columna 5</small><strong>Validación</strong><br>Todos los CTAs llegan aquí<span class="col-type conv">Convergencia</span></div>
+        <div class="column-head"><small>Columna 6</small><strong>Resolución</strong><br>Webhook cierra<span class="col-type close">Cierre</span></div>
+
+        <!-- USUARIOS -->
+        <div class="group full users"><div><span>Carril 1</span>Usuarios</div></div>
+        <div class="cell"><div class="box user"><strong>Base a sincronizar</strong>Pendiente, incompleto, aprobado, pending manual EC/CL/AR.</div></div>
+        <div class="cell"><div class="box user" id="gap-missing"><strong>Con o sin gaps</strong>Identidad sí/no · Facturación sí/no · por país.</div></div>
+        <div class="cell"><div class="box user"><strong>Navega con gap</strong>Sin tocar salidas de dinero.</div></div>
+        <div class="cell"><div class="box user"><strong>Intenta sacar dinero</strong>Retiro, transferencia o DropiCard.</div></div>
+        <div class="cell"><div class="box user"><strong>Abre un módulo</strong>Información de cuenta o Datos de facturación.</div></div>
+        <div class="cell"><div class="box user"><strong>En el proveedor</strong>Truora y/o Sumsub según país y gap.</div></div>
+        <div class="cell"><div class="box user"><strong>Con resultado</strong><code>aprobado</code> · <code>rechazado</code> · <code>incompleto</code> · <code>en_revision</code>.</div></div>
+
+        <!-- TAREA -->
+        <div class="group full task"><div><span>Carril 2</span>Tarea</div></div>
+        <div class="cell">
+          <div class="box system flow"><strong>Verificar y sincronizar</strong>Pendientes, aprobados y faltantes. Lote EC/CL/AR → Sumsub.
+            <div class="connector-h"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">Estados listos</span></div>
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">Sin UI</span></div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="decision-wrap" id="gap-idle">
+            <div class="decision-diamond"><span>¿Qué le falta?</span></div>
+            <div class="branches">
+              <span class="none">Nada<div class="connector-chain"><span class="conn-line"></span><span class="conn-arrow"></span></div><span class="terminal inline">Idle</span></span>
+              <span class="sensitive"><strong>Hay gap</strong>
+                <div class="connector-h"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">Elige canal C2/C3/C4</span></div>
+              </span>
+            </div>
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">Clasifica flags</span></div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box user flow"><strong>SI Home + gap → nudge</strong>Puede cerrar X y seguir. <em>No pasa a Hard solo por existir.</em>
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">↓ Slide-up</span></div>
+            <div class="connector-h"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">CTA → C5 (salta C3/C4)</span></div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box engine flow"><strong>SI clic salida + gap → bloquea</strong>Retiro/transfer/DropiCard. Órdenes libres. <em>Puede ocurrir sin haber visto Soft.</em>
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">↓ Tooltip+modal</span></div>
+            <div class="connector-h"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">CTA → C5 (salta C4)</span></div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box user flow"><strong>SI abre módulo o 1ª venta</strong>Cuenta / facturación / bienvenida. <em>Canal propio, no “paso 3”.</em>
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">↓ UI módulo</span></div>
+            <div class="connector-h"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">CTA → C5</span></div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box engine flow"><strong>Validar en proveedor</strong>Espera webhook. Hard gate solo salidas.
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">Abre WebSDK / enlace</span></div>
+            <div class="connector-h"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">Webhook</span></div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box user"><strong>Resolver y celebrar</strong>Publicar estado; confetti / cross-sell si aplica.
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">Notifica</span></div>
+          </div>
+        </div>
+
+        <!-- CANALES -->
+        <div class="group front">Front stage</div>
+        <div class="lane"><div><span>Carril 3</span>Canales</div></div>
+        <div class="cell"><div class="box support"><span class="format-tag silent">Silencioso</span><strong>Sin canal usuario</strong>Solo jobs de sync.</div></div>
+        <div class="cell"><div class="box support"><span class="format-tag silent">Silencioso</span><strong>Decisión de sistema</strong>Sin pantalla.</div></div>
+        <div class="cell">
+          <div class="box native"><span class="format-tag banner">Slide-up</span><strong>Inferior derecho</strong>No tapa toda la pantalla.
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">Copia soft</span></div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box native"><span class="format-tag modal">Tooltip + Modal</span><strong>Interceptor nativo</strong>En controles de salida.
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">Copia hard</span></div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box native"><span class="format-tag silent">Página nativa</span><strong>Mi cuenta / Facturación</strong>+ modal 1ª venta si aplica.
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">UI módulo</span></div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box engine wide" id="route-co-id"><span class="format-tag modal">WebSDK / enlace</span><span class="country-tag co">Colombia</span><strong>2 destinos</strong>
+            <span class="copy-line">Truora (identidad) + Sumsub (facturación) — sin nombrarlos al usuario.</span>
+          </div>
+          <div class="box engine wide" id="route-rest"><span class="format-tag modal">WebSDK / enlace</span><span class="country-tag rest">Resto</span><strong>1 destino</strong>
+            <span class="copy-line">Un Sumsub: identidad + facturación juntas.</span>
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">En proceso</span></div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box native"><span class="format-tag notification">Notificación</span><strong>In-app + correo/WhatsApp</strong>Automático por evento.
+            <div class="connector-v"><span class="conn-line"></span><span class="conn-arrow"></span><span class="conn-label">Muestra resultado</span></div>
+          </div>
+        </div>
+
+        <!-- ACCIONES -->
+        <div class="lane"><div><span>Carril 4</span>Acciones</div></div>
+        <div class="cell"><div class="box system"><span class="format-tag silent">Silencioso</span><strong>Invisible</strong>Prep sin UI.</div></div>
+        <div class="cell"><div class="box system"><span class="format-tag silent">Silencioso</span><strong>Invisible</strong>Solo flags.</div></div>
+        <div class="cell">
+          <div class="box native" id="soft-slideup"><span class="format-tag banner">Slide-up</span><strong>Verifica tu cuenta</strong>
+            <span class="copy-line">En Dropi lo necesitamos para confirmar quién eres y mantener la plataforma segura.</span>
+            <span class="copy-line">Botón: <strong>Completar ahora</strong> · X cierra.</span>
+            <span class="internal-note"><b>Nota interna:</b> tono Fase 0; no hablar de retiros si aún no hay saldo.</span>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box engine"><span class="format-tag toast">Tooltip</span><strong>Completa tu validación para usar esta función.</strong></div>
+          <div class="box native wide"><span class="format-tag modal">Modal</span><strong>Variantes por gap</strong>
+            <span class="copy-line"><strong>Identidad:</strong> Completa tu identidad… → Ir a Información de cuenta</span>
+            <span class="copy-line"><strong>Solo fact. CO:</strong> Completa tus datos de facturación → Completar facturación</span>
+            <span class="copy-line"><strong>Ambas CO:</strong> Valida tus datos… Empieza por identidad</span>
+            <span class="copy-line"><strong>Resto:</strong> Valida tus datos… → Continuar a validación</span>
+            <span class="internal-note"><b>Nota interna:</b> hard gate solo salidas; órdenes/entradas libres.</span>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box native wide" id="route-co-bill"><span class="format-tag silent">Página CO</span><span class="country-tag co">Colombia</span><strong>Facturación = enlace</strong>
+            <span class="copy-line"><strong>Vacío:</strong> Completa tus datos de facturación… enlace Sumsub (sin formulario KYB nativo Dropi).</span>
+            <span class="copy-line"><strong>Completo:</strong> lista read-only + alerta 6 meses + soporte.</span>
+          </div>
+          <div class="box native wide"><span class="format-tag silent">Página CO</span><span class="country-tag co">Colombia</span><strong>Cuenta = formulario</strong>
+            <span class="copy-line">Incompleto editable → Truora. Completo + RN-11: bloqueado con fecha. Completo vencido: editable.</span>
+          </div>
+          <div class="box native wide"><span class="format-tag modal">Modal</span><strong>¡Tu primera venta en Dropi!</strong>
+            <span class="copy-line">Para retirar o usar tu dinero, completa tu validación… · <strong>Completar validación</strong> / Ahora no</span>
+          </div>
+          <div class="box native wide"><span class="format-tag silent">Página resto</span><span class="country-tag rest">Resto</span><strong>Un CTA a Sumsub</strong>
+            <span class="copy-line">Sin dividir “ve a este lado / al otro”.</span>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box engine wide" id="route-co-both"><span class="format-tag modal">En proceso</span><span class="country-tag co">Colombia</span><strong>Prioridad identidad</strong>
+            <span class="copy-line">Si faltan ambos: primero Truora; luego cross-sell a Sumsub facturación.</span>
+          </div>
+          <div class="box native wide"><span class="format-tag banner">Banner</span><strong>Estamos revisando tu solicitud</strong>
+            <span class="copy-line">Puedes seguir operando con lo ya aprobado. Bloquea solo salidas.</span>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="box native wide" id="state-approved"><span class="format-tag toast">Toast + confetti</span><strong>¡Cuenta verificada!</strong> / <strong>¡Listo!</strong>
+            <span class="copy-line">Ya puedes transferir, registrar bancarios y pedir DropiCard.</span>
+          </div>
+          <div class="box native wide"><span class="format-tag modal">Modal + confetti</span><strong>¡Identidad lista!</strong>
+            <span class="copy-line">Ahora completa facturación → <strong>Completar facturación</strong></span>
+          </div>
+          <div class="box native wide"><span class="format-tag modal">Modal + confetti</span><strong>¡Datos de facturación listos!</strong>
+            <span class="copy-line">Valida identidad → <strong>Ir a Información de cuenta</strong></span>
+          </div>
+          <div class="box native wide" id="state-rejected"><span class="format-tag banner">Banner</span><strong>No pudimos validar tus datos</strong>
+            <span class="copy-line">Conservamos lo anterior. Reintentar / Contactar a soporte.</span>
+          </div>
+          <div class="box native wide" id="state-incomplete"><span class="format-tag banner">Banner</span><strong>Te falta un paso</strong>
+            <span class="copy-line">Botón <strong>Continuar validación</strong></span>
+          </div>
+          <div class="box native wide" id="state-review"><span class="format-tag banner">Banner</span><strong>Seguimos revisando tu solicitud</strong>
+            <span class="copy-line">No reenvíes documentos. EC/CL/AR migrado: mismo mensaje.</span>
+          </div>
+        </div>
+
+        <!-- BACK -->
+        <div class="group support-processes">Support</div>
+        <div class="lane"><div><span>Carril 5</span>Back Acciones</div></div>
+        <div class="cell"><div class="box system"><strong>API sync</strong>Sumsub → estados Dropi. Lote pending B → Sumsub + <code>en_revision</code>.
+          <a class="decision-link" href="Service_Blueprint_Fase_5_Mapa-Decision.html#ecclar">Mapa §5 →</a>
+        </div></div>
+        <div class="cell"><div class="box system"><strong>Lee flags</strong><code>has_identity</code> · <code>has_billing</code> · <code>country</code> · <code>manual_pending</code>
+          <a class="decision-link" href="Service_Blueprint_Fase_5_Mapa-Decision.html#gaps">Mapa §1 →</a>
+        </div></div>
+        <div class="cell"><div class="box system"><strong>Registra impression</strong>No bloquea operaciones.</div></div>
+        <div class="cell"><div class="box system"><strong>Hard gate salidas</strong>Resuelve CTA por matriz gaps × país.
+          <a class="decision-link" href="Service_Blueprint_Fase_5_Mapa-Decision.html#canal">Mapa §2 →</a>
+        </div></div>
+        <div class="cell"><div class="box system"><strong>Carga datos + RN-11</strong>Bloquea campos Dueño si vigente.</div></div>
+        <div class="cell"><div class="box system" id="country-process-router"><strong>country-process-router</strong>Selecciona C/A/B/D/E · DOC ENLACES · firma webhook.
+          <a class="decision-link" href="Service_Blueprint_Fase_5_Mapa-Decision.html#pais-gap">Mapa §3 →</a>
+        </div></div>
+        <div class="cell"><div class="box system" id="identity-webhook"><strong>State machine</strong>Actualiza identidad + facturación. Cola excepciones ≤8% manual.
+          <a class="decision-link" href="Service_Blueprint_Fase_5_Mapa-Decision.html#webhook">Mapa §4 →</a>
+        </div></div>
+
+        <!-- HERRAMIENTAS -->
+        <div class="lane"><div><span>Carril 6</span>Herramientas</div></div>
+        <div class="cell"><div class="box support"><strong>API Sumsub · jobs sync · base estados</strong></div></div>
+        <div class="cell"><div class="box support"><strong>Motor de flags</strong></div></div>
+        <div class="cell"><div class="box support"><strong>Frontend Dropi</strong></div></div>
+        <div class="cell"><div class="box support"><strong>Frontend · hard gate API</strong></div></div>
+        <div class="cell"><div class="box support"><strong>API perfil / facturación</strong></div></div>
+        <div class="cell"><div class="box support"><strong>Truora · Sumsub · DOC ENLACES · WebSDK</strong></div></div>
+        <div class="cell"><div class="box support"><strong>Webhook · notificaciones · cola</strong></div></div>
+
+        <!-- STAKEHOLDERS -->
+        <div class="group full users" style="background:#fde68a;color:#78350f;"><div><span>Carril 7</span>Stakeholders</div></div>
+        <div class="cell"><div class="box support"><strong>TI + Legal</strong>Lote pending B.</div></div>
+        <div class="cell"><div class="box support"><strong>TI</strong>Flags.</div></div>
+        <div class="cell"><div class="box support"><strong>PD / Growth</strong>Soft.</div></div>
+        <div class="cell"><div class="box support"><strong>PD + Financiero</strong>Regla salidas.</div></div>
+        <div class="cell"><div class="box support"><strong>PD</strong>Módulos.</div></div>
+        <div class="cell"><div class="box support"><strong>TI + proveedores</strong></div></div>
+        <div class="cell"><div class="box support"><strong>TI; Legal/Soporte excepciones</strong></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Tabla de conexiones — SI → ENTONCES</h2>
+      <p class="muted">Cada fila es una flecha real. Filas Soft / Hard / Módulo <strong>no se encadenan</strong> entre sí.</p>
+      <div class="table-scroll">
+        <table class="conn-table">
+          <thead>
+            <tr><th>#</th><th>Tipo</th><th>SI (condición)</th><th>ENTONCES</th><th>Destino</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Secuencia</td><td>Sync terminó</td><td>Flags listos</td><td>C0 → C1</td></tr>
+            <tr><td>2</td><td>Fin</td><td>Identidad OK y facturación OK</td><td>Sin UI de validación</td><td>C1 → Idle</td></tr>
+            <tr><td>3</td><td>Canal A</td><td>Hay gap <strong>y</strong> Home/pasivo</td><td>Slide-up</td><td>C1 → <strong>C2</strong></td></tr>
+            <tr><td>4</td><td>Canal B</td><td>Hay gap <strong>y</strong> clic retiro/transfer/DropiCard</td><td>Tooltip + modal</td><td>C1 → <strong>C3</strong></td></tr>
+            <tr><td>5</td><td>Canal C</td><td>Hay gap <strong>y</strong> abre Mi cuenta o Facturación</td><td>UI del módulo</td><td>C1 → <strong>C4</strong></td></tr>
+            <tr><td>6</td><td>Canal C′</td><td>1ª orden o 1er movimiento wallet + gap</td><td>Modal bienvenida</td><td>→ C4d → mismo CTA que § matriz</td></tr>
+            <tr><td>7</td><td>Pending B</td><td><code>manual_pending</code> EC/CL/AR tras Prep</td><td>Banner revisión</td><td>→ C6 <code>en_revision</code></td></tr>
+            <tr><td>8</td><td>Convergencia</td><td>CTA desde C2 o C3 o C4</td><td>Abre proveedor</td><td>→ <strong>C5</strong></td></tr>
+            <tr><td>9</td><td>Secuencia</td><td>Webhook válido</td><td>State machine</td><td>C5 → <strong>C6</strong></td></tr>
+            <tr><td>10</td><td>Loop CO</td><td>C6 aprobado pero aún falta el otro gap</td><td>Confetti + CTA</td><td>C6 → C4/C5 del gap que falta</td></tr>
+            <tr><td>11</td><td>Reintento</td><td>Incompleto o rechazado + usuario actúa</td><td>Retoma o soporte</td><td>→ C5 o soporte</td></tr>
+            <tr class="myth"><td>—</td><td>Mito</td><td>“Después del soft viene el hard”</td><td><strong>Falso.</strong> Hard solo si intenta sacar dinero.</td><td>C2 ↛ C3</td></tr>
+            <tr class="myth"><td>—</td><td>Mito</td><td>“Facturación CO es un form Dropi”</td><td><strong>Falso.</strong> Enlace Sumsub o lista read-only.</td><td>C4b</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Matriz de ruteo CTA (gaps × país)</h2>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Gap</th><th>Colombia</th><th>Resto (A/D/E)</th><th>EC/CL/AR</th></tr></thead>
+          <tbody>
+            <tr><td>Solo identidad</td><td>→ Información de cuenta → Truora</td><td>→ Sumsub único</td><td>→ Sumsub o banner revisión</td></tr>
+            <tr><td>Solo facturación</td><td>→ Enlace Sumsub KYB (sin form Dropi)</td><td>→ Sumsub único</td><td>→ Sumsub</td></tr>
+            <tr><td>Ambas</td><td>Primero identidad; luego confetti + facturación</td><td>Un solo enlace</td><td>Un solo enlace</td></tr>
+            <tr><td>Ninguno</td><td colspan="3">Idle</td></tr>
+            <tr><td>Pendiente manual</td><td>N/A</td><td>N/A</td><td>Prep migra a Sumsub; UI <code>en_revision</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 id="addendum">Addendum — Edición post-aprobación (Historia Fase 5)</h2>
+      <p class="muted">Flujo <strong>hermano</strong>, no el eje de las 7 columnas. Usuario ya <code>aprobado</code> que quiere <em>cambiar</em> datos.</p>
+      <ul>
+        <li><strong>RN-11:</strong> Dueño bloqueado 6 meses en sensibles; Responsable Tributario sin bloqueo temporal.</li>
+        <li><strong>Sensibles</strong> (nombre, tipo persona, doc) → re-validación por misma matriz C/A/B/D/E.</li>
+        <li><strong>No sensibles</strong> (dirección, ciudad, correo facturación) → guardado directo, costo 0.</li>
+        <li><strong>Rechazo</strong> conserva versión aprobada anterior.</li>
+        <li>Detalle textual: <code>Service_Blueprint_Diagrama_Fase_5.md</code> § Addendum.</li>
+      </ul>
+    </section>
+
+    <footer style="max-width:none;margin:0 auto;padding:8px 4px 28px;color:var(--gray-600);font-size:12px;">
+      Pareja MD: <a href="Service_Blueprint_Diagrama_Fase_5.md">Service_Blueprint_Diagrama_Fase_5.md</a> ·
+      Mapa: <a href="Service_Blueprint_Fase_5_Mapa-Decision.html">Mapa de decisión</a> ·
+      Tabla: <a href="Service_Blueprint_Fase_5_Tabla.html">Tabla resumida</a> ·
+      UX: <a href="UX-Writing-Validacion-TechNative.md">UX-Writing-Validacion-TechNative.md</a>
+    </footer>
+  </main>
+</body>
+</html>
+

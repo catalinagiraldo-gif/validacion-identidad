@@ -34,6 +34,17 @@ $wa-bubble: #dcf8c6; // burbuja saliente clásica de WhatsApp (tono claro dentro
   background: $wa-green;
 }
 
+// Bloque D (Marca Blanca): Soporte envía el enlace a mano, sin UserPilot —
+// header gris en vez de verde WhatsApp para diferenciarlo visualmente del
+// canal automático.
+.crm-toast--manual .crm-toast__header {
+  background: $gray-600;
+}
+
+.crm-toast--manual .crm-toast__bubble {
+  background: $gray-50;
+}
+
 .crm-toast__avatar {
   width: 34px;
   height: 34px;

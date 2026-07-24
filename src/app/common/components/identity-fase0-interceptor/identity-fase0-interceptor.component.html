@@ -10,21 +10,37 @@
         </div>
       } @else {
         <div class="fase0-interceptor__body">
-          <div class="fase0-interceptor__icon" aria-hidden="true">
-            <i class="pi pi-shield"></i>
+          <div class="fase0-interceptor__top">
+            <div class="fase0-interceptor__icon" aria-hidden="true">
+              <i class="pi" [ngClass]="esVarianteBancariaGtPa() ? 'pi-credit-card' : 'pi-shield'"></i>
+            </div>
+            <app-fase0-backstage-dot [texto]="backstageNota()" label="Qué pasa por dentro en Etapa 0.5" />
           </div>
-          <h2 id="fase0-interceptor-title" class="fase0-interceptor__headline">
-            Verifica tu identidad para continuar
-          </h2>
-          <p class="fase0-interceptor__text">
-            Antes de mover fondos necesitamos confirmar quién eres. Te llevamos a completar la verificación.
-          </p>
+
+          @if (esVarianteBancariaGtPa()) {
+            <h2 id="fase0-interceptor-title" class="fase0-interceptor__headline">
+              Verifica la identidad del titular de la cuenta
+            </h2>
+            <p class="fase0-interceptor__text">
+              Antes de guardar esta cuenta bancaria necesitamos confirmar quién es su titular. Te llevamos a completar la verificación con el tipo y número de documento que registraste.
+            </p>
+          } @else {
+            <h2 id="fase0-interceptor-title" class="fase0-interceptor__headline">
+              Verifica tu identidad para continuar
+            </h2>
+            <p class="fase0-interceptor__text">
+              Antes de mover fondos necesitamos confirmar quién eres. Te llevamos a completar la verificación.
+            </p>
+          }
         </div>
 
         <div class="fase0-interceptor__footer">
           <button type="button" class="fase0-interceptor__cta" (click)="continuar()">
             Continuar a verificación
           </button>
+          <p class="fase0-interceptor__legal">
+            Al continuar, aceptas los <span class="fase0-interceptor__legal-link">Términos y Condiciones</span> y autorizas el tratamiento de tus datos conforme a la <span class="fase0-interceptor__legal-link">Política de Privacidad</span> de Dropi.
+          </p>
         </div>
       }
     </div>

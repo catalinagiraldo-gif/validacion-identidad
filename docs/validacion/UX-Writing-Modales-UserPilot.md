@@ -101,14 +101,14 @@ El tono debe subir en firmeza a medida que sube la coerción, pero **nunca cruza
 | Elemento | Copy |
 |---|---|
 | Headline | **Tu verificación sigue en proceso** |
-| Body | Puede tardar hasta 72 horas hábiles. Te avisaremos por correo apenas esté lista — no necesitas hacer nada más. |
+| Body | Según la cola de revisión, puede tomar hasta 72 horas hábiles. Te avisaremos apenas esté lista — no necesitas hacer nada más. |
 | Botón | **Entendido** |
 
 **Antes → Después**
 - Antes: "insiste pidiendo reintento" — si el usuario ya completó Sumsub, pedirle "reintentar" sin explicar que la demora es humana (no un error suyo) genera confusión y repetición innecesaria de pasos ya hechos.
-- Después: el copy es honesto sobre el cuello de botella (revisión manual) usando el SLA que Soporte ya comunica (48-72h), y aclara que **no se requiere ninguna acción** del usuario — evita que reintente un formulario ya enviado.
+- Después: el copy es honesto sobre el cuello de botella (revisión manual + cola) usando el SLA operativo que Soporte ya comunica (hasta 72h hábiles según cola — no el tiempo fijo de una sola revisión), y aclara que **no se requiere ninguna acción** del usuario — evita que reintente un formulario ya enviado.
 
-**Justificación de tono:** paciente y transparente. El usuario no hizo nada mal; anticipar la pregunta obvia ("¿tengo que hacer algo?") con "no necesitas hacer nada más" reduce contactos a soporte y ansiedad. Dar el rango de horas exacto (ya validado en el blueprint, línea de Soporte SLA) es más honesto que un "pronto" vago.
+**Justificación de tono:** paciente y transparente. El usuario no hizo nada mal; anticipar la pregunta obvia ("¿tengo que hacer algo?") con "no necesitas hacer nada más" reduce contactos a soporte y ansiedad. Enmarcar las 72h como techo según cola (ya validado en el blueprint, línea de Soporte SLA) es más honesto que un "pronto" vago o que sugerir que cada revisión individual dura exactamente ese tiempo.
 
 ### 4c. Rechazado (expulsión — ver Fase 1)
 

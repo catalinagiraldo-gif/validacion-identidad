@@ -1,0 +1,218 @@
+@use 'styles/variables-new' as *;
+
+// Branding intencionalmente NEUTRO (no naranja Dropi) — comunica "saliste de
+// la app" sin necesidad de nombrar al proveedor real frente al usuario.
+$standin-bg: #12161f;
+$standin-surface: #1b2130;
+$standin-border: rgba(#ffffff, 0.08);
+$standin-accent: $secondary-400;
+
+.sumsub-standin {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
+  background: $standin-bg;
+  color: $gray-100;
+  font-family: $font-primary;
+  animation: sumsub-standin-in 0.24s ease both;
+}
+
+@keyframes sumsub-standin-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.sumsub-standin__topbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-3 $space-6;
+  border-bottom: 1px solid $standin-border;
+  flex-wrap: wrap;
+}
+
+.sumsub-standin__badge {
+  font-size: $font-xs;
+  font-weight: $font-bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: $standin-accent;
+  background: rgba($standin-accent, 0.14);
+  border: 1px solid rgba($standin-accent, 0.35);
+  border-radius: 9999px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+
+.sumsub-standin__country {
+  font-size: $font-sm;
+  color: $gray-400;
+  white-space: nowrap;
+}
+
+.sumsub-standin__exit {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  background: none;
+  border: 1px solid $standin-border;
+  color: $gray-200;
+  border-radius: $radius-2;
+  padding: $space-2 $space-4;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover { border-color: rgba(#fff, 0.25); color: $neutral-white; }
+
+  i { font-size: 12px; }
+}
+
+.sumsub-standin__body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $space-8 $space-6;
+  gap: $space-8;
+}
+
+.sumsub-standin__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $space-3;
+  max-width: 480px;
+}
+
+.sumsub-standin__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($standin-accent, 0.16);
+  color: $standin-accent;
+
+  i { font-size: $font-2xl; }
+}
+
+.sumsub-standin__headline {
+  margin: 0;
+  font-size: $font-2xl;
+  font-weight: $font-bold;
+  color: $neutral-white;
+}
+
+.sumsub-standin__text {
+  margin: 0;
+  font-size: $font-sm;
+  color: $gray-400;
+  line-height: 1.5;
+}
+
+.sumsub-standin__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.sumsub-standin__step {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-4;
+  background: $standin-surface;
+  border: 1px solid $standin-border;
+  border-radius: $radius-3;
+}
+
+.sumsub-standin__step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $standin-accent;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.sumsub-standin__step-title {
+  display: block;
+  font-size: $font-md;
+  font-weight: $font-semibold;
+  color: $gray-100;
+}
+
+.sumsub-standin__step-detail {
+  display: block;
+  font-size: $font-xs;
+  color: $gray-500;
+  margin-top: 2px;
+}
+
+.sumsub-standin__footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  padding: $space-4 $space-6 $space-6;
+  border-top: 1px solid $standin-border;
+  background: rgba(#000, 0.15);
+}
+
+.sumsub-standin__footer-label {
+  font-size: 10px;
+  font-weight: $font-bold;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: $gray-500;
+}
+
+.sumsub-standin__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.sumsub-standin__action {
+  flex: 1;
+  min-width: 160px;
+  padding: $space-3 $space-4;
+  border: none;
+  border-radius: $radius-2;
+  font-family: $font-primary;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.15s ease;
+  color: $neutral-white;
+
+  &:active { transform: translateY(1px); }
+  &:hover { filter: brightness(1.12); }
+
+  &--incompleta { background: $warning-600; }
+  &--pendiente  { background: $info-600; }
+  &--aprobado   { background: $success-600; }
+  &--rechazado  { background: $error-600; }
+}
+
+// Responsive.
+@media (max-width: $bp-sm) {
+  .sumsub-standin__topbar { padding: $space-3 $space-4; }
+  .sumsub-standin__exit { margin-left: 0; width: 100%; justify-content: center; }
+  .sumsub-standin__body { padding: $space-6 $space-4; }
+  .sumsub-standin__action { min-width: 100%; }
+}

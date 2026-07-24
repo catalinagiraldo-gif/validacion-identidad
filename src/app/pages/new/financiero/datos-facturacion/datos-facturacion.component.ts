@@ -136,6 +136,26 @@ const DATOS_FORMULARIO_ANTIGUO_MOCK = {
             </p>
           </div>
         </div>
+      } @else if (esFase0() && statusV2() === 'sin_validar') {
+        <!-- Fase 0 (blueprint Etapa 0.5, "Tarea" paso 2): "Datos de
+             Facturación" ES uno de los 6 triggers estándar → Modal
+             Interceptor UserPilot, "editar exige verificarse primero" —
+             mismo trato que Transferir Wallet. Este banner grande NO
+             reemplaza al Modal Interceptor: solo evita que el formulario
+             quede oculto detrás de un empty-state antes de hacer clic —
+             el CTA de abajo sí abre el interceptor (abrirModal→tryIntercept). -->
+        <div class="alert-warning alert-warning--fase0-grande" data-tour="facturacion-banner-fase0">
+          <i class="pi pi-shield alert-icon alert-icon--lg"></i>
+          <div class="alert-body">
+            <p class="alert-text alert-text--lg">
+              <span class="alert-bold">Verifica tu identidad para editar tus datos de facturación. </span>
+              <span>Ya puedes ver el formulario completo, pero los campos quedan bloqueados hasta que te valides con {{ motorLabel() }} (~5 min) — luego {{ motorLabel() }} completa los datos de entidad por ti.</span>
+            </p>
+            <button class="btn-identity-cta btn-identity-cta--lg" type="button" (click)="abrirModal()">
+              <i class="pi pi-shield"></i> Verificar identidad
+            </button>
+          </div>
+        </div>
       } @else {
         <div class="alert-warning">
           <i class="pi pi-info-circle alert-icon"></i>
@@ -412,7 +432,14 @@ export class DatosFacturacionNewComponent {
   /** Plan2.md Parte 8: el gate ahora lee de stateV2 (sincronizado por el modal), no solo de stateSvc. */
   readonly statusV2 = this.stateV2.status;
   readonly isAprobado = computed(() => this.statusV2() === 'aprobado');
-  readonly esVacio = computed(() => this.statusV2() === 'sin_validar');
+  /**
+   * Fase 0 (blueprint "Datos de Facturación": editar exige verificarse
+   * primero, pero el formulario sigue visible) nunca usa el empty-state de
+   * ícono — se ve el formulario bloqueado con un banner grande arriba. El
+   * empty-state solo aplica fuera de Fase 0.
+   */
+  readonly esFase0 = computed(() => this.stateV2.faseProyecto() === 'fase0');
+  readonly esVacio = computed(() => this.statusV2() === 'sin_validar' && !this.esFase0());
   readonly esParcial = computed(() => this.statusV2() === 'parcial');
   readonly estadoFormularioConfig = computed(() => ESTADO_FORMULARIO_CONFIG[this.statusV2()]);
   readonly motorLabel = computed(() => (this.stateV2.motorValidacion() === 'truora' ? 'Truora' : 'Sumsub'));

@@ -102,6 +102,25 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
             </button>
           </div>
         </div>
+      } @else if (esFase0() && statusV2() === 'sin_validar') {
+        <!-- Fase 0 (blueprint Etapa 0.5, "Tarea" paso 2): "Información de
+             Cuenta" ES uno de los 6 triggers estándar → Modal Interceptor
+             UserPilot, "editar exige verificarse primero" — mismo trato que
+             Transferir Wallet. Este banner estático NO reemplaza al Modal
+             Interceptor: solo evita ocultar el formulario detrás de un
+             empty-state antes del clic — el CTA sí abre el interceptor. -->
+        <div class="alert-top alert-top--fase0-estatico" data-tour="cuenta-banner-fase0">
+          <i class="pi pi-shield alert-icon"></i>
+          <div class="alert-body">
+            <p class="alert-text">
+              <span class="alert-bold">¿Cuándo se completan tus datos? </span>
+              <span>Puedes ver el formulario ya mismo, pero queda bloqueado hasta que verifiques tu identidad — es necesaria para poder retirar tus ganancias. Toma ~5 min.</span>
+            </p>
+            <button class="btn-identity-cta" type="button" (click)="abrirModal('screen0')">
+              <i class="pi pi-shield"></i> Verificar identidad
+            </button>
+          </div>
+        </div>
       } @else {
         <div class="alert-top">
           <i class="pi pi-exclamation-circle alert-icon"></i>
@@ -303,7 +322,14 @@ export class CuentaNewComponent {
   /** Plan2.md Parte 8: el gate ahora lee de stateV2 (sincronizado por el modal), no solo de stateSvc. */
   readonly statusV2 = this.stateV2.status;
   readonly isAprobado = computed(() => this.statusV2() === 'aprobado');
-  readonly esVacio = computed(() => this.statusV2() === 'sin_validar');
+  /**
+   * Fase 0 (blueprint "Información de Cuenta": editar exige verificarse
+   * primero, pero no es un movimiento financiero) nunca usa el empty-state
+   * de ícono — se ve el formulario bloqueado con un banner estático arriba,
+   * sin Modal Interceptor. El empty-state solo aplica fuera de Fase 0.
+   */
+  readonly esFase0 = computed(() => this.stateV2.faseProyecto() === 'fase0');
+  readonly esVacio = computed(() => this.statusV2() === 'sin_validar' && !this.esFase0());
   readonly esParcial = computed(() => this.statusV2() === 'parcial');
   readonly estadoFormularioConfig = computed(() => ESTADO_FORMULARIO_CONFIG[this.statusV2()]);
 

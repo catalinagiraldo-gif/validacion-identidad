@@ -429,8 +429,140 @@ export type MotivoPendiente = 'revision-financiero' | 'incompleta' | null;
 /** Los 4 modales de resultado de Etapa Continua (blueprint). */
 export type Fase0ResultKind = 'aprobado' | 'revision-financiero' | 'incompleta' | 'rechazado';
 
-/** Los 4 mensajes CRM (burbuja WhatsApp) simulados en Fase 0 (blueprint). */
-export type Fase0CrmKind = 'recordatorio' | 'aprobado' | 'revision-financiero' | 'incompleta';
+/**
+ * Los mensajes CRM (burbuja WhatsApp) simulados en Fase 0 (blueprint): los 4
+ * de siempre (recordatorio Etapa 0 + los 3 seguimientos de Etapa Continua) más
+ * 'marca-blanca' (Bloque D: Soporte envía el enlace a mano, sin UserPilot).
+ */
+export type Fase0CrmKind = 'recordatorio' | 'aprobado' | 'revision-financiero' | 'incompleta' | 'marca-blanca';
+
+// ---------------------------------------------------------------------------
+// Modo Prototipo 0 — recorrido guiado del Service Blueprint Fase 0 completo
+// (Panel Lateral → Interceptor → Sumsub → Etapa Continua → CRM), separado del
+// Modo Prototipo 2 (Fases 1/2/3/4/5, gates/motores nativos). Ver
+// `docs/validacion/Service_Blueprint_Diagrama Fase 0.md`.
+// ---------------------------------------------------------------------------
+
+/** Etapa activa del recorrido guiado (stepper del demo-panel en Modo Prototipo 0). Solo estado de UI/demo, no persiste entre sesiones. */
+export type Fase0Etapa = 'pre' | 'etapa0' | 'etapa05' | 'en-sumsub' | 'continua' | 'bloqueado';
+
+export const FASE0_ETAPAS: Fase0Etapa[] = ['pre', 'etapa0', 'etapa05', 'en-sumsub', 'continua', 'bloqueado'];
+
+export const FASE0_ETAPA_LABELS: Record<Fase0Etapa, string> = {
+  pre: 'PRE — Setup',
+  etapa0: 'Etapa 0 — Onboarding suave',
+  etapa05: 'Etapa 0.5 — Interceptor',
+  'en-sumsub': 'En Sumsub (fuera de Dropi)',
+  continua: 'Etapa Continua — Resultado',
+  bloqueado: 'Etapa 1 — Bloqueo',
+};
+
+/** Nota de backstage (Back stage del blueprint) por etapa, para las bolitas "!" del prototipo — nunca copy de usuario. */
+export const FASE0_ETAPA_BACKSTAGE: Record<Fase0Etapa, string> = {
+  pre: 'Setup manual: Google Sheets + campañas UserPilot. Arranque real del MVP: Guatemala, Panamá, Paraguay y Perú primero — el resto (MX, VE, CR, Europa) se solicita a Sumsub en el setup pero entra de forma gradual. Se regula el volumen para que Legal/Financiero puedan auditar a mano.',
+  etapa0: 'Segmentación visual en UserPilot por fecha de registro para aislar a los Nuevos. Sin incentivo monetario aquí — el bono de "Semana de la Seguridad" (fletes, masterclasses, Kit Dropi) es exclusivo de Activos-Riesgo en Etapa 0.5+.',
+  etapa05: 'DOC ENLACES A-E: el bloque de formulario depende del país (y de si es marca blanca). El pop-up es ineludible — UserPilot no permite cerrarlo hasta que Sumsub confirme, y el copy no varía entre reapariciones (evita apariencia de manipulación). Robusto ante AdBlockers.',
+  'en-sumsub': 'La pregunta "Persona Natural / Empresa" ya no vive en UserPilot — Sumsub la hace dentro de su propio formulario. Salir de Dropi es real: no hay vuelta atrás hasta que Sumsub confirme o el usuario abandone (Incompleto).',
+  continua: 'Legal descarga los estados desde el backoffice de Sumsub, actualiza a mano un Google Sheet, Admin apaga el pop-up de los Aprobados y CRM notifica. SLA operativo: 48–72 horas hábiles tras la aprobación real — el prototipo puede lucir "atrasado" a propósito.',
+  bloqueado: 'Cartera corre un script en Python que cruza saldo negativo/fraude por país (y correo + DNI para baneos multipaís) y lanza campañas focalizadas en UserPilot. No es un freeze de saldo por código — es UserPilot interceptando la pantalla hasta que Legal/Financiero resuelvan.',
+};
+
+/**
+ * Progreso real del usuario en Sumsub (Etapa Continua del blueprint). Se
+ * deriva siempre de `IdentityDemoStateV2Service.status` + `motivoPendiente` —
+ * nunca es una segunda fuente de verdad independiente. 'nunca' significa que
+ * no existe caso en Sumsub todavía (blueprint: "nunca no es lo mismo que
+ * Pendiente en el Sheet").
+ */
+export type Fase0ProgresoSumsub = 'nunca' | 'incompleta' | 'pendiente-financiero' | 'aprobado' | 'rechazado';
+
+export const FASE0_PROGRESO_LABELS: Record<Fase0ProgresoSumsub, string> = {
+  nunca: 'Nunca inició Sumsub',
+  incompleta: 'Incompleta en Sumsub',
+  'pendiente-financiero': 'Completa — esperando Financiero',
+  aprobado: 'Aprobado',
+  rechazado: 'Rechazado',
+};
+
+/** Bloque de formulario Sumsub según país/canal (blueprint Etapa 0.5, Back stage → DOC ENLACES A-E). */
+export type Fase0SumsubBloque = 'A' | 'B' | 'C' | 'D' | 'E';
+
+export const FASE0_BLOQUE_LABELS: Record<Fase0SumsubBloque, string> = {
+  A: 'Bloque A — Formulario largo (liveness + documento + datos fiscales)',
+  B: 'Bloque B — Formulario corto (liveness + documento, sin datos fiscales)',
+  C: 'Bloque C — Colombia (KYC Truora + facturación Sumsub)',
+  D: 'Bloque D — Marca blanca (enlace manual de Soporte, sin UserPilot)',
+  E: 'Bloque E — Facturación a un tercero (link enviado al teléfono del tercero)',
+};
+
+/** Bloque A del blueprint: países con formulario largo (liveness + documento + datos fiscales) — MVP real GT/PY/PE, resto gradual. */
+const FASE0_BLOQUE_A_PAISES: Pais9[] = ['GT', 'PY', 'PE', 'MX', 'CR'];
+/** Bloque B del blueprint: países con formulario corto (liveness + documento, sin datos fiscales). */
+const FASE0_BLOQUE_B_PAISES: Pais9[] = ['CL', 'EC', 'AR'];
+
+/**
+ * Determina el bloque Sumsub vigente según país + marca blanca (blueprint
+ * Etapa 0.5, Back stage → DOC ENLACES). Colombia siempre es Bloque C sin
+ * importar el tipo de persona (KYC Truora + facturación Sumsub, natural y
+ * jurídica). Marca blanca siempre gana — esos usuarios no ven UserPilot.
+ */
+export function resolverBloqueSumsub(pais: Pais9, marcaBlanca: boolean): Fase0SumsubBloque {
+  if (marcaBlanca) return 'D';
+  if (pais === 'CO') return 'C';
+  if (FASE0_BLOQUE_B_PAISES.includes(pais)) return 'B';
+  // Resto cae en Bloque A (arranque real GT/PY/PE; MX/CR entran gradual, misma UI de formulario largo).
+  return 'A';
+}
+
+// ---------------------------------------------------------------------------
+// Log de eventos — hace visible "cada interacción que hay en el blueprint" en
+// tiempo real (por qué: en Etapa 0.5/Continua muchas cosas pasan detrás sin
+// feedback en pantalla — recordatorios, redirecciones, actualizaciones de
+// Sheet — y el stakeholder no las nota). Usa el mismo código de color del
+// diagrama original (Service_Blueprint_Diagrama Fase 0.md líneas 19-20).
+// ---------------------------------------------------------------------------
+
+/** Carril del blueprint que originó el evento — mismo color-coding del diagrama original. */
+export type Fase0EventoTag = 'backstage' | 'userpilot' | 'redirect' | 'crm';
+
+export const FASE0_EVENTO_TAG_ICON: Record<Fase0EventoTag, string> = {
+  backstage: '🟣',
+  userpilot: '🔵',
+  redirect: '🔴',
+  crm: '🟢',
+};
+
+export const FASE0_EVENTO_TAG_LABEL: Record<Fase0EventoTag, string> = {
+  backstage: 'Back stage',
+  userpilot: 'UserPilot',
+  redirect: 'Redirección',
+  crm: 'CRM',
+};
+
+export interface Fase0Evento {
+  id: number;
+  tag: Fase0EventoTag;
+  texto: string;
+  ts: number;
+}
+
+// ---------------------------------------------------------------------------
+// Nuevos vs Activos — vocabulario textual del blueprint (columnas ETAPA 0 y
+// ETAPA 0.5). Es un eje propio de Fase 0, distinto de `MomentoUsuario`
+// (Setup/Activación/Hábito/...), que es del eje Fase 1-5 (Plan2.md). Solo
+// gatilla el Panel Lateral (Etapa 0, exclusivo de "entra por primera vez al
+// Home") — el Modal Interceptor de Etapa 0.5 trata a Nuevos y Activos IGUAL
+// ante un clic financiero ("el disparador es la acción, no la antigüedad").
+// ---------------------------------------------------------------------------
+export type Fase0TipoUsuario = 'nuevo' | 'activo';
+
+export const FASE0_TIPO_USUARIO_LABELS: Record<Fase0TipoUsuario, string> = {
+  nuevo: 'Nuevo (Etapa 0)',
+  activo: 'Activo (Etapa 0.5)',
+};
+
+/** Motivo del bloqueo full-screen de Etapa 1 — mismo componente, dos copys reales del blueprint. */
+export type Fase0BlockMotivo = 'fraude' | 'rechazado';
 
 // ---------------------------------------------------------------------------
 // Taxonomía de 12 motivos de rechazo, portada de

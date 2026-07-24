@@ -9,6 +9,7 @@ import { PaisPersona, IdentitySatelliteStatus } from '../../../common/models/ide
 import { IdentityDemoStateV2Service } from '../../../common/services/identity-demo-state-v2.service';
 import { IdentityFase0Service } from '../../../common/services/identity-fase0.service';
 import { IdentidadStakeholderTourService } from '../../../common/services/identidad-stakeholder-tour.service';
+import { IdentityFase0BackstageDotComponent } from '../../../common/components/identity-fase0-backstage-dot/identity-fase0-backstage-dot.component';
 import {
   FaseProyecto,
   FASES_PROYECTO,
@@ -22,6 +23,15 @@ import {
   Fase0CrmKind,
   MotivoPendiente,
   IdentitySatelliteStatusV2,
+  Fase0Etapa,
+  FASE0_ETAPAS,
+  FASE0_ETAPA_LABELS,
+  FASE0_ETAPA_BACKSTAGE,
+  Fase0ProgresoSumsub,
+  FASE0_PROGRESO_LABELS,
+  FASE0_BLOQUE_LABELS,
+  Fase0TipoUsuario,
+  FASE0_TIPO_USUARIO_LABELS,
 } from '../../../common/models/identity-flow-v2.models';
 
 // Controles del demo-panel extendidos según Plan2.md Parte 7: dos filas
@@ -70,7 +80,7 @@ const SEGMENTO_LABELS: Record<SegmentoUsuario, string> = {
 @Component({
   selector: 'app-prototype-demo-panel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IdentityFase0BackstageDotComponent],
   templateUrl: './prototype-demo-panel.component.html',
   styleUrls: ['./prototype-demo-panel.component.scss'],
 })
@@ -162,12 +172,70 @@ export class PrototypeDemoPanelComponent {
     return { icon: '🟡', label: 'Gestión manual — Backoffice' };
   });
 
+  // --- Modo Prototipo: 0 (recorrido Fase 0 completo) vs 2 (Fases 1/2/3/4/5) ---
+  readonly modoPrototipo = computed<'proto0' | 'proto2'>(() =>
+    this.faseProyecto() === 'fase0' ? 'proto0' : 'proto2'
+  );
+
+  /** Chips FASE DE ENTREGA visibles: en Prototipo 0 solo Fase 0 (informativo); en Prototipo 2, todas menos Fase 0. */
+  readonly fasesProyectoVisibles = computed<FaseProyecto[]>(() =>
+    this.modoPrototipo() === 'proto0'
+      ? (['fase0'] as FaseProyecto[])
+      : this.fasesProyecto.filter((f) => f !== 'fase0')
+  );
+
+  selectPrototipo0(): void {
+    this.stateV2.setFaseProyecto('fase0');
+  }
+
+  selectPrototipo2(): void {
+    if (this.faseProyecto() === 'fase0') {
+      this.stateV2.setFaseProyecto('fase2');
+    }
+  }
+
   // --- Controles Fase 0 (Service Blueprint Fase 0) ---
   readonly showFase0Controls = computed(() => this.faseProyecto() === 'fase0');
+  readonly fase0TipoUsuario = this.stateV2.fase0TipoUsuario;
+  readonly fase0TipoUsuarioOptions: Fase0TipoUsuario[] = ['nuevo', 'activo'];
   readonly saldoNegativoFraude = this.stateV2.saldoNegativoFraude;
+  readonly marcaBlanca = this.stateV2.marcaBlanca;
   readonly motivoPendiente = this.stateV2.motivoPendiente;
   readonly statusV2 = this.stateV2.status;
   readonly showMotivoPendiente = computed(() => this.stateV2.status() === 'pendiente');
+
+  /** Progreso real del usuario en Sumsub — derivado, ver IdentityFase0Service.progreso. */
+  readonly progresoSumsub = this.fase0.progreso;
+  readonly progresoSumsubLabel = computed(() => FASE0_PROGRESO_LABELS[this.progresoSumsub()]);
+  readonly progresoBadgeClass = computed(() => {
+    const map: Record<Fase0ProgresoSumsub, string> = {
+      nunca: 'status--none',
+      incompleta: 'status--pj-pendiente',
+      'pendiente-financiero': 'status--pending',
+      aprobado: 'status--approved',
+      rechazado: 'status--rejected',
+    };
+    return map[this.progresoSumsub()];
+  });
+
+  /** Bloque Sumsub vigente (A-E) según país + marca blanca — ver IdentityFase0Service.sumsubBloque. */
+  readonly sumsubBloqueLabel = computed(() => FASE0_BLOQUE_LABELS[this.fase0.sumsubBloque()]);
+
+  // --- Recorrido guiado (stepper) ---
+  readonly fase0Etapas = FASE0_ETAPAS;
+  readonly fase0EtapaActual = this.fase0.etapa;
+
+  fase0EtapaLabel(e: Fase0Etapa): string {
+    return FASE0_ETAPA_LABELS[e];
+  }
+
+  fase0EtapaNota(e: Fase0Etapa): string {
+    return FASE0_ETAPA_BACKSTAGE[e];
+  }
+
+  reproducirEtapa(e: Fase0Etapa): void {
+    this.fase0.playEtapa(e);
+  }
 
   readonly resultadoFase0Options: Array<{ kind: Fase0ResultKind; label: string }> = [
     { kind: 'aprobado',            label: 'Aprobado' },
@@ -181,6 +249,7 @@ export class PrototypeDemoPanelComponent {
     { kind: 'aprobado',            label: 'Aprobado' },
     { kind: 'revision-financiero', label: 'Revisión financiero' },
     { kind: 'incompleta',          label: 'Incompleta' },
+    { kind: 'marca-blanca',        label: 'Marca blanca (Soporte)' },
   ];
 
   readonly showEmailBaneadoToggle = computed(() => this.faseProyecto() !== 'fase0');
@@ -288,31 +357,29 @@ export class PrototypeDemoPanelComponent {
     }
   }
 
+  toggleMarcaBlanca(): void {
+    this.stateV2.setMarcaBlanca(!this.marcaBlanca());
+  }
+
+  fase0TipoUsuarioLabel(t: Fase0TipoUsuario): string {
+    return FASE0_TIPO_USUARIO_LABELS[t];
+  }
+
+  setFase0TipoUsuario(t: Fase0TipoUsuario): void {
+    this.stateV2.setFase0TipoUsuario(t);
+  }
+
   setMotivoPendiente(motivo: MotivoPendiente): void {
     this.stateV2.setMotivoPendiente(motivo);
   }
 
-  /** Setea el estado coherente y dispara el modal de resultado de Etapa Continua. */
+  /**
+   * Forzar un resultado desde el demo-panel usa el mismo orquestador que el
+   * Sumsub stand-in (`resolverSumsub`) — una sola fuente de verdad para
+   * "qué significa cada resultado" (estado + modal + CRM).
+   */
   showResultadoFase0(kind: Fase0ResultKind): void {
-    switch (kind) {
-      case 'aprobado':
-        this.stateV2.setStatus('aprobado');
-        this.stateV2.setMotivoPendiente(null);
-        break;
-      case 'revision-financiero':
-        this.stateV2.setStatus('pendiente');
-        this.stateV2.setMotivoPendiente('revision-financiero');
-        break;
-      case 'incompleta':
-        this.stateV2.setStatus('pendiente');
-        this.stateV2.setMotivoPendiente('incompleta');
-        break;
-      case 'rechazado':
-        this.stateV2.setStatus('rechazado');
-        this.stateV2.setMotivoPendiente(null);
-        break;
-    }
-    this.fase0.showResult(kind);
+    this.fase0.resolverSumsub(kind);
   }
 
   simularCrm(kind: Fase0CrmKind): void {

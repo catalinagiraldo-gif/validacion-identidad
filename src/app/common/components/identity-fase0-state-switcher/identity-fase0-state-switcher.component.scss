@@ -1,0 +1,195 @@
+@use 'styles/variables-new' as *;
+
+// z-index por encima de TODO lo demás de Fase 0 (Sumsub stand-in 1500, bloqueo
+// 1400, resultado 1350, CRM toast 1450) — a propósito: es el único elemento
+// que un stakeholder debe poder alcanzar sin importar qué overlay esté
+// abierto encima, para no quedar atrapado viendo un solo estado.
+.fase0-switcher {
+  position: fixed;
+  left: $space-4;
+  bottom: $space-4;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $space-2;
+  font-family: $font-primary;
+  max-width: calc(100vw - #{$space-6});
+}
+
+.fase0-switcher__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  border: none;
+  border-radius: 9999px;
+  background: $gray-900;
+  color: $neutral-white;
+  box-shadow: $shadow-large;
+  cursor: pointer;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28); }
+  &:active { transform: translateY(0); }
+
+  i { font-size: $font-sm; color: $gray-300; }
+}
+
+.fase0-switcher__pill-label { color: $gray-300; font-weight: $font-medium; }
+.fase0-switcher__pill-current { color: $primary-300; }
+
+.fase0-switcher__pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: $warning-400;
+  box-shadow: 0 0 0 3px rgba($warning-400, 0.28);
+  animation: fase0-switcher-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes fase0-switcher-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+.fase0-switcher__panel {
+  width: 340px;
+  max-width: calc(100vw - #{$space-6});
+  max-height: min(70vh, 560px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  padding: $space-4;
+  border-radius: $radius-3;
+  background: $neutral-white;
+  box-shadow: $shadow-large;
+  border: 1px solid $gray-100;
+  animation: fase0-switcher-in 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fase0-switcher-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fase0-switcher__section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.fase0-switcher__label {
+  font-size: $font-xs;
+  font-weight: $font-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: $gray-500;
+}
+
+.fase0-switcher__states {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.fase0-switcher__state {
+  padding: $space-1 $space-3;
+  border-radius: 9999px;
+  border: 1px solid $gray-200;
+  background: $gray-50;
+  color: $gray-700;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover { border-color: $primary-300; }
+
+  &--active {
+    background: $primary-500;
+    border-color: $primary-500;
+    color: $neutral-white;
+  }
+
+  &--danger {
+    &:hover { border-color: $error-300; }
+  }
+
+  &--danger.fase0-switcher__state--active {
+    background: $error-500;
+    border-color: $error-500;
+  }
+}
+
+.fase0-switcher__section--actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.fase0-switcher__escape {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-3;
+  border-radius: $radius-2;
+  border: 1px solid $gray-200;
+  background: $gray-50;
+  color: $gray-700;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover { background: $gray-100; }
+  i { font-size: $font-sm; color: $gray-500; }
+
+  &--danger {
+    border-color: rgba($error-500, 0.4);
+    color: $error-700;
+    background: rgba($error-500, 0.08);
+
+    i { color: $error-500; }
+    &:hover { background: rgba($error-500, 0.14); }
+  }
+}
+
+.fase0-switcher__log {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.fase0-switcher__log-item {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-2;
+  padding: $space-2;
+  border-radius: $radius-2;
+  background: $gray-50;
+  font-size: $font-xs;
+  line-height: 1.45;
+}
+
+.fase0-switcher__log-icon { flex-shrink: 0; }
+.fase0-switcher__log-text { color: $gray-700; }
+
+.fase0-switcher__log-empty {
+  padding: $space-2;
+  font-size: $font-xs;
+  color: $gray-400;
+  font-style: italic;
+}
+
+// Responsive.
+@media (max-width: $bp-sm) {
+  .fase0-switcher { left: $space-2; right: $space-2; bottom: $space-2; }
+  .fase0-switcher__panel { width: 100%; }
+  .fase0-switcher__pill-label { display: none; }
+}

@@ -49,6 +49,19 @@
   gap: $space-4;
 }
 
+.fase0-interceptor__top {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.fase0-interceptor__top app-fase0-backstage-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 .fase0-interceptor__icon {
   width: 60px;
   height: 60px;
@@ -81,6 +94,8 @@
   flex-shrink: 0;
   padding: $space-4 $space-8 $space-8;
   display: flex;
+  flex-direction: column;
+  gap: $space-3;
 }
 
 .fase0-interceptor__cta {
@@ -98,6 +113,20 @@
 
   &:hover { background: $primary-600; }
   &:active { transform: translateY(1px); }
+}
+
+.fase0-interceptor__legal {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: $gray-500;
+  text-align: center;
+}
+
+.fase0-interceptor__legal-link {
+  color: $gray-600;
+  text-decoration: underline;
+  text-decoration-color: $gray-300;
 }
 
 // Transición de redirección a Sumsub.

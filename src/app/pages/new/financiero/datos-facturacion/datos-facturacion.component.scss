@@ -203,6 +203,44 @@ $warning-700: #ab8036;
   font-weight: 500;
 }
 
+// Fase 0 (blueprint): banner "grande" — único gate en la página para
+// "Datos de Facturación", sin Modal Interceptor. Mismos tokens de color que
+// .alert-warning, escalados en tamaño/peso para que sea la primera cosa que
+// se lea en la página.
+.alert-warning--fase0-grande {
+  padding: $space-6 $space-6;
+  gap: $space-4;
+  border-width: 2px;
+  align-items: center;
+
+  @media (max-width: $bp-sm) {
+    flex-wrap: wrap;
+    padding: $space-4;
+  }
+}
+
+.alert-icon--lg {
+  font-size: 28px;
+  color: $primary-500;
+  margin-top: 0;
+}
+
+.alert-text--lg {
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.btn-identity-cta--lg {
+  padding: 12px 24px;
+  font-size: 15px;
+  margin-top: $space-2;
+
+  @media (max-width: $bp-sm) {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 // ── Form content area ─────────────────────────────────────────────────────────
 .form-content {
   display: flex;

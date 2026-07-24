@@ -1,12 +1,12 @@
 @if (fase0.crmMessage(); as msg) {
-  <div class="crm-toast" role="status" aria-live="polite">
+  <div class="crm-toast" [class.crm-toast--manual]="msg.kind === 'marca-blanca'" role="status" aria-live="polite">
     <div class="crm-toast__header">
       <span class="crm-toast__avatar" aria-hidden="true">
-        <i class="pi pi-whatsapp"></i>
+        <i class="pi" [ngClass]="msg.kind === 'marca-blanca' ? 'pi-user' : 'pi-whatsapp'"></i>
       </span>
       <div class="crm-toast__meta">
-        <span class="crm-toast__brand">Dropi</span>
-        <span class="crm-toast__channel">WhatsApp</span>
+        <span class="crm-toast__brand">{{ msg.kind === 'marca-blanca' ? 'Soporte Dropi' : 'Dropi' }}</span>
+        <span class="crm-toast__channel">{{ msg.kind === 'marca-blanca' ? 'Enviado a mano (sin UserPilot)' : 'WhatsApp' }}</span>
       </div>
       <button type="button" class="crm-toast__close" aria-label="Cerrar mensaje" (click)="cerrar()">
         <i class="pi pi-times"></i>
