@@ -103,6 +103,7 @@ None yet.
 | 260720-taj | La sub-rama Colombia de la opción 7 (KYB) ya no asume "ya en revisión" — ahora cubre ambos casos (ya empezó / aún no ha empezado) con enlace real, ya que el mecanismo de Sumsub sí existe ("en evaluación" es sobre lanzamiento, no existencia) | 2026-07-21 | bb56b34 | [260720-taj-corregir-la-sub-rama-colombia-de-la-opci](./quick/260720-taj-corregir-la-sub-rama-colombia-de-la-opci/) |
 | 260727-r5y | Copias "con TI" del Service Blueprint Fase 0 (HTML + MD) sin tocar los originales, con carril nuevo "Tecnología → Automatización posible" (5 cajas punteadas, una por etapa) entre Herramientas y Stakeholders | 2026-07-28 | 3bf7384 | [260727-r5y-crear-copias-con-ti-del-service-blueprin](./quick/260727-r5y-crear-copias-con-ti-del-service-blueprin/) |
 | 260727-r5y (cont.) | Contenido del carril "Tecnología → Automatización posible" mucho más específico por etapa: sistemas/eventos/endpoints concretos (webhooks Sumsub, API UserPilot/CRM, tabla estado_validacion, servicio de baneo multipaís) en vez de una frase genérica | 2026-07-28 | 7221348 | [260727-r5y-crear-copias-con-ti-del-service-blueprin](./quick/260727-r5y-crear-copias-con-ti-del-service-blueprin/) |
+| 260727-r5y (cont.) | Reescrito el carril de Tecnología con doble registro: se conserva el término técnico (API, webhook) pero cada uno lleva una explicación en paréntesis en lenguaje simple, para que cualquier stakeholder (no solo dev) entienda qué cambia | 2026-07-28 | 707f098 | [260727-r5y-crear-copias-con-ti-del-service-blueprin](./quick/260727-r5y-crear-copias-con-ti-del-service-blueprin/) |
 
 ## Deferred Items
 
@@ -117,4 +118,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-07-28 -- Completed quick task 260727-r5y (cont.): contenido del carril de Tecnología ahora es específico por etapa (sistemas, eventos y endpoints concretos)
+Last activity: 2026-07-28 -- Completed quick task 260727-r5y (cont.): carril de Tecnología reescrito con doble registro (término técnico + explicación simple) para que cualquier stakeholder lo entienda
