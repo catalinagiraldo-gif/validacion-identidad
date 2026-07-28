@@ -101,6 +101,7 @@ None yet.
 | 260720-spj | Misma evaluación de coherencia aplicada a la opción 5: corregido el destino técnico de la sub-rama Colombia-persona natural (Truora, no Sumsub — DOC ENLACES bloque C la marca "fuera del enlace" de Sumsub) | 2026-07-21 | b3c05bb | [260720-spj-aplicar-la-misma-evaluacion-de-coherenci](./quick/260720-spj-aplicar-la-misma-evaluacion-de-coherenci/) |
 | 260720-t48 | Simplificar el Copy de la sub-rama "Resto de países" (opción 5): quitar la mención de persona natural/empresa/extranjero que confundía, dejar solo la invitación a validar | 2026-07-21 | f126bef | [260720-t48-simplificar-el-copy-de-la-sub-rama-resto](./quick/260720-t48-simplificar-el-copy-de-la-sub-rama-resto/) |
 | 260720-taj | La sub-rama Colombia de la opción 7 (KYB) ya no asume "ya en revisión" — ahora cubre ambos casos (ya empezó / aún no ha empezado) con enlace real, ya que el mecanismo de Sumsub sí existe ("en evaluación" es sobre lanzamiento, no existencia) | 2026-07-21 | bb56b34 | [260720-taj-corregir-la-sub-rama-colombia-de-la-opci](./quick/260720-taj-corregir-la-sub-rama-colombia-de-la-opci/) |
+| 260727-r5y | Copias "con TI" del Service Blueprint Fase 0 (HTML + MD) sin tocar los originales, con carril nuevo "Tecnología → Automatización posible" (5 cajas punteadas, una por etapa) entre Herramientas y Stakeholders | 2026-07-28 | 3bf7384 | [260727-r5y-crear-copias-con-ti-del-service-blueprin](./quick/260727-r5y-crear-copias-con-ti-del-service-blueprin/) |
 
 ## Deferred Items
 
@@ -115,4 +116,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-07-21 -- Completed quick task 260720-taj: la sub-rama Colombia de la opción 7 (KYB) ya no asume que el usuario está en revisión — ahora tiene enlace real para quien aún no ha empezado
+Last activity: 2026-07-28 -- Completed quick task 260727-r5y: copias "con TI" del Service Blueprint Fase 0 con carril de automatización tecnológica
