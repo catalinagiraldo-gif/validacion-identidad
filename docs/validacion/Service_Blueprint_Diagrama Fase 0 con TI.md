@@ -52,7 +52,7 @@
 
 **Herramientas:** CRM · UserPilot · Sumsub · Google Sheets.
 
-**Tecnología → Automatización posible:** Reemplazar el Google Sheet compartido por una fuente única vía API/DB interna que Legal, Financiero, Cartera y CRM consulten sin editar a mano.
+**Tecnología → Automatización posible:** Sustituir el Google Sheet por una tabla "estado_validacion" en la BD de Dropi, con API interna que Legal, Financiero, Cartera y CRM consultan (no editan a mano). Migrar las 3 cargas históricas (ColocaPayments ZIP/Excel, Cartera, ~115k Truora Colombia) con un script ETL versionado y con logs, en vez de exportación manual. Config de Sumsub y el ritmo de "Lotes de Despliegue" por país pasan a un archivo versionado con feature-flags, en vez de ajustarse a mano en el dashboard.
 
 **Stakeholders:**
 - **Legal** — Google Sheet compartido y config. Sumsub.
@@ -86,7 +86,7 @@
 
 **Herramientas:** UserPilot · CRM.
 
-**Tecnología → Automatización posible:** Segmentación de Usuarios Nuevos por API (fecha de registro) en vez de filtro manual en UserPilot; disparo automático de envíos WhatsApp/correo por CRM vía trigger.
+**Tecnología → Automatización posible:** Evento "user.registered" del backend de Dropi dispara, vía webhook a la API de UserPilot, la etiqueta "Usuario Nuevo" — reemplaza el filtro manual por fecha de registro. Un motor de mensajería (CRM API / cron) dispara el recordatorio de WhatsApp o correo al día N si el usuario no verificó, en vez de que CRM programe el envío a mano.
 
 **Stakeholders:**
 - **Product Designer** — Banner.
@@ -124,7 +124,7 @@
 
 **Herramientas:** UserPilot · Sumsub WebSDK.
 
-**Tecnología → Automatización posible:** Webhook de Sumsub que actualice el estado en tiempo real en la fuente única, en vez de esperar a Etapa Continua.
+**Tecnología → Automatización posible:** Endpoint interno de enrutamiento: dado país + tipo de cuenta, devuelve automáticamente el enlace Sumsub correcto (bloque A/B/C/D/E) — reemplaza la tabla estática "DOC ENLACES" que hoy se consulta a mano. Webhook de Sumsub ("applicant.pending") escribe el estado en la fuente única en tiempo real, sin esperar a Etapa Continua. Marcas Blancas: el enlace se envía por API de WhatsApp Business/Intercom, no copiado a mano por Soporte.
 
 **Stakeholders:**
 - **PD / Growth** — Rediseño de modal interceptor + adaptación modal exclusivo Datos Bancarios (GT/PA).
@@ -167,7 +167,7 @@
 
 **Herramientas:** UserPilot · Python (Cartera).
 
-**Tecnología → Automatización posible:** Conectar la salida del script Python de Cartera directo a una API que dispare la campaña de UserPilot y el bloqueo; automatizar el cruce multipaís correo+DNI como servicio.
+**Tecnología → Automatización posible:** El script Python de Cartera pasa de corrida manual a job programado (o disparado por evento de saldo negativo) que llama directo a la API de UserPilot para el bloqueo, sin paso intermedio manual. Un servicio de baneo multipaís propaga el bloqueo vía API a las 5 bases país (CO/CL/EC/PE/VE) cruzando correo+DNI, con log de auditoría. Caso de delito grave: se automatiza la creación del caso con monto y cuenta externa precargados, para que Legal/Financiero solo decidan.
 
 **Stakeholders:**
 - **Cartera** — Listas negativas.
@@ -214,7 +214,7 @@
 
 **Herramientas:** Sumsub Backoffice · Google Sheets · UserPilot · CRM.
 
-**Tecnología → Automatización posible:** Automatizar el cuello de botella: webhook Sumsub → actualiza estado → dispara automáticamente el apagado del pop-up en UserPilot y la notificación CRM, sin descarga/actualización manual del Google Sheet.
+**Tecnología → Automatización posible:** Webhook de Sumsub Backoffice ("applicant.reviewed") llega a un servicio interno y actualiza el estado en la fuente única — reemplaza la descarga/actualización manual del Google Sheet marcada como cuello de botella. Ese mismo evento dispara: (1) API call a UserPilot para apagar el pop-up si Aprobado, (2) trigger a la API del CRM para la notificación WhatsApp/correo según estado. La auditoría tributaria sigue siendo criterio humano, pero los datos cruzados Sumsub-Dropi llegan armados a un dashboard, no a mano.
 
 **Stakeholders:**
 - **Legal** — Descarga y actualiza el Google Sheet.
@@ -317,11 +317,11 @@ Estas son las flechas índigo que van de una caja a la siguiente caja de la mism
 
 | # | Etapa | Oportunidad de automatización (Tecnología → Automatización posible) |
 |---|---|---|
-| 1 | PRE-ETAPA | Reemplazar el Google Sheet compartido por una fuente única vía API/DB interna que Legal, Financiero, Cartera y CRM consulten sin editar a mano. |
-| 2 | ETAPA 0 | Segmentación de Usuarios Nuevos por API (fecha de registro) en vez de filtro manual en UserPilot; disparo automático de envíos WhatsApp/correo por CRM vía trigger. |
-| 3 | ETAPA 0.5 | Webhook de Sumsub que actualice el estado en tiempo real en la fuente única, en vez de esperar a Etapa Continua. |
-| 4 | ETAPA 1 | Conectar la salida del script Python de Cartera directo a una API que dispare la campaña de UserPilot y el bloqueo; automatizar el cruce multipaís correo+DNI como servicio. |
-| 5 | ETAPA CONTINUA | Automatizar el cuello de botella: webhook Sumsub → actualiza estado → dispara automáticamente el apagado del pop-up en UserPilot y la notificación CRM, sin descarga/actualización manual del Google Sheet. |
+| 1 | PRE-ETAPA | Sustituir el Google Sheet por una tabla "estado_validacion" en la BD de Dropi, con API interna que Legal, Financiero, Cartera y CRM consultan (no editan a mano). Migrar las 3 cargas históricas (ColocaPayments ZIP/Excel, Cartera, ~115k Truora Colombia) con un script ETL versionado y con logs, en vez de exportación manual. Config de Sumsub y el ritmo de "Lotes de Despliegue" por país pasan a un archivo versionado con feature-flags, en vez de ajustarse a mano en el dashboard. |
+| 2 | ETAPA 0 | Evento "user.registered" del backend de Dropi dispara, vía webhook a la API de UserPilot, la etiqueta "Usuario Nuevo" — reemplaza el filtro manual por fecha de registro. Un motor de mensajería (CRM API / cron) dispara el recordatorio de WhatsApp o correo al día N si el usuario no verificó, en vez de que CRM programe el envío a mano. |
+| 3 | ETAPA 0.5 | Endpoint interno de enrutamiento: dado país + tipo de cuenta, devuelve automáticamente el enlace Sumsub correcto (bloque A/B/C/D/E) — reemplaza la tabla estática "DOC ENLACES" que hoy se consulta a mano. Webhook de Sumsub ("applicant.pending") escribe el estado en la fuente única en tiempo real, sin esperar a Etapa Continua. Marcas Blancas: el enlace se envía por API de WhatsApp Business/Intercom, no copiado a mano por Soporte. |
+| 4 | ETAPA 1 | El script Python de Cartera pasa de corrida manual a job programado (o disparado por evento de saldo negativo) que llama directo a la API de UserPilot para el bloqueo, sin paso intermedio manual. Un servicio de baneo multipaís propaga el bloqueo vía API a las 5 bases país (CO/CL/EC/PE/VE) cruzando correo+DNI, con log de auditoría. Caso de delito grave: se automatiza la creación del caso con monto y cuenta externa precargados, para que Legal/Financiero solo decidan. |
+| 5 | ETAPA CONTINUA | Webhook de Sumsub Backoffice ("applicant.reviewed") llega a un servicio interno y actualiza el estado en la fuente única — reemplaza la descarga/actualización manual del Google Sheet marcada como cuello de botella. Ese mismo evento dispara: (1) API call a UserPilot para apagar el pop-up si Aprobado, (2) trigger a la API del CRM para la notificación WhatsApp/correo según estado. La auditoría tributaria sigue siendo criterio humano, pero los datos cruzados Sumsub-Dropi llegan armados a un dashboard, no a mano. |
 
 ## Notas finales
 
