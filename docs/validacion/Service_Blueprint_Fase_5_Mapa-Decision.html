@@ -75,15 +75,15 @@
     <section class="section" id="gaps">
       <h2><span class="step-no">1</span>Gaps y Estado API — ¿Qué le falta y en qué estado está?</h2>
       <div class="plain-answer">
-        <strong>En una frase:</strong> antes de iniciar cualquier acción, el sistema consulta vía API el estado del usuario (Aprobado, Pendiente, Sin Iniciar). Si ya tiene identidad y facturación completas, no lo molestamos. Si le falta algo, determinamos por qué canal entra.
+        <strong>En una frase:</strong> antes de iniciar cualquier acción, el sistema decide en milisegundos consultando vía API las bases de datos de Truora y Sumsub — sin descargas manuales ni Google Sheets de por medio. Si ya tiene identidad y facturación completas, no lo interrumpimos. Si le falta algo, determinamos su canal de entrada.
       </div>
       <div class="table-scroll">
         <table>
-          <thead><tr><th>SI (Estado devuelto por API)</th><th>ENTONCES (Condición de Gap)</th><th>Destino</th></tr></thead>
+          <thead><tr><th>SI (Estado devuelto por API)</th><th>ENTONCES (Condición de Gap)</th><th>Destino en el Flujo</th></tr></thead>
           <tbody>
-            <tr><td><code>has_identity</code> Y <code>has_billing</code> = Aprobado</td><td>Idle: sin soft, sin hard, sin modal.</td><td>Fin del flujo</td></tr>
-            <tr><td>Falta identidad y/o facturación (Sin iniciar o Incompleto)</td><td>Elegible para intervención (Nueva o Antigua cuenta).</td><td>Espera canal (Bifurcación 2)</td></tr>
-            <tr><td>Estado API = Pendiente</td><td>Validación en curso.</td><td>Bloqueo transaccional temporal → Espera Webhook (C6)</td></tr>
+            <tr><td><code>has_identity</code> Y <code>has_billing</code> = Aprobado</td><td>Idle: sin soft, sin hard, sin modal.</td><td>Fin del flujo (Operación normal)</td></tr>
+            <tr><td>Falta identidad y/o facturación (Incompleto o Sin Iniciar)</td><td>Elegible para intervención (Nueva o Antigua cuenta).</td><td>Espera canal (Bifurcación 2)</td></tr>
+            <tr><td>Estado API = Pendiente / En Revisión</td><td>Validación en curso por parte del proveedor.</td><td>Bloqueo transaccional temporal → Espera Webhook de resolución</td></tr>
           </tbody>
         </table>
       </div>
@@ -105,19 +105,19 @@ flowchart TD
     </section>
 
     <section class="section" id="canal">
-      <h2><span class="step-no">2</span>Canal — ¿Cómo entra al flujo? (Paralelos)</h2>
+      <h2><span class="step-no">2</span>Canal — ¿Cómo entra al flujo? (Rutas Paralelas)</h2>
       <div class="plain-answer">
-        <strong>En una frase:</strong> el gap se muestra distinto según la antigüedad del usuario y su acción. Cerrar el soft <strong>no</strong> abre el hard. El hard solo aparece al tocar dinero.
+        <strong>En una frase:</strong> la intervención se adapta a la antigüedad y la acción del usuario. El bloqueo estricto (Hard Gate) solo aparece al tocar salidas de dinero.
       </div>
       <div class="myth"><strong>Mito:</strong> Soft → Hard → Módulo.&nbsp;&nbsp;<strong>Realidad:</strong> uno de tres canales → C5.</div>
       <div class="table-scroll">
         <table>
-          <thead><tr><th>SI el usuario…</th><th>Antigüedad / Estado</th><th>ENTONCES canal</th><th>UI (Pantalla)</th><th>¿Obligatorio?</th><th>Sale a</th></tr></thead>
+          <thead><tr><th>SI el usuario…</th><th>Antigüedad / Estado</th><th>UI (Pantalla de Intervención)</th><th>¿Bloqueante?</th></tr></thead>
           <tbody>
-            <tr><td>Recibe 1ra orden (venta) o hace 1er mov. wallet</td><td>Nuevo (Sin iniciar nada)</td><td><strong>C4d Welcome</strong></td><td>Modal de bienvenida "Verifica tu cuenta antes de operar"</td><td>No (X)</td><td>CTA → C5 / C4</td></tr>
-            <tr><td>Navega en Home / Dashboard</td><td>Antiguo (Falta alguna validación)</td><td><strong>C2 Soft</strong></td><td>Modal Slide-up (Sutil) invitando a completar datos</td><td>No (X)</td><td>CTA → C5 / C4</td></tr>
-            <tr><td>Clic en Retirar / Transferir / DropiCard</td><td>Nuevo o Antiguo (Con gaps)</td><td><strong>C3 Hard</strong></td><td>Tooltip de bloqueo + Modal restrictivo</td><td>Sí (Gate)</td><td>CTA → C5 / C4</td></tr>
-            <tr><td>Abre Info de Cuenta o Facturación</td><td>Nuevo o Antiguo (Con gaps)</td><td><strong>C4 Módulo</strong></td><td>Formulario Dropi o Link Sumsub</td><td>Según estado</td><td>CTA → C5</td></tr>
+            <tr><td>Recibe 1ra orden (venta) o hace 1er mov. wallet</td><td>Nuevo (Sin iniciar validaciones)</td><td><strong>C4d Welcome:</strong> Modal de bienvenida — <em>"¡Tu primera venta en Dropi! Completa tu validación…"</em></td><td>No (Puede posponer)</td></tr>
+            <tr><td>Navega en Home / Dashboard</td><td>Antiguo (Le falta alguna validación)</td><td><strong>C2 Soft Touch:</strong> Modal Slide-up sutil invitando a completar datos</td><td>No (Puede cerrar 'X')</td></tr>
+            <tr><td>Clic en Retirar / Transferir / DropiCard</td><td>Nuevo o Antiguo (Con gaps)</td><td><strong>C3 Hard Gate:</strong> Control deshabilitado + Tooltip y Modal restrictivo</td><td>Sí (Obligatorio)</td></tr>
+            <tr><td>Abre Info de Cuenta o Facturación</td><td>Nuevo o Antiguo (Con gaps)</td><td><strong>C4 Módulo nativo:</strong> Formulario Dropi o CTA a Sumsub</td><td>Según estado</td></tr>
           </tbody>
         </table>
       </div>
@@ -141,23 +141,23 @@ flowchart TD
   class soft,mod,wel,c5 soft;
       </pre></div>
       <div class="node-links">
-        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#soft-slideup">Slide-up</a>
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#soft-slideup">Panel deslizante</a>
       </div>
     </section>
 
     <section class="section" id="pais-gap">
-      <h2><span class="step-no">3</span>País + gap — ¿A dónde lo mandamos? (Routing)</h2>
+      <h2><span class="step-no">3</span>Ruteo Tech-Native — País + Gap (¿A dónde lo mandamos?)</h2>
       <div class="plain-answer">
-        <strong>En una frase:</strong> el CTA resuelve el destino según el país y el validador asignado. Colombia divide flujos (Truora/Sumsub); el resto de LATAM los unifica.
+        <strong>En una frase:</strong> Colombia separa la identidad (Truora) de la facturación (Sumsub). El resto de LATAM unifica ambas en un solo paso de Sumsub.
       </div>
       <div class="table-scroll">
         <table>
-          <thead><tr><th>SI (Condición)</th><th>ENTONCES Destino</th><th>Proveedor (API)</th><th>Lo que el usuario ve / hace</th></tr></thead>
+          <thead><tr><th>SI (Condición del Usuario)</th><th>Proveedor (API)</th><th>Lo que el usuario ve y hace (Destino)</th></tr></thead>
           <tbody>
-            <tr><td><strong>Colombia</strong> + Falta Identidad</td><td>Información de Cuenta</td><td><strong>Truora (KYC)</strong></td><td>Formulario de datos personales en Dropi + Flujo de Identidad Truora.</td></tr>
-            <tr><td><strong>Colombia</strong> + Falta Facturación</td><td>Módulo Financiero</td><td><strong>Sumsub (KYB)</strong></td><td><strong>Sin formulario en Dropi.</strong> Enlace directo al WebSDK de Sumsub para empresas.</td></tr>
-            <tr><td><strong>Otros Países</strong> + Cualquier Gap</td><td>Módulo Único</td><td><strong>Sumsub (KYC+KYB)</strong></td><td>Un solo flujo continuo dentro de Sumsub, sin separar identidad y facturación.</td></tr>
-            <tr><td><strong>Excepción: EC / CL / AR</strong> (Pending manual)</td><td>Transición a automatización</td><td><strong>Sumsub (Migración)</strong></td><td>(Por definir) Migrar casos pendientes a Sumsub o ejecutar flujo manual temporal. Una vez resuelto, pasan al flujo "Otros Países".</td></tr>
+            <tr><td><strong>Colombia</strong> + Falta Identidad</td><td><strong>Truora (KYC)</strong></td><td>Va a Información de Cuenta → Llena Formulario Dropi → Flujo Truora.</td></tr>
+            <tr><td><strong>Colombia</strong> + Falta Facturación</td><td><strong>Sumsub (KYB)</strong></td><td><strong>Sin formulario en Dropi.</strong> Enlace directo al WebSDK de Sumsub para validar la empresa (KYB).</td></tr>
+            <tr><td><strong>Otros Países</strong> + Cualquier Gap</td><td><strong>Sumsub (KYC+KYB)</strong></td><td>Módulo único. Todo ocurre en Sumsub sin separar identidad y facturación. Todos los mensajes de esta rama llevan aquí.</td></tr>
+            <tr><td><strong>Excepción: EC / CL / AR</strong> (Pending manual)</td><td><strong>Sumsub (Migración)</strong></td><td>Migración de los casos manuales pendientes a Sumsub. Tras resolución, operan como "Otros Países".</td></tr>
           </tbody>
         </table>
       </div>
@@ -176,9 +176,9 @@ flowchart TD
   class rest rest;
       </pre></div>
       <div class="node-links">
-        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#route-co-id">CO 2 destinos</a>
-        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#route-rest">Resto 1 destino</a>
-        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#country-process-router">Router</a>
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#route-co-id">CO: dos pasos distintos</a>
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#route-rest">Resto: un solo paso</a>
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#country-process-router">Decide a qué proveedor enviarlo</a>
       </div>
     </section>
 
@@ -186,12 +186,12 @@ flowchart TD
       <h2><span class="step-no">4</span>Resultado webhook — ¿Qué le mostramos y cómo queda la UI?</h2>
       <div class="table-scroll">
         <table>
-          <thead><tr><th>SI estado webhook</th><th>ENTONCES UI (Mensaje)</th><th>Comportamiento en Módulo Dropi</th><th>Gate salidas</th></tr></thead>
+          <thead><tr><th>SI (Estado Webhook)</th><th>ENTONCES UI (Mensaje en Dropi)</th><th>Comportamiento del Módulo (Regla 6 meses)</th></tr></thead>
           <tbody>
-            <tr><td><strong>Aprobado (Ambos OK)</strong></td><td>Modal: "¡Cuenta verificada!" + Confetti</td><td><strong>Datos Personales y Facturación se muestran en modo Solo Lectura (Read-only).</strong> Aparece aviso: <em>"No puedes editar esta información durante 6 meses"</em>.</td><td>Libera</td></tr>
-            <tr><td><strong>Aprobado Parcial (CO)</strong></td><td>Confirmación del paso + Cross-sell</td><td>El módulo completado se bloquea (6 meses). El módulo restante sigue abierto.</td><td>Parcial</td></tr>
-            <tr><td><strong>Rechazado</strong></td><td>"No pudimos validar tu información"</td><td>Los flujos de reintento permanecen activos.</td><td>Se mantiene</td></tr>
-            <tr><td><strong>Incompleto / Timeout</strong></td><td>"Te falta un paso"</td><td>Botón "Continuar" para retomar flujo en API.</td><td>Se mantiene</td></tr>
+            <tr><td><strong>Aprobado (Ambos OK)</strong></td><td>Toast: <em>"¡Cuenta verificada!"</em> + Confetti</td><td><strong>Datos en Solo Lectura (Read-only).</strong> Alerta: <em>"No puedes editar esta información durante 6 meses"</em>.</td></tr>
+            <tr><td><strong>Aprobación Parcial (CO)</strong></td><td>Modal: <em>"¡Identidad lista! Completar facturación"</em> + Confetti</td><td>El módulo completado se bloquea por 6 meses. El otro gap sigue abierto y exigible.</td></tr>
+            <tr><td><strong>Rechazado</strong></td><td><em>"No pudimos validar tu información"</em></td><td>Los datos previos válidos se conservan. Se habilitan los reintentos hacia Sumsub/Truora.</td></tr>
+            <tr><td><strong>Incompleto</strong></td><td><em>"Te falta un paso"</em></td><td>Botón "Continuar" para retomar exactamente donde quedó en la API.</td></tr>
           </tbody>
         </table>
       </div>
@@ -210,7 +210,7 @@ flowchart TD
   class done,cross ok;
       </pre></div>
       <div class="node-links">
-        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#identity-webhook">State machine</a>
+        <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#identity-webhook">Motor de estados</a>
         <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#state-approved">Aprobado</a>
         <a class="see-box" href="Service_Blueprint_Diagrama_Fase_5.html#state-review">En revisión</a>
       </div>
@@ -221,6 +221,16 @@ flowchart TD
       <div class="plain-answer">
         <strong>Defecto:</strong> Prep carga Sumsub → Dropi <code>en_revision</code> → no pedir reenviar docs.<br>
         <strong>Alternativa Legal:</strong> espera 72h sin nuevo Sumsub.
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>SI</th><th>ENTONCES (defecto producto)</th><th>Alternativa Legal</th></tr></thead>
+          <tbody>
+            <tr><td>Usuario en revisión admin manual (B)</td><td>Prep crea/actualiza applicant Sumsub; Dropi <code>en_revision</code></td><td>Mantener espera 72h sin nuevo Sumsub</td></tr>
+            <tr><td>Sumsub pide completar</td><td>CTA Continuar → C5</td><td>—</td></tr>
+            <tr><td>Usuario B <strong>sin</strong> pending + gap</td><td>Un enlace Sumsub corto KYC+KYB</td><td>—</td></tr>
+          </tbody>
+        </table>
       </div>
       <div class="diagram-wrap"><pre class="mermaid">
 flowchart TD

@@ -2,7 +2,7 @@
 
 > [← Volver al Blueprint](Service_Blueprint_Diagrama_Fase_5.md) · versión visual: [Service_Blueprint_Fase_5_Mapa-Decision.html](Service_Blueprint_Fase_5_Mapa-Decision.html)
 >
-> ⚠️ **Naming:** loop de **completar gaps**, no edición `field_diff` de Historia Fase 5.
+> ⚠️ **Naming:** loop de **completar lo que falta**, no edición `field_diff` de Historia Fase 5.
 >
 > 📐 **Cómo leer con el Blueprint:** C2 Soft · C3 Hard · C4 Módulo son **canales en paralelo** (no una secuencia). Este mapa detalla el **SI → ENTONCES** de cada salto.
 
@@ -24,13 +24,13 @@ Hay **5 bifurcaciones** + **4 reglas transversales**.
 
 ## 1. Gaps y Estado API — ¿Qué le falta y en qué estado está?
 
-**En una frase:** Antes de iniciar cualquier acción, el sistema consulta vía API el estado del usuario (Aprobado, Pendiente, Sin Iniciar). Si ya tiene identidad y facturación completas, no lo molestamos. Si le falta algo, determinamos por qué canal entra.
+**En una frase:** Antes de iniciar cualquier acción, el sistema decide en milisegundos consultando vía API las bases de datos de Truora y Sumsub — sin descargas manuales ni Google Sheets de por medio. Si ya tiene identidad y facturación completas, no lo interrumpimos. Si le falta algo, determinamos su canal de entrada.
 
-| SI (Estado devuelto por API) | ENTONCES (Condición de Gap) | Destino |
+| SI (Estado devuelto por API) | ENTONCES (Condición de Gap) | Destino en el Flujo |
 |---|---|---|
-| `has_identity` Y `has_billing` = Aprobado | Idle: sin soft, sin hard, sin modal. | Fin del flujo |
-| Falta identidad y/o facturación (Sin iniciar o Incompleto) | Elegible para intervención (Nueva o Antigua cuenta). | Espera canal (Bifurcación 2) |
-| Estado API = Pendiente | Validación en curso. | Bloqueo transaccional temporal → Espera Webhook (C6) |
+| `has_identity` Y `has_billing` = Aprobado | Idle: sin soft, sin hard, sin modal. | Fin del flujo (Operación normal) |
+| Falta identidad y/o facturación (Incompleto o Sin Iniciar) | Elegible para intervención (Nueva o Antigua cuenta). | Espera canal (Bifurcación 2) |
+| Estado API = Pendiente / En Revisión | Validación en curso por parte del proveedor. | Bloqueo transaccional temporal → Espera Webhook de resolución |
 
 ```mermaid
 flowchart TD
@@ -47,16 +47,16 @@ Cajas: [`gap-idle`](Service_Blueprint_Diagrama_Fase_5.html#gap-idle) · [`gap-mi
 
 <a id="canal"></a>
 
-## 2. Canal — ¿Cómo entra al flujo? (Paralelos)
+## 2. Canal — ¿Cómo entra al flujo? (Rutas Paralelas)
 
-**En una frase:** El gap se muestra distinto según la antigüedad del usuario y su acción. Cerrar el soft no abre el hard. El hard solo aparece al tocar dinero.
+**En una frase:** La intervención se adapta a la antigüedad y la acción del usuario. El bloqueo estricto (Hard Gate) solo aparece al tocar salidas de dinero.
 
-| SI el usuario… | Antigüedad / Estado | ENTONCES canal | UI (Pantalla) | ¿Obligatorio? | Sale a |
-|---|---|---|---|---|---|
-| Recibe 1ra orden (venta) o hace 1er mov. wallet | Nuevo (Sin iniciar nada) | **C4d Welcome** | Modal de bienvenida "Verifica tu cuenta antes de operar" | No (X) | CTA → C5 / C4 |
-| Navega en Home / Dashboard | Antiguo (Falta alguna validación) | **C2 Soft** | Modal Slide-up (Sutil) invitando a completar datos | No (X) | CTA → C5 / C4 |
-| Clic en Retirar / Transferir / DropiCard | Nuevo o Antiguo (Con gaps) | **C3 Hard** | Tooltip de bloqueo + Modal restrictivo | Sí (Gate) | CTA → C5 / C4 |
-| Abre Info de Cuenta o Facturación | Nuevo o Antiguo (Con gaps) | **C4 Módulo** | Formulario Dropi o Link Sumsub | Según estado | CTA → C5 |
+| SI el usuario… | Antigüedad / Estado | UI (Pantalla de Intervención) | ¿Bloqueante? |
+|---|---|---|---|
+| Recibe 1ra orden (venta) o hace 1er mov. wallet | Nuevo (Sin iniciar validaciones) | **C4d Welcome:** Modal de bienvenida — *"¡Tu primera venta en Dropi! Completa tu validación…"* | No (Puede posponer) |
+| Navega en Home / Dashboard | Antiguo (Le falta alguna validación) | **C2 Soft Touch:** Modal Slide-up sutil invitando a completar datos | No (Puede cerrar 'X') |
+| Clic en Retirar / Transferir / DropiCard | Nuevo o Antiguo (Con gaps) | **C3 Hard Gate:** Control deshabilitado + Tooltip y Modal restrictivo | Sí (Obligatorio) |
+| Abre Info de Cuenta o Facturación | Nuevo o Antiguo (Con gaps) | **C4 Módulo nativo:** Formulario Dropi o CTA a Sumsub | Según estado |
 
 ```mermaid
 flowchart TD
@@ -78,16 +78,16 @@ flowchart TD
 
 <a id="pais-gap"></a>
 
-## 3. País + gap — ¿A dónde lo mandamos? (Routing)
+## 3. Ruteo Tech-Native — País + Gap (¿A dónde lo mandamos?)
 
-**En una frase:** El CTA resuelve el destino según el país y el validador asignado. Colombia divide flujos (Truora/Sumsub); el resto de LATAM los unifica.
+**En una frase:** Colombia separa la identidad (Truora) de la facturación (Sumsub). El resto de LATAM unifica ambas en un solo paso de Sumsub.
 
-| SI (Condición) | ENTONCES Destino | Proveedor (API) | Lo que el usuario ve / hace |
-|---|---|---|---|
-| **Colombia** + Falta Identidad | Información de Cuenta | **Truora (KYC)** | Formulario de datos personales en Dropi + Flujo de Identidad Truora. |
-| **Colombia** + Falta Facturación | Módulo Financiero | **Sumsub (KYB)** | **Sin formulario en Dropi.** Enlace directo al WebSDK de Sumsub para empresas. |
-| **Otros Países** + Cualquier Gap | Módulo Único | **Sumsub (KYC+KYB)** | Un solo flujo continuo dentro de Sumsub, sin separar identidad y facturación. |
-| **Excepción: EC / CL / AR** (Pending manual) | Transición a automatización | **Sumsub (Migración)** | (Por definir) Migrar casos pendientes a Sumsub o ejecutar flujo manual temporal. Una vez resuelto, pasan al flujo "Otros Países". |
+| SI (Condición del Usuario) | Proveedor (API) | Lo que el usuario ve y hace (Destino) |
+|---|---|---|
+| **Colombia** + Falta Identidad | **Truora (KYC)** | Va a Información de Cuenta → Llena Formulario Dropi → Flujo Truora. |
+| **Colombia** + Falta Facturación | **Sumsub (KYB)** | **Sin formulario en Dropi.** Enlace directo al WebSDK de Sumsub para validar la empresa (KYB). |
+| **Otros Países** + Cualquier Gap | **Sumsub (KYC+KYB)** | Módulo único. Todo ocurre en Sumsub sin separar identidad y facturación. Todos los mensajes de esta rama llevan aquí. |
+| **Excepción: EC / CL / AR** (Pending manual) | **Sumsub (Migración)** | Migración de los casos manuales pendientes a Sumsub. Tras resolución, operan como "Otros Países". |
 
 ```mermaid
 flowchart TD
@@ -105,12 +105,12 @@ flowchart TD
 
 ## 4. Resultado webhook — ¿Qué le mostramos y cómo queda la UI?
 
-| SI estado webhook | ENTONCES UI (Mensaje) | Comportamiento en Módulo Dropi | Gate salidas |
-|---|---|---|---|
-| **Aprobado (Ambos OK)** | Modal: "¡Cuenta verificada!" + Confetti | **Datos Personales y Facturación se muestran en modo Solo Lectura (Read-only).** Aparece aviso: *"No puedes editar esta información durante 6 meses"*. | Libera |
-| **Aprobado Parcial (CO)** | Confirmación del paso + Cross-sell | El módulo completado se bloquea (6 meses). El módulo restante sigue abierto. | Parcial |
-| **Rechazado** | "No pudimos validar tu información" | Los flujos de reintento permanecen activos. | Se mantiene |
-| **Incompleto / Timeout** | "Te falta un paso" | Botón "Continuar" para retomar flujo en API. | Se mantiene |
+| SI (Estado Webhook) | ENTONCES UI (Mensaje en Dropi) | Comportamiento del Módulo (Regla 6 meses) |
+|---|---|---|
+| **Aprobado (Ambos OK)** | Toast: *"¡Cuenta verificada!"* + Confetti | **Datos en Solo Lectura (Read-only).** Alerta: *"No puedes editar esta información durante 6 meses"*. |
+| **Aprobación Parcial (CO)** | Modal: *"¡Identidad lista! Completar facturación"* + Confetti | El módulo completado se bloquea por 6 meses. El otro gap sigue abierto y exigible. |
+| **Rechazado** | *"No pudimos validar tu información"* | Los datos previos válidos se conservan. Se habilitan los reintentos hacia Sumsub/Truora. |
+| **Incompleto** | *"Te falta un paso"* | Botón "Continuar" para retomar exactamente donde quedó en la API. |
 
 ```mermaid
 flowchart TD
@@ -168,6 +168,6 @@ El frontend debe escuchar la variable `last_validation_date` proveniente de la b
 4. ¿Qué dijo el webhook? (4) → UI + gate.  
 5. ¿Era pending B? (5) → revisión nativa.
 
-Copy: [`UX-Writing-Validacion-TechNative.md`](UX-Writing-Validacion-TechNative.md) · Blueprint §5 tarjetas · [Tabla](Service_Blueprint_Fase_5_Tabla.md).
+Copy: [`UX-Writing-Validacion-TechNative.md`](UX-Writing-Validacion-TechNative.md) · cada columna del [Blueprint](Service_Blueprint_Diagrama_Fase_5.md) ya trae esta misma tabla inline · [Tabla](Service_Blueprint_Fase_5_Tabla.md).
 
 [← Volver al Blueprint](Service_Blueprint_Diagrama_Fase_5.md)

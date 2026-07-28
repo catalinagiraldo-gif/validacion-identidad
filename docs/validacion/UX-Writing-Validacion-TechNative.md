@@ -91,7 +91,9 @@ Truora / Sumsub **no aparecen en copy de usuario**; solo en Nota interna.
 
 ---
 
-## 5. Módulo — Datos de facturación vacío (Colombia)
+## 5. Módulo — Datos de facturación (Colombia)
+
+### 5a. Vacío
 
 | Elemento | Copy |
 |---|---|
@@ -101,6 +103,16 @@ Truora / Sumsub **no aparecen en copy de usuario**; solo en Nota interna.
 
 **Nota interna:** Sin formulario KYB nativo en Dropi (evitar retroceso frente a Sumsub). Enlace abre Sumsub.
 
+### 5b. En proceso (tras volver de Sumsub, esperando el webhook)
+
+| Elemento | Copy |
+|---|---|
+| Formato | La tarjeta reemplaza el botón por una etiqueta de estado — **banner fijo dentro de la tarjeta, no modal**. No interrumpe el resto de la navegación. |
+| Headline | **Estamos confirmando tus datos de facturación** |
+| Body | No debería tardar más de 24 horas. Mientras tanto, sigue comprando y vendiendo sin problema — solo pausamos tus retiros y transferencias. |
+
+**Nota interna:** mismo copy que `Service_Blueprint_Diagrama_Fase_5.md` §C5 / este documento §11 ("Colombia · falta facturación") — es el mismo aviso, mostrado en el lugar donde vive la acción (la tarjeta de Datos de facturación), no solo como banner flotante. Sin fecha de desbloqueo todavía — a diferencia del estado "Completo" (§6), aquí no se sabe cuándo resuelve, solo el SLA de 24h.
+
 ---
 
 ## 6. Módulo — Datos de facturación completos (read-only)
@@ -108,20 +120,31 @@ Truora / Sumsub **no aparecen en copy de usuario**; solo en Nota interna.
 | Elemento | Copy |
 |---|---|
 | Headline | **Tus datos de facturación** |
-| Body (lista) | Muestra los campos tal como quedaron validados. |
+| Campos mostrados | Razón social · NIT · RUT · Cámara de comercio · Representante legal · Correo de facturación |
 | Alerta | No podrás editar estos datos en los próximos 6 meses. Si necesitas un cambio, escribe a soporte desde el ícono de abajo a la derecha. |
+| Excepción | Correo de facturación se puede editar en cualquier momento, incluso durante el bloqueo — no dispara una nueva validación. |
 
-**Nota interna:** RN-11 / fricción defensiva; edición real = flujo hermano (addendum).
+**Nota interna:** campos derivados de Fase 0 (`DOC ENLACES`, KYB Colombia: prueba de vida del representante legal + cédula + razón social + NIT + RUT + cámara de comercio) y de `Historia.md` (correo de facturación es campo no sensible, `RN-11` no le aplica). RN-11 / fricción defensiva; edición real = flujo hermano (addendum). Copy de campos nuevo — validar con Product Design antes de construir.
 
 ---
 
 ## 7. Módulo — Información de cuenta (Colombia)
 
+| Elemento | Copy |
+|---|---|
+| Headline (incompleto) | **Completa tu información de cuenta** |
+| Body (incompleto) | Con estos datos confirmamos quién eres. Al guardar, empezamos la validación con una prueba de vida. |
+| Campos del formulario | Tipo de persona · Nombre completo · Tipo de documento · Número de documento · Documento adjunto |
+| Botón | **Guardar y continuar** |
+
 | Estado | Copy / comportamiento |
 |---|---|
-| Incompleto | Formulario editable → al guardar inicia validación (Truora: liveness + documento). |
-| Completo + RN-11 vigente | Formulario visible completo y bloqueado. Tooltip: *Podrás editar este dato el {unlock_at}. Lo bloqueamos temporalmente por seguridad.* |
-| Completo + RN-11 vencido | Editable; cambios sensibles disparan el flujo de edición (addendum). |
+| Incompleto | Formulario editable, con los campos de arriba → al guardar, se abre un **enlace aparte** (fuera de Dropi) donde el proveedor toma la prueba de vida (liveness). El usuario la completa en su propio tiempo — no es parte del formulario de Dropi. |
+| **En proceso** | Al volver a Dropi (haya completado o no la prueba de vida todavía), los campos quedan visibles pero deshabilitados. **Formato: banner fijo dentro de la página, no modal** — no bloquea el resto de la navegación. Headline: **Estamos confirmando tu identidad**. Body: *No debería tardar más de 24 horas. Mientras tanto, sigue comprando y vendiendo sin problema — solo pausamos tus retiros y transferencias.* Sin fecha de desbloqueo todavía — a diferencia del estado siguiente, aquí no se sabe cuándo resuelve, solo el SLA de 24h. |
+| Completo + RN-11 vigente | Mismos campos, visibles pero bloqueados. Tooltip: *Podrás editar este dato el {unlock_at}. Lo bloqueamos temporalmente por seguridad.* |
+| Completo + RN-11 vencido | Editable; cambios en nombre, tipo de persona, tipo/número de documento o documento adjunto disparan el flujo de edición (addendum). Dirección y ciudad se guardan directo, sin re-validación. |
+
+**Nota interna:** campos derivados de `Historia.md` (sensibles: nombre, tipo de persona, tipo y número de documento, documento adjunto · no sensibles: dirección, ciudad). El aviso "En proceso" es el mismo copy que `Service_Blueprint_Diagrama_Fase_5.md` §C5 / este documento §11 ("Colombia · falta identidad") — mostrado en el lugar donde vive la acción (la página de Información de cuenta), no solo como banner flotante. Copy de campos nuevo — validar con Product Design antes de construir.
 
 ---
 
@@ -143,6 +166,8 @@ Truora / Sumsub **no aparecen en copy de usuario**; solo en Nota interna.
 | Body | Qué bien. Para desbloquear movimientos financieros también necesitas validar tu identidad en Información de cuenta. |
 | Botón | **Ir a Información de cuenta** |
 
+**Nota interna (8a/8b):** el sistema revisa el estado real del otro dato **en el momento en que resuelve el primero** — no asume que sigue faltando. Si el usuario ya lo había completado por su cuenta mientras el primero estaba en proceso (son proveedores y tiempos distintos), se salta 8a/8b y pasa directo a 8c.
+
 ### 8c. Completó todo (cualquier país)
 
 | Elemento | Copy |
@@ -155,13 +180,109 @@ Truora / Sumsub **no aparecen en copy de usuario**; solo en Nota interna.
 
 ## 9. Estados post-webhook
 
-| Estado | Headline | Body | Botón |
-|---|---|---|---|
-| `aprobado` | **¡Listo!** | Ya puedes usar tu información actualizada. | — (toast) |
-| `en_revision` | **Seguimos revisando tu solicitud** | Puedes seguir operando con lo ya aprobado. No necesitas reenviar documentos. | **Entendido** |
-| `incompleto` | **Te falta un paso** | Empezaste la validación pero no la terminaste. | **Continuar validación** |
-| `rechazado` | **No pudimos validar tus datos** | Conservamos lo que ya tenías. Puedes reintentar o contactar a soporte. | **Reintentar** / **Contactar a soporte** |
-| EC/CL/AR migrado a revisión | **Seguimos revisando tu solicitud** | Tu caso pasó a validación automática. Te avisamos cuando esté lista — no necesitas hacer nada más. | **Entendido** |
+El **formato** depende de si el usuario necesita decidir algo o solo enterarse — nunca al revés:
+
+- **Toast** (aprobado, todo completo): el mayor logro del flujo, pero no requiere ninguna decisión — se retira solo, no bloquea la pantalla.
+- **Modal** (aprobación parcial, solo Colombia): sí pide una decisión real (¿completo el otro dato ahora o después?), por eso interrumpe con un botón.
+- **Banner** (rechazado, incompleto, en revisión, bloqueado): informa sin interrumpir — el usuario puede seguir navegando y volver cuando quiera.
+
+El **copy** nombra qué se resolvió (identidad, facturación o ambas) cuando aplica. Dos headlines se mantienen genéricos a propósito porque ya están referenciados en `Service_Blueprint_Fase_5_Mapa-Decision.md` — se marcan abajo. *Convención de esta sección: comillas = texto literal que ve el usuario; sin comillas = caso, nota o acción interna, para no confundir una cosa con la otra.*
+
+### 9a. Aprobado (toast)
+
+| Elemento | Copy |
+|---|---|
+| Headline | **"¡Cuenta verificada!"** |
+| Body | "Ya puedes transferir tu wallet, registrar datos bancarios y pedir tu DropiCard." |
+| Duración *(nota, no se muestra)* | Auto-dismiss 4–5 s |
+
+### 9b. Rechazado (banner) — 3 variantes
+
+| Caso *(no se muestra)* | Headline *(texto literal)* |
+|---|---|
+| Colombia · identidad rechazada | **"No pudimos confirmar tu identidad"** |
+| Colombia · facturación rechazada | **"No pudimos confirmar tus datos de facturación"** |
+| Resto de países / genérico | **"No pudimos validar tus datos"** |
+
+Nota (no se muestra): la fila genérica es el headline de referencia, ya usado en Mapa-Decision. Body, texto literal (las 3): *"Conservamos lo que ya tenías aprobado antes. Puedes intentarlo de nuevo cuando quieras."* Botones: **Reintentar** / **Contactar a soporte**.
+
+### 9c. Incompleto (banner) — 3 variantes
+
+| Caso *(no se muestra)* | Headline *(texto literal)* |
+|---|---|
+| Colombia · identidad incompleta | **"Te falta terminar tu identidad"** |
+| Colombia · facturación incompleta | **"Te falta terminar tus datos de facturación"** |
+| Resto de países / genérico | **"Te falta un paso"** |
+
+Nota (no se muestra): la fila genérica es el headline de referencia, ya usado en Mapa-Decision. Body, texto literal (las 3): *"Empezaste el proceso pero no lo terminaste."* Botón: **Continuar validación** — retoma exactamente donde quedó.
+
+### 9d. En revisión prolongada (banner) — 4 variantes
+
+Es la continuación del aviso "en proceso" de §11 cuando el caso cae en la cola de revisión manual (≤8% de los casos, `Historia.md`) en vez de resolver solo.
+
+| Caso *(no se muestra)* | Headline *(texto literal)* |
+|---|---|
+| Colombia · identidad | **"Seguimos confirmando tu identidad"** |
+| Colombia · facturación | **"Seguimos confirmando tus datos de facturación"** |
+| Resto de países | **"Seguimos confirmando tus datos"** |
+| Ecuador/Chile/Argentina migrado | **"Seguimos confirmando tus datos"** |
+
+Nota (no se muestra, solo para el caso EC/CL/AR migrado): su caso ya sigue este mismo proceso automático. Body, texto literal (las 4): *"Pasó a revisión manual — nuestro equipo lo está mirando. No debería tardar más de 24 horas en total. Mientras tanto, sigue comprando y vendiendo sin problema — no necesitas reenviar nada."* Botón: **Entendido**.
+
+### 9e. Bloqueado (banner, sin botón de reintento) — universal
+
+No depende de identidad ni facturación — es una bandera de riesgo de Legal/Financiero, no un resultado del webhook (Regla E).
+
+| Elemento | Copy |
+|---|---|
+| Headline | **"Tu cuenta está bloqueada por seguridad"** |
+| Body | "Nuestro equipo la está revisando para proteger tus fondos. No podrás hacer retiros, transferencias ni pedir DropiCard mientras dure la revisión." |
+| Acción *(nota, no se muestra)* | Sin botón de reintento — dirige al árbol de soporte (`Soporte-Validacion-Fase-5.md`). |
+
+---
+
+## 10. Módulo único — Resto de países (identidad y, si aplica, empresa)
+
+| Elemento | Copy |
+|---|---|
+| Headline | **Valida tu identidad y tus datos de facturación** |
+| Body | Un formulario guiado te pide lo que necesitamos, según tu país. No tienes que volver después — todo queda listo de una vez. |
+| Botón | **Completar validación** |
+
+**Lo que pide el formulario, según bloque de país** (dentro de Sumsub — no es una pantalla de Dropi, igual que la facturación en Colombia):
+
+| Bloque | Persona natural | Si declara empresa |
+|---|---|---|
+| A — GT, PA, PY, PE, MX, VE, CR, Europa | Documento de identidad + prueba de vida + datos fiscales | Prueba de vida del representante legal + nombre de la empresa (el resto se autocompleta) |
+| B — CL, EC, AR | Documento de identidad + prueba de vida | Prueba de vida del representante legal + documento de la empresa (sin autocompletar) |
+
+| Estado completo (read-only) | Copy |
+|---|---|
+| Headline | **Tus datos de validación** |
+| Body | Lista combinada de identidad y facturación, tal como quedaron validados. |
+| Alerta | No podrás editar estos datos en los próximos 6 meses. Si necesitas un cambio, escribe a soporte desde el ícono de abajo a la derecha. |
+
+**Nota interna:** campos derivados de Fase 0 (`DOC ENLACES`, bloques A/B) y de la tabla de ruteo de C5 (`Service_Blueprint_Diagrama_Fase_5.md`). El formulario en sí vive dentro de Sumsub — Dropi solo sirve la tarjeta de entrada (arriba) y, al volver, la lista de solo lectura. Copy nuevo — validar con Product Design antes de construir.
+
+---
+
+## 11. En proceso — mientras se confirma (antes del resultado final)
+
+Se muestra justo después de que el usuario acepta ir a validar (C5), mientras espera la respuesta automática. Distinto del estado final "En revisión" de C6 (§9) — ese aparece si, pasadas las 24h, el caso sigue sin resolver solo.
+
+**Formato: banner fijo dentro de la página donde vive la acción, no modal.** Para Colombia, es el mismo aviso que aparece embebido en Información de cuenta (§7) o en Datos de facturación (§5b) — no un banner flotante aparte. Para el resto de países, aparece en la única página del módulo. No interrumpe el resto de la navegación ni bloquea otras pantallas.
+
+| Caso | Headline | Body |
+|---|---|---|
+| Colombia · falta identidad | **Estamos confirmando tu identidad** | No debería tardar más de 24 horas. Mientras tanto, sigue comprando y vendiendo sin problema — solo pausamos tus retiros y transferencias. |
+| Colombia · falta facturación | **Estamos confirmando tus datos de facturación** | No debería tardar más de 24 horas. Mientras tanto, sigue comprando y vendiendo sin problema — solo pausamos tus retiros y transferencias. |
+| Colombia · faltan ambas | **Estamos confirmando tu identidad** (primero) | Al aprobarse, pasa a "Estamos confirmando tus datos de facturación" — nunca se muestran los dos avisos a la vez. |
+| Resto de países (bloques A/B) | **Estamos confirmando tus datos** | No debería tardar más de 24 horas. Mientras tanto, sigue comprando y vendiendo sin problema — solo pausamos tus retiros y transferencias. |
+| Ecuador/Chile/Argentina migrado | **Estamos confirmando tus datos** | Tu caso ya sigue este mismo proceso automático. No debería tardar más de 24 horas y no necesitas reenviar nada. |
+
+**Por qué este tono:** evitamos el registro de "ticket de sistema" (*"puede tomar hasta 24 horas"*, *"se bloquean los retiros"* en voz pasiva) y hablamos como Dropi hablándole a la persona — verbos activos ("pausamos"), acciones concretas ("comprar y vender") en vez de abstractas ("operar"), sin prometer más de lo que sabemos (nunca "ya casi termina", solo el tope real de 24h).
+
+**Nota interna:** el proveedor nunca se nombra ("confirmando tu identidad", no "Truora está revisando"). Para Colombia, el headline cambia según cuál de los dos datos está en proceso — nunca dice "tu solicitud" genérico. Copy nuevo — validar con Product Design antes de construir.
 
 ---
 
