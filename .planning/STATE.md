@@ -105,6 +105,7 @@ None yet.
 | 260727-r5y (cont.) | Contenido del carril "Tecnología → Automatización posible" mucho más específico por etapa: sistemas/eventos/endpoints concretos (webhooks Sumsub, API UserPilot/CRM, tabla estado_validacion, servicio de baneo multipaís) en vez de una frase genérica | 2026-07-28 | 7221348 | [260727-r5y-crear-copias-con-ti-del-service-blueprin](./quick/260727-r5y-crear-copias-con-ti-del-service-blueprin/) |
 | 260727-r5y (cont.) | Reescrito el carril de Tecnología con doble registro: se conserva el término técnico (API, webhook) pero cada uno lleva una explicación en paréntesis en lenguaje simple, para que cualquier stakeholder (no solo dev) entienda qué cambia | 2026-07-28 | 707f098 | [260727-r5y-crear-copias-con-ti-del-service-blueprin](./quick/260727-r5y-crear-copias-con-ti-del-service-blueprin/) |
 | 260806-lip | Crear docs/validacion/Discovery-Riesgos-Transicion-Fase5.md: riesgos no cubiertos por Fase 5, impacto UX, impacto en otros proyectos (este repo + Darwin/dropi-agente-pm), mapeo completo de /new/ y datos a considerar con fuente | 2026-08-06 | e385a3d | [260806-lip-crear-docs-validacion-discovery-riesgos-](./quick/260806-lip-crear-docs-validacion-discovery-riesgos-/) |
+| 260806-r7n | Crear docs/validacion/Casos-Externos-Referencia-Fase5.md: investigación externa de casos de empresas reales y verificables (CS.Money, Revolut, Rappi+Jumio, Stripe Connect, Sumsub Reusable KYC, etc.) organizados por gap específico de Dropi, más corrección de 2 casos sin fuente en Discovery inicial.md | 2026-08-07 | 0cc0d4f | [260806-r7n-crear-docs-validacion-casos-externos-ref](./quick/260806-r7n-crear-docs-validacion-casos-externos-ref/) |
 
 ## Deferred Items
 
@@ -119,4 +120,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-08-06 -- Completed quick task 260806-lip: Discovery-Riesgos-Transicion-Fase5.md
+Last activity: 2026-08-07 -- Completed quick task 260806-r7n: Casos-Externos-Referencia-Fase5.md
