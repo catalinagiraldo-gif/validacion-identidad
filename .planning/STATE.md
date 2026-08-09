@@ -107,6 +107,7 @@ None yet.
 | 260806-lip | Crear docs/validacion/Discovery-Riesgos-Transicion-Fase5.md: riesgos no cubiertos por Fase 5, impacto UX, impacto en otros proyectos (este repo + Darwin/dropi-agente-pm), mapeo completo de /new/ y datos a considerar con fuente | 2026-08-06 | e385a3d | [260806-lip-crear-docs-validacion-discovery-riesgos-](./quick/260806-lip-crear-docs-validacion-discovery-riesgos-/) |
 | 260806-r7n | Crear docs/validacion/Casos-Externos-Referencia-Fase5.md: investigación externa de casos de empresas reales y verificables (CS.Money, Revolut, Rappi+Jumio, Stripe Connect, Sumsub Reusable KYC, etc.) organizados por gap específico de Dropi, más corrección de 2 casos sin fuente en Discovery inicial.md | 2026-08-07 | 0cc0d4f | [260806-r7n-crear-docs-validacion-casos-externos-ref](./quick/260806-r7n-crear-docs-validacion-casos-externos-ref/) |
 | 260809-m1s | Corregir AS-IS en Discovery-Riesgos-Transicion-Fase5.md: UserPilot+CRM+Google Sheets era la propuesta de Fase 0 (Historia.md) nunca implementada, no el sistema actual — AS-IS real es Truora-only, manual por WhatsApp/Intercom; agregado riesgo de Fase 0 saltada sin piloto barato | 2026-08-09 | dc9e3cc | [260809-m1s-corregir-discovery-riesgos-transicion-fa](./quick/260809-m1s-corregir-discovery-riesgos-transicion-fa/) |
+| 260809-ot3 | Enriquecer Casos-Externos-Referencia-Fase5.md: cita textual exacta + heurística Nielsen/Krug + gap específico + severidad (0-4) para 17 casos; corregidas 4 fallas de fidelidad (cita de Nubank sin respaldo, umbral de eBay desactualizado, 2 fuentes no re-verificables marcadas) | 2026-08-09 | 2b3d9e4 | [260809-ot3-reescribir-casos-externos-referencia-fas](./quick/260809-ot3-reescribir-casos-externos-referencia-fas/) |
 
 ## Deferred Items
 
@@ -121,4 +122,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-08-09 -- Completed quick task 260809-m1s: corrección de AS-IS en Discovery-Riesgos-Transicion-Fase5.md
+Last activity: 2026-08-09 -- Completed quick task 260809-ot3: Casos-Externos-Referencia-Fase5.md enriquecido con citas y análisis heurístico
