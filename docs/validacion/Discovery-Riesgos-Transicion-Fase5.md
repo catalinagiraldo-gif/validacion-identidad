@@ -2,7 +2,11 @@
 
 ## Contexto y propósito
 
-Dropi está migrando su flujo de validación de identidad (KYC/KYB) y facturación de un modelo no-code (UserPilot + CRM + Google Sheets, actualización manual) a un flujo tech-native documentado en [`Service_Blueprint_Diagrama_Fase_5.md`](./Service_Blueprint_Diagrama_Fase_5.md): sync automático vía webhook con Truora/Sumsub, hard gate nativo en retiros/transferencias/DropiCard, y una cola de excepciones que debe bajar de ~40% manual a ≤8%.
+Dropi valida identidad hoy con un único mecanismo: Truora, solo para KYC de personas naturales y solo en Colombia. La validación se siente opcional al registrarse, pero se vuelve obligatoria en cuanto el usuario intenta su primer retiro o transferencia entre wallets — es decir, ya existe hoy una forma simple de hard gate, solo que con un único proveedor y sin KYB. El 40% de esas validaciones no pasa de forma automática (3.000–4.000 casos/mes) y Back Office lo gestiona a mano por WhatsApp e Intercom, sin SLA ni tickets formales (`Historia.md`).
+
+El modelo no-code (UserPilot + CRM + Google Sheets) que documentan `Service_Blueprint_Diagrama Fase 0.md`, `UX-Writing-Modales-UserPilot.md` y `Consem2.md` fue la propuesta de la **Fase 0** — un diseño para ejecutar la validación sin integración técnica compleja (`Historia.md`, línea 51) — pero nunca llegó a producción: en cuanto Dropi confirmó apoyo de TI, el equipo saltó directo al enfoque tech-native, coherente con la directriz ejecutiva encontrada en el proyecto hermano BAC-002 de "saltar la Fase Cero e ir directo a Fase 1" (ver `Casos-Externos-Referencia-Fase5.md`). Esos documentos siguen siendo evidencia válida de reglas de negocio (RN-XX) y de comportamiento real de Truora que sigue vigente hoy, pero no describen un sistema que haya corrido en producción.
+
+Dropi está migrando entonces de ese AS-IS real (Truora-only, manual por WhatsApp/Intercom) a un flujo tech-native documentado en [`Service_Blueprint_Diagrama_Fase_5.md`](./Service_Blueprint_Diagrama_Fase_5.md): sync automático vía webhook con Truora/Sumsub, hard gate nativo en retiros/transferencias/DropiCard, y una cola de excepciones que debe bajar de ~40% manual a ≤8%.
 
 Ese blueprint es sólido para el **journey feliz** (usuario completa lo que le falta), pero es un diseño de interacción — no un documento de riesgo, de impacto en otros proyectos, ni de qué datos hacen falta para ejecutar bien la transición. El pedido es cerrar esa brecha: usar todo lo ya escrito en `docs/validacion/`, el proyecto hermano **BAC-001** (Darwin, célula Backoffice, PO Paula Macias), un informe de benchmark de industria (`Discovery inicial.md`) y el estado real del código de este repo, para producir un mapa de:
 1. Riesgos que el blueprint Fase 5 no cubre o cubre solo parcialmente.
@@ -46,6 +50,7 @@ Este documento sintetiza los hallazgos de 3 exploraciones en paralelo (docs/vali
 - **Compliance/Admin no ha parametrizado las reglas de Sumsub a tiempo** — riesgo de cronograma documentado en la transcripción de la reunión de diseño ("ya hicieron la contratación, se libran del proceso").
 - **Decisión Legal pendiente sobre el 40% que hoy se valida a mano** (RN-25) — sin esa decisión, no se puede fijar la meta real de la cola de excepciones (¿≤8% o el número absoluto <800 casos/mes de `Historia.md` L35, que no es lo mismo que un porcentaje?).
 - **Gap real en la fuente de datos de facturación**: `Copia de Información Datos de Facturación LATAM.xlsx` cubre 9 países × 3 tipos de persona, pero **Paraguay no tiene "Persona Extranjera" definida** — pendiente de Legal/PO antes de poder construir ese país.
+- **Fase 0 (no-code) se saltó sin pasar por un piloto barato**: el equipo fue directo del AS-IS manual (Truora-only) al diseño tech-native completo, sin una fase intermedia de bajo costo para validar supuestos. Los habilitadores transversales de `Historia.md` (HU-00) — PoC del sandbox de Sumsub, aval de seguridad para datos biométricos, motor de ruteo por nacionalidad — siguen sin cerrar: "el diseño de la precarga está basado en supuestos, no en certezas" (`Historia.md` línea 43). Cualquier construcción de Fase 5 hereda ese riesgo si el PoC no cierra antes.
 
 ---
 
@@ -157,6 +162,8 @@ Sin ninguna lógica de identidad — coherente con que Fase 5 no los menciona. N
 | `mocks/users.json` (este repo) | `d:\validacion-identidad\mocks\` | Base para simular estados en el prototipo | No tiene ningún campo de identidad/KYC/facturación — todo el estado vive en `sessionStorage`, no en el mock |
 | Volumetría de migración | `Service_Blueprint_Diagrama Fase 0.md` L34 | ~115.000 usuarios colombianos ya validados con Truora migran a Sumsub en la Pre-Etapa | Cifra sin contraparte para el resto de países |
 
+**Nota de precisión:** las filas de Google Sheets / Excel-UserPilot de la tabla describen el mecanismo **propuesto** para Fase 0 (`Service_Blueprint_Diagrama Fase 0.md`, `Consem2.md`), no un sistema confirmado en producción — Fase 0 nunca se implementó (ver Contexto). El AS-IS real de sync manual, según `Historia.md`, es Back Office gestionando casos uno a uno por WhatsApp e Intercom, sin ninguna herramienta de automatización — es decir, el punto de partida para el sync automático de Fase 5 es aún más manual de lo que sugieren esas dos filas.
+
 ---
 
 ## 7. Preguntas abiertas que valdría la pena escalar antes de avanzar
@@ -168,6 +175,7 @@ Sin ninguna lógica de identidad — coherente con que Fase 5 no los menciona. N
 5. ¿Se decide ya la unificación V1/V2/Fase0 de estado de identidad en este repo (§4 y §5) antes de seguir construyendo más módulos sobre cualquiera de los tres mecanismos?
 6. `financiero/facturacion.component.ts` (huérfano, sin ruta) — ¿se elimina o reemplaza a `datos-facturacion.component.ts`?
 7. El modal de bienvenida C4d de Fase 5 no existe hoy (solo hay un banner en `ordenes.component.ts`) — ¿se construye como modal nuevo o se reinterpreta el banner existente como su equivalente para esta iteración?
+8. Fase 0 (no-code con UserPilot) fue solo un diseño, nunca se implementó — ¿queda descartada definitivamente, o se mantiene como plan de contingencia si el PoC de Sumsub (HU-00) no cierra a tiempo para construir Fase 5 completa?
 
 ---
 
