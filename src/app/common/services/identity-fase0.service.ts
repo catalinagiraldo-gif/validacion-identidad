@@ -1,4 +1,5 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
+import { Router } from '@angular/router';
 import { IdentityDemoStateV2Service } from './identity-demo-state-v2.service';
 import { OrigenModal } from './identity-modal.service';
 import {
@@ -12,6 +13,24 @@ import {
   Fase0BlockMotivo,
   resolverBloqueSumsub,
 } from '../models/identity-flow-v2.models';
+
+/** Casos visuales del blueprint que el switcher puede abrir con un clic (demo). */
+export type Fase0VistaCaso =
+  | 'panel'
+  | 'interceptor'
+  | 'interceptor-bancario'
+  | 'sumsub'
+  | 'resultado-aprobado'
+  | 'resultado-revision'
+  | 'resultado-incompleta'
+  | 'resultado-rechazado'
+  | 'bloqueo-fraude'
+  | 'bloqueo-rechazado'
+  | 'crm-recordatorio'
+  | 'crm-aprobado'
+  | 'crm-revision'
+  | 'crm-incompleta'
+  | 'crm-marca-blanca';
 
 // Orquestador de los overlays de Fase 0 (Service Blueprint Fase 0,
 // docs/validacion/Service_Blueprint_Diagrama Fase 0.md). Proceso 100% NO-CODE:
@@ -28,11 +47,11 @@ import {
 /** Copys CRM TEXTUALES al blueprint (Etapa 0 y Etapa Continua, front stage → CRM). */
 const CRM_COPY: Record<Fase0CrmKind, string> = {
   recordatorio:
-    'Hola 👋 Notamos que aún no verificas tu cuenta en Dropi. Lo necesitamos para confirmar quién eres y mantener la plataforma segura — no toma más de unos minutos.',
+    'Hola 👋 Aún falta validar tu identidad en Dropi (documento + selfie, unos minutos). Lo pedimos para confirmar quién eres y completar tu perfil. Entra a tu panel y pulsa «Verificar ahora».',
   aprobado:
     'Hola 👋 ¡tu cuenta en Dropi ya está verificada! Ya puedes transferir tu wallet, registrar tus datos bancarios y pedir tu DropiCard sin restricciones. Aprovecha y sigue haciendo crecer tu negocio 🚀',
   'revision-financiero':
-    'Hola 👋 tu verificación en Dropi sigue en proceso — puede tardar hasta 72 horas hábiles. Te avisaremos apenas esté lista, no necesitas hacer nada más. ¿Dudas? Escríbenos.',
+    'Hola 👋 tu verificación en Dropi sigue en proceso — según la cola de revisión, puede tomar hasta 72 horas hábiles. Te avisaremos apenas esté lista, no necesitas hacer nada más. ¿Dudas? Escríbenos.',
   incompleta:
     'Hola 👋 empezaste tu verificación en Dropi pero no la terminaste. Complétala para seguir operando sin restricciones: [link a Sumsub].',
   'marca-blanca':
@@ -68,6 +87,7 @@ const RESULT_KIND_LABEL: Record<Fase0ResultKind, string> = {
 @Injectable({ providedIn: 'root' })
 export class IdentityFase0Service {
   private readonly stateV2 = inject(IdentityDemoStateV2Service);
+  private readonly router = inject(Router);
 
   // --- Recorrido guiado (stepper de Modo Prototipo 0) ---
   private readonly _etapa = signal<Fase0Etapa>('etapa0');
@@ -194,8 +214,15 @@ export class IdentityFase0Service {
       clearTimeout(this.redirectTimer);
       this.redirectTimer = null;
     }
+    const estabaAbierto = this._interceptorOpen();
     this._redirecting.set(false);
     this._interceptorOpen.set(false);
+    if (estabaAbierto) {
+      this.registrarEvento(
+        'userpilot',
+        'Usuario cierra el Modal Interceptor (prototipo: se puede cerrar; en producto UserPilot reaparecería al reintentar la acción).'
+      );
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -331,6 +358,39 @@ export class IdentityFase0Service {
     this._crmMessage.set(null);
   }
 
+  /**
+   * CTA de banners suaves (Panel Home, identity-gate, cuenta/facturación):
+   * invita a verificar sin pasar por el Modal Interceptor de Etapa 0.5.
+   * TyC se aceptan dentro de Sumsub. Devuelve true si Fase 0 manejó el clic.
+   */
+  invitarDesdeBanner(origen: OrigenModal = 'home'): boolean {
+    if (this.stateV2.faseProyecto() !== 'fase0') return false;
+
+    if (this.stateV2.marcaBlanca()) {
+      this.registrarEvento('backstage', 'Bloque D (marca blanca): banner invita → enlace manual de Soporte.');
+      this.showCrmMessage('marca-blanca');
+      return true;
+    }
+
+    const progreso = this.progreso();
+    if (progreso === 'aprobado') return false;
+
+    this.registrarEvento(
+      'userpilot',
+      `Banner/invite "${ORIGEN_LABEL[origen]}" → directo a verificación (sin interceptor intermedio).`
+    );
+
+    if (progreso === 'pendiente-financiero') {
+      this.showResult('revision-financiero');
+      return true;
+    }
+
+    // nunca | incompleta | rechazado (reintento desde banner suave) → Sumsub.
+    this.dismissPanel();
+    this.openSumsubStandin();
+    return true;
+  }
+
   // ---------------------------------------------------------------------------
   // Guard de triggers financieros
   // ---------------------------------------------------------------------------
@@ -362,7 +422,8 @@ export class IdentityFase0Service {
     const progreso = this.progreso();
     if (progreso === 'aprobado') return false; // Ya verificado: el flujo sigue su curso normal.
     if (progreso === 'incompleta') {
-      this.showResult('incompleta');
+      // "Continuar verificación" → directo a Sumsub (sin modal intermedio de incompleta).
+      this.openSumsubStandin();
       return true;
     }
     if (progreso === 'pendiente-financiero') {
@@ -462,10 +523,114 @@ export class IdentityFase0Service {
     if (kind) this.resolverSumsub(kind);
   }
 
+  /**
+   * Abre un caso visual del blueprint con un clic (switcher / demo).
+   * Prepara el estado mínimo necesario para que el overlay/CRM se vea con el
+   * copy correcto — sin obligar a recorrer todo el flujo.
+   */
+  mostrarVistaCaso(caso: Fase0VistaCaso): void {
+    switch (caso) {
+      case 'panel':
+        this.ocultarOverlaysActivos();
+        this.dismissCrm();
+        this.stateV2.setSaldoNegativoFraude(false);
+        this.stateV2.setMarcaBlanca(false);
+        this.stateV2.setFase0TipoUsuario('activo');
+        this.stateV2.setStatus('sin_validar');
+        this.stateV2.setMotivoPendiente(null);
+        this._panelDismissed.set(false);
+        this._etapa.set('etapa0');
+        this.registrarEvento('userpilot', 'Demo: Panel Lateral Etapa 0 — "Verifica tu cuenta".');
+        void this.router.navigate(['/new/home']);
+        break;
+
+      case 'interceptor':
+        this.ocultarOverlaysActivos();
+        this.dismissCrm();
+        this.stateV2.setSaldoNegativoFraude(false);
+        this.stateV2.setMarcaBlanca(false);
+        this.stateV2.setStatus('sin_validar');
+        this.stateV2.setMotivoPendiente(null);
+        this.openInterceptor('wallet');
+        break;
+
+      case 'interceptor-bancario':
+        this.ocultarOverlaysActivos();
+        this.dismissCrm();
+        this.stateV2.setSaldoNegativoFraude(false);
+        this.stateV2.setMarcaBlanca(false);
+        this.stateV2.setStatus('sin_validar');
+        this.stateV2.setMotivoPendiente(null);
+        this.stateV2.setPais('GT');
+        // Origen "cuenta" + país GT → variante titular de cuenta (proxy GT/PA del prototipo).
+        this.openInterceptor('cuenta');
+        this.registrarEvento('userpilot', 'Demo: variante GT/PA — modal exclusivo Datos Bancarios (titular).');
+        break;
+
+      case 'sumsub':
+        this.ocultarOverlaysActivos();
+        this.dismissCrm();
+        this.openSumsubStandin();
+        break;
+
+      case 'resultado-aprobado':
+        this.ocultarOverlaysActivos();
+        this.resolverSumsub('aprobado');
+        break;
+
+      case 'resultado-revision':
+        this.ocultarOverlaysActivos();
+        this.resolverSumsub('revision-financiero');
+        break;
+
+      case 'resultado-incompleta':
+        this.ocultarOverlaysActivos();
+        this.resolverSumsub('incompleta');
+        break;
+
+      case 'resultado-rechazado':
+        this.ocultarOverlaysActivos();
+        this.resolverSumsub('rechazado');
+        break;
+
+      case 'bloqueo-fraude':
+        this.forzarBloqueo('fraude');
+        break;
+
+      case 'bloqueo-rechazado':
+        this.forzarBloqueo('rechazado');
+        break;
+
+      case 'crm-recordatorio':
+        this.showCrmMessage('recordatorio');
+        break;
+
+      case 'crm-aprobado':
+        this.showCrmMessage('aprobado');
+        break;
+
+      case 'crm-revision':
+        this.showCrmMessage('revision-financiero');
+        break;
+
+      case 'crm-incompleta':
+        this.showCrmMessage('incompleta');
+        break;
+
+      case 'crm-marca-blanca':
+        this.showCrmMessage('marca-blanca');
+        break;
+    }
+  }
+
   /** Fuerza la Etapa 1 (bloqueo full-screen) sin necesidad de pasar por un Retiro/Envío real. */
   forzarBloqueo(motivo: Fase0BlockMotivo = 'fraude'): void {
     this.ocultarOverlaysActivos();
     if (motivo === 'fraude') this.stateV2.setSaldoNegativoFraude(true);
+    if (motivo === 'rechazado') {
+      this.stateV2.setStatus('rechazado');
+      this.stateV2.setMotivoPendiente(null);
+    }
     this.openBlock(motivo);
   }
 

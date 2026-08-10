@@ -17,24 +17,34 @@ interface StandinPaso {
   detalle: string;
 }
 
+const PASO_TYC: StandinPaso = {
+  titulo: 'Aceptación de Términos y Condiciones',
+  detalle: 'Antes de continuar, Sumsub pide aceptar TyC y Política de Privacidad de Dropi',
+};
+
 const PASOS_POR_BLOQUE_NATURAL: Record<Fase0SumsubBloque, StandinPaso[]> = {
   A: [
+    PASO_TYC,
     { titulo: 'Prueba de vida (selfie)', detalle: 'Liveness check' },
     { titulo: 'Documento de identidad', detalle: 'Frente y reverso' },
     { titulo: 'Datos fiscales', detalle: 'Formulario largo' },
   ],
   B: [
+    PASO_TYC,
     { titulo: 'Prueba de vida (selfie)', detalle: 'Liveness check' },
     { titulo: 'Documento de identidad', detalle: 'Frente y reverso' },
   ],
   C: [
+    PASO_TYC,
     { titulo: 'Identidad → Truora', detalle: 'Fuera de este enlace — ya vigente en Datos personales de Dropi' },
     { titulo: 'Facturación → Sumsub', detalle: 'Datos fiscales + documento' },
   ],
   D: [
+    PASO_TYC,
     { titulo: 'Soporte te comparte el enlace', detalle: 'WhatsApp o Intercom, sin pop-up de UserPilot' },
   ],
   E: [
+    PASO_TYC,
     { titulo: 'Enlace enviado al teléfono del tercero', detalle: '"Continuar en el teléfono"' },
     { titulo: 'El tercero hace su prueba de vida', detalle: 'Biometría del tercero, no la tuya' },
   ],
@@ -42,15 +52,18 @@ const PASOS_POR_BLOQUE_NATURAL: Record<Fase0SumsubBloque, StandinPaso[]> = {
 
 const PASOS_POR_BLOQUE_JURIDICA: Record<Fase0SumsubBloque, StandinPaso[]> = {
   A: [
+    PASO_TYC,
     { titulo: 'Prueba de vida del representante legal', detalle: 'Liveness check' },
     { titulo: 'Búsqueda de la empresa', detalle: 'Autocompleta por nombre — Regla de Cero Fricción' },
     { titulo: 'Datos fiscales', detalle: 'Formulario largo' },
   ],
   B: [
+    PASO_TYC,
     { titulo: 'Prueba de vida del representante legal', detalle: 'Liveness check' },
     { titulo: 'Documento de la empresa', detalle: 'Sin autocompletado' },
   ],
   C: [
+    PASO_TYC,
     { titulo: 'Identidad → Truora', detalle: 'Representante legal, fuera de este enlace' },
     { titulo: 'KYB/facturación → Sumsub', detalle: 'Cédula + razón social + NIT + RUT + cámara de comercio' },
   ],
@@ -80,14 +93,25 @@ export class IdentityFase0SumsubStandinComponent {
   });
 
   readonly backstageNota = computed(() => {
+    const tyc =
+      'Durante este flujo fuera de Dropi, Sumsub pide aceptar los Términos y Condiciones y la Política de Privacidad de Dropi antes de continuar (ya no van en el modal interceptor de UserPilot cuando el usuario llega desde el panel/banner pedagógico). ';
     const b = this.bloque();
     if (b === 'C') {
-      return 'Colombia: KYC/identidad va por Truora desde Datos personales (no este enlace). Facturación (natural o jurídica) va por Sumsub. UserPilot muestra alertas separadas para completar la validación de facturación/KYB.';
+      return (
+        tyc +
+        'Colombia: KYC/identidad va por Truora desde Datos personales (no este enlace). Facturación (natural o jurídica) va por Sumsub. UserPilot muestra alertas separadas para completar la validación de facturación/KYB.'
+      );
     }
     if (b === 'D') {
-      return 'Marca blanca: enlace de Sumsub sin branding de Dropi. Soporte/Comercial es responsable de enviarlo durante la atención — no hay pop-up automático de UserPilot para este caso.';
+      return (
+        tyc +
+        'Marca blanca: enlace de Sumsub sin branding de Dropi. Soporte/Comercial es responsable de enviarlo durante la atención — no hay pop-up automático de UserPilot para este caso.'
+      );
     }
-    return 'La pregunta "Persona Natural / Empresa" ya no vive en UserPilot — Sumsub la resuelve dentro de su propio formulario (Back stage → DOC ENLACES).';
+    return (
+      tyc +
+      'La pregunta "Persona Natural / Empresa" ya no vive en UserPilot — Sumsub la resuelve dentro de su propio formulario (Back stage → DOC ENLACES).'
+    );
   });
 
   /** Botón "Dejar incompleto (salir)" — igual que cerrar el stand-in sin terminar. */

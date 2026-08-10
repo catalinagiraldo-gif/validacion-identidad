@@ -5,8 +5,10 @@ import { IdentityDemoStateV2Service } from '../../services/identity-demo-state-v
 import { IdentityFase0BackstageDotComponent } from '../identity-fase0-backstage-dot/identity-fase0-backstage-dot.component';
 
 // Etapa 0.5 del Service Blueprint Fase 0: Modal Interceptor Recurrente (Spam
-// Visual / No-Code). Sin botón 'X' — obliga a ir a Sumsub. El texto no varía
-// entre reapariciones. "Continuar a verificación" dispara la redirección
+// Visual / No-Code). En producto no tiene 'X' (obliga a Sumsub); en este
+// prototipo sí se puede cerrar (X + backdrop) para explorar la app — al
+// reintentar la acción financiera reaparece. El texto no varía entre
+// reapariciones. "Continuar a verificación" dispara la redirección
 // automática ("Redirigiendo a Sumsub…") y luego pasa al stand-in de Sumsub.
 //
 // GT/PA (blueprint: "Registro de Datos Bancarios"): el modal real es nativo
@@ -37,11 +39,15 @@ export class IdentityFase0InterceptorComponent {
 
   readonly backstageNota = computed(() =>
     this.esVarianteBancariaGtPa()
-      ? 'GT/PA: este paso no pasa por UserPilot — es el modal nativo de cuentas bancarias de Dropi, que redirige al enlace Sumsub del país (Bloque A). Si el documento ya fue validado, el sistema rechaza duplicados del mismo tipo+número (regla anti-fraude).'
-      : 'URLs finales de TyC/Privacidad pendientes de Legal por país. Este pop-up es ineludible — UserPilot no permite cerrarlo hasta que Sumsub confirme, y el copy no varía entre reapariciones (evita apariencia de manipulación ante Legal).'
+      ? 'GT/PA: este paso no pasa por UserPilot — es el modal nativo de cuentas bancarias de Dropi, que redirige al enlace Sumsub del país (Bloque A). Si el documento ya fue validado, el sistema rechaza duplicados del mismo tipo+número (regla anti-fraude). En el prototipo se puede cerrar; en producto reaparecería al reintentar.'
+      : 'URLs finales de TyC/Privacidad pendientes de Legal por país. En producto el pop-up es ineludible hasta Sumsub; en este prototipo se puede cerrar (X / backdrop) para explorar — reaparece al reintentar la acción. El copy no varía entre reapariciones.'
   );
 
   continuar(): void {
     this.fase0.continueToSumsub();
+  }
+
+  cerrar(): void {
+    this.fase0.closeInterceptor();
   }
 }

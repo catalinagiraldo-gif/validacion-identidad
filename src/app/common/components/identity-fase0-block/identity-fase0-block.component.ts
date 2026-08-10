@@ -23,18 +23,26 @@ interface BlockView {
   backstage: string;
 }
 
+// Blueprint: la expulsión post-rechazo usa el mismo Freno Seco de Etapa 1
+// ("Bloqueamos esta operación…"), no reutiliza el headline del modal ligero
+// de Etapa Continua ("No pudimos verificar…"). Lo que cambia es el chip de
+// soporte (hint) y la nota de backstage.
+const BLOCK_COPY = {
+  headline: 'Bloqueamos esta operación por seguridad',
+  texto:
+    'Estamos revisando tu cuenta para proteger tus fondos. No podrás hacer retiros ni envíos mientras dure la revisión. ¿Tienes dudas? Comparte tu caso desde el ícono de soporte, abajo a la derecha.',
+} as const;
+
 const BLOCK_VIEWS: Record<Fase0BlockMotivo, BlockView> = {
   fraude: {
-    headline: 'Bloqueamos esta operación por seguridad',
-    texto: 'Estamos revisando tu cuenta para proteger tus fondos. No podrás hacer retiros ni envíos mientras dure la revisión. ¿Tienes dudas? Comparte tu caso desde el ícono de soporte, abajo a la derecha.',
+    ...BLOCK_COPY,
     hint: 'Abre el widget de soporte flotante · chip "Validación de identidad" → "Mi cuenta está bloqueada"',
     backstage: 'Cartera (Andrés Herrera) corre un script en Python que cruza saldo negativo/fraude por país (y correo + DNI para baneos multipaís) y lanza campañas focalizadas en UserPilot. No es un freeze de saldo por código — es UserPilot interceptando la pantalla hasta que Legal/Financiero resuelvan el caso a mano.',
   },
   rechazado: {
-    headline: 'No pudimos verificar tu identidad',
-    texto: 'Por seguridad, restringimos las operaciones de esta cuenta. Si crees que es un error, contáctanos y lo revisamos desde el ícono de soporte, abajo a la derecha.',
+    ...BLOCK_COPY,
     hint: 'Abre el widget de soporte flotante · chip "Validación de identidad" → "Me rechazaron la verificación"',
-    backstage: 'Sumsub rechazó el caso: distinto de "Bloqueado" (revisión de Legal/Financiero) — un Rechazo es una falla del proceso, no se le menciona fraude al usuario. Existe vía de apelación: Soporte desbanea la cuenta si resulta ser un falso positivo (Etapa Continua, Back stage punto 3).',
+    backstage: 'Expulsión tras rechazo en Sumsub (Etapa Continua → "luego expulsión, ver Etapa 1"): mismo Freno Seco visual que fraude, pero el chip de soporte es "Me rechazaron la verificación". Distinto de "Bloqueado" (revisión Legal/Financiero) — no se menciona fraude al usuario. Soporte puede desbanear si es falso positivo.',
   },
 };
 

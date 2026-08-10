@@ -1,24 +1,46 @@
 @if (isVisible()) {
   <aside class="fase0-panel" role="complementary" aria-label="Verifica tu cuenta">
-    <button
-      type="button"
-      class="fase0-panel__close"
-      aria-label="Cerrar, verificar más tarde"
-      (click)="dismiss()"
-    >
-      <i class="pi pi-times"></i>
-    </button>
+    <div class="fase0-panel__hero">
+      <button
+        type="button"
+        class="fase0-panel__close"
+        aria-label="Cerrar, verificar más tarde"
+        (click)="dismiss()"
+      >
+        <i class="pi pi-times"></i>
+      </button>
 
-    <div class="fase0-panel__body">
-      <div class="fase0-panel__top">
-        <div class="fase0-panel__icon" aria-hidden="true">
+      <app-fase0-backstage-dot
+        class="fase0-panel__backstage"
+        [texto]="'Segmentación visual en UserPilot por historial de actividad (Activos con al menos una venta) para aislar a quienes aún no se verifican. Sin incentivo monetario aquí — el bono de la Semana de la Seguridad es exclusivo de Activos-Riesgo en Etapa 0.5+. El usuario puede ignorar este panel y seguir comprando libremente.'"
+        label="Qué pasa por dentro en Etapa 0"
+        variante="dark"
+      />
+
+      <div class="fase0-panel__hero-art" aria-hidden="true">
+        <div class="fase0-panel__ghost-form">
+          <div class="fase0-panel__ghost-form-title">Validación de identidad</div>
+          <div class="fase0-panel__ghost-field">
+            <span class="fase0-panel__ghost-label">Tipo de documento</span>
+            <span class="fase0-panel__ghost-value">Cédula de ciudadanía</span>
+          </div>
+          <div class="fase0-panel__ghost-field">
+            <span class="fase0-panel__ghost-label">Número de documento</span>
+            <span class="fase0-panel__ghost-value">•••• •••• 4821</span>
+          </div>
+          <div class="fase0-panel__ghost-field fase0-panel__ghost-field--short">
+            <span class="fase0-panel__ghost-label">Selfie / prueba de vida</span>
+            <span class="fase0-panel__ghost-chip">Pendiente</span>
+          </div>
+        </div>
+
+        <div class="fase0-panel__hero-badge">
           <i class="pi pi-shield"></i>
         </div>
-        <app-fase0-backstage-dot
-          [texto]="'Segmentación visual en UserPilot por fecha de registro para aislar a los Nuevos. Sin incentivo monetario aquí — el bono de la Semana de la Seguridad es exclusivo de Activos-Riesgo en Etapa 0.5+. El usuario puede ignorar este panel y seguir comprando libremente.'"
-          label="Qué pasa por dentro en Etapa 0"
-        />
       </div>
+    </div>
+
+    <div class="fase0-panel__body">
       <h2 class="fase0-panel__headline">Verifica tu cuenta</h2>
       <p class="fase0-panel__text">
         En Dropi lo necesitamos para confirmar quién eres y mantener la plataforma segura.

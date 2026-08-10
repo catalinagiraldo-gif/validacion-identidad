@@ -2,34 +2,51 @@
 
 $header-height: 53px;
 
+// Panel lateral Etapa 0 — lenguaje visual alineado al modal UserPilot de
+// referencia (header naranja con ilustración + cuerpo blanco + CTA full-width),
+// manteniendo footprint ~25% y posibilidad de ignorarlo (blueprint).
+
 .fase0-panel {
   position: fixed;
-  top: $header-height;
-  right: 0;
-  bottom: 0;
-  width: 25vw;
+  top: auto;
+  right: $space-6;
+  bottom: $space-6;
+  width: min(25vw, 400px);
   min-width: 320px;
-  max-width: 420px;
+  max-width: 400px;
+  max-height: calc(100vh - #{$header-height} - #{$space-8});
   z-index: 1200;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   background: $neutral-white;
-  box-shadow: $shadow-medium;
-  border-left: 1px solid $gray-100;
-  padding: $space-8;
+  border-radius: $radius-3;
+  box-shadow: $shadow-large;
   font-family: $font-primary;
   animation: fase0-panel-in 0.32s ease both;
 }
 
 @keyframes fase0-panel-in {
-  from { transform: translateX(24px); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+// --- Hero naranja (como el modal de facturación de referencia) ---
+
+.fase0-panel__hero {
+  position: relative;
+  flex-shrink: 0;
+  min-height: 168px;
+  padding: $space-5 $space-5 $space-6;
+  background: linear-gradient(135deg, $primary-400 0%, $primary-500 48%, #E85A00 100%);
+  overflow: hidden;
 }
 
 .fase0-panel__close {
   position: absolute;
-  top: $space-4;
-  right: $space-4;
+  top: $space-3;
+  right: $space-3;
+  z-index: 3;
   width: 32px;
   height: 32px;
   display: inline-flex;
@@ -37,48 +54,114 @@ $header-height: 53px;
   justify-content: center;
   border: none;
   border-radius: 50%;
-  background: $gray-50;
-  color: $gray-500;
+  background: rgba(#fff, 0.22);
+  color: $neutral-white;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease;
 
-  &:hover {
-    background: $gray-100;
-    color: $gray-700;
-  }
+  &:hover { background: rgba(#fff, 0.36); }
 
   i { font-size: $font-sm; }
 }
 
-.fase0-panel__body {
-  margin: auto 0;
+.fase0-panel__backstage {
+  position: absolute;
+  top: $space-3;
+  left: $space-3;
+  z-index: 3;
+}
+
+.fase0-panel__hero-art {
+  position: relative;
+  height: 132px;
+  margin-top: $space-4;
+  pointer-events: none;
+}
+
+.fase0-panel__ghost-form {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 68%;
+  padding: $space-3;
+  background: rgba(#fff, 0.94);
+  border-radius: $radius-2;
+  box-shadow: 0 8px 24px rgba($gray-900, 0.12);
+  transform: rotate(-2deg);
+}
+
+.fase0-panel__ghost-form-title {
+  margin-bottom: $space-2;
+  font-size: 10px;
+  font-weight: $font-bold;
+  color: $gray-800;
+  letter-spacing: 0.01em;
+}
+
+.fase0-panel__ghost-field {
   display: flex;
   flex-direction: column;
-  gap: $space-4;
+  gap: 2px;
+  margin-bottom: $space-2;
+
+  &:last-child { margin-bottom: 0; }
 }
 
-.fase0-panel__top {
+.fase0-panel__ghost-label {
+  font-size: 8px;
+  color: $gray-500;
+  line-height: 1.2;
+}
+
+.fase0-panel__ghost-value {
+  font-size: 9px;
+  font-weight: $font-semibold;
+  color: $gray-800;
+  line-height: 1.2;
+}
+
+.fase0-panel__ghost-chip {
+  align-self: flex-start;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: rgba($warning-500, 0.16);
+  color: $warning-700;
+  font-size: 8px;
+  font-weight: $font-semibold;
+}
+
+.fase0-panel__hero-badge {
+  position: absolute;
+  right: 4px;
+  bottom: 0;
+  width: 72px;
+  height: 72px;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-
-.fase0-panel__icon {
-  width: 56px;
-  height: 56px;
-  border-radius: $radius-3;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba($primary-500, 0.12);
-  color: $primary-600;
+  border-radius: $radius-3;
+  background: linear-gradient(160deg, #fff 0%, #FFF3E8 100%);
+  box-shadow: 0 10px 28px rgba($gray-900, 0.18);
+  color: $primary-500;
+  transform: rotate(4deg);
 
-  i { font-size: $font-2xl; }
+  i { font-size: 2rem; }
+}
+
+// --- Cuerpo blanco ---
+
+.fase0-panel__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $space-3;
+  padding: $space-6 $space-5 $space-5;
 }
 
 .fase0-panel__headline {
   margin: 0;
-  font-size: $font-2xl;
+  font-size: $font-xl;
   font-weight: $font-bold;
   color: $gray-900;
   line-height: 1.25;
@@ -86,15 +169,16 @@ $header-height: 53px;
 
 .fase0-panel__text {
   margin: 0;
-  font-size: $font-base;
+  font-size: $font-sm;
   font-weight: $font-regular;
   color: $gray-600;
   line-height: 1.5;
+  max-width: 32ch;
 }
 
 .fase0-panel__cta {
   margin-top: $space-2;
-  align-self: flex-start;
+  width: 100%;
   padding: $space-3 $space-6;
   border: none;
   border-radius: $radius-2;
@@ -110,21 +194,30 @@ $header-height: 53px;
   &:active { transform: translateY(1px); }
 }
 
-// Responsive — a $bp-md el panel pasa a ocupar todo el ancho (full overlay).
+// Responsive.
+@media (max-width: $bp-lg) {
+  .fase0-panel {
+    width: min(360px, calc(100vw - #{$space-8}));
+    min-width: 0;
+  }
+}
+
 @media (max-width: $bp-md) {
   .fase0-panel {
-    width: 100vw;
-    max-width: 100vw;
+    right: $space-4;
+    bottom: $space-4;
+    left: $space-4;
+    width: auto;
+    max-width: none;
     min-width: 0;
-    border-left: none;
+    margin: 0 auto;
   }
 }
 
 @media (max-width: $bp-sm) {
-  .fase0-panel {
-    padding: $space-4;
-  }
-
-  .fase0-panel__headline { font-size: $font-xl; }
-  .fase0-panel__cta { align-self: stretch; text-align: center; }
+  .fase0-panel__hero { min-height: 148px; padding: $space-4; }
+  .fase0-panel__hero-art { height: 112px; margin-top: $space-3; }
+  .fase0-panel__hero-badge { width: 60px; height: 60px; i { font-size: 1.5rem; } }
+  .fase0-panel__body { padding: $space-5 $space-4 $space-4; }
+  .fase0-panel__headline { font-size: $font-lg; }
 }

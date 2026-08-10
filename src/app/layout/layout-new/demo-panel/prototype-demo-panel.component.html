@@ -148,9 +148,9 @@
               }
             </div>
             <span class="demo-panel__mecanismo">
-              {{ fase0TipoUsuario() === 'nuevo'
-                ? 'Nuevo: ve el Panel Lateral "Verifica tu cuenta" al entrar al Home (Etapa 0).'
-                : 'Activo: en Home no ve nada especial — solo un clic financiero dispara el Modal Interceptor (Etapa 0.5), igual que a un Nuevo.' }}
+              {{ fase0TipoUsuario() === 'activo'
+                ? 'Activo: ve el Panel Lateral "Verifica tu cuenta" al entrar al Home (Etapa 0).'
+                : 'Nuevo: en Home no ve nada especial — solo un clic financiero dispara el Modal Interceptor (Etapa 0.5), igual que a un Activo.' }}
             </span>
           </div>
 

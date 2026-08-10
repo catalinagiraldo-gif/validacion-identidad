@@ -76,6 +76,14 @@ Truora / Sumsub **no aparecen en copy de usuario**; solo en Nota interna.
 
 **Nota interna:** En CO, 3a/3b/3c eligen destino (Mi cuenta → Truora vs enlace Sumsub). Fuera de CO, un enlace Sumsub cubre KYC+KYB. Aviso legal (Términos + Privacidad) igual que Fase 0.5.
 
+### 3e. Micro-copy de tratamiento de datos (línea adicional en 3a-3d, y en el slide-up §1)
+
+| Elemento | Copy |
+|---|---|
+| Línea adicional bajo el body | Esto hace parte del tratamiento de tus datos personales, según nuestros Términos y Condiciones. |
+
+**Nota interna:** sin enlace — la aceptación explícita de Términos ya ocurre dentro del flujo del proveedor (Truora/Sumsub), confirmado por Catalina en `REUCONTI.md` 130-131. Ver [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#3--comunicar-la-importancia-compliancetyc-sin-repetir-el-enlace) punto 3.
+
 ---
 
 ## 4. Bienvenida — Primera orden o primer movimiento wallet
@@ -229,15 +237,27 @@ Es la continuación del aviso "en proceso" de §11 cuando el caso cae en la cola
 
 Nota (no se muestra, solo para el caso EC/CL/AR migrado): su caso ya sigue este mismo proceso automático. Body, texto literal (las 4): *"Pasó a revisión manual — nuestro equipo lo está mirando. No debería tardar más de 24 horas en total. Mientras tanto, sigue comprando y vendiendo sin problema — no necesitas reenviar nada."* Botón: **Entendido**.
 
-### 9e. Bloqueado (banner, sin botón de reintento) — universal
+### 9e. Bloqueado — en investigación (banner, sin botón de reintento) — universal
 
-No depende de identidad ni facturación — es una bandera de riesgo de Legal/Financiero, no un resultado del webhook (Regla E).
+No depende de identidad ni facturación — es una bandera de riesgo de Legal/Financiero, no un resultado del webhook (Regla E). Reversible, sin ETA fijo — distinto de 9f.
 
 | Elemento | Copy |
 |---|---|
 | Headline | **"Tu cuenta está bloqueada por seguridad"** |
 | Body | "Nuestro equipo la está revisando para proteger tus fondos. No podrás hacer retiros, transferencias ni pedir DropiCard mientras dure la revisión." |
 | Acción *(nota, no se muestra)* | Sin botón de reintento — dirige al árbol de soporte (`Soporte-Validacion-Fase-5.md`). |
+
+### 9f. Bloqueado — definitivo (banner, sin botón de reintento) — universal
+
+Irreversible. No prometer resolución. A diferencia del estado equivalente ya en producción para Truora (`2.5 Validación rechazada por Truora`, Figma "Cuenta V2.0.0"), que hoy expulsa al usuario de la app con un countdown no cancelable y deja el soporte inalcanzable después de la expulsión, este estado no debe cerrar la sesión sin dejar un canal de soporte accesible.
+
+| Elemento | Copy |
+|---|---|
+| Headline | **"Tu cuenta fue suspendida de forma definitiva"** |
+| Body | "Tras revisar tu caso, no puedes seguir operando en Dropi. Esta decisión no tiene reversión." |
+| Acción *(nota, no se muestra)* | Sin botón de reintento. 🚧 Canal de soporte post-suspensión (sesión de solo lectura vs. canal fuera de sesión) — pendiente de decisión Legal/SAC, ver [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#a--la-duda-del-baneo--cómo-contacta-a-soporte-un-usuario-bloqueadoexpulsado) Comentario A. |
+
+**Nota interna (9e/9f):** ver [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#7--bloqueado-no-distingue-decisión-instantánea-de-investigación-en-curso) punto 7 para el análisis completo de por qué se dividió este estado.
 
 ---
 
@@ -270,6 +290,8 @@ No depende de identidad ni facturación — es una bandera de riesgo de Legal/Fi
 
 Se muestra justo después de que el usuario acepta ir a validar (C5), mientras espera la respuesta automática. Distinto del estado final "En revisión" de C6 (§9) — ese aparece si, pasadas las 24h, el caso sigue sin resolver solo.
 
+> ⏱️ **Nota de timing:** para el camino automático (>92% de los casos), esta pantalla es una transición de segundos, no una espera real — el resultado de §9a-§9c llega casi de inmediato. El SLA de 24h que menciona el body de abajo aplica **solo** a la cola de excepciones (§9d, ≤8% de los casos); no es la experiencia por defecto. Ver [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#c--resultado-inmediato--sin-pantalla-de-espera-al-validarse), Comentario C.
+
 **Formato: banner fijo dentro de la página donde vive la acción, no modal.** Para Colombia, es el mismo aviso que aparece embebido en Información de cuenta (§7) o en Datos de facturación (§5b) — no un banner flotante aparte. Para el resto de países, aparece en la única página del módulo. No interrumpe el resto de la navegación ni bloquea otras pantallas.
 
 | Caso | Headline | Body |
@@ -294,3 +316,28 @@ Se muestra justo después de que el usuario acepta ir a validar (C5), mientras e
 | Confirma tus cambios para continuar | Completa tu identidad / facturación para continuar |
 | Router C/A/B/D/E (en copy usuario) | Un enlace o dos destinos, sin nombrar el motor |
 | Habilitación por entidad | ¿Puedes editar este dato ahora? (solo addendum edición) |
+
+---
+
+## 12. Indicador de pasos — Información de cuenta y Datos de facturación (solo Colombia)
+
+| Elemento | Copy |
+|---|---|
+| Paso 1 | **Paso 1 de 2 · Identidad** |
+| Paso 2 | **Paso 2 de 2 · Facturación** |
+
+**Nota interna:** componente DS `dropi-steps` (`ds-registry/components/dropi-steps.json`), estados `pending \| focus \| completed \| error`. Hace visible que Colombia tiene dos pasos separados (Truora identidad + Sumsub facturación) — hoy solo se infiere navegando. No aplica fuera de Colombia (un solo enlace resuelve ambas). Vive en §5 y §7 (Datos de facturación e Información de cuenta). Ver [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#5--niveles-de-verificación-visibles-para-colombia-identidad--facturación) punto 5.
+
+---
+
+## 13. Comunicado oficial de migración (rollout, una sola vez por cohorte)
+
+| Elemento | Copy |
+|---|---|
+| Canal | In-app (banner o modal, una sola vez) + correo, antes de activar el hard gate para esa cohorte (Regla F) |
+| Headline | **Estamos actualizando cómo validamos tu cuenta** |
+| Body | Para proteger tus fondos y cumplir con la regulación, pasamos a un proceso de validación automático y más rápido. No cambia nada en cómo vendes ni en tus órdenes — solo afecta retiros, transferencias y DropiCard si tienes datos pendientes. |
+| Qué pasa si no se completa | Si no completas tu validación, iremos pausando gradualmente tus retiros y transferencias — nunca tus ventas. Te avisaremos antes de cada paso. |
+| Botón | **Completar validación** / **Entendido** |
+
+**Nota interna:** sin nombrar Sumsub ni Truora. Reutiliza el patrón de cascada de consecuencias comunicadas por adelantado (Airbnb, `Casos-Externos-Referencia-Fase5.md` §2.1) y la Regla F ya existente (Despliegue por Lotes / Periodo Pedagógico) — se envía una sola vez, 1-2 semanas antes de activar el hard gate para esa cohorte. Ver [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#9--comunicado-oficial-extenso-del-nuevo-proceso-de-validación) punto 9.

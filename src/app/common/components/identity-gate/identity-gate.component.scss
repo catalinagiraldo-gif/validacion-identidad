@@ -25,6 +25,15 @@
     .identity-gate__cta:hover { background: darken($warning-500, 8%); }
   }
 
+  &--incompleta {
+    background: rgba($warning-500, 0.05);
+    border-color: rgba($warning-500, 0.22);
+
+    .identity-gate__icon { color: $warning-600; background: rgba($warning-500, 0.12); }
+    .identity-gate__cta  { background: $primary-500; }
+    .identity-gate__cta:hover { background: $primary-600; }
+  }
+
   &--rechazado {
     background: rgba($error-500, 0.05);
     border-color: rgba($error-500, 0.2);

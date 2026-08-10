@@ -72,10 +72,11 @@ export class IdentityDemoStateV2Service {
    */
   private readonly _marcaBlanca = signal<boolean>(this.loadMarcaBlanca());
   /**
-   * Fase 0 — "Nuevos" (ETAPA 0, entra por primera vez al Home) vs "Activos"
-   * (ETAPA 0.5). Eje propio del blueprint, distinto de `momentoUsuario`
-   * (eje Fase 1-5): solo gatilla el Panel Lateral en Home — el Modal
-   * Interceptor trata a ambos igual ante un clic financiero.
+   * Fase 0 — "Activos" (ETAPA 0, con historial en Dropi, ven el Panel
+   * Lateral en Home) vs "Nuevos" (ETAPA 0.5, sin historial). Eje propio del
+   * blueprint, distinto de `momentoUsuario` (eje Fase 1-5): solo gatilla el
+   * Panel Lateral en Home — el Modal Interceptor trata a ambos igual ante un
+   * clic financiero.
    */
   private readonly _fase0TipoUsuario = signal<Fase0TipoUsuario>(this.loadFase0TipoUsuario());
   /** Plan2.md Parte 8 — usuario antiguo con datos del formulario manual viejo (pre-Sumsub), nunca certificados. */

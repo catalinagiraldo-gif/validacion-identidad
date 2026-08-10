@@ -460,7 +460,7 @@ export const FASE0_ETAPA_LABELS: Record<Fase0Etapa, string> = {
 /** Nota de backstage (Back stage del blueprint) por etapa, para las bolitas "!" del prototipo — nunca copy de usuario. */
 export const FASE0_ETAPA_BACKSTAGE: Record<Fase0Etapa, string> = {
   pre: 'Setup manual: Google Sheets + campañas UserPilot. Arranque real del MVP: Guatemala, Panamá, Paraguay y Perú primero — el resto (MX, VE, CR, Europa) se solicita a Sumsub en el setup pero entra de forma gradual. Se regula el volumen para que Legal/Financiero puedan auditar a mano.',
-  etapa0: 'Segmentación visual en UserPilot por fecha de registro para aislar a los Nuevos. Sin incentivo monetario aquí — el bono de "Semana de la Seguridad" (fletes, masterclasses, Kit Dropi) es exclusivo de Activos-Riesgo en Etapa 0.5+.',
+  etapa0: 'Segmentación visual en UserPilot por historial de actividad para aislar a los Activos sin verificar. Sin incentivo monetario aquí — el bono de "Semana de la Seguridad" (fletes, masterclasses, Kit Dropi) es exclusivo de Activos-Riesgo en Etapa 0.5+.',
   etapa05: 'DOC ENLACES A-E: el bloque de formulario depende del país (y de si es marca blanca). El pop-up es ineludible — UserPilot no permite cerrarlo hasta que Sumsub confirme, y el copy no varía entre reapariciones (evita apariencia de manipulación). Robusto ante AdBlockers.',
   'en-sumsub': 'La pregunta "Persona Natural / Empresa" ya no vive en UserPilot — Sumsub la hace dentro de su propio formulario. Salir de Dropi es real: no hay vuelta atrás hasta que Sumsub confirme o el usuario abandone (Incompleto).',
   continua: 'Legal descarga los estados desde el backoffice de Sumsub, actualiza a mano un Google Sheet, Admin apaga el pop-up de los Aprobados y CRM notifica. SLA operativo: 48–72 horas hábiles tras la aprobación real — el prototipo puede lucir "atrasado" a propósito.',
@@ -550,15 +550,16 @@ export interface Fase0Evento {
 // Nuevos vs Activos — vocabulario textual del blueprint (columnas ETAPA 0 y
 // ETAPA 0.5). Es un eje propio de Fase 0, distinto de `MomentoUsuario`
 // (Setup/Activación/Hábito/...), que es del eje Fase 1-5 (Plan2.md). Solo
-// gatilla el Panel Lateral (Etapa 0, exclusivo de "entra por primera vez al
-// Home") — el Modal Interceptor de Etapa 0.5 trata a Nuevos y Activos IGUAL
-// ante un clic financiero ("el disparador es la acción, no la antigüedad").
+// gatilla el Panel Lateral (Etapa 0, exclusivo de usuarios Activos con
+// historial en Dropi) — el Modal Interceptor de Etapa 0.5 trata a Nuevos y
+// Activos IGUAL ante un clic financiero ("el disparador es la acción, no la
+// antigüedad").
 // ---------------------------------------------------------------------------
 export type Fase0TipoUsuario = 'nuevo' | 'activo';
 
 export const FASE0_TIPO_USUARIO_LABELS: Record<Fase0TipoUsuario, string> = {
-  nuevo: 'Nuevo (Etapa 0)',
-  activo: 'Activo (Etapa 0.5)',
+  nuevo: 'Nuevo (Etapa 0.5)',
+  activo: 'Activo (Etapa 0)',
 };
 
 /** Motivo del bloqueo full-screen de Etapa 1 — mismo componente, dos copys reales del blueprint. */

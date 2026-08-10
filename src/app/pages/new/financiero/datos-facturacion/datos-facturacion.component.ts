@@ -5,6 +5,7 @@ import { IdentityDemoStateService } from '../../../../common/services/identity-d
 import { IdentityModalService } from '../../../../common/services/identity-modal.service';
 import { IdentityFase0Service } from '../../../../common/services/identity-fase0.service';
 import { IdentityDemoStateV2Service } from '../../../../common/services/identity-demo-state-v2.service';
+import { IdentityGateComponent } from '../../../../common/components/identity-gate/identity-gate.component';
 import { PAIS_BILLING_FIELDS, NOMBRE_TIPO_PERSONA, PAISES_9, Pais9, TipoPersonaV2, ESTADO_FORMULARIO_CONFIG, PaisBillingConfig } from '../../../../common/models/identity-flow-v2.models';
 
 const BILLING_CONFIG_FALLBACK: PaisBillingConfig = {
@@ -77,7 +78,7 @@ const DATOS_FORMULARIO_ANTIGUO_MOCK = {
 @Component({
   selector: 'app-datos-facturacion-new',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IdentityGateComponent],
   styleUrls: ['./datos-facturacion.component.scss'],
   template: `
     <div class="page-wrapper">
@@ -136,26 +137,9 @@ const DATOS_FORMULARIO_ANTIGUO_MOCK = {
             </p>
           </div>
         </div>
-      } @else if (esFase0() && statusV2() === 'sin_validar') {
-        <!-- Fase 0 (blueprint Etapa 0.5, "Tarea" paso 2): "Datos de
-             Facturación" ES uno de los 6 triggers estándar → Modal
-             Interceptor UserPilot, "editar exige verificarse primero" —
-             mismo trato que Transferir Wallet. Este banner grande NO
-             reemplaza al Modal Interceptor: solo evita que el formulario
-             quede oculto detrás de un empty-state antes de hacer clic —
-             el CTA de abajo sí abre el interceptor (abrirModal→tryIntercept). -->
-        <div class="alert-warning alert-warning--fase0-grande" data-tour="facturacion-banner-fase0">
-          <i class="pi pi-shield alert-icon alert-icon--lg"></i>
-          <div class="alert-body">
-            <p class="alert-text alert-text--lg">
-              <span class="alert-bold">Verifica tu identidad para editar tus datos de facturación. </span>
-              <span>Ya puedes ver el formulario completo, pero los campos quedan bloqueados hasta que te valides con {{ motorLabel() }} (~5 min) — luego {{ motorLabel() }} completa los datos de entidad por ti.</span>
-            </p>
-            <button class="btn-identity-cta btn-identity-cta--lg" type="button" (click)="abrirModal()">
-              <i class="pi pi-shield"></i> Verificar identidad
-            </button>
-          </div>
-        </div>
+      } @else if (esFase0()) {
+        <!-- Mismo banner/gate que Wallet, DropiCard, cuenta — CTA directo a Sumsub. -->
+        <app-identity-gate contexto="facturacion" />
       } @else {
         <div class="alert-warning">
           <i class="pi pi-info-circle alert-icon"></i>
@@ -575,8 +559,8 @@ export class DatosFacturacionNewComponent {
   }
 
   abrirModal(): void {
-    // Fase 0: editar datos de facturación es un trigger de Etapa 0.5 (interceptor). fase1+ intacto.
-    if (this.fase0.tryIntercept('facturacion', false)) return;
+    // Banner / CTA suave en Fase 0 → directo a Sumsub (sin interceptor).
+    if (this.fase0.invitarDesdeBanner('facturacion')) return;
     this.modalSvc.open('facturacion', 'screen0');
   }
 

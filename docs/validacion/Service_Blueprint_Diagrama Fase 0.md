@@ -4,7 +4,7 @@
 
 ## Cómo está organizado el diagrama original
 
-- **Columnas (5 etapas, de izquierda a derecha):** PRE-ETAPA (Setup) → ETAPA 0 (Nuevos) → ETAPA 0.5 (Activos) → ETAPA 1 (Bloqueo) → ETAPA CONTINUA (Semanal).
+- **Columnas (5 etapas, de izquierda a derecha):** PRE-ETAPA (Setup) → ETAPA 0 (Activos) → ETAPA 0.5 (Nuevos) → ETAPA 1 (Bloqueo) → ETAPA CONTINUA (Semanal).
 - **Filas (carriles de servicio, de arriba hacia abajo):**
   1. **Usuarios** — segmento de usuario al que aplica esa etapa.
   2. **Tarea** — la secuencia de pasos que ocurre, en orden horizontal (cada paso es una caja, conectada por flechas horizontales a la siguiente).
@@ -15,7 +15,7 @@
   7. **Stakeholders** — qué rol/persona es responsable de qué parte.
 - **Conectores verticales entre filas:** además de las flechas horizontales dentro de una misma fila (secuencia de la Tarea), hay flechas verticales que saltan de una fila a la fila inmediatamente inferior (p. ej. de "Tarea" a "Canales", de "Canales" a "Acciones", de "Acciones" a "Back stage"), señalando qué paso de una fila dispara qué paso de la fila siguiente. Estas se listan explícitamente en cada etapa con la etiqueta que llevan en el diagrama (ej. "→ [Silenciado] →").
 - **Convención de color observada en las cajas** (no es una leyenda explícita en el HTML, se infiere del uso consistente):
-  - 🟢 **Verde** (`#C3F4D4`/`#70D998`): pantalla o hito positivo que ve/vive el usuario (ej. "Usuario Nuevo entra al Dashboard", "Estado: Aprobado").
+  - 🟢 **Verde** (`#C3F4D4`/`#70D998`): pantalla o hito positivo que ve/vive el usuario (ej. "Usuario Activo entra al Dashboard", "Estado: Aprobado").
   - 🟣 **Morado/lavanda** (`#EAD9FF`/`#C495FF`): acción de sistema o de backoffice, no es una pantalla (ej. "Migración de base interna", "Sumsub Verifica Liveness").
   - 🔵 **Azul** (`#D1E8FF`/`#73B8FF`): un modal o intervención directa de UserPilot sobre la pantalla del usuario (ej. "Intercepta: Modal UserPilot", "Freno Seco: Modal Full-Screen").
   - 🔴 **Rojo** (`#FFD6D6`/`#FF8080`): el motor externo Sumsub (o una acción crítica asociada, como el baneo).
@@ -57,26 +57,26 @@
 
 ## ETAPA 0: Onboarding Suave
 
-**Usuarios:** Usuarios Nuevos sin historial — entran por primera vez al Home/Dashboard de Dropi.
+**Usuarios:** Usuarios Activos (Dropshippers / Proveedores) sin verificar — ya tienen historial en Dropi (al menos una venta) y ven el Panel Lateral en su siguiente visita al Home/Dashboard.
 
 **Tarea** (secuencia horizontal):
 1. ⚫ Inicio — *(conector vertical hacia Canales, etiqueta "Inicia Onboarding")*
-2. 🟢 Usuario Nuevo entra al Dashboard
+2. 🟢 Usuario Activo entra al Dashboard
 3. 🟣 Explora Catálogo (sin bloqueos)
 4. 🔵 Cierra Banner Lateral "Seguridad"
-5. 🟢 Genera Primera Orden (Venta) — *(flecha horizontal índigo: "Ir a Etapa 0.5")*
+5. 🟢 Intenta una Acción Financiera sin Verificarse — *(flecha horizontal índigo: "Ir a Etapa 0.5")*
 
 **Front stage → Canales:**
 1. 🔵 UserPilot — *(conector vertical hacia Acciones, etiqueta "Muestra Banner")*
 2. ⚪ WhatsApp / Correo (CRM) (ícono de mensaje) — *(conector vertical hacia Acciones, etiqueta "Envía Recordatorio")* *(flecha horizontal índigo: "Canales E0.5")*
 
 **Front stage → Acciones:**
-1. 🔵 Panel Lateral (aparece al entrar al Home por primera vez) — Headline: **"Verifica tu cuenta"**. Body: *"En Dropi lo necesitamos para confirmar quién eres y mantener la plataforma segura."* Botón: **"Verificar ahora"**. Ocupa 25% de pantalla, con botón 'X' visible (`aria-label="Cerrar, verificar más tarde"`). *(Sin incentivo monetario aquí — es solo pedagógico. El bono de fletes, masterclasses y "Kit Dropi" es exclusivo de "Semana de la Seguridad" en Etapa 0.5/Activos-Riesgo. Fuente: mesa 7-jul, Consideraciones.md. Copy corregida: la versión anterior mencionaba "retirar tu dinero o hacer transferencias entre wallets" como motivo, pero un usuario que recién entra al Home no tiene wallets ni ha generado dinero en Dropi todavía — hablarle de retirar algo que no tiene no tiene sentido. El motivo ahora se ancla en la necesidad de Dropi como empresa (confirmar identidad, mantener la plataforma segura), no en un beneficio futuro del usuario. Headline en imperativo singular ("Verifica", no "Verifiquemos"): la acción es responsabilidad del usuario. Justificación completa: ver `UX-Writing-Modales-UserPilot.md`)*
-2. ⚪ Recordatorio por WhatsApp/Correo (CRM): mensaje automático que le llega al usuario días después de su primer login, si no completó la validación de identidad desde el Panel Lateral. Copy: *"Hola 👋 Aún falta validar tu identidad en Dropi (documento + selfie, unos minutos). Lo pedimos para confirmar quién eres y completar tu perfil. Entra a tu panel y pulsa «Verificar ahora»."* **Asunto sugerido (correo):** "Completa tu validación de identidad en Dropi". Terminología deliberada: usa "validar/validación de identidad" y menciona "documento + selfie" para distinguirlo del OTP de correo/celular (código de 6 dígitos dentro del flujo Sumsub) y del 2FA de Configuración → Seguridad; evita "verificar tu cuenta" (suena a activación por código). Sin retiros, wallet ni transacciones — el usuario nuevo aún no tiene saldo. Es el mismo envío programado que se define en Back stage (punto 2) — aquí es donde el usuario realmente lo ve.
-3. 🟣 Sutil: Permite navegación total. Usuario puede ignorarlo y seguir comprando — pero si hace clic en "Transferir Wallet", "Recargar", "Registro de Datos Bancarios", "Solicitud DropiCard", "Datos de Facturación" o "Información de Cuenta" antes de verificarse, salta directo al flujo de Etapa 0.5 (modal interceptor UserPilot, o modal exclusivo bancario en GT/PA): mismo trato que un usuario Activo, sin importar que sea Nuevo. — *(flecha horizontal índigo: "FS E0.5")*
+1. 🔵 Panel Lateral (aparece en Home mientras el usuario Activo no se haya verificado) — Headline: **"Verifica tu cuenta"**. Body: *"En Dropi lo necesitamos para confirmar quién eres y mantener la plataforma segura."* Botón: **"Verificar ahora"**. Ocupa 25% de pantalla, con botón 'X' visible (`aria-label="Cerrar, verificar más tarde"`). *(Sin incentivo monetario aquí — es solo pedagógico. El bono de fletes, masterclasses y "Kit Dropi" es exclusivo de "Semana de la Seguridad" en Etapa 0.5/Activos-Riesgo. Fuente: mesa 7-jul, Consideraciones.md. Corrección (swap Nuevos/Activos): el Panel ahora lo ve un usuario Activo — que sí tiene wallet e historial de ventas —, pero el copy se mantiene neutral y no menciona "retirar tu dinero" ni transferencias entre wallets: el motivo se ancla en la necesidad de Dropi como empresa (confirmar identidad, mantener la plataforma segura), no en un beneficio o urgencia financiera del usuario, para no anticipar el tono transaccional que sí usa el Modal Interceptor de Etapa 0.5. Headline en imperativo singular ("Verifica", no "Verifiquemos"): la acción es responsabilidad del usuario. Justificación completa: ver `UX-Writing-Modales-UserPilot.md`)*
+2. ⚪ Recordatorio por WhatsApp/Correo (CRM): mensaje automático que le llega al usuario Activo días después de ver por primera vez el Panel Lateral, si no completó la validación de identidad desde ahí. Copy: *"Hola 👋 Aún falta validar tu identidad en Dropi (documento + selfie, unos minutos). Lo pedimos para confirmar quién eres y completar tu perfil. Entra a tu panel y pulsa «Verificar ahora»."* **Asunto sugerido (correo):** "Completa tu validación de identidad en Dropi". Terminología deliberada: usa "validar/validación de identidad" y menciona "documento + selfie" para distinguirlo del OTP de correo/celular (código de 6 dígitos dentro del flujo Sumsub) y del 2FA de Configuración → Seguridad; evita "verificar tu cuenta" (suena a activación por código). Sin retiros, wallet ni transacciones — mantiene el mismo tono pedagógico del Panel Lateral, sin anclarse en el saldo o historial financiero del usuario Activo. Es el mismo envío programado que se define en Back stage (punto 2) — aquí es donde el usuario realmente lo ve.
+3. 🟣 Sutil: Permite navegación total. Usuario puede ignorarlo y seguir comprando — pero si hace clic en "Transferir Wallet", "Recargar", "Registro de Datos Bancarios", "Solicitud DropiCard", "Datos de Facturación" o "Información de Cuenta" antes de verificarse, salta directo al flujo de Etapa 0.5 (modal interceptor UserPilot, o modal exclusivo bancario en GT/PA): mismo trato que un usuario Nuevo, sin importar que sea Activo. — *(flecha horizontal índigo: "FS E0.5")*
 
 **Back stage → Acciones:**
-- 🟣 1. [MANUAL] Segmentación visual en UserPilot: filtra a los usuarios por fecha de registro para aislar a los Nuevos.
+- 🟣 1. [MANUAL] Segmentación visual en UserPilot: filtra a los usuarios por historial de actividad (al menos una venta) para aislar a los Activos sin verificar.
 - 🟣 2. [MANUAL] Envíos programados desde el CRM por WhatsApp y correo con mensajes de educación en seguridad (cadencia y tema exactos por confirmar — Tabla Fase 0.csv solo dice "semanales"). — *(flecha horizontal índigo: "BS E0.5")*
 
 **Herramientas:** UserPilot · CRM.
@@ -87,9 +87,9 @@
 
 ---
 
-## ETAPA 0.5: Trigger Transaccional (Activos)
+## ETAPA 0.5: Trigger Transaccional (Nuevos)
 
-**Usuarios:** Usuarios Activos (Dropshippers / Proveedores) — y también Usuarios Nuevos, si intentan Transferir Wallet, Recargar, Registro de Datos Bancarios, Solicitud DropiCard, Datos de Facturación o Información de Cuenta antes de verificarse en Etapa 0 (GT/PA: modal exclusivo bancario; resto: modal interceptor UserPilot). El disparador es la acción, no la antigüedad de la cuenta.
+**Usuarios:** Usuarios Nuevos (recién registrados, sin historial) — y también Usuarios Activos, si ignoran o cierran el Panel Lateral de Etapa 0 e intentan Transferir Wallet, Recargar, Registro de Datos Bancarios, Solicitud DropiCard, Datos de Facturación o Información de Cuenta antes de verificarse (GT/PA: modal exclusivo bancario; resto: modal interceptor UserPilot). El disparador es la acción, no la antigüedad de la cuenta.
 
 **Tarea** (secuencia horizontal):
 1. 🟢 Dropshipper en Módulo Financiero
@@ -286,7 +286,7 @@ Estas son las flechas índigo que van de una caja a la siguiente caja de la mism
 | PRE-ETAPA | Tarea | Validar operación manual | Ir a Etapa 0 | pasa a la columna ETAPA 0 |
 | PRE-ETAPA | Canales | Sumsub | Canales E0 | pasa a Canales de ETAPA 0 |
 | PRE-ETAPA | Back stage Acciones | 3. Lotes de Despliegue MVP | BS E0 | pasa a Back stage de ETAPA 0 |
-| ETAPA 0 | Tarea | Genera Primera Orden (Venta) | Ir a Etapa 0.5 | pasa a la columna ETAPA 0.5 |
+| ETAPA 0 | Tarea | Intenta una Acción Financiera sin Verificarse | Ir a Etapa 0.5 | pasa a la columna ETAPA 0.5 |
 | ETAPA 0 | Canales | WhatsApp / Correo (CRM) | Canales E0.5 | pasa a Canales de ETAPA 0.5 |
 | ETAPA 0 | Front Acciones | Sutil: permite navegación total | FS E0.5 | pasa a Front Acciones de ETAPA 0.5 |
 | ETAPA 0 | Back stage Acciones | 2. Envíos programados desde el CRM | BS E0.5 | pasa a Back stage de ETAPA 0.5 |
@@ -315,3 +315,4 @@ Estas son las flechas índigo que van de una caja a la siguiente caja de la mism
 - Los íconos SVG decorativos (el ícono de sobre/correo usado en la caja "CRM" de PRE-ETAPA) no llevan texto propio, se describen aquí solo como "(ícono de correo)".
 - Para el detalle de qué corrección de negocio motivó cada texto (fuente: `Consem2.md`, `Historia.md`, `Consideraciones.md`, Tabla Fase 0.csv, mesa técnica del 7 de julio), ver el historial de la conversación donde se auditó y corrigió este blueprint — este documento es una transcripción fiel del estado actual del HTML, no un análisis de por qué dice lo que dice.
 - **Enrutamiento de soporte (Bloqueo, Pendiente-en-revisión, Rechazado):** los 3 puntos de contacto del blueprint NO abren el widget de soporte automáticamente — no existe esa integración técnica —; su copy solo le indica al usuario que puede contactar a soporte por su cuenta, y nombra el chip raíz existente **"Validación de identidad"** como punto de entrada textual, orientando a la opción específica del árbol según el caso — Bloqueo → **"Mi cuenta está bloqueada"**, Pendiente-en-revisión → **"Mi verificación sigue en revisión"**, Rechazado → **"Me rechazaron la verificación"**. Es un deep-link por texto (no por integración): la orientación depende del copy de cada modal, no de una integración. Pendiente-en-revisión tiene un botón secundario "Contactar a soporte" junto a "Entendido" (antes no ofrecía ninguna vía de contacto). El árbol completo de 8 opciones que ese widget debe resolver para este flujo vive directamente en **Etapa 1 → Front stage → Acciones** (ítems 2-4: Widget de Soporte, Árbol de opciones, Escalamiento) — ya no en un documento aparte.
+- **Corrección — swap Nuevos/Activos entre Etapa 0 y Etapa 0.5 (29-jul):** el Panel Lateral "Verifica tu cuenta" de Etapa 0 ahora es exclusivo de **Usuarios Activos** con historial en Dropi (antes era exclusivo de Nuevos); un Usuario Nuevo ya no lo ve al entrar a Home. Simétricamente, Etapa 0.5 pasa a describirse primero para **Usuarios Nuevos** — su único punto de contacto es el Modal Interceptor al hacer clic en una acción financiera (p. ej. Datos de Facturación) sin haberse verificado — y los Activos entran a esa misma etapa solo si ignoran o cierran el Panel Lateral y luego intentan una de esas acciones. La mecánica del Modal Interceptor (headline, body, triggers, DOC ENLACES A-E) no cambió — sigue tratando a Nuevos y Activos igual ante un clic financiero; lo único que se invirtió es qué segmento recibe el aviso pasivo en Home.

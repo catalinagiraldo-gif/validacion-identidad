@@ -320,6 +320,7 @@
           </tbody>
         </table>
       </div>
+      <div class="plain-answer" id="scope-open-kyc-kyb" style="border-color:var(--f0-yellow-border);border-left-color:var(--f0-yellow-border);background:var(--f0-yellow-bg);margin-top:14px;"><strong>🚧 Punto abierto de alcance — propuesta de TI (José Giraldo), aún en estimación:</strong> en la reunión de seguimiento (<code>REUCONTI.md</code>), TI propuso empezar solo con <strong>KYC (identidad) vía Sumsub para todos los países menos Colombia</strong>, dejando el <strong>KYB (facturación) para una fase posterior</strong> — por seguridad de la información y para no comprometer el alcance del proyecto completo. Esto es distinto de lo que asume hoy este blueprint: que "Resto de países" resuelve identidad y facturación <strong>juntas, en un solo paso</strong> (ver C4/C5 y la tabla de abajo). Es una propuesta sin decisión cerrada, pendiente de estimación de tiempos; Producto espera que TI revise primero los flujos ya levantados con Sumsub. Si se adopta, el flujo unificado de "Resto de países" pasaría a resolverse en dos entregas en vez de una.</div>
     </section>
 
     <section class="section" aria-label="Colombia vs. Resto de países">
@@ -413,6 +414,7 @@
                 <div class="v-link"><span class="ln"></span><span class="ar"></span><span class="lb">Espera a que elija un canal ↓</span></div>
               </span>
             </div>
+            <span class="format-tag open" style="margin-top:8px;">🚧 Punto abierto: reconocimiento cross-country (ver detalle)</span>
           </div>
         </div>
         <div class="cell etapa-multi">
@@ -430,7 +432,7 @@
               </div>
             </div>
             <div class="sub-col"><span class="sub-kicker">C4</span>
-              <div class="box b-user"><strong>Si abre Información de cuenta, Datos de facturación, o hace su primera venta</strong>Entra por esta puerta propia — no es "el tercer paso" de una fila.
+              <div class="box b-user"><strong>Si abre Información de cuenta, Datos de facturación, o ya es "activo" y le falta algo</strong>Entra por esta puerta propia — no es "el tercer paso" de una fila. <span class="format-tag open" style="margin:4px 0 0;">🚧 No en la 1ª venta — solo al volverse "activo" (~20 órdenes, en discusión)</span>
                 <div class="v-link"><span class="ln"></span><span class="ar"></span><span class="lb">↓ Ve la pantalla del módulo</span></div>
                 <span class="goes-to">→ Si completa, sigue en Etapa 3 (C5)</span>
               </div>
@@ -469,7 +471,7 @@
               </div>
             </div>
             <div class="sub-col"><span class="sub-kicker">C4</span>
-              <div class="box b-native"><span class="format-tag silent">Pantalla propia de Dropi</span><strong>Mi cuenta / Facturación</strong>Frontend Dropi (Angular) + API de perfil y facturación. Más el mensaje de bienvenida si es su primera venta.
+              <div class="box b-native"><span class="format-tag silent">Pantalla propia de Dropi</span><strong>Mi cuenta / Facturación</strong>Frontend Dropi (Angular) + API de perfil y facturación. Más el mensaje de bienvenida/alerta cuando se vuelve "activo" (🚧 no en su primera venta).
                 <div class="v-link"><span class="ln"></span><span class="ar"></span><span class="lb">Pantalla del módulo ↓</span></div>
               </div>
             </div>
@@ -504,7 +506,7 @@
             <div class="sub-col"><span class="sub-kicker">C2</span>
               <div class="box b-native" id="soft-slideup"><span class="format-tag banner">Panel deslizante</span><strong>Verifica tu cuenta</strong>
                 <span class="copy-line">En Dropi lo necesitamos para confirmar quién eres y mantener la plataforma segura. Botón: <strong>Completar ahora</strong> · La X cierra el panel.</span>
-                <span class="copy-line">Si lo cierra y el dato sigue faltando, el job de recordatorio le reenvía el mismo aviso una sola vez, unos días después.</span>
+                <span class="copy-line">Si lo cierra y el dato sigue faltando, el job de recordatorio le reenvía el aviso — nivel 1 a los pocos días; <span class="format-tag open" style="margin:0;">🚧 nivel 2 escalonado por volumen de órdenes</span>, ver <a href="#d-etapa2">detalle de Etapa 2</a>.</span>
               </div>
             </div>
             <div class="sub-col"><span class="sub-kicker">C3</span>
@@ -517,9 +519,13 @@
                 <span class="copy-line"><strong>Solo facturación (Colombia):</strong> "Completa tus datos de facturación" — Por seguridad y para desbloquear movimientos financieros, valida tus datos de facturación. Te lleva unos minutos. → botón Completar facturación</span>
                 <span class="copy-line"><strong>Te faltan ambas (Colombia):</strong> "Valida tus datos para continuar" — Antes de mover fondos necesitamos tu identidad y tus datos de facturación. Empieza por tu identidad en Información de cuenta. → botón Completar identidad</span>
                 <span class="copy-line"><strong>Resto de países:</strong> "Valida tus datos para continuar" — Antes de mover fondos necesitamos confirmar quién eres. Te llevamos a completar la validación. → botón Continuar a validación</span>
+                <span class="copy-line"><em>Línea adicional en las 4 variantes:</em> "Esto hace parte del tratamiento de tus datos personales, según nuestros Términos y Condiciones." Sin enlace — la aceptación de Términos ya ocurre dentro del flujo del proveedor. <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 3.)</em></span>
               </div>
             </div>
             <div class="sub-col"><span class="sub-kicker">C4</span>
+              <div class="box b-native" id="co-steps-indicator"><span class="format-tag silent">Componente DS · dropi-steps</span><span class="country-tag co">Colombia</span><strong>Indicador de pasos — Identidad y Facturación</strong>
+                <span class="copy-line"><strong>Paso 1 de 2 · Identidad</strong> → <strong>Paso 2 de 2 · Facturación</strong>. Hace visible que Colombia tiene dos pasos separados (Truora identidad + Sumsub facturación) — hoy solo se infiere navegando. No aplica fuera de Colombia. <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 5.)</em></span>
+              </div>
               <div class="box b-native" id="route-co-bill"><span class="format-tag silent">Página de Dropi</span><span class="country-tag co">Colombia</span><strong>Facturación: es un enlace, no un formulario</strong>
                 <span class="copy-line"><strong>Si está vacío:</strong> Headline "Completa tus datos de facturación". Body: "Por seguridad y para desbloquear movimientos financieros, valida tus datos de facturación. No es un formulario aquí: te llevamos al proceso seguro." Botón: <strong>Completar datos de facturación</strong> → enlace directo al proceso del proveedor (Dropi no tiene su propio formulario para esto).</span>
                 <span class="copy-line"><strong>En proceso</strong> (al volver de Sumsub, mientras se confirma): la tarjeta reemplaza el botón por una etiqueta de estado. <em>Formato: banner fijo dentro de la tarjeta, no modal.</em> Headline: "Estamos confirmando tus datos". Body: "Mientras tanto, puedes seguir usando Dropi pero hemos pausado temporalmente tus retiros y transferencias."</span>
@@ -532,14 +538,22 @@
                 <span class="copy-line"><strong>En proceso</strong> (al volver a Dropi, mientras se confirma): los campos quedan visibles pero deshabilitados. <em>Formato: banner fijo dentro de la página, no modal.</em> Headline: "Estamos confirmando tus datos". Body: "Mientras tanto, puedes seguir usando Dropi pero hemos pausado temporalmente tus retiros y transferencias." <em>(Nota interna: mismo flujo de confirmación de Truora que ya está en producción, no es un banner nuevo.)</em></span>
                 <span class="copy-line">Completo: mismos campos, visibles pero de solo lectura, sin fecha de desbloqueo automática — nombre, tipo de persona, tipo/número de documento y documento adjunto disparan el flujo de re-validación al editarlos vía soporte; dirección y ciudad se guardan directo.</span>
               </div>
-              <div class="box b-native"><span class="format-tag modal">Ventana de bienvenida</span><strong>¡Tu primera venta en Dropi!</strong>
+              <div class="box b-native"><span class="format-tag open">🚧 Punto abierto — disparador</span><strong>¡Tu primera venta en Dropi!</strong>
                 <span class="copy-line">Qué bueno que ya empezaste. Para retirar o usar tu dinero, completa tu validación de datos. Es por tu seguridad y la de la plataforma. Botones: <strong>Completar validación</strong> / <strong>Ahora no</strong></span>
                 <span class="copy-line">Si elige "Ahora no", el job de recordatorio puede reenviarle este mismo aviso una sola vez más adelante.</span>
+                <span class="copy-line"><em>Nota (reunión de seguimiento, `REUCONTI.md`): un usuario nuevo no debería ver este aviso en su primera venta — mostrarlo ahí puede confundirlo y generar deserción. Debería dispararse solo cuando el usuario se vuelve "activo" (umbral en discusión, ~20 órdenes); falta confirmar si el copy cambia. Ver Regla F.</em></span>
               </div>
               <div class="box b-native"><span class="format-tag silent">Página de Dropi</span><span class="country-tag rest">Resto de países</span><strong>Un solo botón</strong>
                 <span class="copy-line">Headline: "Valida tu identidad y tus datos de facturación". Body: "Un formulario guiado te pide lo que necesitamos, según tu país. No tienes que volver después — todo queda listo de una vez." Botón: <strong>Completar validación</strong>.</span>
                 <span class="copy-line">El formulario vive dentro de Sumsub, no en Dropi. Bloque A (GT, PA, PY, PE, MX, VE, CR, Europa): documento + prueba de vida + datos fiscales; si declara empresa, autocompleta al buscarla por nombre. Bloque B (CL, EC, AR): documento + prueba de vida; si declara empresa, pide el documento de la empresa sin autocompletar.</span>
-                <span class="copy-line">Al completar → Headline: "Tus datos de validación". Lista combinada de identidad y facturación en solo lectura, con el mismo aviso de solo lectura.</span>
+                <span class="copy-line">Al completar → Headline: "Tus datos de validación". Lista de solo lectura <strong>agrupada por origen</strong>, no un bloque monolítico:
+                  <ul>
+                    <li><strong>Bloque Identidad:</strong> documento de identidad, estado de la prueba de vida (nunca el archivo, solo el estado)</li>
+                    <li><strong>Bloque Datos fiscales:</strong> nombre/razón social fiscal, documento de empresa (bloque B) o dato autocompletado (bloque A)</li>
+                  </ul>
+                  <span class="format-tag open" style="margin:0;">🚧 Reconciliación parcial — a confirmar con TI</span> si Sumsub confirma un bloque antes que el otro, la pantalla marca cuál ya quedó confirmado, en vez de mostrar todo "en proceso" hasta que cierren los dos. <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 6.)</em>
+                </span>
+                <span class="copy-line"><span class="format-tag open">🚧 Punto abierto de alcance</span> Este "un solo paso" asume KYC+KYB juntos desde el día 1. TI propuso fasearlo (KYC primero, KYB después) — ver <a href="#scope-open-kyc-kyb">nota al inicio</a>.</span>
               </div>
             </div>
           </div>
@@ -547,6 +561,13 @@
         <div class="cell etapa-multi">
           <div class="sequential-wrap">
             <div class="sub-col"><span class="sub-kicker">C5</span>
+              <div class="box b-support" id="timing-note"><span class="format-tag silent">⏱ Nota de timing</span><strong>Inmediato para el camino automático, no una espera real</strong>
+                <span class="copy-line">Para el camino automático (&gt;92% de los casos), estos banners "en proceso" son una transición de segundos — el resultado llega casi de inmediato. El SLA de hasta 24h de abajo (C6, "En revisión prolongada") aplica <strong>solo</strong> a la cola de excepciones (≤8%). <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, Comentario C.)</em></span>
+              </div>
+              <div class="box b-native" id="provider-reflection"><span class="format-tag silent">👁 Mientras el proveedor está abierto</span><strong>Indicador persistente + tips de seguridad</strong>
+                <span class="copy-line">Indicador persistente (no el banner pasivo actual) mientras el WebSDK/enlace está abierto, para que el usuario no sienta que "salió" de Dropi. <span class="format-tag open" style="margin:0;">🚧 Formato visual a definir con TI/Product Design</span></span>
+                <span class="copy-line">Checklist visible antes de abrir el enlace: "Activa el GPS de tu celular" · "Apaga cualquier VPN activa" · "Vuelve a Dropi al terminar" — tomados de Truora <code>2.1 Indicaciones</code> (hoy texto pasivo sin confirmación, Figma "Cuenta V2.0.0"). <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 4.)</em></span>
+              </div>
               <div class="box b-engine" id="route-co-both"><span class="format-tag silent">Orden de prioridad</span><span class="country-tag co">Colombia</span><strong>Primero identidad, luego facturación</strong>
                 Si te faltan las dos cosas, primero completas tu identidad; al aprobarse, te ofrecemos completar la facturación. Muestra primero el aviso de identidad y, al aprobarse, pasa al de facturación — nunca los dos a la vez.
               </div>
@@ -565,7 +586,7 @@
             </div>
             <div class="seq-arrow">→</div>
             <div class="sub-col"><span class="sub-kicker">C6</span>
-              <div class="box b-user" id="state-approved"><span class="format-tag toast">✓ Toast + confeti — universal, sin decisión</span><strong>"¡Cuenta verificada!"</strong>
+              <div class="box b-user" id="state-approved"><span class="format-tag toast">✓ Toast + confeti — universal, llega en segundos</span><strong>"¡Cuenta verificada!"</strong>
                 <span class="copy-line">"Ya puedes transferir tu saldo, registrar tus datos bancarios y pedir tu DropiCard." Los datos quedan en <strong>solo lectura</strong>. <em>(Nota: se retira sola en 4–5s.)</em></span>
               </div>
               <div class="box b-native"><span class="format-tag modal">◆ Modal + confeti — Colombia, pide decisión</span>
@@ -598,8 +619,17 @@
                   <div class="case-row"><span class="case-chip">Resto países</span><span class="case-headline">"Te falta un paso"</span></div>
                 </div>
                 <span class="copy-line">Mismo cuerpo en los 3: "Empezaste el proceso pero no lo terminaste." Botón: <strong>Continuar validación</strong> — retoma justo donde la dejaste, sin repetir nada.</span>
+                <span class="copy-line"><span class="format-tag open" style="margin:0 0 4px;">🚧 Catálogo de causas — a confirmar con TI</span>
+                  <ul>
+                    <li>Documento sin cargar — "Aún no subiste tu documento."</li>
+                    <li>Documento ilegible / foto borrosa — "No pudimos leer bien tu documento — vuelve a intentarlo."</li>
+                    <li>Prueba de vida no completada — "Te falta completar la verificación con tu cámara."</li>
+                    <li>Dato no coincide con el documento — reusa "Te quedan N intentos" de Truora (<code>2.6</code>/<code>2.7</code>), corrigiendo el bug de plural, con temporizador visible del cooldown</li>
+                  </ul>
+                  Revisión de riesgo sin acción posible del usuario no es "Incompleto" — converge con "En revisión" (abajo). <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 1.)</em>
+                </span>
               </div>
-              <div class="box b-support" id="state-review"><span class="format-tag banner">⏱ Banner — revisión prolongada, ≤8% de los casos</span>
+              <div class="box b-support" id="state-review"><span class="format-tag banner">⏱ Banner — exclusivo de la cola de excepciones, ≤8% de los casos</span>
                 <div class="case-grid">
                   <div class="case-row"><span class="case-chip">CO · Identidad</span><span class="case-headline">"Seguimos confirmando tu identidad"</span></div>
                   <div class="case-row"><span class="case-chip">CO · Facturación</span><span class="case-headline">"Seguimos confirmando tus datos de facturación"</span></div>
@@ -608,8 +638,15 @@
                 </div>
                 <span class="copy-line">Mismo cuerpo en las 4: "Pasó a revisión manual — nuestro equipo lo está mirando. No debería tardar más de 24 horas en total. Mientras tanto, sigue comprando y vendiendo sin problema — no necesitas reenviar nada." Botón: <strong>Entendido</strong>. <em>(Nota: <code>RN-07</code>.)</em></span>
               </div>
-              <div class="box b-engine" id="state-blocked"><span class="format-tag banner">🔒 Banner, sin botón de reintento — universal</span><strong>"Tu cuenta está bloqueada por seguridad"</strong>
-                <span class="copy-line">"Nuestro equipo la está revisando para proteger tus fondos. No podrás hacer retiros, transferencias ni pedir DropiCard mientras dure la revisión." <em>(Nota: dirige al árbol de soporte — bandera de Legal/Financiero, distinta de un rechazo del proveedor; no depende de identidad ni facturación.)</em></span>
+              <div class="box b-engine" id="state-blocked"><span class="format-tag banner">🔒 Banner, sin botón de reintento — universal, dos naturalezas distintas</span>
+                <div class="case-grid">
+                  <div class="case-row"><span class="case-chip">En investigación</span><span class="case-headline">"Tu cuenta está bloqueada por seguridad"</span></div>
+                  <div class="case-row"><span class="case-chip">Definitivo</span><span class="case-headline">"Tu cuenta fue suspendida de forma definitiva"</span></div>
+                </div>
+                <span class="copy-line"><strong>En investigación</strong> (reversible, sin ETA): "Nuestro equipo la está revisando para proteger tus fondos. No podrás hacer retiros, transferencias ni pedir DropiCard mientras dure la revisión." Dirige al árbol de soporte.</span>
+                <span class="copy-line"><strong>Definitivo</strong> (irreversible): "Tras revisar tu caso, no puedes seguir operando en Dropi. Esta decisión no tiene reversión." <span class="format-tag open" style="margin:2px 0 0;">🚧 Canal de soporte post-suspensión pendiente de Legal/SAC</span></span>
+                <span class="copy-line"><span class="format-tag open" style="margin:0 0 4px;">🚧 Propagación cross-country — sin activar</span>Si Legal/TI deciden que el baneo aplica en todos los países donde opera (cita de Catalina en <code>REUCONTI.md</code> 213-220), el body pasaría a: "Tras revisar tu caso, no puedes seguir operando en Dropi en ninguno de los países donde tienes cuenta. Esta decisión no tiene reversión." <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 8b.)</em></span>
+                <span class="copy-line"><em>Bandera de Legal/Financiero, distinta de un rechazo del proveedor; no depende de identidad ni facturación. Hoy Truora ya implementa el caso "Definitivo" expulsando al usuario de la app sin dejarle soporte alcanzable después (Figma "Cuenta V2.0.0", estado 2.5) — no repetir ese patrón. Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 7 y Comentario A.</em></span>
               </div>
             </div>
           </div>
@@ -699,6 +736,7 @@
         </table>
       </div>
       <p class="plain-answer"><strong>Qué ve el usuario en la transición:</strong> nada mientras corre la migración. La próxima vez que entra a Dropi, en vez de su caso pendiente en revisión manual (WhatsApp / Google Sheet) ve el mismo banner "Estamos confirmando tus datos" que cualquier otro usuario en revisión — su proceso ya corre dentro del flujo automático de Sumsub, sin reenviar nada.</p>
+      <div class="plain-answer" style="border-color:var(--f0-yellow-border);border-left-color:var(--f0-yellow-border);background:var(--f0-yellow-bg);"><strong>🚧 Nota fuera de alcance — Guatemala/Panamá:</strong> en la reunión de seguimiento (<code>REUCONTI.md</code>) se mencionaron usuarios de Guatemala y Panamá validados en un flujo paralelo (Truora <strong>y</strong> Sumsub) por una gestión puntual (crisis de un país "café"), que también necesitarían migrar/actualizar su estado. Sin embargo, <code>Historia.md</code> marca el "flujo nativo para Guatemala/Panamá" como <strong>no-objetivo de la v1</strong> (solo aplica el parche actual con Coloca Payments, que es un proceso distinto de validación de cuentas bancarias, no de identidad/facturación). Esta migración no se resuelve en este loop — queda solo como referencia.</div>
       <p class="muted">Stakeholders: <strong>TI</strong> — mantiene los jobs de sincronización y el script de migración. <strong>Legal</strong> — decide si aplica la espera de 72h.</p>
     </details>
 
@@ -713,8 +751,12 @@
             <tr><td><code>has_identity</code> y <code>has_billing</code> = Aprobado</td><td>No pasa nada: no ve el aviso sutil, ni el bloqueo estricto, ni ninguna ventana</td><td>Fin del flujo (operación normal)</td></tr>
             <tr><td>Falta identidad y/o facturación (incompleto o sin iniciar)</td><td>Elegible para intervención (cuenta nueva o antigua)</td><td>Espera canal en Etapa 2 (C2, C3 o C4)</td></tr>
             <tr><td>Estado API = Pendiente / En Revisión</td><td>Validación en curso por parte del proveedor</td><td>Bloqueo transaccional temporal → espera la respuesta del proveedor (Etapa 3)</td></tr>
+            <tr><td><span class="format-tag open">🚧 Punto abierto</span>Ya validado en otro país (mismo correo/nombre), con un dato puntual nuevo por país (ej. facturación en México)</td><td>Elegible, pero potencialmente sin repetir todo el proceso</td><td><em>Punto abierto — ver nota abajo</em></td></tr>
           </tbody>
         </table>
+      </div>
+      <div class="plain-answer" style="border-color:var(--f0-yellow-border);border-left-color:var(--f0-yellow-border);background:var(--f0-yellow-bg);"><strong>🚧 Punto abierto — reconocimiento cross-country:</strong> en la reunión de seguimiento (<code>REUCONTI.md</code>), Catalina planteó que, con una base de datos propia de estados de validación, se podría reconocer a un usuario ya validado en un país (por correo/nombre) y pedirle solo lo puntual que le falte en el país nuevo — por ejemplo, solo datos de facturación en México si ya validó identidad en Colombia — sin repetir el proceso completo. Es una propuesta aún sin validar con TI/Legal, y se relaciona con el habilitador "Motor de ruteo por nacionalidad" (<code>Historia.md</code>, HU-00), que rutea KYC/KYB por país de nacionalidad/constitución pero no define si evita re-pedir datos ya validados en otro país. Este blueprint todavía no asume este comportamiento — cada país sigue pidiendo su propio flujo completo.
+        <p style="margin:8px 0 0;font-size:13px;"><strong>Copy de ejemplo si se implementa:</strong> "Ya validamos tu identidad en {país_origen}. Solo necesitas completar {dato_puntual} para operar en {país_nuevo}." — no resuelve la decisión de negocio, solo deja el copy listo. <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 8a.)</em></p>
       </div>
       <p class="muted">Stakeholders: <strong>TI</strong> — mantiene el motor de segmentación.</p>
     </details>
@@ -722,14 +764,17 @@
     <details class="accordion section stage-detail" id="d-etapa2">
       <summary>Detalle Etapa 2 · Canales de entrada — Rutas Paralelas (C2·C3·C4) <span class="col-type par">Paralelo — elige UNO</span></summary>
       <p class="muted">No es "Soft → Hard → Módulo" en fila. Son tres puertas de entrada distintas: el usuario cruza una sola, según lo que esté haciendo ahora mismo. Las tres convergen en Etapa 3 (C5).</p>
-      <div class="plain-answer"><strong>En una frase:</strong> la intervención se adapta a la antigüedad y la acción del usuario: los nuevos ven el mensaje de bienvenida, los antiguos ven el aviso sutil. El bloqueo estricto (hard gate) solo aparece al intentar un movimiento financiero, sin importar la antigüedad — los otros dos canales se pueden ignorar o posponer.</div>
-      <p class="muted"><strong>Recordatorio si no completa:</strong> si cierra el aviso sutil (C2) o pospone la bienvenida (C4d) y el dato sigue faltando, un job de recordatorio le reenvía el mismo aviso una sola vez, unos días después — mismo canal in-app, o correo/WhatsApp si lo tiene configurado. No se repite a diario. El bloqueo estricto (C3) no lleva recordatorio: ya es obligatorio en el momento en que aparece.</p>
+      <div class="plain-answer"><strong>En una frase:</strong> la intervención se adapta a la antigüedad y la acción del usuario: los nuevos no ven nada todavía (para no confundirlos ni generar deserción), los activos ven la bienvenida/alerta, los antiguos ven el aviso sutil. El bloqueo estricto (hard gate) solo aparece al intentar un movimiento financiero, sin importar la antigüedad — los otros dos canales se pueden ignorar o posponer.</div>
+      <div class="plain-answer" style="border-color:var(--f0-yellow-border);border-left-color:var(--f0-yellow-border);background:var(--f0-yellow-bg);"><strong>🚧 Punto abierto — cuándo empieza a ver algo un usuario nuevo:</strong> en la reunión de seguimiento (<code>REUCONTI.md</code>), Catalina fue explícita en que a un usuario nuevo <strong>no se le debe mostrar nada</strong> de identidad/facturación desde su primera venta. La idea es diferenciar "nuevo" de <strong>"activo"</strong>: un usuario se vuelve activo al alcanzar un número de órdenes por definir (se habló de <strong>~20 órdenes</strong>, aún en discusión) y solo entonces recibe la alerta de C4d en un modal de Home. Esto reemplaza el disparador anterior de este blueprint ("1ª orden o 1er movimiento de wallet"). Se relaciona con la <em>Regla del Despliegue por Lotes</em> y la <em>Regla del Periodo Pedagógico</em> de <code>Reglasvalidacion.md</code> — ver Regla F en <a href="#reglas">Reglas transversales</a>.</div>
+      <p class="muted"><strong>Recordatorio si no completa:</strong> si cierra el aviso sutil (C2) o pospone la bienvenida/alerta de activo (C4d) y el dato sigue faltando, un job de recordatorio le reenvía el mismo aviso — mismo canal in-app, o correo/WhatsApp si lo tiene configurado. El bloqueo estricto (C3) no lleva recordatorio: ya es obligatorio en el momento en que aparece.</p>
+      <div class="plain-answer" style="border-color:var(--f0-yellow-border);border-left-color:var(--f0-yellow-border);background:var(--f0-yellow-bg);"><strong>🚧 Cadencia escalonada por volumen de órdenes (valores de ejemplo, a confirmar con Producto):</strong> Nivel 1 (ya existe) — una sola vez, unos días después de cerrar C2/C4d, mismo tono suave. Nivel 2 (nuevo) — si acumula +N órdenes adicionales sin resolver el dato (N a definir, ej. +30), un recordatorio más notorio por el mismo canal + correo/WhatsApp si está configurado. Conecta con el riesgo ya documentado en <code>Discovery-Riesgos-Transicion-Fase5.md</code> §1.3 (proveedores Top 5 que nunca disparan el hard gate porque no retiran dinero). Nunca se salta la Regla F — el recordatorio no se convierte en bloqueo sin el aviso previo de 1-2 semanas. <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 2.)</em></div>
       <h3>SI → ENTONCES · Canal</h3>
       <div class="table-scroll">
         <table>
           <thead><tr><th>SI el usuario…</th><th>Antigüedad / estado</th><th>Canal</th><th>¿Bloqueante?</th></tr></thead>
           <tbody>
-            <tr><td>Recibe su 1ª orden o hace su 1er movimiento de wallet</td><td>Nuevo, sin iniciar validaciones</td><td><strong>C4d</strong> Bienvenida</td><td>No — puede posponer</td></tr>
+            <tr><td><span class="format-tag open">🚧</span> Es nuevo y recién hace su 1ª orden o 1er movimiento de wallet</td><td>Nuevo, sin iniciar validaciones</td><td><strong>Nada</strong> — no ve ningún aviso todavía</td><td>No aplica</td></tr>
+            <tr><td>Ya es "activo" (umbral en discusión, ~20 órdenes) y le falta algo</td><td>Activo</td><td><strong>C4d</strong> Bienvenida/alerta en modal de Home</td><td>No — puede posponer</td></tr>
             <tr><td>Navega en Home / Dashboard</td><td>Antiguo, le falta alguna validación</td><td><strong>C2</strong> Soft touch (aviso sutil)</td><td>No — puede cerrar la X</td></tr>
             <tr><td>Hace clic en Retirar / Transferir / DropiCard</td><td>Nuevo o antiguo, con datos incompletos</td><td><strong>C3</strong> Hard gate (bloqueo estricto)</td><td>Sí — obligatorio</td></tr>
             <tr><td>Abre Información de cuenta o Datos de facturación</td><td>Nuevo o antiguo, con datos incompletos</td><td><strong>C4</strong> Módulo</td><td>Según su estado</td></tr>
@@ -760,6 +805,7 @@
         </table>
       </div>
       <p class="muted">Todos los mensajes de las filas "Otros países" llevan al mismo módulo único de Sumsub — la diferencia entre bloque A y B es solo si el formulario autocompleta o no el dato de la empresa.</p>
+      <div class="plain-answer" style="border-color:var(--f0-yellow-border);border-left-color:var(--f0-yellow-border);background:var(--f0-yellow-bg);"><strong>🚧 Punto abierto de alcance:</strong> las filas "Otros países" de esta tabla asumen KYC + KYB en un solo módulo desde el día 1. TI propuso fasear esto (KYC primero para todos los países menos Colombia, KYB después) — ver <a href="#scope-open-kyc-kyb">nota al inicio del documento</a>, aún sin decisión cerrada.</div>
       <p class="muted">Copy del aviso "en proceso" (varía según qué se esté confirmando, vive dentro de la página de C4): <a href="UX-Writing-Validacion-TechNative.md">UX-Writing-Validacion-TechNative.md</a> §5b, §7, §11.</p>
       <p class="muted">Stakeholders C5: <strong>TI</strong> mantiene el router de país. <strong>TI + proveedores</strong> mantienen los enlaces (WebSDK).</p>
 
@@ -781,7 +827,8 @@
             <tr><td>CO · Facturación</td><td>Banner: "Seguimos confirmando tus datos de facturación"</td></tr>
             <tr><td>Resto de países</td><td>Banner: "Seguimos confirmando tus datos"</td></tr>
             <tr><td>EC/CL/AR migrado</td><td>Banner: "Seguimos confirmando tus datos" — ver SI→ENTONCES en la Pre-etapa</td></tr>
-            <tr><td>Bloqueado</td><td>Universal — no depende del proveedor</td><td>Banner: "Tu cuenta está bloqueada por seguridad", sin botón de reintento</td><td>Sin fecha fija — depende de que Legal/Financiero resuelvan el caso a mano; ver <a href="Soporte-Validacion-Fase-5.md">árbol de soporte</a></td></tr>
+            <tr><td rowspan="2">Bloqueado</td><td>En investigación</td><td>Banner: "Tu cuenta está bloqueada por seguridad", sin botón de reintento</td><td>Sin fecha fija — depende de que Legal/Financiero resuelvan el caso a mano; ver <a href="Soporte-Validacion-Fase-5.md">árbol de soporte</a></td></tr>
+            <tr><td>Definitivo</td><td>Banner: "Tu cuenta fue suspendida de forma definitiva", sin botón de reintento</td><td>Sin reversión. <span class="format-tag open" style="margin-top:2px;">🚧 Canal de soporte post-suspensión pendiente de Legal/SAC</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -817,6 +864,18 @@
           <span class="rule-kicker">Regla E</span>
           <h3>Bloqueado ≠ Rechazado</h3>
           <p>Bloqueado es una bandera de riesgo que pone Legal/Financiero directamente en Dropi — no la pone el proveedor de identidad y no llega por el webhook. Puede coexistir con cualquier estado de C6 (incluso "Aprobado"). Se resuelve a mano, sin ETA fijo; el usuario lo consulta desde el <a href="Soporte-Validacion-Fase-5.md">árbol de soporte</a>, no desde un botón de reintento.</p>
+          <p style="margin-top:8px;"><span class="format-tag open">🚧 Regla E.1 — dos naturalezas distintas</span> "Bloqueado" cubre tanto una investigación reversible como, en la práctica, un baneo definitivo (confirmado por Catalina en <code>REUCONTI.md</code> 213-220, y ya implementado hoy para Truora: el estado 2.5 en el Figma de producción expulsa al usuario de la app sin dejar soporte alcanzable después). Copy de las dos variantes en <a href="#state-blocked">C6 arriba</a>. El canal de soporte para el caso definitivo queda pendiente de decisión Legal/SAC — dos opciones a evaluar (Comentario A de <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>):</p>
+          <ol style="margin:4px 0 0;padding-left:18px;font-size:13px;">
+            <li><strong>No expulsar al usuario del todo</strong> — pantalla de solo lectura con el árbol de soporte accesible, en vez de redirigirlo fuera de la app.</li>
+            <li><strong>Canal de soporte fuera de sesión</strong> (correo/WhatsApp visible incluso en pantalla de "cuenta suspendida"), si sí se decide cerrar la sesión.</li>
+          </ol>
+          <p style="margin-top:8px;"><span class="format-tag open">🚧 Ref. cruzada — Fase 1</span> En la reunión de seguimiento (<code>REUCONTI.md</code>) se propuso cruzar un "Rechazado" de C6 contra la base de saldos negativos de cartera (script de TI/Andrés Herrera) y el historial de órdenes, para decidir un baneo — potencialmente cross-country. Ese cruce y el baneo consolidado pertenecen a <strong>Fase 1 — Bloqueo cruzado de usuarios baneados</strong> (<code>Historia.md</code>, RN-17), no a este loop. Queda como referencia.</p>
+        </div>
+        <div class="rule-card">
+          <span class="rule-kicker">Regla F</span>
+          <h3>Despliegue por lotes y periodo pedagógico</h3>
+          <p>El hard gate y sus alertas nunca se activan de golpe para toda la base — se despliegan por cohortes según volumen de órdenes, con 1-2 semanas de avisos preventivos antes de bloquear a un usuario existente (<code>Reglasvalidacion.md</code>: "Despliegue por Lotes" + "Periodo Pedagógico").</p>
+          <p style="margin-top:8px;"><span class="format-tag open">🚧 Caso Colombia</span> Hoy la alerta y restricción de movimientos financieros por facturación no están activas en Colombia; antes de activarlas hace falta definir ese periodo de gracia. Ver también el umbral de "activo" en <a href="#d-etapa2">Etapa 2</a>.</p>
         </div>
       </div>
       <p class="muted" style="margin-top:14px;"><strong>Además:</strong> Colombia separa proveedores (identidad → Truora, facturación → Sumsub); el resto de países usa un solo Sumsub para ambas. El proveedor nunca se nombra en el copy de usuario — Truora y Sumsub solo aparecen en notas internas y carriles back stage.</p>
@@ -874,6 +933,7 @@
       Referencia profunda (diagramas mermaid por rama): <a href="Service_Blueprint_Fase_5_Mapa-Decision.html">Mapa de decisión</a> ·
       Tabla: <a href="Service_Blueprint_Fase_5_Tabla.html">Tabla resumida</a> ·
       UX: <a href="UX-Writing-Validacion-TechNative.md">UX-Writing-Validacion-TechNative.md</a> ·
+      Especificaciones UX (10 puntos): <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a> ·
       Árbol de soporte: <a href="Soporte-Validacion-Fase-5.md">Soporte-Validacion-Fase-5.md</a> ·
       Estructura de referencia: <a href="Service_Blueprint_Diagrama.html">Blueprint Fase 0</a>
     </footer>

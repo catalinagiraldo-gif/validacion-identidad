@@ -5,6 +5,7 @@ import { IdentityDemoStateService } from '../../../../common/services/identity-d
 import { IdentityModalService } from '../../../../common/services/identity-modal.service';
 import { IdentityFase0Service } from '../../../../common/services/identity-fase0.service';
 import { IdentityDemoStateV2Service } from '../../../../common/services/identity-demo-state-v2.service';
+import { IdentityGateComponent } from '../../../../common/components/identity-gate/identity-gate.component';
 import { ESTADO_FORMULARIO_CONFIG } from '../../../../common/models/identity-flow-v2.models';
 
 /** Plan2.md Parte 8: datos del formulario manual viejo (pre-Sumsub), usuario antiguo estado 'parcial'. */
@@ -25,7 +26,7 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
 @Component({
   selector: 'app-cuenta-new',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IdentityGateComponent],
   styleUrls: ['./cuenta.component.scss'],
   template: `
     <div class="page-wrapper">
@@ -81,6 +82,9 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
             </p>
           </div>
         </div>
+      } @else if (esFase0()) {
+        <!-- Mismo banner/gate que Wallet, DropiCard, facturación — CTA directo a Sumsub. -->
+        <app-identity-gate contexto="cuenta" />
       } @else if (statusV2() === 'en_revision') {
         <div class="alert-review">
           <i class="pi pi-clock alert-icon"></i>
@@ -99,25 +103,6 @@ const ICON_CHEVRON = 'https://www.figma.com/api/mcp/asset/438517bd-cdef-4d02-8e7
             </p>
             <button class="btn-identity-cta btn-identity-cta--sm" type="button" (click)="abrirModal('screen2')">
               <i class="pi pi-refresh"></i> Reintentar verificación
-            </button>
-          </div>
-        </div>
-      } @else if (esFase0() && statusV2() === 'sin_validar') {
-        <!-- Fase 0 (blueprint Etapa 0.5, "Tarea" paso 2): "Información de
-             Cuenta" ES uno de los 6 triggers estándar → Modal Interceptor
-             UserPilot, "editar exige verificarse primero" — mismo trato que
-             Transferir Wallet. Este banner estático NO reemplaza al Modal
-             Interceptor: solo evita ocultar el formulario detrás de un
-             empty-state antes del clic — el CTA sí abre el interceptor. -->
-        <div class="alert-top alert-top--fase0-estatico" data-tour="cuenta-banner-fase0">
-          <i class="pi pi-shield alert-icon"></i>
-          <div class="alert-body">
-            <p class="alert-text">
-              <span class="alert-bold">¿Cuándo se completan tus datos? </span>
-              <span>Puedes ver el formulario ya mismo, pero queda bloqueado hasta que verifiques tu identidad — es necesaria para poder retirar tus ganancias. Toma ~5 min.</span>
-            </p>
-            <button class="btn-identity-cta" type="button" (click)="abrirModal('screen0')">
-              <i class="pi pi-shield"></i> Verificar identidad
             </button>
           </div>
         </div>
@@ -387,8 +372,8 @@ export class CuentaNewComponent {
   }
 
   abrirModal(screen: 'screen0' | 'screen2' | 'screen3'): void {
-    // Fase 0: editar información de cuenta es un trigger de Etapa 0.5 (interceptor). fase1+ intacto.
-    if (this.fase0.tryIntercept('cuenta', false)) return;
+    // Banner / CTA suave en Fase 0 → directo a Sumsub (sin interceptor).
+    if (this.fase0.invitarDesdeBanner('cuenta')) return;
     this.modalSvc.open('cuenta', screen);
   }
 

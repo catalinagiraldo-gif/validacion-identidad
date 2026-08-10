@@ -29,7 +29,39 @@
         </div>
 
         <div class="fase0-switcher__section">
-          <span class="fase0-switcher__label">Saltar a estado (sin perder el hilo)</span>
+          <span class="fase0-switcher__label">Ver caso del blueprint (copy + diseño)</span>
+          <div class="fase0-switcher__states">
+            @for (v of vistasFront; track v.caso) {
+              <button
+                type="button"
+                class="fase0-switcher__state"
+                [class.fase0-switcher__state--danger]="v.danger"
+                [class.fase0-switcher__state--active]="vistaActiva() === v.caso"
+                (click)="verCaso(v.caso)"
+              >
+                {{ v.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="fase0-switcher__section">
+          <span class="fase0-switcher__label">Simular mensaje CRM (WhatsApp)</span>
+          <div class="fase0-switcher__states">
+            @for (v of vistasCrm; track v.caso) {
+              <button
+                type="button"
+                class="fase0-switcher__state"
+                (click)="verCaso(v.caso)"
+              >
+                {{ v.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="fase0-switcher__section">
+          <span class="fase0-switcher__label">Estado de negocio (progreso Sumsub)</span>
           <div class="fase0-switcher__states">
             @for (e of estados; track e.progreso) {
               <button
@@ -44,7 +76,7 @@
             <button
               type="button"
               class="fase0-switcher__state fase0-switcher__state--danger"
-              [class.fase0-switcher__state--active]="bloqueado()"
+              [class.fase0-switcher__state--active]="bloqueado() && fase0.blockMotivo() === 'fraude'"
               (click)="irABloqueo()"
             >
               Bloqueado (fraude)

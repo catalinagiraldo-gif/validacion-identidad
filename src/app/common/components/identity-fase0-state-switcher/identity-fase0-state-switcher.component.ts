@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IdentityDemoStateV2Service } from '../../services/identity-demo-state-v2.service';
-import { IdentityFase0Service } from '../../services/identity-fase0.service';
+import { IdentityFase0Service, Fase0VistaCaso } from '../../services/identity-fase0.service';
 import {
   Fase0ProgresoSumsub,
   FASE0_PROGRESO_LABELS,
@@ -22,6 +22,12 @@ interface EstadoOption {
   label: string;
 }
 
+interface VistaOption {
+  caso: Fase0VistaCaso;
+  label: string;
+  danger?: boolean;
+}
+
 @Component({
   selector: 'app-identity-fase0-state-switcher',
   standalone: true,
@@ -37,6 +43,28 @@ export class IdentityFase0StateSwitcherComponent {
   readonly tagIcon = FASE0_EVENTO_TAG_ICON;
 
   readonly visible = computed(() => this.stateV2.faseProyecto() === 'fase0');
+
+  /** Overlays / pantallas del blueprint — un clic = ver el caso con copy alineado. */
+  readonly vistasFront: VistaOption[] = [
+    { caso: 'panel', label: 'Panel lateral (Etapa 0)' },
+    { caso: 'interceptor', label: 'Interceptor (Etapa 0.5)' },
+    { caso: 'interceptor-bancario', label: 'Bancario GT/PA' },
+    { caso: 'sumsub', label: 'Sumsub (fuera de Dropi)' },
+    { caso: 'resultado-aprobado', label: '¡Cuenta verificada!' },
+    { caso: 'resultado-revision', label: 'Pendiente · revisión' },
+    { caso: 'resultado-incompleta', label: 'Pendiente · incompleta' },
+    { caso: 'resultado-rechazado', label: 'Rechazado (modal)' },
+    { caso: 'bloqueo-fraude', label: 'Bloqueo · fraude', danger: true },
+    { caso: 'bloqueo-rechazado', label: 'Bloqueo · post-rechazo', danger: true },
+  ];
+
+  readonly vistasCrm: VistaOption[] = [
+    { caso: 'crm-recordatorio', label: 'Recordatorio Etapa 0' },
+    { caso: 'crm-aprobado', label: 'CRM Aprobado' },
+    { caso: 'crm-revision', label: 'CRM Revisión' },
+    { caso: 'crm-incompleta', label: 'CRM Incompleta' },
+    { caso: 'crm-marca-blanca', label: 'Marca blanca' },
+  ];
 
   readonly estados: EstadoOption[] = [
     { progreso: 'nunca', label: FASE0_PROGRESO_LABELS.nunca },
@@ -76,8 +104,38 @@ export class IdentityFase0StateSwitcherComponent {
   );
   readonly eventos = this.fase0.eventos;
 
+  /** Resalta el chip del caso que está visible ahora (aprox. por overlay activo). */
+  readonly vistaActiva = computed<Fase0VistaCaso | null>(() => {
+    if (this.fase0.blockOpen()) {
+      return this.fase0.blockMotivo() === 'rechazado' ? 'bloqueo-rechazado' : 'bloqueo-fraude';
+    }
+    if (this.fase0.sumsubOpen()) return 'sumsub';
+    const result = this.fase0.activeResult();
+    if (result === 'aprobado') return 'resultado-aprobado';
+    if (result === 'revision-financiero') return 'resultado-revision';
+    if (result === 'incompleta') return 'resultado-incompleta';
+    if (result === 'rechazado') return 'resultado-rechazado';
+    if (this.fase0.interceptorOpen()) {
+      return this.stateV2.pais() === 'GT' && this.fase0.interceptorOrigen() === 'cuenta'
+        ? 'interceptor-bancario'
+        : 'interceptor';
+    }
+    if (
+      this.stateV2.fase0TipoUsuario() === 'activo' &&
+      this.fase0.progreso() === 'nunca' &&
+      !this.fase0.panelDismissed()
+    ) {
+      return 'panel';
+    }
+    return null;
+  });
+
   toggle(): void {
     this.expanded.update((v) => !v);
+  }
+
+  verCaso(caso: Fase0VistaCaso): void {
+    this.fase0.mostrarVistaCaso(caso);
   }
 
   irA(progreso: Fase0ProgresoSumsub): void {

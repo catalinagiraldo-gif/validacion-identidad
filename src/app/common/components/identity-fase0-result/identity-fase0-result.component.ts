@@ -17,6 +17,8 @@ interface ResultView {
   ctaLabel: string | null;
   /** Blueprint (Etapa Continua, Pendiente-en-revisión): "se agrega junto a 'Entendido'" — no abre el widget, solo orienta. */
   ctaSecundarioLabel?: string;
+  /** Prototipo: permite X / backdrop para retirar el modal sin continuar a Sumsub. */
+  puedeCerrar?: boolean;
   backstage: string;
 }
 
@@ -33,7 +35,7 @@ const RESULT_VIEWS: Record<Fase0ResultKind, ResultView> = {
     icon: 'pi-clock',
     tone: 'info',
     headline: 'Tu verificación sigue en proceso',
-    body: 'Puede tardar hasta 72 horas hábiles. Te avisaremos apenas esté lista — no necesitas hacer nada más.',
+    body: 'Según la cola de revisión, puede tomar hasta 72 horas hábiles. Te avisaremos apenas esté lista — no necesitas hacer nada más.',
     ctaLabel: 'Entendido',
     ctaSecundarioLabel: 'Contactar a soporte',
     backstage: 'El usuario ya completó Sumsub. Está en cola manual: Financiero audita los datos tributarios cruzados contra Dropi. SLA operativo 48-72h hábiles — no es el tiempo fijo de una sola revisión. El botón secundario "Contactar a soporte" se agregó porque antes esta pantalla no ofrecía ninguna vía de contacto; NO abre el widget automáticamente, solo orienta al chip "Validación de identidad" → "Mi verificación sigue en revisión".',
@@ -44,7 +46,8 @@ const RESULT_VIEWS: Record<Fase0ResultKind, ResultView> = {
     headline: 'Tu verificación quedó incompleta',
     body: 'Empezaste el proceso pero no lo terminaste en Sumsub. Complétalo para poder operar sin restricciones.',
     ctaLabel: 'Continuar verificación',
-    backstage: 'A diferencia de "Pendiente Financiero", aquí no hay caso completo en Sumsub — el usuario abandonó a mitad de camino. CRM puede repetir este recordatorio (a diferencia del de Financiero, que es de una sola vez).',
+    puedeCerrar: true,
+    backstage: 'A diferencia de "Pendiente Financiero", aquí no hay caso completo en Sumsub — el usuario abandonó a mitad de camino. CRM puede repetir este recordatorio (a diferencia del de Financiero, que es de una sola vez). En el prototipo se puede cerrar con X; al reintentar una acción financiera reaparece.',
   },
   rechazado: {
     icon: 'pi-times-circle',
@@ -95,5 +98,12 @@ export class IdentityFase0ResultComponent {
   /** Blueprint: el botón secundario NO abre el widget automáticamente — solo orienta al usuario a abrirlo por su cuenta. No cierra el modal. */
   onCtaSecundario(): void {
     this.mostrarHintSoporte.set(true);
+  }
+
+  /** Solo incompleta: retira el modal sin ir a Sumsub (prototipo). */
+  cerrar(): void {
+    if (this.fase0.activeResult() !== 'incompleta') return;
+    this.mostrarHintSoporte.set(false);
+    this.fase0.dismissResult();
   }
 }

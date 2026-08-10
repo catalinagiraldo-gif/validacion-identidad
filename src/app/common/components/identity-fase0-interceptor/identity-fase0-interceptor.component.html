@@ -1,8 +1,17 @@
 @if (fase0.interceptorOpen()) {
   <div class="fase0-interceptor" role="dialog" aria-modal="true" aria-labelledby="fase0-interceptor-title">
-    <div class="fase0-interceptor__backdrop"></div>
+    <div class="fase0-interceptor__backdrop" (click)="cerrar()"></div>
 
     <div class="fase0-interceptor__card">
+      <button
+        type="button"
+        class="fase0-interceptor__close"
+        aria-label="Cerrar"
+        (click)="cerrar()"
+      >
+        <i class="pi pi-times"></i>
+      </button>
+
       @if (fase0.redirecting()) {
         <div class="fase0-interceptor__redirect">
           <span class="fase0-interceptor__spinner" aria-hidden="true"></span>

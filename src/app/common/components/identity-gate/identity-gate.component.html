@@ -2,9 +2,11 @@
   <div class="identity-gate" [class]="'identity-gate--' + variant()" data-tour="identity-gate">
     <div class="identity-gate__icon">
       @if (variant() === 'bloqueado') {
-        <i class="pi pi-lock"></i>
+        <i class="pi pi-shield"></i>
       } @else if (variant() === 'en_revision') {
         <i class="pi pi-clock"></i>
+      } @else if (variant() === 'incompleta') {
+        <i class="pi pi-exclamation-circle"></i>
       } @else {
         <i class="pi pi-times-circle"></i>
       }
@@ -14,18 +16,20 @@
       <p class="identity-gate__titulo">{{ titulo() }}</p>
       <p class="identity-gate__subtitulo">{{ subtitulo() }}</p>
 
-      @if (variant() === 'rechazado') {
+      @if (variant() === 'rechazado' && !esFase0()) {
         <div class="identity-gate__motivo">
           <i class="pi pi-info-circle"></i>
           <span>Motivo: imagen del documento no es legible. Asegúrate de capturar con buena iluminación.</span>
         </div>
       }
 
-      <button class="identity-gate__cta" (click)="onCta()">
+      <button class="identity-gate__cta" type="button" (click)="onCta()">
         @if (variant() === 'en_revision') {
           <i class="pi pi-eye"></i>
         } @else if (variant() === 'rechazado') {
           <i class="pi pi-refresh"></i>
+        } @else if (variant() === 'incompleta') {
+          <i class="pi pi-arrow-right"></i>
         } @else {
           <i class="pi pi-shield"></i>
         }
