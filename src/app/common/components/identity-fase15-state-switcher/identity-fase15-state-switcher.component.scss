@@ -97,6 +97,21 @@
   gap: $space-2;
 }
 
+// Fila label + backstage-dot (sección "Tipo de usuario").
+.fase15-switcher__label-row {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+}
+
+// Fila chip + backstage-dot (cada estado de identidad) — evita que el dot
+// caiga debajo del chip en el flex-wrap de .fase15-switcher__states.
+.fase15-switcher__state-row {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+}
+
 .fase15-switcher__state {
   padding: $space-1 $space-3;
   border-radius: 9999px;

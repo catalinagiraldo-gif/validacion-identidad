@@ -5,6 +5,8 @@ import { IdentityDemoStateV2Service } from '../../services/identity-demo-state-v
 import { IdentityDemoStateService, ResultadoModal } from '../../services/identity-demo-state.service';
 import { IdentityModalService, StartScreen } from '../../services/identity-modal.service';
 import { IdentitySatelliteStatus } from '../../models/identity-flow.models';
+import { Fase0TipoUsuario, FASE15_TIPO_USUARIO_LABELS } from '../../models/identity-flow-v2.models';
+import { IdentityFase0BackstageDotComponent } from '../identity-fase0-backstage-dot/identity-fase0-backstage-dot.component';
 
 // Selector de casos del track Fase 1-5 — el equivalente del escape hatch que ya
 // existe para Modo Prototipo 0. Sin esto, ver un caso de Fase 1-5 obliga a
@@ -23,6 +25,8 @@ interface PaginaOption {
 interface EstadoOption {
   status: IdentitySatelliteStatus;
   label: string;
+  /** Qué significa este estado en el proceso real de Truora (CO) / Sumsub (resto de países). */
+  nota: string;
   danger?: boolean;
 }
 
@@ -37,7 +41,7 @@ interface ModalOption {
 @Component({
   selector: 'app-identity-fase15-state-switcher',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IdentityFase0BackstageDotComponent],
   templateUrl: './identity-fase15-state-switcher.component.html',
   styleUrls: ['./identity-fase15-state-switcher.component.scss'],
 })
@@ -61,12 +65,28 @@ export class IdentityFase15StateSwitcherComponent {
   ];
 
   readonly estados: EstadoOption[] = [
-    { status: 'sin_validar', label: 'Sin validar' },
-    { status: 'pendiente', label: 'Pendiente' },
-    { status: 'en_revision', label: 'En revisión' },
-    { status: 'rechazado', label: 'Rechazado', danger: true },
-    { status: 'aprobado', label: 'Aprobado' },
+    { status: 'sin_validar', label: 'Sin validar', nota: 'El usuario nunca abrió el formulario de Truora (Colombia) o Sumsub (resto de países)' },
+    { status: 'pendiente', label: 'Pendiente', nota: 'Empezó el formulario pero no lo terminó — mismo dato que Truora "2.3 Proceso abandonado" / Sumsub incompleto' },
+    { status: 'en_revision', label: 'En revisión', nota: 'Ya envió todo; Truora/Sumsub está evaluando. Camino automático (>92%) resuelve en segundos, cola de excepciones (≤8%) hasta 24h' },
+    { status: 'rechazado', label: 'Rechazado', danger: true, nota: 'Truora o Sumsub no pudo confirmar los datos — el usuario conserva lo que ya tenía aprobado antes' },
+    { status: 'aprobado', label: 'Aprobado', nota: 'Truora/Sumsub confirmó — mismo resultado final para Colombia (Truora) y el resto de países (Sumsub), aunque el proveedor nunca se nombra al usuario' },
   ];
+
+  // Corrección (mismo criterio que el switcher de Fase 0, feedback 23-jul): el
+  // toggle Nuevo/Activo ya vive en el panel superior MODO PROTOTIPO, pero ese
+  // panel no siempre se lee como "el lugar donde controlo Nuevo/Activo para
+  // Fase 1-5". Se expone también aquí para que el switcher sea el único
+  // lugar donde ver y cambiar todos los ejes de Fase 1-5 de un vistazo.
+  readonly tipoUsuarioOptions: Fase0TipoUsuario[] = ['nuevo', 'activo'];
+  readonly tipoUsuarioActual = this.stateV2.fase0TipoUsuario;
+
+  tipoUsuarioLabel(t: Fase0TipoUsuario): string {
+    return FASE15_TIPO_USUARIO_LABELS[t];
+  }
+
+  setTipoUsuario(t: Fase0TipoUsuario): void {
+    this.stateV2.setFase0TipoUsuario(t);
+  }
 
   // `screen1` (checklist) no es punto de entrada válido del modal — no se expone.
   readonly modales: ModalOption[] = [

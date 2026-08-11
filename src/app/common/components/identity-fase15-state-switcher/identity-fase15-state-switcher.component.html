@@ -13,6 +13,28 @@
     @if (expanded()) {
       <div class="fase15-switcher__panel">
         <div class="fase15-switcher__section">
+          <span class="fase15-switcher__label-row">
+            <span class="fase15-switcher__label">Tipo de usuario</span>
+            <app-fase0-backstage-dot
+              texto="En Fase 1-5, 'activo' significa 20+ órdenes (valor de trabajo, REUCONTI.md) — distinto del criterio de Fase 0 (historial en Dropi). Gobierna el panel de ganancias en la esquina inferior derecha del Home."
+              label="Qué significa Nuevo/Activo en Fase 1-5"
+            />
+          </span>
+          <div class="fase15-switcher__states">
+            @for (t of tipoUsuarioOptions; track t) {
+              <button
+                type="button"
+                class="fase15-switcher__state"
+                [class.fase15-switcher__state--active]="tipoUsuarioActual() === t"
+                (click)="setTipoUsuario(t)"
+              >
+                {{ tipoUsuarioLabel(t) }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="fase15-switcher__section">
           <span class="fase15-switcher__label">Ir a la página</span>
           <div class="fase15-switcher__states">
             @for (p of paginas; track p.ruta) {
@@ -31,15 +53,21 @@
           <span class="fase15-switcher__label">Estado de identidad</span>
           <div class="fase15-switcher__states">
             @for (e of estados; track e.status) {
-              <button
-                type="button"
-                class="fase15-switcher__state"
-                [class.fase15-switcher__state--danger]="e.danger"
-                [class.fase15-switcher__state--active]="statusActual() === e.status"
-                (click)="setEstado(e.status)"
-              >
-                {{ e.label }}
-              </button>
+              <span class="fase15-switcher__state-row">
+                <button
+                  type="button"
+                  class="fase15-switcher__state"
+                  [class.fase15-switcher__state--danger]="e.danger"
+                  [class.fase15-switcher__state--active]="statusActual() === e.status"
+                  (click)="setEstado(e.status)"
+                >
+                  {{ e.label }}
+                </button>
+                <app-fase0-backstage-dot
+                  [texto]="e.nota"
+                  [label]="'Qué significa ' + e.label + ' en Truora/Sumsub'"
+                />
+              </span>
             }
           </div>
         </div>
