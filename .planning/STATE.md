@@ -111,6 +111,7 @@ None yet.
 | 260809-va5 | Agregar sección 8 a Discovery-Riesgos-Transicion-Fase5.md: frentes y oportunidades adicionales de producto (método Discovery V.4) en las 4 células de Darwin — Seller Success, Backoffice+Fintech, Brands Success, Logistic Success | 2026-08-10 | 9825b36 | [260809-va5-agregar-seccion-8-a-discovery-riesgos-tr](./quick/260809-va5-agregar-seccion-8-a-discovery-riesgos-tr/) |
 | 260811-bf9 | Restaurar diferenciación Nuevo/Activo en el aviso de identidad de Home (Fase 1-5): `IdentityFase0PanelComponent` estaba correctamente gateado pero encerrado solo en el track "Fase 0"; se extendió el gating por `fase0TipoUsuario` al soft banner de Home, reformateado como panel flotante esquina inferior derecha, copy "Completar ahora" unificado, toggle Nuevo/Activo disponible en todas las fases del demo panel, y umbral "activo = 20 órdenes" resuelto + fork visual en el blueprint Fase 5 (.md + .html) | 2026-08-11 | 7544a7e | [260811-bf9-restaurar-diferenciacion-nuevo-activo-en](./quick/260811-bf9-restaurar-diferenciacion-nuevo-activo-en/) |
 | 260811-d4i | Construir `IdentityFase15StateSwitcherComponent`: selector de casos de un clic para el track Fase 1-5, equivalente al de Fase 0 (que estaba gateado exclusivamente a `faseProyecto()==='fase0'`, sin nada análogo para Fase 1-5) — 3 secciones (ir a página, estado de identidad, abrir modal de verificación con `screen3` controlado por `setResultadoModal()`, no por `setStatus()`); además corregido el stub vacío `onProcesar()` en Retiros de Saldo | 2026-08-11 | 3e2c933 | [260811-d4i-construir-selector-de-casos-state-switch](./quick/260811-d4i-construir-selector-de-casos-state-switch/) |
+| 260811-ek0 | Corregir inconsistencia de SLA en `IdentityGateComponent` (estado `en_revision`): decía "1-3 días hábiles", contradiciendo el copy correcto de `IdentitySumsubModalComponent` ("hasta 24 horas") para el mismo estado — encontrado auditando el copy de Fase 1-5 contra `Service_Blueprint_Diagrama_Fase_5.md`. Rama Fase 0 (72h) intacta a propósito | 2026-08-11 | e829261 | [260811-ek0-corregir-inconsistencia-de-sla-en-identi](./quick/260811-ek0-corregir-inconsistencia-de-sla-en-identi/) |
 
 ## Deferred Items
 
@@ -125,4 +126,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-08-11 -- Completed quick task 260811-d4i: Construir selector de casos (state switcher) para Fase 1-5, equivalente al de Fase 0
+Last activity: 2026-08-11 -- Completed quick task 260811-ek0: Corregir inconsistencia de SLA (1-3 días vs 24h) en IdentityGateComponent
