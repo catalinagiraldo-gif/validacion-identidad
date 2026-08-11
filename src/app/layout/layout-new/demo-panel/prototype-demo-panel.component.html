@@ -147,9 +147,15 @@
             }
           </div>
           <span class="demo-panel__mecanismo">
-            {{ fase0TipoUsuario() === 'activo'
-              ? 'Activo: en Fase 0 ve el Panel Lateral "Verifica tu cuenta" al entrar al Home (Etapa 0); en Fase 1-5 ve el panel de ganancias en la esquina inferior derecha del Home.'
-              : 'Nuevo: en Home no ve ningún aviso de identidad, en ninguna fase — solo un clic financiero dispara el Modal Interceptor (Etapa 0.5), igual que a un Activo.' }}
+            @if (faseProyecto() === 'fase0') {
+              {{ fase0TipoUsuario() === 'activo'
+                ? 'Activo: ve el Panel Lateral "Verifica tu cuenta" al entrar al Home (Etapa 0).'
+                : 'Nuevo: en Home no ve ningún aviso de identidad — solo un clic financiero dispara el Modal Interceptor (Etapa 0.5), igual que a un Activo.' }}
+            } @else {
+              {{ fase0TipoUsuario() === 'activo'
+                ? 'Activo (20+ órdenes): ve el panel de ganancias en la esquina inferior derecha del Home.'
+                : 'Nuevo: en Home no ve ningún aviso de identidad — solo un clic financiero dispara el hard gate, igual que a un Activo.' }}
+            }
           </span>
         </div>
 

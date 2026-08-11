@@ -547,19 +547,32 @@ export interface Fase0Evento {
 }
 
 // ---------------------------------------------------------------------------
-// Nuevos vs Activos — vocabulario textual del blueprint (columnas ETAPA 0 y
-// ETAPA 0.5). Es un eje propio de Fase 0, distinto de `MomentoUsuario`
-// (Setup/Activación/Hábito/...), que es del eje Fase 1-5 (Plan2.md). Solo
-// gatilla el Panel Lateral (Etapa 0, exclusivo de usuarios Activos con
-// historial en Dropi) — el Modal Interceptor de Etapa 0.5 trata a Nuevos y
-// Activos IGUAL ante un clic financiero ("el disparador es la acción, no la
-// antigüedad").
+// Nuevos vs Activos — este eje ya NO es exclusivo de Fase 0: desde la sesión
+// 260811-bf9 también gobierna el panel de ganancias de Home en Fase 1-5. Lo
+// que cambia entre tracks es el VOCABULARIO, no el eje:
+// - Fase 0 (columnas ETAPA 0 / ETAPA 0.5 del blueprint): "activo" = tiene
+//   historial en Dropi → ve el Panel Lateral en Home. El Modal Interceptor de
+//   Etapa 0.5 trata a Nuevos y Activos IGUAL ante un clic financiero ("el
+//   disparador es la acción, no la antigüedad").
+// - Fase 1-5 (`Service_Blueprint_Diagrama_Fase_5.md`, diamante "¿Ya es
+//   activo?"): "activo" = 20+ órdenes (valor de trabajo confirmado,
+//   REUCONTI.md) → ve el panel de ganancias en la esquina inferior derecha
+//   del Home. Distinto de `MomentoUsuario` (Setup/Activación/Hábito/...),
+//   que es otro eje de Fase 1-5 (Plan2.md).
+// Por eso hay dos tablas de etiquetas — mismo `Fase0TipoUsuario`/misma señal
+// compartida, texto distinto según `faseProyecto()` (ver
+// `prototype-demo-panel.component.ts`, `fase0TipoUsuarioLabel()`).
 // ---------------------------------------------------------------------------
 export type Fase0TipoUsuario = 'nuevo' | 'activo';
 
 export const FASE0_TIPO_USUARIO_LABELS: Record<Fase0TipoUsuario, string> = {
   nuevo: 'Nuevo (Etapa 0.5)',
   activo: 'Activo (Etapa 0)',
+};
+
+export const FASE15_TIPO_USUARIO_LABELS: Record<Fase0TipoUsuario, string> = {
+  nuevo: 'Nuevo',
+  activo: 'Activo (20+ órdenes)',
 };
 
 /** Motivo del bloqueo full-screen de Etapa 1 — mismo componente, dos copys reales del blueprint. */

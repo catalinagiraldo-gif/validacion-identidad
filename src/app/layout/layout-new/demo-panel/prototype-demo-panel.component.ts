@@ -32,6 +32,7 @@ import {
   FASE0_BLOQUE_LABELS,
   Fase0TipoUsuario,
   FASE0_TIPO_USUARIO_LABELS,
+  FASE15_TIPO_USUARIO_LABELS,
 } from '../../../common/models/identity-flow-v2.models';
 
 // Controles del demo-panel extendidos según Plan2.md Parte 7: dos filas
@@ -362,7 +363,9 @@ export class PrototypeDemoPanelComponent {
   }
 
   fase0TipoUsuarioLabel(t: Fase0TipoUsuario): string {
-    return FASE0_TIPO_USUARIO_LABELS[t];
+    return this.faseProyecto() === 'fase0'
+      ? FASE0_TIPO_USUARIO_LABELS[t]
+      : FASE15_TIPO_USUARIO_LABELS[t];
   }
 
   setFase0TipoUsuario(t: Fase0TipoUsuario): void {

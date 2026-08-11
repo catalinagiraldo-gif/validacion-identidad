@@ -72,11 +72,13 @@ export class IdentityDemoStateV2Service {
    */
   private readonly _marcaBlanca = signal<boolean>(this.loadMarcaBlanca());
   /**
-   * Fase 0 — "Activos" (ETAPA 0, con historial en Dropi, ven el Panel
-   * Lateral en Home) vs "Nuevos" (ETAPA 0.5, sin historial). Eje propio del
-   * blueprint, distinto de `momentoUsuario` (eje Fase 1-5): solo gatilla el
-   * Panel Lateral en Home — el Modal Interceptor trata a ambos igual ante un
-   * clic financiero.
+   * Nuevo vs Activo — gobierna el aviso de identidad en Home en AMBOS
+   * tracks, con vocabulario distinto (ver el comentario completo en
+   * `identity-flow-v2.models.ts` junto a `Fase0TipoUsuario`). Fase 0:
+   * "Activo" = con historial en Dropi → Panel Lateral en Home. Fase 1-5:
+   * "Activo" = 20+ órdenes → panel de ganancias en Home. Distinto de
+   * `momentoUsuario` (otro eje de Fase 1-5). El Modal Interceptor trata a
+   * Nuevos y Activos igual ante un clic financiero en ambos tracks.
    */
   private readonly _fase0TipoUsuario = signal<Fase0TipoUsuario>(this.loadFase0TipoUsuario());
   /** Plan2.md Parte 8 — usuario antiguo con datos del formulario manual viejo (pre-Sumsub), nunca certificados. */
