@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IdentityGateComponent } from '../../../../common/components/identity-gate/identity-gate.component';
+import { IdentityDemoStateService } from '../../../../common/services/identity-demo-state.service';
+import { IdentityModalService } from '../../../../common/services/identity-modal.service';
 
 @Component({
   selector: 'app-retiros-saldo-new',
@@ -63,11 +65,23 @@ import { IdentityGateComponent } from '../../../../common/components/identity-ga
   `,
 })
 export class RetirosSaldoNewComponent {
+  private stateSvc = inject(IdentityDemoStateService);
+  private modalSvc = inject(IdentityModalService);
+
   monto = '';
   banco = '';
   concepto = '';
 
   onProcesar(): void {
-    // stub
+    // Gate de identidad, mismo patrón que `onRetirar()` en wallet.component.ts:
+    // sin identidad aprobada, "Procesar" abre el modal de verificación en vez de
+    // no hacer nada.
+    if (!this.stateSvc.isApproved()) {
+      this.modalSvc.open('retiro', 'screen0');
+      return;
+    }
+    // Con la identidad ya aprobada no hay nada más que hacer: el flujo real de
+    // retiro (confirmación + movimiento de fondos) no existe en este prototipo,
+    // igual que "Retirar" en Wallet. No es un olvido.
   }
 }
