@@ -69,7 +69,7 @@ export class IdentityGateComponent {
       return this.subtituloFase0(this.progresoFase0());
     }
     const s = this.stateSvc.status();
-    if (s === 'en_revision') return 'En 1-3 días hábiles te notificaremos por email con el resultado.';
+    if (s === 'en_revision') return 'En hasta 24 horas te notificaremos por email con el resultado.';
     if (s === 'rechazado') return 'Puedes volver a intentarlo. Asegúrate de que tu documento esté vigente y la imagen sea clara.';
     return 'Es un proceso de una sola vez (~5 min) para proteger tus fondos y cumplir requisitos regulatorios.';
   });
