@@ -294,6 +294,7 @@ Los pasos `C5` (Validación) y `C6` (Resolución) están en secuencia dentro de 
 > 👁️ **Mientras el WebSDK/enlace del proveedor está abierto** (antes de volver a Dropi) — punto 4 de [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#4--cómo-se-ve-dropi-mientras-corre-la-validación-de-truora):
 > - Indicador persistente (no el banner pasivo actual) para que el usuario no sienta que "salió" de Dropi sin dejar rastro. 🚧 Formato visual exacto a definir con TI/Product Design.
 > - Checklist corto de tips antes de abrir el enlace, visible (no texto que se pueda saltar sin leer): *"Activa el GPS de tu celular"* · *"Apaga cualquier VPN activa"* · *"Vuelve a Dropi al terminar"* — tomados del flujo de Truora ya en producción (`2.1 Indicaciones`, Figma "Cuenta V2.0.0"), donde hoy son texto pasivo sin confirmación.
+> - Aviso automático por inactividad: si pasan **10 minutos sin que el usuario interactúe** con el formulario, aparece un aviso in-app con el headline *"¿Sigues ahí?"* y un único botón *"Reanudar validación"* — mismo patrón de un-solo-botón de Truora (`2.3 Proceso abandonado`, Figma "Cuenta V2.0.0"). La mejora frente a Truora: al reanudar, el usuario **queda exactamente donde estaba y no pierde lo que ya tecleó** — es la misma promesa que Fase 5 ya hacía para el resume manual (`UX-Writing` §9c), ahora aplicada también al **disparo automático**. Nota (no se muestra): hasta esta iteración Fase 5 solo tenía el resume **manual** — el botón "Continuar validación" del estado Incompleto (C6) —, nunca un disparo por inactividad; el copy de pantalla nunca nombra al proveedor.
 1. 🔵 Colombia · falta identidad — vive en Información de cuenta (ver C4). Headline: **Estamos confirmando tus datos**. Body: *Mientras tanto, puedes seguir usando Dropi pero hemos pausado temporalmente tus retiros y transferencias.* (Nota interna: mismo flujo de confirmación de Truora que ya está en producción, no es un banner nuevo.)
 2. 🔵 Colombia · falta facturación — vive en Datos de facturación (ver C4). Mismo headline y body que arriba.
 3. 🔵 Colombia · faltan ambas — Muestra primero el aviso de identidad; al aprobarse, pasa al de facturación en su propia página. Nunca se muestran los dos avisos a la vez.
@@ -371,14 +372,14 @@ Nota (no se muestra): la fila genérica es el headline de referencia, ya citado 
 
 Nota (no se muestra): la fila genérica es el headline de referencia, ya citado en `Mapa-Decision.md`. Mismo cuerpo en los 3, texto literal: *"Empezaste el proceso pero no lo terminaste."* Botón: **Continuar validación** — retoma exactamente donde quedó en la API.
 
-> 🚧 **Catálogo de causas puntuales (a confirmar con TI) — desglosa "Incompleto" en vez de un mensaje único, punto 1 de [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#1--error-granular--comunicar-específicamente-qué-le-falta-al-usuario):**
+> ✅ **Catálogo de causas puntuales (construido en el prototipo) — desglosa "Incompleto" en vez de un mensaje único, punto 1 de [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#1--error-granular--comunicar-específicamente-qué-le-falta-al-usuario):**
 >
 > | Causa | ¿Requiere acción del usuario? | Copy adicional bajo el body |
 > |---|---|---|
 > | Documento sin cargar | Sí | "Aún no subiste tu documento." |
 > | Documento ilegible / foto borrosa | Sí | "No pudimos leer bien tu documento — vuelve a intentarlo." |
 > | Prueba de vida no completada | Sí | "Te falta completar la verificación con tu cámara." |
-> | Dato no coincide con el documento | Sí — reusa el patrón de Truora `2.6`/`2.7`: *"Revisa los datos y vuelve a intentarlo en 10 minutos. Te quedan N intentos."* (corregir el bug de plural que hoy tiene Truora: "1 intento", no "1 intentos") con un **temporizador visible** durante el cooldown, no solo texto | — |
+> | Dato no coincide con el documento | Sí — reusa el patrón de Truora `2.6`/`2.7`: *"Revisa los datos y vuelve a intentarlo en 10 minutos. Te quedan N intentos."* (corregir el bug de plural que hoy tiene Truora: "1 intento", no "1 intentos") con un **temporizador visible** durante el cooldown, no solo texto — **implementado en el prototipo** (`identity-sumsub-modal`: 3 intentos, cooldown de 10 minutos con temporizador mm:ss visible y botón "Reintentar verificación" deshabilitado mientras corre) | — |
 > | Revisión de riesgo en curso, sin acción posible del usuario | No | Este caso no es "Incompleto" — converge con el estado "En revisión" de abajo, para no duplicar la misma espera bajo dos nombres distintos |
 
 **En revisión prolongada — mismo aviso que ya venía viendo, ahora en modo persistente (banner, exclusivo de la cola de excepciones, ≤8% de los casos — el >92% restante nunca ve este estado porque su resultado llega en segundos):**

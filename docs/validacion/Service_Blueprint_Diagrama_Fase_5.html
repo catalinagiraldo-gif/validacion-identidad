@@ -578,6 +578,7 @@
               <div class="box b-native" id="provider-reflection"><span class="format-tag silent">👁 Mientras el proveedor está abierto</span><strong>Indicador persistente + tips de seguridad</strong>
                 <span class="copy-line">Indicador persistente (no el banner pasivo actual) mientras el WebSDK/enlace está abierto, para que el usuario no sienta que "salió" de Dropi. <span class="format-tag open" style="margin:0;">🚧 Formato visual a definir con TI/Product Design</span></span>
                 <span class="copy-line">Checklist visible antes de abrir el enlace: "Activa el GPS de tu celular" · "Apaga cualquier VPN activa" · "Vuelve a Dropi al terminar" — tomados de Truora <code>2.1 Indicaciones</code> (hoy texto pasivo sin confirmación, Figma "Cuenta V2.0.0"). <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 4.)</em></span>
+                <span class="copy-line">Aviso automático por inactividad: a los <strong>10 minutos</strong> sin interactuar con el formulario aparece <strong>"¿Sigues ahí?"</strong> con un único botón <strong>"Reanudar validación"</strong> — mismo patrón de Truora <code>2.3</code> (Figma "Cuenta V2.0.0"), pero al reanudar el usuario queda exactamente donde estaba y no pierde lo que ya tecleó. Hasta esta iteración Fase 5 solo tenía el resume manual ("Continuar validación", C6 · Incompleto), nunca un disparo por inactividad. <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 4.)</em></span>
               </div>
               <div class="box b-engine" id="route-co-both"><span class="format-tag silent">Orden de prioridad</span><span class="country-tag co">Colombia</span><strong>Primero identidad, luego facturación</strong>
                 Si te faltan las dos cosas, primero completas tu identidad; al aprobarse, te ofrecemos completar la facturación. Muestra primero el aviso de identidad y, al aprobarse, pasa al de facturación — nunca los dos a la vez.
@@ -630,12 +631,12 @@
                   <div class="case-row"><span class="case-chip">Resto países</span><span class="case-headline">"Te falta un paso"</span></div>
                 </div>
                 <span class="copy-line">Mismo cuerpo en los 3: "Empezaste el proceso pero no lo terminaste." Botón: <strong>Continuar validación</strong> — retoma justo donde la dejaste, sin repetir nada.</span>
-                <span class="copy-line"><span class="format-tag open" style="margin:0 0 4px;">🚧 Catálogo de causas — a confirmar con TI</span>
+                <span class="copy-line"><span class="format-tag confirmed" style="margin:0 0 4px;">✅ Catálogo de causas — construido en el prototipo</span>
                   <ul>
                     <li>Documento sin cargar — "Aún no subiste tu documento."</li>
                     <li>Documento ilegible / foto borrosa — "No pudimos leer bien tu documento — vuelve a intentarlo."</li>
                     <li>Prueba de vida no completada — "Te falta completar la verificación con tu cámara."</li>
-                    <li>Dato no coincide con el documento — reusa "Te quedan N intentos" de Truora (<code>2.6</code>/<code>2.7</code>), corrigiendo el bug de plural, con temporizador visible del cooldown</li>
+                    <li>Dato no coincide con el documento — reusa "Te quedan N intentos" de Truora (<code>2.6</code>/<code>2.7</code>), corrigiendo el bug de plural ("1 intento", no "1 intentos"), con <strong>cooldown de 10 minutos</strong> y temporizador visible mm:ss durante la espera</li>
                   </ul>
                   Revisión de riesgo sin acción posible del usuario no es "Incompleto" — converge con "En revisión" (abajo). <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 1.)</em>
                 </span>
