@@ -1,0 +1,161 @@
+@use 'styles/variables-new' as *;
+
+// Mismo z-index (2000) y mismo rincón que el escape hatch de Modo Prototipo 0:
+// los dos nunca coexisten (gating inverso), así que no compiten por el espacio.
+// Va por encima del modal de verificación (también 2000, pero antes en el DOM)
+// a propósito: con el modal abierto un stakeholder debe poder saltar al
+// siguiente caso sin quedar atrapado en una sola pantalla.
+.fase15-switcher {
+  position: fixed;
+  left: $space-4;
+  bottom: $space-4;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $space-2;
+  font-family: $font-primary;
+  max-width: calc(100vw - #{$space-6});
+}
+
+.fase15-switcher__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  border: none;
+  border-radius: 9999px;
+  background: $gray-900;
+  color: $neutral-white;
+  box-shadow: $shadow-large;
+  cursor: pointer;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28); }
+  &:active { transform: translateY(0); }
+
+  i { font-size: $font-sm; color: $gray-300; }
+}
+
+.fase15-switcher__pill-label { color: $gray-300; font-weight: $font-medium; }
+.fase15-switcher__pill-current { color: $primary-300; }
+
+.fase15-switcher__pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: $warning-400;
+  box-shadow: 0 0 0 3px rgba($warning-400, 0.28);
+  animation: fase15-switcher-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes fase15-switcher-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+.fase15-switcher__panel {
+  width: 340px;
+  max-width: calc(100vw - #{$space-6});
+  max-height: min(78vh, 640px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  padding: $space-4;
+  border-radius: $radius-3;
+  background: $neutral-white;
+  box-shadow: $shadow-large;
+  border: 1px solid $gray-100;
+  animation: fase15-switcher-in 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fase15-switcher-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fase15-switcher__section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.fase15-switcher__label {
+  font-size: $font-xs;
+  font-weight: $font-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: $gray-500;
+}
+
+.fase15-switcher__states {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.fase15-switcher__state {
+  padding: $space-1 $space-3;
+  border-radius: 9999px;
+  border: 1px solid $gray-200;
+  background: $gray-50;
+  color: $gray-700;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover { border-color: $primary-300; }
+
+  &--active {
+    background: $primary-500;
+    border-color: $primary-500;
+    color: $neutral-white;
+  }
+
+  &--danger {
+    &:hover { border-color: $error-300; }
+  }
+
+  &--danger.fase15-switcher__state--active {
+    background: $error-500;
+    border-color: $error-500;
+  }
+}
+
+.fase15-switcher__section--actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.fase15-switcher__escape {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-3;
+  border-radius: $radius-2;
+  border: 1px solid $gray-200;
+  background: $gray-50;
+  color: $gray-700;
+  font-size: $font-sm;
+  font-weight: $font-medium;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover { background: $gray-100; }
+  i { font-size: $font-sm; color: $gray-500; }
+}
+
+// Responsive.
+@media (max-width: $bp-md) {
+  .fase15-switcher__panel { max-height: min(70vh, 560px); }
+}
+
+@media (max-width: $bp-sm) {
+  .fase15-switcher { left: $space-2; right: $space-2; bottom: $space-2; }
+  .fase15-switcher__panel { width: 100%; }
+  .fase15-switcher__pill-label { display: none; }
+}

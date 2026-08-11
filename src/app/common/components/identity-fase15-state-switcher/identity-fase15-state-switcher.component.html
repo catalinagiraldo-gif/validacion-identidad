@@ -1,0 +1,74 @@
+@if (visible()) {
+  <div class="fase15-switcher" [class.fase15-switcher--expanded]="expanded()">
+    <button type="button" class="fase15-switcher__pill" (click)="toggle()">
+      <i class="pi pi-sliders-h" aria-hidden="true"></i>
+      <span class="fase15-switcher__pill-label">Casos Fase 1-5</span>
+      <span class="fase15-switcher__pill-current">{{ statusLabel() }}</span>
+      @if (modalAbierto()) {
+        <span class="fase15-switcher__pill-dot" title="El modal de verificación está abierto encima"></span>
+      }
+      <i class="pi" [ngClass]="expanded() ? 'pi-chevron-down' : 'pi-chevron-up'" aria-hidden="true"></i>
+    </button>
+
+    @if (expanded()) {
+      <div class="fase15-switcher__panel">
+        <div class="fase15-switcher__section">
+          <span class="fase15-switcher__label">Ir a la página</span>
+          <div class="fase15-switcher__states">
+            @for (p of paginas; track p.ruta) {
+              <button
+                type="button"
+                class="fase15-switcher__state"
+                (click)="irAPagina(p.ruta)"
+              >
+                {{ p.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="fase15-switcher__section">
+          <span class="fase15-switcher__label">Estado de identidad</span>
+          <div class="fase15-switcher__states">
+            @for (e of estados; track e.status) {
+              <button
+                type="button"
+                class="fase15-switcher__state"
+                [class.fase15-switcher__state--danger]="e.danger"
+                [class.fase15-switcher__state--active]="statusActual() === e.status"
+                (click)="setEstado(e.status)"
+              >
+                {{ e.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="fase15-switcher__section">
+          <span class="fase15-switcher__label">Abrir modal de verificación</span>
+          <div class="fase15-switcher__states">
+            @for (m of modales; track m.label) {
+              <button
+                type="button"
+                class="fase15-switcher__state"
+                [class.fase15-switcher__state--danger]="m.danger"
+                (click)="abrirModal(m)"
+              >
+                {{ m.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        @if (modalAbierto()) {
+          <div class="fase15-switcher__section fase15-switcher__section--actions">
+            <button type="button" class="fase15-switcher__escape" (click)="cerrarModal()">
+              <i class="pi pi-eye-slash" aria-hidden="true"></i>
+              Cerrar modal y ver la página
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

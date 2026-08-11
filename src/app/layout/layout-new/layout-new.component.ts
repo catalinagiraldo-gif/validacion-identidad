@@ -13,6 +13,7 @@ import { IdentityFase0ResultComponent } from '../../common/components/identity-f
 import { IdentityFase0CrmToastComponent } from '../../common/components/identity-fase0-crm-toast/identity-fase0-crm-toast.component';
 import { IdentityFase0SumsubStandinComponent } from '../../common/components/identity-fase0-sumsub-standin/identity-fase0-sumsub-standin.component';
 import { IdentityFase0StateSwitcherComponent } from '../../common/components/identity-fase0-state-switcher/identity-fase0-state-switcher.component';
+import { IdentityFase15StateSwitcherComponent } from '../../common/components/identity-fase15-state-switcher/identity-fase15-state-switcher.component';
 import { IdentidadTourComponent } from '../../common/components/identidad-tour/identidad-tour.component';
 
 @Component({
@@ -33,6 +34,7 @@ import { IdentidadTourComponent } from '../../common/components/identidad-tour/i
     IdentityFase0CrmToastComponent,
     IdentityFase0SumsubStandinComponent,
     IdentityFase0StateSwitcherComponent,
+    IdentityFase15StateSwitcherComponent,
     IdentidadTourComponent,
   ],
   template: `
@@ -54,6 +56,7 @@ import { IdentidadTourComponent } from '../../common/components/identidad-tour/i
       <app-identity-fase0-crm-toast />
       <app-identity-fase0-sumsub-standin />
       <app-identity-fase0-state-switcher />
+      <app-identity-fase15-state-switcher />
       <app-identidad-tour />
     </div>
   `,
