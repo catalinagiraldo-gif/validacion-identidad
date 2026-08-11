@@ -1,5 +1,10 @@
 @use 'styles/variables-new' as *;
 
+// Misma altura de header que usa el Panel Lateral de Fase 0
+// (identity-fase0-panel.component.scss) — el modificador --home replica su
+// footprint de esquina inferior derecha.
+$header-height: 53px;
+
 .soft-banner {
   display: flex;
   align-items: center;
@@ -21,6 +26,39 @@
     flex-direction: column;
     align-items: flex-start;
     gap: $space-3;
+  }
+
+  // --home: panel flotante en la esquina inferior derecha, mismo lenguaje
+  // visual que .fase0-panel. Va después de --pedidos y del @media de la base
+  // porque comparte especificidad con .soft-banner: gana el orden en el archivo.
+  &--home {
+    position: fixed;
+    top: auto;
+    right: $space-6;
+    bottom: $space-6;
+    margin-bottom: 0;
+    z-index: 1200;
+
+    width: min(25vw, 400px);
+    min-width: 320px;
+    max-width: 400px;
+    max-height: calc(100vh - #{$header-height} - #{$space-8});
+
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $space-4;
+
+    padding: $space-5;
+    border: none;
+    border-radius: $radius-3;
+    background: $neutral-white;
+    box-shadow: $shadow-large;
+    animation: soft-banner-home-in 0.32s ease both;
+
+    .soft-banner__actions {
+      width: 100%;
+      justify-content: space-between;
+    }
   }
 }
 
@@ -113,4 +151,37 @@
 @keyframes fadeSlideDown {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+// Entrada slide-up para el panel anclado abajo (--home). Las variantes inline
+// pedidos/wallet siguen usando fadeSlideDown.
+@keyframes soft-banner-home-in {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+// Responsive específico de --home (replica los breakpoints de .fase0-panel).
+@media (max-width: $bp-lg) {
+  .soft-banner--home {
+    width: min(360px, calc(100vw - #{$space-8}));
+    min-width: 0;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .soft-banner--home {
+    right: $space-4;
+    bottom: $space-4;
+    left: $space-4;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: $bp-sm) {
+  .soft-banner--home {
+    padding: $space-4;
+  }
 }

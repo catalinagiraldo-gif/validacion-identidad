@@ -47,7 +47,7 @@ export type Fase0VistaCaso =
 /** Copys CRM TEXTUALES al blueprint (Etapa 0 y Etapa Continua, front stage → CRM). */
 const CRM_COPY: Record<Fase0CrmKind, string> = {
   recordatorio:
-    'Hola 👋 Aún falta validar tu identidad en Dropi (documento + selfie, unos minutos). Lo pedimos para confirmar quién eres y completar tu perfil. Entra a tu panel y pulsa «Verificar ahora».',
+    'Hola 👋 Aún falta validar tu identidad en Dropi (documento + selfie, unos minutos). Lo pedimos para confirmar quién eres y completar tu perfil. Entra a tu panel y pulsa «Completar ahora».',
   aprobado:
     'Hola 👋 ¡tu cuenta en Dropi ya está verificada! Ya puedes transferir tu wallet, registrar tus datos bancarios y pedir tu DropiCard sin restricciones. Aprovecha y sigue haciendo crecer tu negocio 🚀',
   'revision-financiero':

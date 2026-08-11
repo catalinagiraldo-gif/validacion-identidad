@@ -136,24 +136,25 @@
           <span class="demo-panel__motor-badge">{{ motorBadge().icon }} {{ motorBadge().label }}</span>
         </div>
 
+        <!-- Tipo de usuario — gobierna los soft touchpoints en TODAS las fases -->
+        <div class="demo-control" data-tour="fase0-tipo-usuario">
+          <span class="demo-control__label">TIPO DE USUARIO</span>
+          <div class="demo-control__chips">
+            @for (t of fase0TipoUsuarioOptions; track t) {
+              <button class="chip chip--sm" [class.chip--active]="fase0TipoUsuario() === t" (click)="setFase0TipoUsuario(t)">
+                {{ fase0TipoUsuarioLabel(t) }}
+              </button>
+            }
+          </div>
+          <span class="demo-panel__mecanismo">
+            {{ fase0TipoUsuario() === 'activo'
+              ? 'Activo: en Fase 0 ve el Panel Lateral "Verifica tu cuenta" al entrar al Home (Etapa 0); en Fase 1-5 ve el panel de ganancias en la esquina inferior derecha del Home.'
+              : 'Nuevo: en Home no ve ningún aviso de identidad, en ninguna fase — solo un clic financiero dispara el Modal Interceptor (Etapa 0.5), igual que a un Activo.' }}
+          </span>
+        </div>
+
         <!-- Controles Fase 0 (Service Blueprint Fase 0) -->
         @if (showFase0Controls()) {
-          <div class="demo-control" data-tour="fase0-tipo-usuario">
-            <span class="demo-control__label">TIPO DE USUARIO (HOME)</span>
-            <div class="demo-control__chips">
-              @for (t of fase0TipoUsuarioOptions; track t) {
-                <button class="chip chip--sm" [class.chip--active]="fase0TipoUsuario() === t" (click)="setFase0TipoUsuario(t)">
-                  {{ fase0TipoUsuarioLabel(t) }}
-                </button>
-              }
-            </div>
-            <span class="demo-panel__mecanismo">
-              {{ fase0TipoUsuario() === 'activo'
-                ? 'Activo: ve el Panel Lateral "Verifica tu cuenta" al entrar al Home (Etapa 0).'
-                : 'Nuevo: en Home no ve nada especial — solo un clic financiero dispara el Modal Interceptor (Etapa 0.5), igual que a un Activo.' }}
-            </span>
-          </div>
-
           <div class="demo-control">
             <span class="demo-control__label">MARCA BLANCA</span>
             <button class="chip chip--sm chip--toggle" [class.chip--active]="marcaBlanca()" (click)="toggleMarcaBlanca()">

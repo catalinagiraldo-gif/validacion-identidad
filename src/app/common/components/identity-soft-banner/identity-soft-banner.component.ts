@@ -23,10 +23,16 @@ export class IdentitySoftBannerComponent {
   dismissed = signal(false);
 
   // En Fase 0 el banner monetario desaparece (blueprint Etapa 0: el Panel Lateral
-  // cubre el rol pedagógico, sin gancho monetario). En fase1+ queda intacto.
+  // cubre el rol pedagógico, sin gancho monetario).
+  //
+  // En Fase 1-5 el aviso sigue el MISMO eje Nuevo/Activo que el track de Fase 0:
+  // un usuario nuevo no ve ningún soft touchpoint de identidad (sólo un clic
+  // financiero lo lleva al hard gate); un usuario activo (~20 órdenes — valor de
+  // trabajo confirmado en REUCONTI.md) sí lo ve, no bloqueante y descartable.
   readonly isVisible = computed(() =>
     !this.dismissed() &&
     this.stateV2.faseProyecto() !== 'fase0' &&
+    this.stateV2.fase0TipoUsuario() === 'activo' &&
     this.stateSvc.showSoftTouchpoints()
   );
 
