@@ -135,15 +135,17 @@ Esta es la diferencia estructural que determina el copy y la dinámica de C3, C4
 
 | SI el usuario… | Antigüedad / estado | Canal | ¿Bloqueante? |
 |---|---|---|---|
-| 🚧 Es nuevo y recién hace su 1ª orden o 1er movimiento de wallet | Nuevo, sin iniciar validaciones | **Nada** — no ve ningún aviso de identidad/facturación todavía | No aplica |
-| Ya es "activo" (umbral en discusión, ronda las ~20 órdenes) y le falta algo | Activo | **C4d** Bienvenida/alerta, en un modal de Home | No — puede posponer |
+| Es nuevo y recién hace su 1ª orden o 1er movimiento de wallet | Nuevo, sin iniciar validaciones | **Nada** — no ve ningún aviso de identidad/facturación todavía | No aplica |
+| Ya es "activo" (20 órdenes — valor de trabajo confirmado) y le falta algo | Activo | **C4d** Bienvenida/alerta, en un modal de Home | No — puede posponer |
 | Navega en Home / Dashboard | Antiguo, le falta alguna validación | **C2** Soft touch | No — puede cerrar la X |
 | Hace clic en Retirar / Transferir / DropiCard | Nuevo o antiguo, con datos incompletos | **C3** Hard gate (bloqueo estricto) | Sí — obligatorio |
 | Abre Información de cuenta o Datos de facturación | Nuevo o antiguo, con datos incompletos | **C4** Módulo | Según su estado |
 
 > **Importante:** los tres pasos siguientes (C2, C3, C4) son **alternativas dentro de esta misma etapa, no una secuencia**. El usuario entra por uno solo según lo que haga — nunca pasa de "C2 a C3 a C4" en fila. Ver [Mitos a evitar](#mitos-a-evitar).
 
-> 🚧 **Punto abierto — cuándo empieza a ver algo un usuario nuevo:** en la reunión de seguimiento (`REUCONTI.md`), Catalina fue explícita en que a un usuario **nuevo no se le debe mostrar nada** de identidad/facturación desde su primera venta — mostrarlo ahí puede confundirlo y generar deserción. La idea es diferenciar entre "nuevo" y **"activo"**: un usuario se considera activo cuando alcanza un número de órdenes por definir (se habló de **~20 órdenes**, aún **en discusión** con Producto) y solo entonces recibe la alerta de C4d, vía un modal en Home. Esto reemplaza el disparador anterior de este blueprint ("1ª orden o 1er movimiento de wallet"), que no reflejaba esta regla. También se relaciona con la *Regla del Despliegue por Lotes* y la *Regla del Periodo Pedagógico* de [`Reglasvalidacion.md`](Reglasvalidacion.md) — ver Regla F más abajo.
+> ✅ **Regla definida — cuándo empieza a ver algo un usuario nuevo:** en la reunión de seguimiento (`REUCONTI.md`), Catalina fue explícita en que a un usuario **nuevo no se le debe mostrar nada** de identidad/facturación desde su primera venta — mostrarlo ahí puede confundirlo y generar deserción. La regla diferencia entre "nuevo" y **"activo"**: un usuario se considera activo cuando alcanza **20 órdenes** (valor de trabajo confirmado, `REUCONTI.md`) y solo entonces recibe la alerta de C4d, vía un modal en Home. Esto reemplaza el disparador anterior de este blueprint ("1ª orden o 1er movimiento de wallet"), que no reflejaba esta regla. También se relaciona con la *Regla del Despliegue por Lotes* y la *Regla del Periodo Pedagógico* de [`Reglasvalidacion.md`](Reglasvalidacion.md) — ver Regla F más abajo.
+>
+> El número exacto puede refinarse más adelante con Producto, pero **ya no bloquea el diseño ni la construcción**: la bifurcación Nuevo/Activo es la que gobierna la experiencia, y el umbral es un parámetro ajustable dentro de ella.
 
 **Recordatorio si no completa:** si el usuario cierra el aviso sutil (C2) o pospone la bienvenida/alerta de activo (C4d) y el dato le sigue faltando, un job de recordatorio le reenvía el mismo aviso — mismo canal in-app, o correo/WhatsApp si tiene ese canal configurado. El bloqueo estricto (C3) no lleva recordatorio: ya es obligatorio en el momento en que aparece.
 
@@ -224,7 +226,7 @@ Esta es la diferencia estructural que determina el copy y la dinámica de C3, C4
 
 ### C4 · Módulo — el usuario abre cuenta, facturación o hace su primera venta
 
-**Usuarios:** Usuario con algo pendiente que abre `Información de cuenta` o `Datos de facturación`, o que ya es "activo" (🚧 umbral en discusión, ~20 órdenes) y le falta algo.
+**Usuarios:** Usuario con algo pendiente que abre `Información de cuenta` o `Datos de facturación`, o que ya es "activo" (20 órdenes — valor de trabajo confirmado, `REUCONTI.md`) y le falta algo.
 
 **Tarea** (secuencia horizontal):
 1. 🟢 Usuario abre un módulo, o ya es "activo" y le falta algo
@@ -239,7 +241,7 @@ Esta es la diferencia estructural que determina el copy y la dinámica de C3, C4
 
 0. 🔵 Indicador de pasos (solo Colombia, en Información de cuenta y Datos de facturación): **"Paso 1 de 2 · Identidad"** / **"Paso 2 de 2 · Facturación"**, reutilizando el componente DS `dropi-steps` (`ds-registry/components/dropi-steps.json`, estados `pending | focus | completed | error`). Hace visible al usuario colombiano que su validación tiene dos pasos separados — hoy solo se infiere navegando. No aplica fuera de Colombia (un solo enlace resuelve ambas). *(Especificado en [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#5--niveles-de-verificación-visibles-para-colombia-identidad--facturación) punto 5.)*
 
-1. 🚧 Bienvenida/alerta (al volverse "activo", **no en la primera venta**) — Headline: **¡Tu primera venta en Dropi!**. Body: *Qué bueno que ya empezaste. Para retirar o usar tu dinero, completa tu validación de datos. Es por tu seguridad y la de la plataforma.* Botones: **Completar validación** / **Ahora no**. *(Punto abierto: este copy se diseñó pensando en la primera venta; con la segmentación nuevo/activo de la reunión de seguimiento, falta confirmar si el copy cambia una vez deja de dispararse en la primera venta y pasa a dispararse al volverse "activo".)*
+1. 🔵 Bienvenida/alerta (disparador definido: al volverse "activo" — 20 órdenes, valor de trabajo confirmado; **no en la primera venta**) — Headline: **¡Tu primera venta en Dropi!**. Body: *Qué bueno que ya empezaste. Para retirar o usar tu dinero, completa tu validación de datos. Es por tu seguridad y la de la plataforma.* Botones: **Completar validación** / **Ahora no**. *(🚧 Pendiente solo el copy: este headline se escribió pensando en la primera venta; falta ajustarlo al disparador real de "activo". El disparador en sí ya no está en discusión.)*
 2. 🔵 Colombia · Información de cuenta — Headline: **Completa tu información de cuenta**. Body: *Con estos datos confirmamos quién eres. Al guardar, empezamos la validación con una prueba de vida.* Campos: tipo de persona · nombre completo · tipo de documento · número de documento · documento adjunto. Botón: **Guardar y continuar**.
    - Incompleto → formulario editable con esos campos; al guardar, se abre un **enlace aparte** (fuera de Dropi) donde el proveedor toma la prueba de vida — el usuario la completa en su propio tiempo, no es parte del formulario de Dropi.
    - **En proceso** (al volver a Dropi, mientras se confirma) → los campos quedan visibles pero deshabilitados. **Formato: banner fijo dentro de la página, no modal** — no bloquea el resto de la navegación. Headline: **Estamos confirmando tus datos**. Body: *Mientras tanto, puedes seguir usando Dropi pero hemos pausado temporalmente tus retiros y transferencias.* (Nota interna: este banner reutiliza el mismo flujo de confirmación de Truora que ya está en producción — no es un banner nuevo.)

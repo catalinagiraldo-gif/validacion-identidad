@@ -189,6 +189,7 @@
     .format-tag.toast { color: #0F766E; background: #CCFBF1; border-color: #5EEAD4; }
     .format-tag.silent { color: #64748B; background: #F1F5F9; border-color: #CBD5E1; border-style: dashed; }
     .format-tag.open { color: var(--f0-yellow-text); background: var(--f0-yellow-bg); border-color: var(--f0-yellow-border); border-style: dashed; }
+    .format-tag.confirmed { color: var(--f0-green-text); background: var(--f0-green-bg); border-color: var(--f0-green-border); }
     .country-tag { display: inline-block; margin: 0 3px 3px 0; padding: 2px 6px; border: 1px solid; border-radius: 4px; font-size: 9px; font-weight: 800; text-transform: uppercase; }
     .country-tag.co { background: var(--f0-blue-bg); border-color: var(--f0-blue-border); color: var(--f0-blue-text); }
     .country-tag.rest { background: var(--f0-gray-bg); border-color: var(--f0-gray-border); color: var(--f0-gray-text); }
@@ -432,7 +433,17 @@
               </div>
             </div>
             <div class="sub-col"><span class="sub-kicker">C4</span>
-              <div class="box b-user"><strong>Si abre Información de cuenta, Datos de facturación, o ya es "activo" y le falta algo</strong>Entra por esta puerta propia — no es "el tercer paso" de una fila. <span class="format-tag open" style="margin:4px 0 0;">🚧 No en la 1ª venta — solo al volverse "activo" (~20 órdenes, en discusión)</span>
+              <div class="diamond-wrap" id="nuevo-vs-activo" style="margin-bottom:46px;">
+                <div class="diamond"><span>¿Ya es "activo"?</span></div>
+                <div class="branch-row">
+                  <span class="b-none">Usuario nuevo → no ve nada <span class="terminal" style="margin-top:0;">Sin aviso de identidad ni facturación; solo un clic financiero lo lleva al hard gate (C3)</span></span>
+                  <span class="b-gap">Usuario activo (20+ órdenes) → Panel Lateral en Home
+                    <div class="v-link"><span class="ln"></span><span class="ar"></span><span class="lb">↓ Ve la bienvenida/alerta C4d, puede posponer</span></div>
+                  </span>
+                </div>
+                <span class="format-tag confirmed" style="margin-top:8px;">✅ 20 órdenes — valor de trabajo confirmado (REUCONTI.md)</span>
+              </div>
+              <div class="box b-user"><strong>Si abre Información de cuenta, Datos de facturación, o ya es "activo" y le falta algo</strong>Entra por esta puerta propia — no es "el tercer paso" de una fila. <span class="format-tag confirmed" style="margin:4px 0 0;">✅ No en la 1ª venta — solo al volverse "activo" (20 órdenes, valor de trabajo)</span>
                 <div class="v-link"><span class="ln"></span><span class="ar"></span><span class="lb">↓ Ve la pantalla del módulo</span></div>
                 <span class="goes-to">→ Si completa, sigue en Etapa 3 (C5)</span>
               </div>
@@ -471,7 +482,7 @@
               </div>
             </div>
             <div class="sub-col"><span class="sub-kicker">C4</span>
-              <div class="box b-native"><span class="format-tag silent">Pantalla propia de Dropi</span><strong>Mi cuenta / Facturación</strong>Frontend Dropi (Angular) + API de perfil y facturación. Más el mensaje de bienvenida/alerta cuando se vuelve "activo" (🚧 no en su primera venta).
+              <div class="box b-native"><span class="format-tag silent">Pantalla propia de Dropi</span><strong>Mi cuenta / Facturación</strong>Frontend Dropi (Angular) + API de perfil y facturación. Más el mensaje de bienvenida/alerta cuando se vuelve "activo" (no en su primera venta — 20 órdenes, valor de trabajo).
                 <div class="v-link"><span class="ln"></span><span class="ar"></span><span class="lb">Pantalla del módulo ↓</span></div>
               </div>
             </div>
@@ -538,10 +549,10 @@
                 <span class="copy-line"><strong>En proceso</strong> (al volver a Dropi, mientras se confirma): los campos quedan visibles pero deshabilitados. <em>Formato: banner fijo dentro de la página, no modal.</em> Headline: "Estamos confirmando tus datos". Body: "Mientras tanto, puedes seguir usando Dropi pero hemos pausado temporalmente tus retiros y transferencias." <em>(Nota interna: mismo flujo de confirmación de Truora que ya está en producción, no es un banner nuevo.)</em></span>
                 <span class="copy-line">Completo: mismos campos, visibles pero de solo lectura, sin fecha de desbloqueo automática — nombre, tipo de persona, tipo/número de documento y documento adjunto disparan el flujo de re-validación al editarlos vía soporte; dirección y ciudad se guardan directo.</span>
               </div>
-              <div class="box b-native"><span class="format-tag open">🚧 Punto abierto — disparador</span><strong>¡Tu primera venta en Dropi!</strong>
+              <div class="box b-native"><span class="format-tag confirmed">✅ Disparador definido — al volverse "activo"</span><strong>¡Tu primera venta en Dropi!</strong>
                 <span class="copy-line">Qué bueno que ya empezaste. Para retirar o usar tu dinero, completa tu validación de datos. Es por tu seguridad y la de la plataforma. Botones: <strong>Completar validación</strong> / <strong>Ahora no</strong></span>
                 <span class="copy-line">Si elige "Ahora no", el job de recordatorio puede reenviarle este mismo aviso una sola vez más adelante.</span>
-                <span class="copy-line"><em>Nota (reunión de seguimiento, `REUCONTI.md`): un usuario nuevo no debería ver este aviso en su primera venta — mostrarlo ahí puede confundirlo y generar deserción. Debería dispararse solo cuando el usuario se vuelve "activo" (umbral en discusión, ~20 órdenes); falta confirmar si el copy cambia. Ver Regla F.</em></span>
+                <span class="copy-line"><em>Nota (reunión de seguimiento, `REUCONTI.md`): un usuario nuevo <strong>no</strong> ve este aviso en su primera venta — mostrarlo ahí puede confundirlo y generar deserción. El disparador <strong>es</strong> el umbral de "activo" (20 órdenes — valor de trabajo confirmado), no la 1ª venta. El número exacto puede refinarse con Producto sin bloquear diseño ni construcción; queda pendiente solo ajustar el copy del headline al nuevo disparador. Ver Regla F.</em></span>
               </div>
               <div class="box b-native"><span class="format-tag silent">Página de Dropi</span><span class="country-tag rest">Resto de países</span><strong>Un solo botón</strong>
                 <span class="copy-line">Headline: "Valida tu identidad y tus datos de facturación". Body: "Un formulario guiado te pide lo que necesitamos, según tu país. No tienes que volver después — todo queda listo de una vez." Botón: <strong>Completar validación</strong>.</span>
@@ -765,7 +776,7 @@
       <summary>Detalle Etapa 2 · Canales de entrada — Rutas Paralelas (C2·C3·C4) <span class="col-type par">Paralelo — elige UNO</span></summary>
       <p class="muted">No es "Soft → Hard → Módulo" en fila. Son tres puertas de entrada distintas: el usuario cruza una sola, según lo que esté haciendo ahora mismo. Las tres convergen en Etapa 3 (C5).</p>
       <div class="plain-answer"><strong>En una frase:</strong> la intervención se adapta a la antigüedad y la acción del usuario: los nuevos no ven nada todavía (para no confundirlos ni generar deserción), los activos ven la bienvenida/alerta, los antiguos ven el aviso sutil. El bloqueo estricto (hard gate) solo aparece al intentar un movimiento financiero, sin importar la antigüedad — los otros dos canales se pueden ignorar o posponer.</div>
-      <div class="plain-answer" style="border-color:var(--f0-yellow-border);border-left-color:var(--f0-yellow-border);background:var(--f0-yellow-bg);"><strong>🚧 Punto abierto — cuándo empieza a ver algo un usuario nuevo:</strong> en la reunión de seguimiento (<code>REUCONTI.md</code>), Catalina fue explícita en que a un usuario nuevo <strong>no se le debe mostrar nada</strong> de identidad/facturación desde su primera venta. La idea es diferenciar "nuevo" de <strong>"activo"</strong>: un usuario se vuelve activo al alcanzar un número de órdenes por definir (se habló de <strong>~20 órdenes</strong>, aún en discusión) y solo entonces recibe la alerta de C4d en un modal de Home. Esto reemplaza el disparador anterior de este blueprint ("1ª orden o 1er movimiento de wallet"). Se relaciona con la <em>Regla del Despliegue por Lotes</em> y la <em>Regla del Periodo Pedagógico</em> de <code>Reglasvalidacion.md</code> — ver Regla F en <a href="#reglas">Reglas transversales</a>.</div>
+      <div class="plain-answer" style="border-color:var(--f0-green-border);border-left-color:var(--f0-green-border);background:var(--f0-green-bg);"><strong>✅ Regla definida — cuándo empieza a ver algo un usuario nuevo:</strong> en la reunión de seguimiento (<code>REUCONTI.md</code>), Catalina fue explícita en que a un usuario nuevo <strong>no se le debe mostrar nada</strong> de identidad/facturación desde su primera venta. La regla diferencia "nuevo" de <strong>"activo"</strong>: un usuario se vuelve activo al alcanzar <strong>20 órdenes</strong> (valor de trabajo confirmado, <code>REUCONTI.md</code>) y solo entonces recibe la alerta de C4d en un modal de Home. Esto reemplaza el disparador anterior de este blueprint ("1ª orden o 1er movimiento de wallet"). Se relaciona con la <em>Regla del Despliegue por Lotes</em> y la <em>Regla del Periodo Pedagógico</em> de <code>Reglasvalidacion.md</code> — ver Regla F en <a href="#reglas">Reglas transversales</a>. El número exacto puede refinarse más adelante con Producto, pero <strong>ya no bloquea el diseño ni la construcción</strong>.</div>
       <p class="muted"><strong>Recordatorio si no completa:</strong> si cierra el aviso sutil (C2) o pospone la bienvenida/alerta de activo (C4d) y el dato sigue faltando, un job de recordatorio le reenvía el mismo aviso — mismo canal in-app, o correo/WhatsApp si lo tiene configurado. El bloqueo estricto (C3) no lleva recordatorio: ya es obligatorio en el momento en que aparece.</p>
       <div class="plain-answer" style="border-color:var(--f0-yellow-border);border-left-color:var(--f0-yellow-border);background:var(--f0-yellow-bg);"><strong>🚧 Cadencia escalonada por volumen de órdenes (valores de ejemplo, a confirmar con Producto):</strong> Nivel 1 (ya existe) — una sola vez, unos días después de cerrar C2/C4d, mismo tono suave. Nivel 2 (nuevo) — si acumula +N órdenes adicionales sin resolver el dato (N a definir, ej. +30), un recordatorio más notorio por el mismo canal + correo/WhatsApp si está configurado. Conecta con el riesgo ya documentado en <code>Discovery-Riesgos-Transicion-Fase5.md</code> §1.3 (proveedores Top 5 que nunca disparan el hard gate porque no retiran dinero). Nunca se salta la Regla F — el recordatorio no se convierte en bloqueo sin el aviso previo de 1-2 semanas. <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 2.)</em></div>
       <h3>SI → ENTONCES · Canal</h3>
@@ -773,8 +784,8 @@
         <table>
           <thead><tr><th>SI el usuario…</th><th>Antigüedad / estado</th><th>Canal</th><th>¿Bloqueante?</th></tr></thead>
           <tbody>
-            <tr><td><span class="format-tag open">🚧</span> Es nuevo y recién hace su 1ª orden o 1er movimiento de wallet</td><td>Nuevo, sin iniciar validaciones</td><td><strong>Nada</strong> — no ve ningún aviso todavía</td><td>No aplica</td></tr>
-            <tr><td>Ya es "activo" (umbral en discusión, ~20 órdenes) y le falta algo</td><td>Activo</td><td><strong>C4d</strong> Bienvenida/alerta en modal de Home</td><td>No — puede posponer</td></tr>
+            <tr><td>Es nuevo y recién hace su 1ª orden o 1er movimiento de wallet</td><td>Nuevo, sin iniciar validaciones</td><td><strong>Nada</strong> — no ve ningún aviso todavía</td><td>No aplica</td></tr>
+            <tr><td>Ya es "activo" (20 órdenes — valor de trabajo confirmado) y le falta algo</td><td>Activo</td><td><strong>C4d</strong> Bienvenida/alerta en modal de Home</td><td>No — puede posponer</td></tr>
             <tr><td>Navega en Home / Dashboard</td><td>Antiguo, le falta alguna validación</td><td><strong>C2</strong> Soft touch (aviso sutil)</td><td>No — puede cerrar la X</td></tr>
             <tr><td>Hace clic en Retirar / Transferir / DropiCard</td><td>Nuevo o antiguo, con datos incompletos</td><td><strong>C3</strong> Hard gate (bloqueo estricto)</td><td>Sí — obligatorio</td></tr>
             <tr><td>Abre Información de cuenta o Datos de facturación</td><td>Nuevo o antiguo, con datos incompletos</td><td><strong>C4</strong> Módulo</td><td>Según su estado</td></tr>
