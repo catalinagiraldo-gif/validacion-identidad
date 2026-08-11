@@ -117,6 +117,13 @@ export class IdentityFase15StateSwitcherComponent {
     this.modalSvc.open('wallet', opt.startScreen);
   }
 
+  previsualizarAvisoAbandono(): void {
+    if (!this.modalSvc.isOpen()) {
+      this.modalSvc.open('wallet', 'screen2');
+    }
+    this.modalSvc.mostrarAvisoAbandono();
+  }
+
   cerrarModal(): void {
     this.modalSvc.close();
   }

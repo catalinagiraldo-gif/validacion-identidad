@@ -813,6 +813,111 @@
   span { font-size: $font-sm; color: $gray-700; line-height: 1.5; }
 }
 
+// Truora 2.6/2.7 — conteo de intentos y cooldown. El temporizador se ve SIEMPRE:
+// que Truora lo esconda es justo el bug que el blueprint pide no repetir.
+.intentos-restantes {
+  max-width: 400px;
+  width: 100%;
+  margin: 0 0 $space-6;
+  font-size: $font-sm;
+  color: $gray-700;
+  text-align: left;
+}
+
+.cooldown-box {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  background: rgba($warning-500, 0.10);
+  border-radius: $radius-2;
+  padding: $space-4;
+  text-align: left;
+  margin-bottom: $space-6;
+  max-width: 400px;
+  width: 100%;
+
+  i { color: $warning-700; font-size: 18px; flex-shrink: 0; }
+
+  &__body {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: $space-2;
+    min-width: 0;
+  }
+
+  &__text { font-size: $font-sm; color: $gray-700; line-height: 1.5; }
+
+  &__timer {
+    font-size: 20px;
+    font-weight: 600;
+    color: $warning-700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: $bp-sm) {
+    padding: $space-3;
+    &__timer { font-size: 18px; }
+  }
+}
+
+// Truora 2.3 — aviso de abandono. Banner INLINE dentro del modal-body,
+// nunca un modal encima del modal.
+.aviso-abandono {
+  background: $warning-50;
+  border: 1px solid $warning-100;
+  border-left: 4px solid $warning-500;
+  border-radius: $radius-2;
+  padding: $space-4;
+  margin-bottom: $space-6;
+  text-align: left;
+  animation: aviso-abandono-in 220ms ease-out both;
+
+  &__title {
+    margin: 0 0 $space-2;
+    font-size: 16px;
+    font-weight: 600;
+    color: $warning-700;
+  }
+
+  &__text {
+    margin: 0 0 $space-3;
+    font-size: $font-sm;
+    color: $gray-700;
+    line-height: 1.5;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    padding: $space-2 $space-4;
+    border: none;
+    border-radius: $radius-2;
+    background: $warning-500;
+    color: $neutral-white;
+    font-size: $font-sm;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 150ms ease, transform 150ms ease;
+
+    &:hover { background: $warning-600; transform: translateY(-1px); }
+    &:active { transform: translateY(0); }
+  }
+
+  @media (max-width: $bp-sm) {
+    padding: $space-3;
+    &__btn { width: 100%; }
+  }
+}
+
+@keyframes aviso-abandono-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 // ── Footer ────────────────────────────────────────────────────────────────────
 .modal-footer {
   display: flex;

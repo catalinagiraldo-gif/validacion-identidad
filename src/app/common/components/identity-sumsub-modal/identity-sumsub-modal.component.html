@@ -39,6 +39,15 @@
     <!-- Modal Content -->
     <div class="modal-body">
 
+      <!-- Aviso de abandono por inactividad (Truora 2.3) — banner INLINE, nunca un modal sobre el modal -->
+      @if (avisoAbandono() && (currentScreen() === 'screen1' || currentScreen() === 'screen2')) {
+        <div class="aviso-abandono">
+          <h3 class="aviso-abandono__title">¿Sigues ahí?</h3>
+          <p class="aviso-abandono__text">Guardamos lo que ya llenaste. Puedes seguir justo donde lo dejaste.</p>
+          <button type="button" class="aviso-abandono__btn" (click)="registrarActividad()">Reanudar validación</button>
+        </div>
+      }
+
       <!-- SCREEN 0 — Hard gate: verifica tu identidad (wiretext 2-A / 3) -->
       @if (currentScreen() === 'screen0') {
         <div class="screen screen0">
@@ -132,7 +141,7 @@
                   class="input-field__control"
                   placeholder="tucorreo@ejemplo.com"
                   [ngModel]="emailCorreo()"
-                  (ngModelChange)="emailCorreo.set($event)"
+                  (ngModelChange)="emailCorreo.set($event); registrarActividad()"
                 />
               </div>
             </div>
@@ -153,7 +162,7 @@
                   [class.otp-field__control--error]="otpEmailError()"
                   placeholder="000000"
                   [ngModel]="otpEmailCode()"
-                  (ngModelChange)="otpEmailCode.set($event); otpEmailError.set(false)"
+                  (ngModelChange)="otpEmailCode.set($event); otpEmailError.set(false); registrarActividad()"
                   [disabled]="otpEmailBloqueado()"
                 />
               </div>
@@ -180,7 +189,7 @@
             <div class="substep-content">
               <h3>Foto del frente de tu documento</h3>
               <p>Asegúrate de que el documento sea legible y esté bien iluminado.</p>
-              <div class="capture-area" [class.capture-area--done]="docFrenteCapturado()" (click)="docFrenteCapturado.set(true)">
+              <div class="capture-area" [class.capture-area--done]="docFrenteCapturado()" (click)="docFrenteCapturado.set(true); registrarActividad()">
                 @if (!docFrenteCapturado()) {
                   <div class="capture-area__guide">
                     <div class="capture-frame"></div>
@@ -202,7 +211,7 @@
             <div class="substep-content">
               <h3>Foto del reverso del documento</h3>
               <p>Voltea el documento y toma la foto del reverso.</p>
-              <div class="capture-area" [class.capture-area--done]="docReversoCapturado()" (click)="docReversoCapturado.set(true)">
+              <div class="capture-area" [class.capture-area--done]="docReversoCapturado()" (click)="docReversoCapturado.set(true); registrarActividad()">
                 @if (!docReversoCapturado()) {
                   <div class="capture-area__guide">
                     <div class="capture-frame capture-frame--back"></div>
@@ -223,7 +232,7 @@
             <div class="substep-content">
               <h3>Ahora, una prueba de vida rápida</h3>
               <p>Mira directo a la cámara y sigue las instrucciones en pantalla.</p>
-              <div class="selfie-area" [class.selfie-area--done]="livenessCapturada()" (click)="livenessCapturada.set(true)">
+              <div class="selfie-area" [class.selfie-area--done]="livenessCapturada()" (click)="livenessCapturada.set(true); registrarActividad()">
                 @if (!livenessCapturada()) {
                   <div class="selfie-oval">
                     <div class="selfie-oval__ring"></div>
@@ -252,7 +261,7 @@
                   class="input-field__control"
                   placeholder="Ej: 3001234567"
                   [ngModel]="telefono()"
-                  (ngModelChange)="telefono.set($event)"
+                  (ngModelChange)="telefono.set($event); registrarActividad()"
                 />
               </div>
             </div>
@@ -273,7 +282,7 @@
                   [class.otp-field__control--error]="otpTelefonoError()"
                   placeholder="000000"
                   [ngModel]="otpTelefonoCode()"
-                  (ngModelChange)="otpTelefonoCode.set($event); otpTelefonoError.set(false)"
+                  (ngModelChange)="otpTelefonoCode.set($event); otpTelefonoError.set(false); registrarActividad()"
                   [disabled]="otpTelefonoBloqueado()"
                 />
               </div>
@@ -315,15 +324,15 @@
               <h3>Ya verificamos tu identidad</h3>
               <p>¿Deseas usar tus datos personales como datos de facturación, o prefieres facturar con datos diferentes?</p>
               <div class="via-options">
-                <label class="via-option" [class.via-option--selected]="viaFacturacion() === 'mis-datos'" (click)="viaFacturacion.set('mis-datos')">
+                <label class="via-option" [class.via-option--selected]="viaFacturacion() === 'mis-datos'" (click)="viaFacturacion.set('mis-datos'); registrarActividad()">
                   <span class="radio-circle" [class.radio-circle--checked]="viaFacturacion() === 'mis-datos'"></span>
                   <span class="via-option__text">Usar mis propios datos</span>
                 </label>
-                <label class="via-option" [class.via-option--selected]="viaFacturacion() === 'otra-persona-natural'" (click)="viaFacturacion.set('otra-persona-natural')">
+                <label class="via-option" [class.via-option--selected]="viaFacturacion() === 'otra-persona-natural'" (click)="viaFacturacion.set('otra-persona-natural'); registrarActividad()">
                   <span class="radio-circle" [class.radio-circle--checked]="viaFacturacion() === 'otra-persona-natural'"></span>
                   <span class="via-option__text">Facturar a nombre de otra persona natural</span>
                 </label>
-                <label class="via-option" [class.via-option--selected]="viaFacturacion() === 'persona-juridica'" (click)="viaFacturacion.set('persona-juridica')">
+                <label class="via-option" [class.via-option--selected]="viaFacturacion() === 'persona-juridica'" (click)="viaFacturacion.set('persona-juridica'); registrarActividad()">
                   <span class="radio-circle" [class.radio-circle--checked]="viaFacturacion() === 'persona-juridica'"></span>
                   <span class="via-option__text">Facturar a nombre de una empresa</span>
                 </label>
@@ -358,7 +367,7 @@
                   class="input-field__control"
                   placeholder="tucorreo@ejemplo.com"
                   [ngModel]="terceroEmail()"
-                  (ngModelChange)="terceroEmail.set($event)"
+                  (ngModelChange)="terceroEmail.set($event); registrarActividad()"
                 />
               </div>
             </div>
@@ -378,7 +387,7 @@
                   [class.otp-field__control--error]="terceroOtpError()"
                   placeholder="000000"
                   [ngModel]="terceroOtpCode()"
-                  (ngModelChange)="terceroOtpCode.set($event); terceroOtpError.set(false)"
+                  (ngModelChange)="terceroOtpCode.set($event); terceroOtpError.set(false); registrarActividad()"
                   [disabled]="terceroOtpBloqueado()"
                 />
               </div>
@@ -404,7 +413,7 @@
             <div class="substep-content">
               <h3>Foto del frente del documento de {{ terceroLabel() }}</h3>
               <p>Asegúrate de que el documento sea legible y esté bien iluminado.</p>
-              <div class="capture-area" [class.capture-area--done]="terceroDocFrenteCapturado()" (click)="terceroDocFrenteCapturado.set(true)">
+              <div class="capture-area" [class.capture-area--done]="terceroDocFrenteCapturado()" (click)="terceroDocFrenteCapturado.set(true); registrarActividad()">
                 @if (!terceroDocFrenteCapturado()) {
                   <div class="capture-area__guide">
                     <div class="capture-frame"></div>
@@ -424,7 +433,7 @@
             <div class="substep-content">
               <h3>Foto del reverso del documento</h3>
               <p>Voltea el documento y toma la foto del reverso.</p>
-              <div class="capture-area" [class.capture-area--done]="terceroDocReversoCapturado()" (click)="terceroDocReversoCapturado.set(true)">
+              <div class="capture-area" [class.capture-area--done]="terceroDocReversoCapturado()" (click)="terceroDocReversoCapturado.set(true); registrarActividad()">
                 @if (!terceroDocReversoCapturado()) {
                   <div class="capture-area__guide">
                     <div class="capture-frame capture-frame--back"></div>
@@ -444,7 +453,7 @@
             <div class="substep-content">
               <h3>Prueba de vida de {{ terceroLabel() }}</h3>
               <p>Pide a esa persona que mire directo a la cámara.</p>
-              <div class="selfie-area" [class.selfie-area--done]="terceroLivenessCapturada()" (click)="terceroLivenessCapturada.set(true)">
+              <div class="selfie-area" [class.selfie-area--done]="terceroLivenessCapturada()" (click)="terceroLivenessCapturada.set(true); registrarActividad()">
                 @if (!terceroLivenessCapturada()) {
                   <div class="selfie-oval">
                     <div class="selfie-oval__ring"></div>
@@ -503,7 +512,7 @@
                     class="input-field__control"
                     placeholder="Ej: TechStore SAS"
                     [ngModel]="kybNombreEmpresa()"
-                    (ngModelChange)="kybNombreEmpresa.set($event)"
+                    (ngModelChange)="kybNombreEmpresa.set($event); registrarActividad()"
                   />
                   <button class="btn-secondary kyb-search__btn" (click)="buscarEmpresa()">Buscar</button>
                 </div>
@@ -623,8 +632,19 @@
                 <i class="pi pi-exclamation-circle"></i>
                 <span>{{ motivoRechazoCopy().description }}</span>
               </div>
+              @if (documentoCooldownActivo()) {
+                <div class="cooldown-box">
+                  <i class="pi pi-clock"></i>
+                  <div class="cooldown-box__body">
+                    <span class="cooldown-box__text">Revisa los datos y vuelve a intentarlo en</span>
+                    <span class="cooldown-box__timer">{{ documentoCooldownLabel() }}</span>
+                  </div>
+                </div>
+              } @else {
+                <p class="intentos-restantes">{{ intentosRestantesTexto() }}</p>
+              }
               <div class="resultado__actions">
-                <button class="btn-primary" (click)="onReintentar()">Reintentar verificación</button>
+                <button class="btn-primary" (click)="onReintentar()" [disabled]="documentoCooldownActivo()">Reintentar verificación</button>
                 <button class="btn-text" (click)="onRechazadoReturn()">Solicitar revisión manual</button>
               </div>
             </div>

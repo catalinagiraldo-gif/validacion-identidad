@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, signal, computed, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -46,6 +46,39 @@ const OTP_RESEND_SECONDS = 60;
 /** Código "incorrecto" reservado para poder demostrar el estado de error en el prototipo. */
 const OTP_CODE_WRONG_DEMO = '000000';
 
+/**
+ * Truora `2.6`/`2.7` (Figma "Cuenta V2.0.0"): tras 3 rechazos del documento el flujo entra en
+ * cooldown de 10 minutos. Truora lo hace SIN temporizador visible — el blueprint pide
+ * explícitamente no repetir ese error, por eso el prototipo muestra el mm:ss corriendo.
+ */
+const DOCUMENTO_MAX_INTENTOS = 3;
+const DOCUMENTO_COOLDOWN_SECONDS = 600;
+
+/**
+ * Truora `2.3 Proceso abandonado`: el aviso se dispara a los 10 min de inactividad.
+ * Se revisa cada 10s — suficiente para la demo y sin costo perceptible.
+ */
+const INACTIVIDAD_MS = 10 * 60 * 1000;
+const INACTIVIDAD_CHECK_MS = 10_000;
+
+/**
+ * Los 3 primeros ítems vienen de Truora `2.1 Indicaciones`, donde hoy son texto pasivo que el
+ * usuario puede saltarse sin leer. Aquí son checkboxes obligatorios: `canNextScreen1` exige
+ * `allChecked`, así que no se puede iniciar la verificación sin confirmarlos uno por uno.
+ * Declarado como const de módulo (no propiedad de clase) porque `checklistItems` se inicializa
+ * ANTES que `checklistLabels` — leerlo con `this.` daría `undefined` por orden de campos en TS.
+ */
+const CHECKLIST_LABELS = [
+  'Activa el GPS de tu celular',
+  'Apaga cualquier VPN activa',
+  'Vuelve a Dropi al terminar',
+  'Documento de identidad vigente y original (no fotocopias)',
+  'Buena iluminación y cámara disponible',
+  'Espacio tranquilo sin interrupciones (~5-10 min)',
+  'Conexión estable a internet',
+  'Tu celular a la mano para recibir un código',
+];
+
 /** Empresas mock por país (9 países del Excel) para el buscador KYB sin digitar NIT. */
 const EMPRESAS_MOCK_V2: Record<Pais9, string[]> = {
   CO: ['TechStore SAS', 'Distribuidora Sur SAS', 'Comercial Norte Ltda.'],
@@ -87,7 +120,7 @@ export class IdentitySumsubModalComponent {
   currentScreen  = signal<Screen>('screen0');
   currentSubStep = signal<SubStep>('email');
   exitConfirm    = signal(false);
-  checklistItems = signal([false, false, false, false, false]);
+  checklistItems = signal<boolean[]>(CHECKLIST_LABELS.map(() => false));
 
   /** true mientras el paso actual pertenece al KYC principal (barra de progreso "N / 8"). */
   readonly isMainKycStep = computed(() => STEPS.includes(this.currentSubStep()));
@@ -169,11 +202,48 @@ export class IdentitySumsubModalComponent {
   motivoRechazo = signal<RejectionReasonCode>('DOCUMENT_BLURRY');
   readonly motivoRechazoCopy = computed(() => REJECTION_REASON_COPY[this.motivoRechazo()]);
 
+  // ── Intentos + cooldown de documento (Truora 2.6/2.7) ───────────────────────
+  documentoIntentosRestantes = signal(DOCUMENTO_MAX_INTENTOS);
+  documentoCooldownActivo    = signal(false);
+  documentoCooldownRestante  = signal(DOCUMENTO_COOLDOWN_SECONDS);
+  private documentoCooldownTimer?: ReturnType<typeof setInterval>;
+  /** Flag plano (no signal) a propósito: evita re-entrancia dentro del effect que lo lee. */
+  private documentoIntentoContabilizado = false;
+
+  readonly documentoCooldownLabel = computed(() => {
+    const s = this.documentoCooldownRestante();
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  });
+
+  /** Truora escribe "Aún tienes 1 intentos disponibles" — el bug de plural que el blueprint pide NO repetir. */
+  readonly intentosRestantesTexto = computed(() => {
+    const n = this.documentoIntentosRestantes();
+    return n === 1 ? 'Te queda 1 intento' : `Te quedan ${n} intentos`;
+  });
+
+  // ── Aviso de abandono por inactividad (Truora 2.3) ──────────────────────────
+  /** El estado vive en el servicio: el switcher de Fase 1-5 es un componente hermano y
+   *  `IdentityModalService` es su único canal de comunicación con este modal. */
+  readonly avisoAbandono = this.modalSvc.avisoAbandono;
+  ultimaActividad = signal(Date.now());
+  private inactividadTimer?: ReturnType<typeof setInterval>;
+
   constructor() {
     effect(() => {
       if (this.currentScreen() === 'screen3' && this.resultado() === 'rechazado') {
         const codes = REJECTION_REASON_CODES;
         this.motivoRechazo.set(codes[Math.floor(Math.random() * codes.length)]);
+
+        // `untracked`: este effect ya reacciona a currentScreen()/resultado(); leer y escribir
+        // aquí las signals del contador sin aislarlas arriesga re-entrancia.
+        untracked(() => {
+          if (this.documentoIntentoContabilizado) return;
+          if (this.documentoCooldownActivo()) return;
+          this.documentoIntentoContabilizado = true;
+          const restantes = this.documentoIntentosRestantes() - 1;
+          this.documentoIntentosRestantes.set(Math.max(0, restantes));
+          if (restantes <= 0) this.startDocumentoCooldown();
+        });
       }
     }, { allowSignalWrites: true });
 
@@ -182,7 +252,7 @@ export class IdentitySumsubModalComponent {
         this.currentScreen.set(this.config().startScreen);
         this.currentSubStep.set('email');
         this.exitConfirm.set(false);
-        this.checklistItems.set([false, false, false, false, false]);
+        this.checklistItems.set(CHECKLIST_LABELS.map(() => false));
         this.emailCorreo.set('');
         this.resetOtp('email');
         this.docFrenteCapturado.set(false);
@@ -197,6 +267,19 @@ export class IdentitySumsubModalComponent {
         this.kybBuscado.set(false);
         this.kybResultados.set([]);
         this.kybEmpresaSeleccionada.set(null);
+
+        // Se resetea el flag de conteo, NO el contador: cada clic del switcher reabre el modal,
+        // así que resetear `documentoIntentosRestantes` aquí haría el cooldown inalcanzable en demo.
+        // Solo lo restaura el propio cooldown al expirar.
+        this.documentoIntentoContabilizado = false;
+
+        // `avisoAbandono` NO se toca aquí: lo limpia `IdentityModalService.open()`, que corre
+        // ANTES que este effect. Así el switcher puede encadenar open() + mostrarAvisoAbandono()
+        // de forma síncrona sin que este effect le borre el flag después.
+        this.ultimaActividad.set(Date.now());
+        this.startInactividadWatch();
+      } else {
+        this.stopInactividadWatch();
       }
     }, { allowSignalWrites: true });
   }
@@ -257,23 +340,19 @@ export class IdentitySumsubModalComponent {
     return map[o] ?? 'Volver';
   });
 
-  readonly checklistLabels = [
-    'Documento de identidad vigente y original (no fotocopias)',
-    'Buena iluminación y cámara disponible',
-    'Espacio tranquilo sin interrupciones (~5-10 min)',
-    'Conexión estable a internet',
-    'Tu celular a la mano para recibir un código',
-  ];
+  readonly checklistLabels = CHECKLIST_LABELS;
 
   get allChecked(): boolean { return this.checklistItems().every(Boolean); }
 
   toggleChecklist(i: number): void {
+    this.registrarActividad();
     const arr = [...this.checklistItems()];
     arr[i] = !arr[i];
     this.checklistItems.set(arr);
   }
 
   goNext(): void {
+    this.registrarActividad();
     const s = this.currentScreen();
     if (s === 'screen0') { this.currentScreen.set('screen1'); return; }
     if (s === 'screen1') { this.currentScreen.set('screen2'); this.currentSubStep.set('email'); this.startResendCountdown('email'); return; }
@@ -281,6 +360,7 @@ export class IdentitySumsubModalComponent {
   }
 
   goBack(): void {
+    this.registrarActividad();
     const s = this.currentScreen();
     if (s === 'screen1') { this.currentScreen.set('screen0'); return; }
     if (s === 'screen2') {
@@ -488,12 +568,53 @@ export class IdentitySumsubModalComponent {
     else this.terceroOtpTimer = timer;
   }
 
+  /** Cooldown de 10 min tras agotar los 3 intentos de documento. Al expirar restaura el contador. */
+  private startDocumentoCooldown(): void {
+    if (this.documentoCooldownTimer) clearInterval(this.documentoCooldownTimer);
+    this.documentoCooldownActivo.set(true);
+    this.documentoCooldownRestante.set(DOCUMENTO_COOLDOWN_SECONDS);
+    const timer = setInterval(() => {
+      const v = this.documentoCooldownRestante() - 1;
+      if (v <= 0) {
+        clearInterval(timer);
+        this.documentoCooldownRestante.set(0);
+        this.documentoCooldownActivo.set(false);
+        this.documentoIntentosRestantes.set(DOCUMENTO_MAX_INTENTOS);
+      } else {
+        this.documentoCooldownRestante.set(v);
+      }
+    }, 1000);
+    this.documentoCooldownTimer = timer;
+  }
+
+  /** Cualquier interacción real del usuario reinicia el reloj y descarta el aviso "¿Sigues ahí?". */
+  registrarActividad(): void {
+    this.ultimaActividad.set(Date.now());
+    this.modalSvc.ocultarAvisoAbandono();
+  }
+
+  private startInactividadWatch(): void {
+    this.stopInactividadWatch();
+    this.inactividadTimer = setInterval(() => {
+      const s = this.currentScreen();
+      if (s !== 'screen1' && s !== 'screen2') return;
+      if (Date.now() - this.ultimaActividad() >= INACTIVIDAD_MS) {
+        this.modalSvc.mostrarAvisoAbandono();
+      }
+    }, INACTIVIDAD_CHECK_MS);
+  }
+
+  private stopInactividadWatch(): void {
+    if (this.inactividadTimer) clearInterval(this.inactividadTimer);
+  }
+
   private stopResendCountdown(kind: 'email' | 'telefono' | 'tercero'): void {
     const timer = kind === 'email' ? this.otpEmailTimer : kind === 'telefono' ? this.otpTelefonoTimer : this.terceroOtpTimer;
     if (timer) clearInterval(timer);
   }
 
   reenviarCodigo(kind: 'email' | 'telefono' | 'tercero'): void {
+    this.registrarActividad();
     const resendSignal = kind === 'email' ? this.otpEmailResendIn : kind === 'telefono' ? this.otpTelefonoResendIn : this.terceroOtpResendIn;
     if (resendSignal() > 0) return;
     if (kind === 'email') { this.otpEmailError.set(false); this.otpEmailCode.set(''); }
@@ -557,6 +678,7 @@ export class IdentitySumsubModalComponent {
   }
 
   buscarEmpresa(): void {
+    this.registrarActividad();
     this.kybBuscado.set(true);
     const q = this.kybNombreEmpresa().trim().toLowerCase();
     if (!q) { this.kybResultados.set([]); return; }
@@ -565,16 +687,19 @@ export class IdentitySumsubModalComponent {
   }
 
   seleccionarEmpresa(nombre: string): void {
+    this.registrarActividad();
     this.kybEmpresaSeleccionada.set(nombre);
   }
 
   /** RN-23: si no se encuentra la empresa, el estado queda pj_pendiente sin perder los datos. */
   marcarEmpresaNoEncontrada(): void {
+    this.registrarActividad();
     this.stateV2.setEstadoKyb('pj_pendiente');
     this.currentSubStep.set('via-kyb-pendiente');
   }
 
   reintentarKyb(): void {
+    this.registrarActividad();
     this.kybNombreEmpresa.set('');
     this.kybBuscado.set(false);
     this.kybResultados.set([]);
@@ -583,6 +708,7 @@ export class IdentitySumsubModalComponent {
   }
 
   cambiarViaFacturacion(): void {
+    this.registrarActividad();
     this.viaFacturacion.set(null);
     this.currentSubStep.set('via-facturacion');
   }
@@ -681,6 +807,8 @@ export class IdentitySumsubModalComponent {
   }
 
   onReintentar(): void {
+    if (this.documentoCooldownActivo()) return;
+    this.documentoIntentoContabilizado = false;
     this.currentScreen.set('screen2');
     this.reiniciarVerificacion();
   }
