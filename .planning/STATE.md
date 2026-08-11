@@ -109,6 +109,7 @@ None yet.
 | 260809-m1s | Corregir AS-IS en Discovery-Riesgos-Transicion-Fase5.md: UserPilot+CRM+Google Sheets era la propuesta de Fase 0 (Historia.md) nunca implementada, no el sistema actual — AS-IS real es Truora-only, manual por WhatsApp/Intercom; agregado riesgo de Fase 0 saltada sin piloto barato | 2026-08-09 | dc9e3cc | [260809-m1s-corregir-discovery-riesgos-transicion-fa](./quick/260809-m1s-corregir-discovery-riesgos-transicion-fa/) |
 | 260809-ot3 | Enriquecer Casos-Externos-Referencia-Fase5.md: cita textual exacta + heurística Nielsen/Krug + gap específico + severidad (0-4) para 17 casos; corregidas 4 fallas de fidelidad (cita de Nubank sin respaldo, umbral de eBay desactualizado, 2 fuentes no re-verificables marcadas) | 2026-08-09 | 2b3d9e4 | [260809-ot3-reescribir-casos-externos-referencia-fas](./quick/260809-ot3-reescribir-casos-externos-referencia-fas/) |
 | 260809-va5 | Agregar sección 8 a Discovery-Riesgos-Transicion-Fase5.md: frentes y oportunidades adicionales de producto (método Discovery V.4) en las 4 células de Darwin — Seller Success, Backoffice+Fintech, Brands Success, Logistic Success | 2026-08-10 | 9825b36 | [260809-va5-agregar-seccion-8-a-discovery-riesgos-tr](./quick/260809-va5-agregar-seccion-8-a-discovery-riesgos-tr/) |
+| 260811-bf9 | Restaurar diferenciación Nuevo/Activo en el aviso de identidad de Home (Fase 1-5): `IdentityFase0PanelComponent` estaba correctamente gateado pero encerrado solo en el track "Fase 0"; se extendió el gating por `fase0TipoUsuario` al soft banner de Home, reformateado como panel flotante esquina inferior derecha, copy "Completar ahora" unificado, toggle Nuevo/Activo disponible en todas las fases del demo panel, y umbral "activo = 20 órdenes" resuelto + fork visual en el blueprint Fase 5 (.md + .html) | 2026-08-11 | 7544a7e | [260811-bf9-restaurar-diferenciacion-nuevo-activo-en](./quick/260811-bf9-restaurar-diferenciacion-nuevo-activo-en/) |
 
 ## Deferred Items
 
@@ -123,4 +124,4 @@ Stopped at: Phase 2 complete. Phase 3 (CI/CD + Deploy + Scaffolding) is next.
 Resume file: None
 Resume notes: Start Phase 3 — discuss or plan CI/CD, Vercel deploy, and scaffolding CLI.
 
-Last activity: 2026-08-10 -- Completed quick task 260809-va5: sección de frentes y oportunidades adicionales (método Discovery V.4) agregada a Discovery-Riesgos-Transicion-Fase5.md
+Last activity: 2026-08-11 -- Completed quick task 260811-bf9: Restaurar diferenciación Nuevo/Activo en el aviso de identidad de Home y reflejarla en el blueprint Fase 5
