@@ -490,7 +490,7 @@ Copy completo por caso, con la razón detrás de cada formato: [`UX-Writing-Vali
 
 ## Matrices de referencia rápida
 
-Dos tablas para identificar de un vistazo qué pasa en cada caso, según país y estado. Complementan (no reemplazan) la tabla ["Colombia vs. Resto de países"](#colombia-vs-resto-de-países--la-diferencia-central) del inicio y la tabla de ruteo del [detalle de C5](#c5--validación-y-ruteo--país--lo-que-falta) — esas responden "qué proveedor lo valida"; estas responden "qué ve el usuario, según lo que ya tiene y dónde vive".
+Tres tablas para identificar de un vistazo qué pasa en cada caso, según país y estado. Complementan (no reemplazan) la tabla ["Colombia vs. Resto de países"](#colombia-vs-resto-de-países--la-diferencia-central) del inicio y la tabla de ruteo del [detalle de C5](#c5--validación-y-ruteo--país--lo-que-falta) — esas responden "qué proveedor lo valida"; estas responden "qué ve el usuario, según lo que ya tiene, en qué estado está, y dónde vive".
 
 ### Matriz A — Estados iniciales posibles, por país
 
@@ -511,6 +511,17 @@ Dos tablas para identificar de un vistazo qué pasa en cada caso, según país y
 | Datos de facturación — completo | Campos de solo lectura | Bloque de texto de solo lectura | Bloque de texto de solo lectura |
 | Proveedor(es) | Truora (identidad) + Sumsub (facturación) — dos sesiones independientes | Sumsub — una sola sesión para las dos páginas | Sumsub — una sola sesión para las dos páginas |
 | Bloqueo financiero si falta algo | Regla G: sin bloqueo inicial para activos (lapso tentativo ~1 mes); nuevos, bloqueo inmediato al intentar una acción financiera | Regla G aplica igual | 🚧 No cubierto todavía por Regla G — punto abierto |
+
+### Matriz C — Estados de aprobación (webhook de C6), por país
+
+| Estado del webhook | Colombia | Chile / Ecuador / Argentina | Resto de países (bloque A) |
+|---|---|---|---|
+| **Aprobado** (todo completo) | Toast "¡Cuenta verificada!" + confeti, llega en segundos — datos a solo lectura | Igual — la sesión única de Sumsub aprueba las dos páginas a la vez | Igual |
+| **Aprobación parcial** | ✅ Único caso donde existe — completa identidad o facturación primero; modal + confeti pidiendo completar lo que falta | No existe — identidad y facturación se resuelven siempre juntas en una sola sesión, nunca por separado | No existe — mismo motivo que Chile/Ecuador/Argentina |
+| **Rechazado** | Banner distinto según el dato: "No pudimos confirmar tu identidad" / "...tus datos de facturación" | Banner genérico: "No pudimos validar tus datos" — no se distingue por página | Banner genérico: "No pudimos validar tus datos" |
+| **Incompleto** | Banner distinto según el dato: "Te falta terminar tu identidad" / "...tus datos de facturación" | Banner genérico: "Te falta un paso" | Banner genérico: "Te falta un paso" |
+| **En revisión prolongada** (≤8% cola de excepciones, hasta 24h) | Banner distinto según el dato: "Seguimos confirmando tu identidad" / "...tus datos de facturación" | Banner genérico: "Seguimos confirmando tus datos" — incluye el caso EC/CL/AR migrado desde revisión manual | Banner genérico: "Seguimos confirmando tus datos" |
+| **Bloqueado** (Legal/Financiero, no llega por el webhook) | Igual en los tres países — es una bandera de riesgo aparte de identidad/facturación (Regla E). Dos variantes: "en investigación" (reversible, sin ETA) o "definitivo" (irreversible) | Igual | Igual |
 
 ---
 
