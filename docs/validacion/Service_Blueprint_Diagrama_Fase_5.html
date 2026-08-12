@@ -173,7 +173,7 @@
     .lane span.carril { display: block; color: var(--gray-500, var(--gray-400)); font-size: 9px; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 2px; }
 
     /* ---- Boxes — Fase 0's exact color-by-role convention ---- */
-    .box { position: relative; width: 100%; min-height: 46px; padding: 6px 9px; border: 2px solid; border-radius: 8px; font-size: 11.5px; line-height: 1.32; text-align: left; }
+    .box { position: relative; width: 100%; max-width: 600px; min-height: 46px; padding: 6px 9px; border: 2px solid; border-radius: 8px; font-size: 11.5px; line-height: 1.32; text-align: left; }
     .box strong { display: block; margin-bottom: 2px; }
     .box + .box { margin-top: 6px; }
     .box ul { margin: 4px 0 0; padding-left: 14px; text-align: left; }
@@ -731,6 +731,38 @@
       </div>
     </section>
 
+    <!-- ============================= Matrices de referencia rápida ============================= -->
+    <section class="section">
+      <h2>Matrices de referencia rápida</h2>
+      <p class="muted">Dos tablas para identificar de un vistazo qué pasa en cada caso, según país y estado. Complementan (no reemplazan) la tabla "Colombia vs. Resto de países" de arriba y la matriz de ruteo más abajo — esas responden "qué proveedor lo valida"; estas responden "qué ve el usuario, según lo que ya tiene y dónde vive".</p>
+      <h3>Matriz A — Estados iniciales posibles, por país</h3>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>País / bloque</th><th>Nada completo</th><th>Solo identidad</th><th>Solo facturación</th><th>Ambas completas</th></tr></thead>
+          <tbody>
+            <tr><td>Colombia</td><td>Posible</td><td>Posible — patrón normal (identidad antes que facturación)</td><td>⚠️ Raro — caso de una configuración existente, no el patrón esperado. El flujo ya lo cubre (ver C6, "¡Datos de facturación listos!")</td><td>Sin aviso, opera normal</td></tr>
+            <tr><td>Chile / Ecuador</td><td>Posible</td><td>Posible</td><td>No aplica — una sola sesión de Sumsub valida ambas juntas, no hay canal para aprobar solo facturación</td><td>Sin aviso, opera normal</td></tr>
+            <tr><td>Argentina</td><td>Posible</td><td>Posible</td><td>No aplica — mismo patrón que Chile/Ecuador</td><td>Sin aviso, opera normal</td></tr>
+            <tr><td>Resto de países (bloque A)</td><td>Posible</td><td>Posible</td><td>No aplica — mismo motivo que Chile/Ecuador</td><td>Sin aviso, opera normal</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 style="margin-top:20px;">Matriz B — Qué ve el usuario, por módulo y país</h3>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Módulo</th><th>Colombia</th><th>Chile / Ecuador / Argentina (bloque B)</th><th>Resto de países (bloque A)</th></tr></thead>
+          <tbody>
+            <tr><td>Información de cuenta<br><span class="muted" style="font-size:11px;">Configurar → Cuenta</span> — vacío</td><td>Formulario propio de Dropi</td><td>Banner + enlace a Sumsub — antes formulario manual, se convierte</td><td>Banner + enlace a Sumsub — módulo nuevo</td></tr>
+            <tr><td>Información de cuenta — completo</td><td>Campos de solo lectura</td><td>Bloque de texto de solo lectura</td><td>Bloque de texto de solo lectura</td></tr>
+            <tr><td>Datos de facturación<br><span class="muted" style="font-size:11px;">Financiero → Facturación Dropi</span> — vacío</td><td>Banner + enlace a Sumsub</td><td>Banner + enlace a Sumsub — antes formulario manual, se convierte</td><td>Banner + enlace a Sumsub — módulo nuevo, no existe hoy</td></tr>
+            <tr><td>Datos de facturación — completo</td><td>Campos de solo lectura</td><td>Bloque de texto de solo lectura</td><td>Bloque de texto de solo lectura</td></tr>
+            <tr><td>Proveedor(es)</td><td>Truora (identidad) + Sumsub (facturación) — sesiones independientes</td><td>Sumsub — una sola sesión para las dos páginas</td><td>Sumsub — una sola sesión para las dos páginas</td></tr>
+            <tr><td>Bloqueo financiero si falta algo</td><td>Regla G: sin bloqueo inicial para activos (lapso tentativo ~1 mes); nuevos, bloqueo inmediato al intentar una acción financiera</td><td>Regla G aplica igual</td><td><span class="format-tag open" style="margin:0;">🚧 No cubierto</span> todavía por Regla G</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <!-- ============================= DETALLE SI → ENTONCES (inline, no click-away) ============================= -->
     <nav class="toc" aria-label="Saltar al detalle de una etapa">
       <a href="#d-pre">Pre-etapa · Preparación (C0)</a>
@@ -942,38 +974,6 @@
             <tr><td>Ambas</td><td>Primero identidad; luego confeti + facturación</td><td>Un solo enlace</td><td>Un solo enlace</td></tr>
             <tr><td>Nada</td><td colspan="3">No pasa nada — sigue operando normal</td></tr>
             <tr><td>Pendiente manual</td><td>No aplica</td><td>No aplica</td><td>Se migra a Sumsub; queda marcado "en revisión"</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ============================= Matrices de referencia rápida ============================= -->
-    <section class="section">
-      <h2>Matrices de referencia rápida</h2>
-      <p class="muted">Dos tablas para identificar de un vistazo qué pasa en cada caso, según país y estado. Complementan (no reemplazan) la tabla "Colombia vs. Resto de países" del inicio y la matriz de ruteo de arriba — esas responden "qué proveedor lo valida"; estas responden "qué ve el usuario, según lo que ya tiene y dónde vive".</p>
-      <h3>Matriz A — Estados iniciales posibles, por país</h3>
-      <div class="table-scroll">
-        <table>
-          <thead><tr><th>País / bloque</th><th>Nada completo</th><th>Solo identidad</th><th>Solo facturación</th><th>Ambas completas</th></tr></thead>
-          <tbody>
-            <tr><td>Colombia</td><td>Posible</td><td>Posible — patrón normal (identidad antes que facturación)</td><td>⚠️ Raro — caso de una configuración existente, no el patrón esperado. El flujo ya lo cubre (ver C6, "¡Datos de facturación listos!")</td><td>Sin aviso, opera normal</td></tr>
-            <tr><td>Chile / Ecuador</td><td>Posible</td><td>Posible</td><td>No aplica — una sola sesión de Sumsub valida ambas juntas, no hay canal para aprobar solo facturación</td><td>Sin aviso, opera normal</td></tr>
-            <tr><td>Argentina</td><td>Posible</td><td>Posible</td><td>No aplica — mismo patrón que Chile/Ecuador</td><td>Sin aviso, opera normal</td></tr>
-            <tr><td>Resto de países (bloque A)</td><td>Posible</td><td>Posible</td><td>No aplica — mismo motivo que Chile/Ecuador</td><td>Sin aviso, opera normal</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <h3 style="margin-top:20px;">Matriz B — Qué ve el usuario, por módulo y país</h3>
-      <div class="table-scroll">
-        <table>
-          <thead><tr><th>Módulo</th><th>Colombia</th><th>Chile / Ecuador / Argentina (bloque B)</th><th>Resto de países (bloque A)</th></tr></thead>
-          <tbody>
-            <tr><td>Información de cuenta<br><span class="muted" style="font-size:11px;">Configurar → Cuenta</span> — vacío</td><td>Formulario propio de Dropi</td><td>Banner + enlace a Sumsub — antes formulario manual, se convierte</td><td>Banner + enlace a Sumsub — módulo nuevo</td></tr>
-            <tr><td>Información de cuenta — completo</td><td>Campos de solo lectura</td><td>Bloque de texto de solo lectura</td><td>Bloque de texto de solo lectura</td></tr>
-            <tr><td>Datos de facturación<br><span class="muted" style="font-size:11px;">Financiero → Facturación Dropi</span> — vacío</td><td>Banner + enlace a Sumsub</td><td>Banner + enlace a Sumsub — antes formulario manual, se convierte</td><td>Banner + enlace a Sumsub — módulo nuevo, no existe hoy</td></tr>
-            <tr><td>Datos de facturación — completo</td><td>Campos de solo lectura</td><td>Bloque de texto de solo lectura</td><td>Bloque de texto de solo lectura</td></tr>
-            <tr><td>Proveedor(es)</td><td>Truora (identidad) + Sumsub (facturación) — sesiones independientes</td><td>Sumsub — una sola sesión para las dos páginas</td><td>Sumsub — una sola sesión para las dos páginas</td></tr>
-            <tr><td>Bloqueo financiero si falta algo</td><td>Regla G: sin bloqueo inicial para activos (lapso tentativo ~1 mes); nuevos, bloqueo inmediato al intentar una acción financiera</td><td>Regla G aplica igual</td><td><span class="format-tag open" style="margin:0;">🚧 No cubierto</span> todavía por Regla G</td></tr>
           </tbody>
         </table>
       </div>
