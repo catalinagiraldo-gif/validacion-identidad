@@ -568,8 +568,9 @@
                     <li><strong>Información de cuenta</strong> → Headline: "Tu información de cuenta". Bloque de texto de solo lectura: documento de identidad, estado de la prueba de vida (nunca el archivo, solo el estado)</li>
                     <li><strong>Datos de facturación</strong> → Headline: "Tus datos de facturación". Bloque de texto de solo lectura: nombre/razón social fiscal, documento de empresa (bloque B) o dato autocompletado (bloque A)</li>
                   </ul>
-                  <span class="format-tag open" style="margin:0;">🚧 Reconciliación parcial — a confirmar con TI</span> si Sumsub confirma un bloque antes que el otro, cada página refleja el estado de su propio bloque de forma independiente — la página confirmada pasa a solo lectura mientras la otra sigue "en proceso". El modelo de dos páginas resuelve esto más naturalmente que una sola pantalla combinada. <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 6.)</em>
+                  <span class="format-tag open" style="margin:0;">🚧 Reconciliación parcial — éxito desfasado, a confirmar con TI</span> si Sumsub confirma un bloque antes que el otro, cada página refleja el estado de su propio bloque de forma independiente — la página confirmada pasa a solo lectura mientras la otra sigue "en proceso". El modelo de dos páginas resuelve esto más naturalmente que una sola pantalla combinada. <em>(Ver <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a>, punto 6.)</em>
                 </span>
+                <span class="copy-line"><strong>Caso hermano — fallo en cascada (no confundir con el anterior):</strong> si identidad se <strong>rechaza</strong> (no solo pendiente), facturación se rechaza con ella de inmediato — nunca "facturación aprobada" con "identidad rechazada". Si la persona eligió facturar con los mismos datos de su cuenta, facturación no corre una segunda ronda: refleja el resultado de identidad de inmediato (camino corto). Modelo completo (Regla H y Regla I): <a href="Casos-Cuenta-Facturacion-Fase5.md">Casos-Cuenta-Facturacion-Fase5.md</a>.</span>
                 <span class="copy-line"><em>Nota: <code>UX-Writing-Validacion-TechNative.md</code> y <code>Especificaciones-UX-Mejoras-Fase5.md</code> todavía describen "un solo módulo fuera de Colombia" — esta caja lo corrige a partir de <code>sidebar-new-nav.config.ts</code> y <code>REUCONTI.md</code>; esos docs quedan pendientes de reconciliar, fuera del alcance de este blueprint.</em></span>
                 <span class="copy-line"><span class="format-tag open">🚧 Punto abierto de alcance</span> Esta "una sola sesión" asume KYC+KYB juntos desde el día 1. TI propuso fasearlo (KYC primero, KYB después) — ver <a href="#scope-open-kyc-kyb">nota al inicio</a>.</span>
               </div>
@@ -597,7 +598,7 @@
                 Mientras tanto, puedes seguir usando Dropi pero hemos pausado temporalmente tus retiros y transferencias. Vive en Datos de facturación — ver C4.
               </div>
               <div class="box b-native"><span class="format-tag banner">Banner en la página — no modal</span><span class="country-tag rest">Resto de países</span><strong>Estamos confirmando tus datos</strong>
-                Mientras tanto, puedes seguir usando Dropi pero hemos pausado temporalmente tus retiros y transferencias, identidad y facturación se confirman juntas, sin separarlas. Vive en Información de cuenta y en Datos de facturación — misma sesión, dos páginas, ver C4.
+                Mientras tanto, puedes seguir usando Dropi pero hemos pausado temporalmente tus retiros y transferencias. Vive en Información de cuenta y en Datos de facturación — misma sesión, dos páginas, ver C4. Con los mismos datos de cuenta (Regla I), ambas se confirman juntas; a nombre de un tercero, identidad puede confirmarse primero y facturación seguir mostrando este banner por su cuenta, en su propia ronda — <a href="Casos-Cuenta-Facturacion-Fase5.md">detalle</a>.
               </div>
               <div class="box b-native"><span class="format-tag banner">Banner en la página — no modal</span><span class="country-tag rest">EC/CL/AR migrado</span><strong>Estamos confirmando tus datos</strong>
                 Tu caso ya sigue este mismo proceso automático — no necesitas reenviar nada. Vive en las mismas dos páginas — ver C4.
@@ -618,7 +619,7 @@
                 <div class="case-grid">
                   <div class="case-row"><span class="case-chip">Facturación OK</span><span class="case-headline">"¡Datos de facturación listos!"</span></div>
                 </div>
-                <span class="copy-line">"Qué bien. Para desbloquear movimientos financieros también necesitas validar tu identidad en Información de cuenta." Botón: <strong>Ir a Información de cuenta</strong>. <em>(Nota: no existe en Resto de países — ahí identidad y facturación siempre se resuelven juntas.)</em></span>
+                <span class="copy-line">"Qué bien. Para desbloquear movimientos financieros también necesitas validar tu identidad en Información de cuenta." Botón: <strong>Ir a Información de cuenta</strong>. <em>(Nota: en Resto de países este modal dedicado no aplica cuando factura con los mismos datos de cuenta — Regla I, ahí se resuelven siempre juntas. A nombre de un tercero, identidad puede aprobar primero, pero se muestra como banner "en proceso" de C5, no este modal. <a href="Casos-Cuenta-Facturacion-Fase5.md">Detalle</a>.)</em></span>
               </div>
               <div class="box b-support"><span class="format-tag silent">Nota — no se muestra al usuario</span>
                 <span class="copy-line">El sistema revisa el estado real del otro dato en el momento en que resuelve el primero — no asume que sigue faltando. Si ya lo había completado por su cuenta mientras el primero estaba en proceso, se saltan estos dos mensajes y pasa directo a "¡Cuenta verificada!".</span>
@@ -630,6 +631,7 @@
                   <div class="case-row"><span class="case-chip">Resto países</span><span class="case-headline">"No pudimos validar tus datos"</span></div>
                 </div>
                 <span class="copy-line">Mismo cuerpo en los 3: "Conservamos lo que ya tenías aprobado antes. Puedes intentarlo de nuevo cuando quieras." Botones: <strong>Reintentar</strong> / <strong>Contactar a soporte</strong>.</span>
+                <span class="copy-line"><em>Nota — no se muestra: en Resto de países un rechazo <strong>siempre</strong> es el resultado de la cascada dura (Regla H) — identidad rechazada arrastra a facturación en el mismo instante, así que nunca hay un rechazo de facturación aislado que distinguir. Por eso el mensaje no se desglosa por identidad/facturación como en Colombia (proveedores separados). El reintento reabre ambas páginas a la vez. Detalle: <a href="Casos-Cuenta-Facturacion-Fase5.md">Casos-Cuenta-Facturacion-Fase5.md</a>.</em></span>
               </div>
               <div class="box b-support" id="state-incomplete"><span class="format-tag banner">… Banner — informa, no interrumpe</span>
                 <div class="case-grid">
@@ -743,7 +745,7 @@
             <tr><td>Colombia</td><td>Posible</td><td>Posible — patrón normal (identidad antes que facturación)</td><td>⚠️ Raro — caso de una configuración existente, no el patrón esperado. El flujo ya lo cubre (ver C6, "¡Datos de facturación listos!")</td><td>Sin aviso, opera normal</td></tr>
             <tr><td>Chile / Ecuador</td><td>Posible</td><td>Posible</td><td>No aplica — una sola sesión de Sumsub valida ambas juntas, no hay canal para aprobar solo facturación</td><td>Sin aviso, opera normal</td></tr>
             <tr><td>Argentina</td><td>Posible</td><td>Posible</td><td>No aplica — mismo patrón que Chile/Ecuador</td><td>Sin aviso, opera normal</td></tr>
-            <tr><td>Resto de países (bloque A)</td><td>Posible</td><td>Posible</td><td>No aplica — mismo motivo que Chile/Ecuador</td><td>Sin aviso, opera normal</td></tr>
+            <tr><td>Resto de países (bloque A)</td><td>Posible</td><td>Posible</td><td>No aplica — mismo motivo que Chile/Ecuador. Un rechazo de identidad arrastra a facturación (cascada dura, Regla H) — nunca facturación aprobada con identidad rechazada. Detalle: <a href="Casos-Cuenta-Facturacion-Fase5.md">Casos-Cuenta-Facturacion-Fase5.md</a></td><td>Sin aviso, opera normal</td></tr>
           </tbody>
         </table>
       </div>
@@ -767,14 +769,27 @@
           <thead><tr><th>Estado del webhook</th><th>Colombia</th><th>Chile / Ecuador / Argentina</th><th>Resto de países (bloque A)</th></tr></thead>
           <tbody>
             <tr><td><strong>Aprobado</strong> (todo completo)</td><td>Toast "¡Cuenta verificada!" + confeti, llega en segundos — datos a solo lectura</td><td>Igual — la sesión única de Sumsub aprueba las dos páginas a la vez</td><td>Igual</td></tr>
-            <tr><td><strong>Aprobación parcial</strong></td><td><span class="format-tag confirmed" style="margin:0;">Único caso donde existe</span> completa identidad o facturación primero; modal + confeti pidiendo completar lo que falta</td><td>No existe — identidad y facturación se resuelven siempre juntas en una sola sesión, nunca por separado</td><td>No existe — mismo motivo</td></tr>
-            <tr><td><strong>Rechazado</strong></td><td>Banner distinto según el dato: "No pudimos confirmar tu identidad" / "...tus datos de facturación"</td><td>Banner genérico: "No pudimos validar tus datos" — no se distingue por página</td><td>Banner genérico: "No pudimos validar tus datos"</td></tr>
+            <tr><td><strong>Aprobación parcial</strong></td><td><span class="format-tag confirmed" style="margin:0;">Único caso con modal dedicado</span> completa identidad o facturación primero; modal + confeti pidiendo completar lo que falta</td><td>Sin modal dedicado — solo con los mismos datos de cuenta (Regla I) se resuelven siempre juntas. A nombre de un tercero, identidad puede aprobar mientras facturación sigue su propia ronda (banner, sin modal+confeti). <a href="Casos-Cuenta-Facturacion-Fase5.md">Detalle</a></td><td>Mismo matiz — depende de <code>billing_source</code></td></tr>
+            <tr><td><strong>Rechazado</strong></td><td>Banner distinto según el dato: "No pudimos confirmar tu identidad" / "...tus datos de facturación"</td><td>Banner genérico: "No pudimos validar tus datos" — no se distingue por página</td><td>Banner genérico: "No pudimos validar tus datos" — <strong>siempre</strong> es cascada dura (Regla H): identidad rechazada arrastra a facturación, nunca un rechazo aislado. <a href="Casos-Cuenta-Facturacion-Fase5.md">Detalle</a></td></tr>
             <tr><td><strong>Incompleto</strong></td><td>Banner distinto según el dato: "Te falta terminar tu identidad" / "...tus datos de facturación"</td><td>Banner genérico: "Te falta un paso"</td><td>Banner genérico: "Te falta un paso"</td></tr>
             <tr><td><strong>En revisión prolongada</strong> (≤8%, hasta 24h)</td><td>Banner distinto según el dato: "Seguimos confirmando tu identidad" / "...tus datos de facturación"</td><td>Banner genérico: "Seguimos confirmando tus datos" — incluye el caso EC/CL/AR migrado desde revisión manual</td><td>Banner genérico: "Seguimos confirmando tus datos"</td></tr>
             <tr><td><strong>Bloqueado</strong> (Legal/Financiero, no llega por el webhook)</td><td colspan="3">Igual en los tres países — bandera de riesgo aparte de identidad/facturación (Regla E). Dos variantes: "en investigación" (reversible, sin ETA) o "definitivo" (irreversible)</td></tr>
           </tbody>
         </table>
       </div>
+      <h3 style="margin-top:20px;">Matriz D — Combinaciones Cuenta × Facturación (Resto de países, una sola sesión)</h3>
+      <p class="muted">A/B/C responden "qué proveedor" y "qué ve el usuario por país". Esta responde la pregunta más directa: dado un estado de Cuenta (identidad) y un estado de Facturación, ¿esa combinación puede darse — y qué significa si se da? Versión completa (los 16 cruces, con el detalle de UI de cada uno): <a href="Casos-Cuenta-Facturacion-Fase5.md#matriz-de-combinaciones--cuenta-identidad--facturación">Casos-Cuenta-Facturacion-Fase5.md</a>.</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Cuenta ↓ / Facturación →</th><th>Aprobada</th><th>Rechazada</th><th>Bloqueada</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Aprobada</strong></td><td>✅ Posible (reuso Regla I, o tercero ya aprobado)</td><td>✅ Posible — solo tercero, rechazo propio de esa ronda</td><td>✅ Posible — bandera de riesgo directa sobre facturación (Regla E)</td></tr>
+            <tr><td><strong>Rechazada</strong></td><td><span class="format-tag open" style="margin:0;">❌ Imposible</span> — Regla H (cascada dura) lo prohíbe sin excepción</td><td>✅ Posible — caso esperado de Regla H, un solo evento</td><td>✅ Posible — bandera adicional sobre facturación, encima del rechazo</td></tr>
+            <tr><td><strong>Bloqueada</strong></td><td><span class="format-tag open" style="margin:0;">❌ Imposible</span> — misma razón, la bandera también cascada</td><td><span class="format-tag open" style="margin:0;">❌ Imposible</span> — Regla H fuerza Bloqueada, no Rechazada</td><td>✅ Posible — caso esperado de Regla H</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted"><strong>El punto que importa recordar:</strong> en Resto de países, si Cuenta está Rechazada o Bloqueada, Facturación <strong>nunca</strong> puede aparecer como Aprobada — es un bug de la cascada si eso se observa en producción, no un caso de negocio válido.</p>
     </section>
 
     <!-- ============================= DETALLE SI → ENTONCES (inline, no click-away) ============================= -->
@@ -866,11 +881,14 @@
             <tr><td>Marca Blanca, cualquier país</td><td>Sumsub, mismo ruteo por bloque</td><td>Mismo flujo automático de arriba, con la interfaz sin marca Dropi.</td></tr>
             <tr><td>Usuario extranjero (documento distinto al de su país de operación)</td><td>Sumsub</td><td>Acepta pasaporte o el documento oficial de su país de origen — el sistema reconoce el formato solo.</td></tr>
             <tr><td>Factura a nombre de un tercero</td><td>Sumsub ("continuar en el teléfono")</td><td>Genera un enlace para el celular; el usuario lo reenvía al tercero, que solo completa la prueba de vida.</td></tr>
+            <tr><td>Resto de países + identidad rechazada dentro de la sesión</td><td>Sumsub</td><td>Facturación se rechaza con ella en el mismo instante (cascada dura, Regla H) — ambas páginas muestran el mismo rechazo a la vez, ver C6</td></tr>
+            <tr><td>Resto de países + factura con los mismos datos de la cuenta</td><td>Sumsub</td><td>Facturación no corre una segunda ronda — refleja el resultado de identidad de inmediato (camino corto, Regla I)</td></tr>
             <tr><td><span class="format-tag open">🚧 Punto abierto</span>Excepción Ecuador/Chile/Argentina (pendiente manual) — ver Pre-etapa</td><td>Sumsub (ya migrado, propuesta sin validar con Legal)</td><td>Ya migrado a Sumsub en la Pre-etapa; si Sumsub pide retomar, continúa aquí</td></tr>
           </tbody>
         </table>
       </div>
       <p class="muted">Todos los mensajes de las filas "Otros países" llevan a la misma sesión única de Sumsub, reflejada en las dos páginas (Información de cuenta y Datos de facturación) — la diferencia entre bloque A y B es solo si el formulario autocompleta o no el dato de la empresa.</p>
+      <p class="muted">Modelo completo de la cascada de rechazo y del camino corto por reuso, con la matriz SI→ENTONCES cruzando <code>identity_status</code> × <code>billing_source</code>: <a href="Casos-Cuenta-Facturacion-Fase5.md">Casos-Cuenta-Facturacion-Fase5.md</a>.</p>
       <div class="plain-answer" style="border-color:var(--f0-yellow-border);border-left-color:var(--f0-yellow-border);background:var(--f0-yellow-bg);"><strong>🚧 Punto abierto de alcance:</strong> las filas "Otros países" de esta tabla asumen KYC + KYB en una sola sesión desde el día 1. TI propuso fasear esto (KYC primero para todos los países menos Colombia, KYB después) — ver <a href="#scope-open-kyc-kyb">nota al inicio del documento</a>, aún sin decisión cerrada.</div>
       <p class="muted">Copy del aviso "en proceso" (varía según qué se esté confirmando, vive dentro de la página de C4): <a href="UX-Writing-Validacion-TechNative.md">UX-Writing-Validacion-TechNative.md</a> §5b, §7, §11.</p>
       <p class="muted">Stakeholders C5: <strong>TI</strong> mantiene el router de país. <strong>TI + proveedores</strong> mantienen los enlaces (WebSDK).</p>
@@ -953,6 +971,18 @@
           <p style="margin-top:8px;"><span class="format-tag open" style="margin:0;">🚧 Bloque A</span> (resto de países) no cubierto todavía por esta regla.</p>
           <p style="margin-top:8px;">⚠️ <strong>Tensión declarada:</strong> esta regla amplía la ventana de exposición del riesgo ya documentado en <code>Discovery-Riesgos-Transicion-Fase5.md</code> §1.3 — usuarios de alto volumen (200K-530K órdenes lifetime) que nunca disparan el hard gate porque no retiran. Es un trade-off de negocio consciente, no un descuido.</p>
         </div>
+        <div class="rule-card">
+          <span class="rule-kicker">Regla H</span>
+          <h3>Cascada dura (Resto de países, una sola sesión Sumsub)</h3>
+          <p>Si identidad se rechaza o queda bloqueada por bandera de riesgo (Regla E), facturación se marca en el mismo instante con ese mismo estado — nunca existe "facturación aprobada" con "identidad rechazada", así los datos de facturación sean de un tercero. La bandera de riesgo es sobre la persona, no sobre el trámite. <code>identity</code> en <code>pendiente</code> no dispara la cascada — facturación solo espera.</p>
+          <p style="margin-top:8px;">Fuente: principio de Víctor (TI) en la reunión del 2026-08-11 — la validación siempre es de una persona o empresa, nunca de "identidad" y "facturación" como cosas separadas. Modelo completo: <a href="Casos-Cuenta-Facturacion-Fase5.md">Casos-Cuenta-Facturacion-Fase5.md</a>.</p>
+        </div>
+        <div class="rule-card">
+          <span class="rule-kicker">Regla I</span>
+          <h3>Camino corto por reuso</h3>
+          <p>Cuando el usuario elige facturar con los mismos datos de su cuenta, facturación no corre una segunda ronda de validación — refleja el estado de identidad de inmediato, sin segundo webhook de espera. Solo cuando factura a nombre de un tercero (persona o empresa distinta) corre su propia ronda, con su propio tiempo.</p>
+          <p style="margin-top:8px;">Mecánica nativa de Sumsub (condicional "¿mismos datos de cuenta?", <code>datos_para_sumsub.md</code>). Modelo completo: <a href="Casos-Cuenta-Facturacion-Fase5.md">Casos-Cuenta-Facturacion-Fase5.md</a>.</p>
+        </div>
       </div>
       <p class="muted" style="margin-top:14px;"><strong>Además:</strong> Colombia separa proveedores (identidad → Truora, facturación → Sumsub); el resto de países usa un solo Sumsub para ambas. El proveedor nunca se nombra en el copy de usuario — Truora y Sumsub solo aparecen en notas internas y carriles back stage.</p>
     </section>
@@ -971,6 +1001,7 @@
             <tr class="myth"><td>"Los pendientes de Ecuador, Chile y Argentina siguen en WhatsApp para siempre"</td><td><strong>Falso.</strong> La Pre-etapa los migra a Sumsub sin que el usuario haga nada; al volver ve el mismo banner "Estamos confirmando tus datos" del resto de la base, y si Sumsub le pide retomar, continúa en C5 con el botón Continuar.</td></tr>
             <tr class="myth"><td>"Fuera de Colombia todo vive en una sola pantalla de Dropi"</td><td><strong>Falso.</strong> Información de cuenta y Datos de facturación son dos páginas separadas (Configurar y Financiero) para todos los países, igual que Colombia — comparten una sola sesión de Sumsub, pero no una sola pantalla.</td></tr>
             <tr class="myth"><td>"Esperamos 72h a que el proveedor revise el caso"</td><td><strong>Falso.</strong> El estado se refleja automáticamente vía webhook, típicamente en segundos. El único tiempo "en proceso" real es mientras el usuario está dentro del enlace del proveedor completando su parte — ver Pre-etapa.</td></tr>
+            <tr class="myth"><td>"Si en Resto de países falla solo la parte de cuenta, facturación queda aprobada aparte"</td><td><strong>Falso.</strong> Es una sola sesión, una sola decisión — Regla H fuerza la cascada: identidad rechazada arrastra a facturación en el mismo instante.</td></tr>
           </tbody>
         </table>
       </div>
@@ -984,7 +1015,7 @@
           <thead><tr><th>Qué le falta</th><th>Colombia</th><th>Resto de países</th><th>Ecuador / Chile / Argentina</th></tr></thead>
           <tbody>
             <tr><td>Solo identidad</td><td>→ Información de cuenta → Truora</td><td>→ Un solo Sumsub</td><td>→ Sumsub, o aviso de "en revisión"</td></tr>
-            <tr><td>Solo facturación</td><td>→ Enlace a Sumsub (sin formulario propio de Dropi)</td><td>→ Un solo Sumsub</td><td>→ Sumsub</td></tr>
+            <tr><td>Solo facturación</td><td>→ Enlace a Sumsub (sin formulario propio de Dropi)</td><td>→ Un solo Sumsub. No aplica si identidad está rechazada — cascada dura (Regla H), <a href="Casos-Cuenta-Facturacion-Fase5.md">detalle</a></td><td>→ Sumsub. Mismo matiz de cascada dura</td></tr>
             <tr><td>Ambas</td><td>Primero identidad; luego confeti + facturación</td><td>Un solo enlace</td><td>Un solo enlace</td></tr>
             <tr><td>Nada</td><td colspan="3">No pasa nada — sigue operando normal</td></tr>
             <tr><td>Pendiente manual</td><td>No aplica</td><td>No aplica</td><td>Se migra a Sumsub; queda marcado "en revisión"</td></tr>
@@ -1013,6 +1044,7 @@
       UX: <a href="UX-Writing-Validacion-TechNative.md">UX-Writing-Validacion-TechNative.md</a> ·
       Especificaciones UX (10 puntos): <a href="Especificaciones-UX-Mejoras-Fase5.md">Especificaciones-UX-Mejoras-Fase5.md</a> ·
       Árbol de soporte: <a href="Soporte-Validacion-Fase-5.md">Soporte-Validacion-Fase-5.md</a> ·
+      Cuenta↔facturación en sesión única (cascada dura + camino corto): <a href="Casos-Cuenta-Facturacion-Fase5.md">Casos-Cuenta-Facturacion-Fase5.md</a> ·
       Estructura de referencia: <a href="Service_Blueprint_Diagrama.html">Blueprint Fase 0</a>
     </footer>
   </main>
