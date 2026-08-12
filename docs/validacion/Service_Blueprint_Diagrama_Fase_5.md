@@ -40,15 +40,15 @@
 
 Esta es la diferencia estructural que determina el copy y la dinámica de C3, C4, C5 y C6 en cada país. Cada sub-sección más abajo detalla el copy exacto; esta tabla resume el patrón antes de entrar al detalle.
 
-| Dimensión | Colombia | Resto de países (incluye Ecuador/Chile/Argentina sin pendiente) |
+| Dimensión | Colombia | Resto de países (incluye Ecuador/Chile/Argentina) |
 |---|---|---|
-| Proveedores | Dos: Truora (identidad) + Sumsub (facturación) | Uno: Sumsub (identidad y facturación juntas) |
-| Pasos para completar | Dos pasos separados | Un solo paso, con un enlace |
-| Información de cuenta (identidad) | Formulario propio de Dropi — al guardar, dispara la validación en Truora | No existe como paso separado — va todo dentro del enlace único de Sumsub |
-| Datos de facturación | No es un formulario — enlace directo a la ventana de Sumsub (KYB) | No existe como paso separado — mismo enlace único |
+| Proveedores | Dos: Truora (identidad) + Sumsub (facturación), sesiones independientes | Uno: Sumsub — una sola sesión valida identidad y facturación juntas |
+| Pasos para completar | Dos pasos separados | Una sola sesión/enlace, pero se refleja en dos páginas de Dropi (ver fila siguiente) |
+| Información de cuenta (Configurar → Cuenta) | Formulario propio de Dropi — al guardar, dispara la validación en Truora | Banner + enlace a Sumsub → bloque de texto de solo lectura al completar (nunca formulario) |
+| Datos de facturación (Financiero → Facturación Dropi) | Banner + enlace a la ventana de Sumsub (KYB) → bloque de texto de solo lectura al completar — nunca formulario | Banner + enlace a Sumsub (misma sesión que Información de cuenta) → bloque de texto de solo lectura al completar. Chile/Ecuador/Argentina: se convierte desde un formulario manual que existe hoy. Resto (bloque A): módulo nuevo, no existe hoy |
 | Mensajes del hard gate (C3) | Hasta 4 variantes: falta identidad / falta solo facturación / faltan ambas / — | Una sola variante: "Valida tus datos para continuar" |
-| Resultado al completar | Puede quedar parcial — aprueba un dato y falta el otro (confetti + invitación a completar lo que falta) | Siempre queda completo de una vez (confetti + "¡Cuenta verificada!") |
-| Bienvenida (C4d) si le faltan ambas | Prioriza identidad (Truora), luego ofrece facturación (Sumsub) | Un solo enlace resuelve ambas |
+| Resultado al completar | Puede quedar parcial — aprueba un dato y falta el otro (confetti + invitación a completar lo que falta) | Siempre queda completo de una vez (confetti + "¡Cuenta verificada!") — la sesión es una sola, aunque se vea reflejada en dos páginas |
+| Bienvenida (C4d) si le faltan ambas | Prioriza identidad (Truora), luego ofrece facturación (Sumsub) | Un solo enlace resuelve ambas — cualquiera de las dos páginas lleva al mismo enlace |
 
 ---
 
@@ -59,7 +59,7 @@ Esta es la diferencia estructural que determina el copy y la dinámica de C3, C4
 **Tarea** (secuencia horizontal):
 1. ⚫ Inicio
 2. 🟣 Sync de estados: el sistema consulta Truora y Sumsub vía API y escribe en Dropi `aprobado` / `incompleto` / `en_revision` / pendiente — en milisegundos, sin descargas manuales ni Google Sheets.
-3. 🟣 Migración EC/CL/AR: los casos que hoy se revisan a mano en Ecuador, Chile y Argentina se crean o actualizan como applicant en Sumsub; Dropi los deja en `en_revision` por defecto. *(Alternativa si Legal lo pide: esperar 72h sin abrir un caso nuevo en Sumsub.)* 🚧 **Punto abierto:** propuesta de TI aún sin validar con Legal — falta definir la experiencia final antes de tomarla como decisión cerrada.
+3. 🟣 Migración EC/CL/AR: los casos que hoy se revisan a mano en Ecuador, Chile y Argentina se crean o actualizan como applicant en Sumsub **de inmediato, sin espera artificial**; Dropi los deja en `en_revision` por defecto mientras Sumsub confirma. 🚧 **Punto abierto:** propuesta de TI aún sin validar con Legal — falta definir la experiencia final antes de tomarla como decisión cerrada.
 4. 🟢 Flags listos — *(pasa a ETAPA 1)*
 
 **Front stage → Canales:** Ninguno para el usuario. Corre como jobs automáticos de sincronización en el backend de Dropi, conectados directamente a la API de Truora y a la API de Sumsub.
@@ -74,15 +74,17 @@ Esta es la diferencia estructural que determina el copy y la dinámica de C3, C4
 
 **Stakeholders:**
 - **TI** — mantiene los jobs de sincronización y el script de migración.
-- **Legal** — decide si aplica la alternativa de espera de 72h.
+- **Legal** — valida el enfoque de migración inmediata a Sumsub (el punto abierto de arriba).
 
 **SI → ENTONCES (EC/CL/AR pendiente manual):**
 
-| SI | ENTONCES (por defecto) | Alternativa si Legal lo pide |
-|---|---|---|
-| Usuario en revisión manual de Ecuador, Chile o Argentina | 🚧 Se crea o actualiza como applicant en Sumsub; Dropi queda en `en_revision` — *propuesta aún sin validar con Legal* | Esperar 72h sin abrir un caso nuevo en Sumsub |
-| Sumsub pide completar el proceso | El usuario retoma en ETAPA 3 (C5) con el botón Continuar | — |
-| Usuario de esos países sin pendiente, con un dato nuevo por completar | Un solo enlace corto de Sumsub (identidad + facturación) | — |
+| SI | ENTONCES |
+|---|---|
+| Usuario en revisión manual de Ecuador, Chile o Argentina | 🚧 Se crea o actualiza como applicant en Sumsub de inmediato; Dropi queda en `en_revision` — *propuesta aún sin validar con Legal* |
+| Sumsub pide completar el proceso | El usuario retoma en ETAPA 3 (C5) con el botón Continuar |
+| Usuario de esos países sin pendiente, con un dato nuevo por completar | Un solo enlace corto de Sumsub (identidad + facturación) |
+
+> ⏱️ **No hay espera de 72h.** El estado se refleja automáticamente vía webhook, típicamente en segundos — no en 72h como planteaba una versión anterior de este blueprint (idea sin fuente real: no aparece en `REUCONTI.md`, que solo usa "24 horas" como salvedad ante posibles retrasos de sincronización, nunca como tiempo de revisión). El único "en proceso" real es mientras el usuario está dentro del enlace de Sumsub completando su parte. En casos raros de desfase de sincronización — ya observado hoy, no hipotético: `Discovery-Riesgos-Transicion-Fase5.md` documenta a Ecuador con la wallet bloqueada tras aprobar por retraso de sync, y a Colombia con 3.369 casos en desfase sobre 12.402 procesos de Truora (BAC-001/BAC-002) — puede tardar hasta 24h en reflejarse. No es el diseño esperado, es el mismo riesgo de sync ya conocido, no una espera planeada.
 
 > 🚧 **Nota fuera de alcance — Guatemala/Panamá:** en la reunión de seguimiento (`REUCONTI.md`), Jonathan y Catalina mencionaron usuarios de Guatemala y Panamá validados en un flujo paralelo (Truora **y** Sumsub) por una gestión puntual — resolver una crisis de un país "café" —, que también necesitarían migrar/actualizar su estado. Sin embargo, `Historia.md` marca explícitamente el **"flujo nativo para Guatemala/Panamá" como no-objetivo de la v1** (solo aplica el parche actual con Coloca Payments, que es un proceso distinto de validación de cuentas bancarias, no de identidad/facturación). Por eso esta migración **no se resuelve en este loop** — se deja aquí solo como referencia, por si Legal/Producto decide traerla a alcance más adelante.
 
@@ -91,6 +93,8 @@ Esta es la diferencia estructural que determina el copy y la dinámica de C3, C4
 ## ETAPA 1 · Segmentación y Estado API — ¿qué le falta?
 
 **Usuarios:** Dropshipper, Proveedor o Marca Blanca, con o sin identidad y con o sin facturación aprobadas, según su país.
+
+> **Combinaciones posibles según país:** en Colombia, Chile, Ecuador y (próximamente) Argentina, el patrón normal es: nada completo, solo identidad completa, o ambas completas — identidad va antes que facturación. **Solo en Colombia**, por una configuración existente, se puede dar el caso raro inverso: facturación aprobada sin que la identidad lo esté. Es una excepción conocida, no un patrón a diseñar activamente — el flujo ya la cubre (mensaje de aprobación parcial "¡Datos de facturación listos!" en C6). Ver la Matriz A al final del documento.
 
 **En una frase:** Antes de iniciar cualquier acción, el sistema decide en milisegundos consultando vía API las bases de datos de Truora y Sumsub — sin descargas manuales ni Google Sheets. Si ya tiene identidad y facturación completas, no pasa nada. Si le falta algo, determinamos su canal de entrada.
 
@@ -138,7 +142,7 @@ Esta es la diferencia estructural que determina el copy y la dinámica de C3, C4
 | Es nuevo y recién hace su 1ª orden o 1er movimiento de wallet | Nuevo, sin iniciar validaciones | **Nada** — no ve ningún aviso de identidad/facturación todavía | No aplica |
 | Ya es "activo" (20 órdenes — valor de trabajo confirmado) y le falta algo | Activo | **C4d** Bienvenida/alerta, en un modal de Home | No — puede posponer |
 | Navega en Home / Dashboard | Antiguo, le falta alguna validación | **C2** Soft touch | No — puede cerrar la X |
-| Hace clic en Retirar / Transferir / DropiCard | Nuevo o antiguo, con datos incompletos | **C3** Hard gate (bloqueo estricto) | Sí — obligatorio |
+| Hace clic en Retirar / Transferir / DropiCard | Nuevo o antiguo, con datos incompletos | **C3** Hard gate (bloqueo estricto) | Nuevo: sí, obligatorio, sin excepción. Activo: sí, salvo el periodo de gracia tentativo de la Regla G |
 | Abre Información de cuenta o Datos de facturación | Nuevo o antiguo, con datos incompletos | **C4** Módulo | Según su estado |
 
 > **Importante:** los tres pasos siguientes (C2, C3, C4) son **alternativas dentro de esta misma etapa, no una secuencia**. El usuario entra por uno solo según lo que haga — nunca pasa de "C2 a C3 a C4" en fila. Ver [Mitos a evitar](#mitos-a-evitar).
@@ -230,7 +234,7 @@ Esta es la diferencia estructural que determina el copy y la dinámica de C3, C4
 
 **Tarea** (secuencia horizontal):
 1. 🟢 Usuario abre un módulo, o ya es "activo" y le falta algo
-2. 🟣 En Colombia, identidad y facturación se completan por separado; en el resto de países, en un solo paso
+2. 🟣 Información de cuenta y Datos de facturación son siempre dos páginas separadas; en Colombia se completan con dos sesiones independientes (Truora + Sumsub), en el resto de países con una sola sesión de Sumsub que resuelve ambas
 3. 🟢 Al completar, sale a ETAPA 3 (C5)
 
 **Front stage → Canales:**
@@ -241,24 +245,31 @@ Esta es la diferencia estructural que determina el copy y la dinámica de C3, C4
 
 0. 🔵 Indicador de pasos (solo Colombia, en Información de cuenta y Datos de facturación): **"Paso 1 de 2 · Identidad"** / **"Paso 2 de 2 · Facturación"**, reutilizando el componente DS `dropi-steps` (`ds-registry/components/dropi-steps.json`, estados `pending | focus | completed | error`). Hace visible al usuario colombiano que su validación tiene dos pasos separados — hoy solo se infiere navegando. No aplica fuera de Colombia (un solo enlace resuelve ambas). *(Especificado en [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#5--niveles-de-verificación-visibles-para-colombia-identidad--facturación) punto 5.)*
 
-1. 🔵 Bienvenida/alerta (disparador definido: al volverse "activo" — 20 órdenes, valor de trabajo confirmado; **no en la primera venta**) — Headline: **¡Tu primera venta en Dropi!**. Body: *Qué bueno que ya empezaste. Para retirar o usar tu dinero, completa tu validación de datos. Es por tu seguridad y la de la plataforma.* Botones: **Completar validación** / **Ahora no**. *(🚧 Pendiente solo el copy: este headline se escribió pensando en la primera venta; falta ajustarlo al disparador real de "activo". El disparador en sí ya no está en discusión.)*
+1. 🔵 Bienvenida/alerta — 🔒 **Exclusivo de usuarios ACTIVOS (20+ órdenes, valor de trabajo confirmado). Un usuario nuevo nunca ve esto.** Headline: **Completa tu validación de datos**. Body: *Ya registraste ventas en Dropi. Para retirar o usar tu dinero, completa tu validación de datos. Es por tu seguridad y la de la plataforma.* Botones: **Completar validación** / **Ahora no**. *(✅ Copy resuelto: el headline anterior, "¡Tu primera venta en Dropi!", se escribió pensando en la primera venta y contradecía el disparador real de "activo" — ya corregido. Copy 🆕 propuesto, a validar con Product/Growth.)*
 2. 🔵 Colombia · Información de cuenta — Headline: **Completa tu información de cuenta**. Body: *Con estos datos confirmamos quién eres. Al guardar, empezamos la validación con una prueba de vida.* Campos: tipo de persona · nombre completo · tipo de documento · número de documento · documento adjunto. Botón: **Guardar y continuar**.
    - Incompleto → formulario editable con esos campos; al guardar, se abre un **enlace aparte** (fuera de Dropi) donde el proveedor toma la prueba de vida — el usuario la completa en su propio tiempo, no es parte del formulario de Dropi.
+   - **Esta alerta aparece siempre que falte el dato — nuevo o activo, sin excepción.** Solo cambia el copy de refuerzo bajo el body (🆕 propuesto, a validar con Product/UX Writing): usuario nuevo → *"Estás empezando en Dropi. Por tu seguridad y para cumplir con la normativa, valida estos datos antes de mover dinero."* Usuario activo → *"Ya registraste ventas en Dropi. Para retirar tu saldo o mover dinero, necesitas completar estos datos."* A diferencia del aviso del Home (C4d, solo activos), esta alerta dentro del módulo no depende de la antigüedad — solo el copy varía.
    - **En proceso** (al volver a Dropi, mientras se confirma) → los campos quedan visibles pero deshabilitados. **Formato: banner fijo dentro de la página, no modal** — no bloquea el resto de la navegación. Headline: **Estamos confirmando tus datos**. Body: *Mientras tanto, puedes seguir usando Dropi pero hemos pausado temporalmente tus retiros y transferencias.* (Nota interna: este banner reutiliza el mismo flujo de confirmación de Truora que ya está en producción — no es un banner nuevo.)
    - Completo → mismos campos, visibles pero de solo lectura. Sin fecha de desbloqueo automática — para editarlos, el usuario contacta a soporte: nombre, tipo de persona, tipo/número de documento y documento adjunto activan el flujo de re-validación (ver [Addendum](#addendum--edición-post-aprobación-historia-fase-5)); dirección y ciudad se guardan directo.
 3. 🔵 Colombia · Datos de facturación:
-   - Vacío → Headline: **Completa tus datos de facturación**. Body: *Por seguridad y para desbloquear movimientos financieros, valida tus datos de facturación. No es un formulario aquí: te llevamos al proceso seguro.* Botón: **Completar datos de facturación** (sin formulario KYB nativo en Dropi — *nota: Sumsub ya corre el proceso completo de KYB, documento + verificación; construir un formulario propio en Dropi duplicaría ese trabajo*).
+   - Vacío → Headline: **Completa tus datos de facturación**. Body: *Por seguridad y para desbloquear movimientos financieros, valida tus datos de facturación. No es un formulario aquí: te llevamos al proceso seguro.* Botón: **Completar datos de facturación** (sin formulario KYB nativo en Dropi — *nota: Sumsub ya corre el proceso completo de KYB, documento + verificación; construir un formulario propio en Dropi duplicaría ese trabajo*). Igual que en Información de cuenta, esta alerta aparece siempre (nuevo o activo) con el mismo copy de refuerzo diferenciado por tenencia (🆕 propuesto, ver arriba).
    - **En proceso** (al volver de Sumsub, mientras se confirma) → la tarjeta reemplaza el botón por una etiqueta de estado. **Formato: banner fijo dentro de la tarjeta, no modal**. Headline: **Estamos confirmando tus datos**. Body: *Mientras tanto, puedes seguir usando Dropi pero hemos pausado temporalmente tus retiros y transferencias.*
    - Completo → Headline: **Tus datos de facturación**. Campos mostrados (solo lectura): razón social · NIT · RUT · cámara de comercio · representante legal · correo de facturación. Aviso de solo lectura + acceso a soporte. Excepción: el correo de facturación se puede editar en cualquier momento, sin disparar una nueva validación.
    - Si al llegar aquí la facturación ya estaba aprobada (por ejemplo, el usuario la completó por su cuenta mientras la identidad seguía en proceso), no se le vuelve a pedir — pasa directo al resultado final "¡Cuenta verificada!" (ver C6).
-4. 🔵 Resto de países — Headline: **Valida tu identidad y tus datos de facturación**. Body: *Un formulario guiado te pide lo que necesitamos, según tu país. No tienes que volver después — todo queda listo de una vez.* Botón: **Completar validación**. El formulario vive dentro de Sumsub (no es una pantalla de Dropi): bloque A (GT, PA, PY, PE, MX, VE, CR, Europa) pide documento + prueba de vida + datos fiscales, y si declara empresa, autocompleta al buscarla por nombre; bloque B (CL, EC, AR) pide documento + prueba de vida, y si declara empresa, el documento de la empresa sin autocompletar. Al completar → Headline: **Tus datos de validación**. Lista de solo lectura agrupada por origen — no un bloque monolítico:
-   - **Bloque Identidad:** documento de identidad, estado de la prueba de vida (nunca se muestra el archivo, solo el estado).
-   - **Bloque Datos fiscales:** nombre/razón social fiscal, documento de empresa (bloque B) o dato autocompletado al buscarla por nombre (bloque A).
-   - 🚧 Reconciliación parcial (a confirmar con TI): si Sumsub confirma un bloque antes que el otro, la pantalla marca cuál ya quedó confirmado y cuál sigue pendiente, en vez de mostrar todo como "en proceso" hasta que ambos cierren. *(Punto 6 de [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#6--definir-mejor-la-recapitulación-de-datos-cuando-la-validación-se-unifica).)*
+4. 🔵 **Resto de países — dos páginas, una sola sesión.** Corrección frente a versiones anteriores de este blueprint: no es "un módulo único" — como en Colombia, **Información de cuenta** (Configurar → Cuenta) y **Datos de facturación** (Financiero → Facturación Dropi) son dos páginas de Dropi siempre separadas (confirmado en `src/app/config/sidebar-new-nav.config.ts`), cada una con su propio estado vacío/en proceso/completo. La diferencia con Colombia es que aquí **una sola sesión de Sumsub** resuelve ambas páginas a la vez — el usuario entra por cualquiera de las dos y termina completando las dos.
+   - **Chile / Ecuador / Argentina (bloque B):** ambas páginas **se convierten** desde el formulario manual que ya existe hoy para estos tres países (`REUCONTI.md` líneas 88-90, 156-163) — dejan de ser formulario y pasan al mismo patrón banner+enlace → texto de solo lectura.
+   - **Resto de países / bloque A (GT, PA, PY, PE, MX, VE, CR, Europa):** ambas páginas son **módulo nuevo** — Datos de facturación no existe hoy para estos países, se agrega de cero con el mismo patrón.
+   - **Vacío (ambas páginas):** Headline: **Valida tu identidad y tus datos de facturación**. Body: *Un formulario guiado te pide lo que necesitamos, según tu país. No tienes que volver después — todo queda listo de una vez.* Botón: **Completar validación** — lleva al mismo enlace de Sumsub sin importar desde cuál de las dos páginas se entró. **Esta alerta aparece siempre que falte el dato — nuevo o activo, igual que en Colombia.** Copy de refuerzo bajo el body (🆕 propuesto): usuario nuevo → *"Estás empezando en Dropi. Por tu seguridad y para cumplir con la normativa, valida estos datos antes de mover dinero."* Usuario activo → *"Ya registraste ventas en Dropi. Para retirar tu saldo o mover dinero, necesitas completar estos datos."*
+   - El formulario vive dentro de Sumsub (no es una pantalla de Dropi): bloque A pide documento + prueba de vida + datos fiscales, y si declara empresa, autocompleta al buscarla por nombre; bloque B pide documento + prueba de vida, y si declara empresa, el documento de la empresa sin autocompletar.
+   - **En proceso (ambas páginas):** mismo banner fijo "Estamos confirmando tus datos" que Colombia (ver C5).
+   - **Completo — cada página muestra solo su propio bloque, no las dos juntas:**
+     - **Información de cuenta** → Headline: **Tu información de cuenta**. Bloque de texto de solo lectura: documento de identidad, estado de la prueba de vida (nunca se muestra el archivo, solo el estado).
+     - **Datos de facturación** → Headline: **Tus datos de facturación**. Bloque de texto de solo lectura: nombre/razón social fiscal, documento de empresa (bloque B) o dato autocompletado al buscarla por nombre (bloque A).
+   - 🚧 Reconciliación parcial (a confirmar con TI): si Sumsub confirma un bloque antes que el otro, cada página refleja el estado de su propio bloque de forma independiente — la página ya confirmada pasa a solo lectura mientras la otra sigue mostrando "en proceso". El modelo de dos páginas resuelve esto de forma más natural que una sola pantalla combinada. *(Punto 6 de [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#6--definir-mejor-la-recapitulación-de-datos-cuando-la-validación-se-unifica).)*
 
-> Campos y copy completos, con la nota de qué es hecho confirmado (`Historia.md`, Fase 0) vs. copy nuevo por validar: [`UX-Writing-Validacion-TechNative.md`](UX-Writing-Validacion-TechNative.md) §5, §6, §7, §10, §11.
+> Campos y copy completos, con la nota de qué es hecho confirmado (`Historia.md`, Fase 0) vs. copy nuevo por validar: [`UX-Writing-Validacion-TechNative.md`](UX-Writing-Validacion-TechNative.md) §5, §6, §7, §10, §11. Nota: ese documento y `Especificaciones-UX-Mejoras-Fase5.md` todavía describen "un solo módulo fuera de Colombia" — esta sección lo corrige a partir de `sidebar-new-nav.config.ts` y `REUCONTI.md`; esos otros docs quedan pendientes de reconciliar, fuera del alcance de este blueprint.
 >
-> 🚧 **Punto abierto de alcance:** este "un solo paso" para Resto de países asume que identidad y facturación se resuelven juntas desde el día 1. TI propuso en la reunión de seguimiento fasear esto (KYC primero, KYB después) — ver la nota al inicio del documento, en [Qué cambia frente a Fase 0](#qué-cambia-frente-a-fase-0).
+> 🚧 **Punto abierto de alcance:** esta "una sola sesión" para Resto de países asume que identidad y facturación se resuelven juntas desde el día 1. TI propuso en la reunión de seguimiento fasear esto (KYC primero, KYB después) — ver la nota al inicio del documento, en [Qué cambia frente a Fase 0](#qué-cambia-frente-a-fase-0).
 
 **Back stage → Acciones:**
 - 🟣 La API de perfil y facturación carga los datos guardados y bloquea (solo lectura) los campos del Dueño si ya están validados; editarlos pasa por soporte, que dispara re-validación si el campo es sensible.
@@ -287,7 +298,7 @@ Los pasos `C5` (Validación) y `C6` (Resolución) están en secuencia dentro de 
 **Front stage → Canales:**
 1. 🔴 WebSDK o enlace de Truora / Sumsub, abierto por el router de país (backend de Dropi). El hard gate de salidas sigue activo mientras se resuelve; órdenes y entradas de dinero quedan libres.
 
-**Front stage → Acciones:** el aviso "en proceso" cambia según qué se esté confirmando — nunca dice "tu solicitud" genérico, y el proveedor nunca se nombra. **Formato: banner fijo dentro de la página donde vive la acción (Información de cuenta o Datos de facturación en Colombia; el módulo único en el resto de países), no modal ni banner flotante aparte:**
+**Front stage → Acciones:** el aviso "en proceso" cambia según qué se esté confirmando — nunca dice "tu solicitud" genérico, y el proveedor nunca se nombra. **Formato: banner fijo dentro de la página donde vive la acción (Información de cuenta o Datos de facturación — mismo patrón en Colombia y en el resto de países), no modal ni banner flotante aparte:**
 
 > ⏱️ **Nota de timing:** para el camino automático (>92% de los casos, `Historia.md`), este banner es una transición de segundos, no una pantalla de espera — el resultado (C6) llega casi de inmediato, sin que el usuario tenga que esperar. El SLA de hasta 24h que aparece más abajo (C6, "En revisión prolongada") aplica **solo** a la cola de excepciones (≤8%) que sí requiere revisión manual. No exponer al camino mayoritario a lenguaje de espera que no le corresponde. *(Especificado en [`Especificaciones-UX-Mejoras-Fase5.md`](Especificaciones-UX-Mejoras-Fase5.md#c--resultado-inmediato--sin-pantalla-de-espera-al-validarse), Comentario C.)*
 >
@@ -298,8 +309,8 @@ Los pasos `C5` (Validación) y `C6` (Resolución) están en secuencia dentro de 
 1. 🔵 Colombia · falta identidad — vive en Información de cuenta (ver C4). Headline: **Estamos confirmando tus datos**. Body: *Mientras tanto, puedes seguir usando Dropi pero hemos pausado temporalmente tus retiros y transferencias.* (Nota interna: mismo flujo de confirmación de Truora que ya está en producción, no es un banner nuevo.)
 2. 🔵 Colombia · falta facturación — vive en Datos de facturación (ver C4). Mismo headline y body que arriba.
 3. 🔵 Colombia · faltan ambas — Muestra primero el aviso de identidad; al aprobarse, pasa al de facturación en su propia página. Nunca se muestran los dos avisos a la vez.
-4. 🔵 Resto de países (bloques A/B) — vive en el módulo único (ver C4). Headline: **Estamos confirmando tus datos**. Mismo body que arriba (identidad y facturación se validan juntas, sin separarlas).
-5. 🔵 Ecuador/Chile/Argentina migrado — mismo módulo único. Headline: **Estamos confirmando tus datos**. Body: *Tu caso ya sigue este mismo proceso automático — no necesitas reenviar nada.*
+4. 🔵 Resto de países (bloques A/B) — vive en Información de cuenta **y** en Datos de facturación (ver C4) — misma sesión, dos páginas. Headline: **Estamos confirmando tus datos**. Mismo body que arriba (identidad y facturación se validan juntas, sin separarlas).
+5. 🔵 Ecuador/Chile/Argentina migrado — mismas dos páginas (Información de cuenta y Datos de facturación). Headline: **Estamos confirmando tus datos**. Body: *Tu caso ya sigue este mismo proceso automático — no necesitas reenviar nada.*
 
 El ruteo real (a qué proveedor va cada caso) es interno — ver tabla abajo. Copy completo: [`UX-Writing-Validacion-TechNative.md`](UX-Writing-Validacion-TechNative.md) §5b, §7, §11.
 
@@ -312,16 +323,16 @@ El ruteo real (a qué proveedor va cada caso) es interno — ver tabla abajo. Co
 | Colombia + falta identidad | Truora (validación de identidad) | Va a Información de cuenta → llena el formulario de Dropi → sigue el proceso en Truora |
 | Colombia + falta facturación | Sumsub (validación de facturación) | Sin formulario en Dropi — enlace directo a la ventana de Sumsub para validar la empresa (KYB) |
 | Colombia + faltan ambas | Primero Truora, luego Sumsub | Prioriza identidad; al aprobarse, le ofrece completar también la facturación |
-| Otros países, persona natural — bloque A (GT, PA, PY, PE, MX, VE, CR, Europa) | Sumsub (identidad y facturación juntas) | Módulo único. Si además declara empresa, Sumsub la busca por nombre y autocompleta el dato fiscal. |
-| Otros países, persona natural — bloque B (CL, EC, AR) | Sumsub (identidad y facturación juntas) | Módulo único. Si además declara empresa, pide el documento de la empresa sin autocompletar. |
+| Otros países, persona natural — bloque A (GT, PA, PY, PE, MX, VE, CR, Europa) | Sumsub (identidad y facturación juntas) | Información de cuenta + Datos de facturación (módulo nuevo, no existe hoy), una sola sesión. Si además declara empresa, Sumsub la busca por nombre y autocompleta el dato fiscal. |
+| Otros países, persona natural — bloque B (CL, EC, AR) | Sumsub (identidad y facturación juntas) | Información de cuenta + Datos de facturación (se convierte desde el formulario manual que existe hoy), una sola sesión. Si además declara empresa, pide el documento de la empresa sin autocompletar. |
 | Marca Blanca, cualquier país | Sumsub, mismo ruteo por bloque que le corresponda | Mismo flujo automático de arriba, con la interfaz sin marca Dropi. |
 | Usuario extranjero (documento distinto al del país donde opera) | Sumsub | Acepta pasaporte o el documento oficial de su país de origen — el sistema reconoce el formato solo. |
 | Factura a nombre de un tercero | Sumsub ("continuar en el teléfono") | Genera un enlace para el celular; el usuario se lo reenvía al tercero, que solo completa la prueba de vida — sin repetir los datos que ya cargó el titular. |
 | 🚧 Excepción Ecuador/Chile/Argentina (pendiente manual) — punto abierto, ver PRE-ETAPA | Sumsub (ya migrado, propuesta sin validar con Legal) | Ya migrado a Sumsub en la PRE-ETAPA; si Sumsub pide retomar, continúa aquí |
 
-Todos los mensajes de las filas "Otros países" llevan al mismo módulo único de Sumsub — la diferencia entre bloque A y B es solo si el formulario autocompleta o no el dato de la empresa.
+Todos los mensajes de las filas "Otros países" llevan a la misma sesión única de Sumsub, reflejada en las dos páginas (Información de cuenta y Datos de facturación) — la diferencia entre bloque A y B es solo si el formulario autocompleta o no el dato de la empresa.
 
-> 🚧 **Punto abierto de alcance:** las filas "Otros países" de esta tabla asumen KYC + KYB en un solo módulo desde el día 1. TI propuso fasear esto (KYC primero para todos los países menos Colombia, KYB después) — ver [Qué cambia frente a Fase 0](#qué-cambia-frente-a-fase-0), aún sin decisión cerrada.
+> 🚧 **Punto abierto de alcance:** las filas "Otros países" de esta tabla asumen KYC + KYB en una sola sesión desde el día 1. TI propuso fasear esto (KYC primero para todos los países menos Colombia, KYB después) — ver [Qué cambia frente a Fase 0](#qué-cambia-frente-a-fase-0), aún sin decisión cerrada.
 
 **Herramientas:** Truora · Sumsub · WebSDK · router de país (backend de Dropi).
 
@@ -440,6 +451,7 @@ Copy completo por caso, con la razón detrás de cada formato: [`UX-Writing-Vali
 - **Regla B · Webhook directo.** Sin Google Sheets en el camino feliz. Un solo evento actualiza identidad y facturación.
 - **Regla C · Consolidación de EC/CL/AR (excepción técnica).** TI define un script de migración para los usuarios de Ecuador, Chile y Argentina que hoy tienen KYB manual: si el usuario está "Aprobado" a mano, se homologa a `has_billing = true` por base de datos; si está "Pendiente", se inyecta en el flujo nuevo de Sumsub.
 - **Regla D · Bloqueo de UI (solo lectura tras aprobar).** Al recibir el webhook de aprobación, los campos de Información de cuenta y Facturación se muestran deshabilitados, sin fecha automática de desbloqueo. Para editarlos, el usuario contacta a soporte; si el campo es sensible, esa edición dispara re-validación (ver [Addendum](#addendum--edición-post-aprobación-historia-fase-5)).
+  - 🚧 **Sobre la duración — no es un bloqueo de 6 meses (todavía).** `RN-11` (`Historia.md`) especifica una duración de 6 meses para este candado. Este blueprint deliberadamente **no fija esa cifra** — por ahora es un bloqueo sin fecha automática de desbloqueo, y punto. 6 meses queda como duración **tentativa, sin decisión cerrada**; si se confirma, se documenta aquí explícitamente en vez de asumirla. Nota: `UX-Writing-Validacion-TechNative.md` (§6, §10) sí escribe "6 meses" en el copy literal hoy — es una inconsistencia entre docs a reconciliar más adelante, fuera del alcance de este blueprint.
 - **Colombia separa proveedores.** Identidad → Truora. Facturación → Sumsub. El resto de países usa un solo Sumsub para ambas.
 - **El proveedor nunca se nombra en el copy de usuario.** Truora y Sumsub solo aparecen en notas internas.
 - **Regla E · Bloqueado ≠ Rechazado.** Bloqueado es una bandera de riesgo que pone Legal/Financiero directamente en Dropi (fraude, saldo negativo, etc.) — no la pone el proveedor de identidad y no llega por el webhook. Puede coexistir con cualquier estado de C6 (incluso "Aprobado"). Se resuelve a mano, sin ETA fijo, y el usuario lo consulta desde el árbol de soporte, no desde un botón de reintento.
@@ -447,7 +459,12 @@ Copy completo por caso, con la razón detrás de cada formato: [`UX-Writing-Vali
     1. **No expulsar al usuario del todo** — dejarlo en una pantalla de solo lectura con el [árbol de soporte](Soporte-Validacion-Fase-5.md) accesible, en vez de redirigirlo fuera de la app (a diferencia del patrón actual de Truora).
     2. **Canal de soporte fuera de la sesión autenticada** (correo o WhatsApp visible incluso en una pantalla de "cuenta suspendida"), para el caso en que sí se decida cerrar la sesión.
   - 🚧 **Nota de referencia cruzada (pertenece a Fase 1 — Bloqueo cruzado, `Historia.md`):** en la reunión de seguimiento (`REUCONTI.md`), Catalina propuso que un `Rechazado` de C6 se cruce contra la base de saldos negativos de cartera (script de Python de Andrés Herrera con TI) y contra el historial de órdenes del usuario, para decidir si aplica un baneo — potencialmente **cross-country**, ya que hoy cada país tiene su propia base y un usuario baneado en uno puede seguir operando en otro con el mismo correo. Este cruce y el baneo consolidado son el objeto de **Fase 1 — Bloqueo cruzado de usuarios baneados** de `Historia.md` (RN-17, habilitador "Modelo de datos del registro consolidado de baneados"), **no** del loop de completar lo que falta que documenta este blueprint. Se deja aquí solo como referencia para no perder el hilo entre ambas fases.
-- **Regla F · Despliegue por lotes y periodo pedagógico (rollout, no día 1).** El hard gate y sus alertas nunca se activan de golpe para toda la base — se despliegan progresivamente por cohortes según volumen de órdenes, y antes de bloquear a un usuario existente debe haber 1-2 semanas de avisos preventivos (`Reglasvalidacion.md`, "Regla del Despliegue por Lotes" y "Regla del Periodo Pedagógico"). 🚧 Caso concreto mencionado en la reunión de seguimiento: hoy en Colombia la alerta y la restricción de movimientos financieros por datos de facturación **no están activas**; antes de activarlas, TI y Producto deben definir ese lapso de gracia para no bloquear de golpe a todos los usuarios sin datos de facturación. Ver también el umbral de "activo" en [Etapa 2](#etapa-2--canales-de-entrada-rutas-paralelas-el-usuario-elige-uno).
+- **Regla F · Despliegue por lotes y periodo pedagógico (rollout, no día 1).** El hard gate y sus alertas nunca se activan de golpe para toda la base — se despliegan progresivamente por cohortes según volumen de órdenes, y antes de bloquear a un usuario existente debe haber 1-2 **semanas** de avisos preventivos (`Reglasvalidacion.md`, "Regla del Despliegue por Lotes" y "Regla del Periodo Pedagógico"). Esto es sobre el **lanzamiento** del hard gate (cómo se activa por primera vez para toda la base) — distinto de la Regla G de abajo, que es sobre el **estado estable** una vez ya está activo. Ver también el umbral de "activo" en [Etapa 2](#etapa-2--canales-de-entrada-rutas-paralelas-el-usuario-elige-uno).
+- **Regla G · Periodo de gracia para usuarios activos.** Fuente directa: en la reunión de seguimiento (`REUCONTI.md` líneas 133-137), Catalina señaló que hoy en Colombia la alerta y la restricción de movimientos financieros por datos de facturación **no están activas**, y que hace falta "dejar como un lapso" antes de bloquear — mostrando igual la alerta, sin bloquear todavía. Esta regla lo formaliza:
+  - **Usuarios activos** (Colombia, Chile, Ecuador — y Argentina siguiendo el mismo patrón) no reciben bloqueo financiero inicial aunque les falte identidad y/o facturación. Se les da un lapso — 🚧 **por definir, tentativamente ~1 mes** — durante el cual pueden seguir retirando, transfiriendo o usando DropiCard sin bloqueo, pero **sí ven** el aviso (C2 soft touch / C4d bienvenida). Al vencer el lapso, el hard gate (C3) empieza a aplicarles, respetando igual el aviso previo de la Regla F.
+  - **Usuarios nuevos** no reciben este colchón: no ven ningún aviso proactivo (ver Etapa 2), pero si intentan una acción financiera (Retirar / Transferir / DropiCard) el hard gate (C3) los bloquea de inmediato, sin periodo de gracia. La ausencia de aviso previo no es una ausencia de bloqueo.
+  - 🚧 Bloque A (resto de países fuera de Colombia/Chile/Ecuador/Argentina) no está cubierto todavía por esta regla — punto abierto, no asumir que aplica ni que no aplica.
+  - ⚠️ **Tensión a declarar, no a ocultar:** esta regla amplía la ventana de exposición del riesgo ya documentado en `Discovery-Riesgos-Transicion-Fase5.md` §1.3 — usuarios de alto volumen (200K-530K órdenes lifetime) que nunca disparan el hard gate porque no retiran dinero. Dar más tiempo a los activos antes de bloquearlos extiende exactamente esa ventana para exactamente esa población. Es un trade-off de negocio consciente (no bloquear de golpe a quienes ya mueven plata), no un descuido.
 
 ## Mitos a evitar
 
@@ -458,6 +475,8 @@ Copy completo por caso, con la razón detrás de cada formato: [`UX-Writing-Vali
 | "La facturación en Colombia es un formulario de Dropi" | No. Es un enlace a Sumsub o una lista de solo lectura. |
 | "Fuera de Colombia también hay Truora y Sumsub por separado" | No. Un solo Sumsub cubre identidad y facturación. |
 | "Los pendientes de Ecuador, Chile y Argentina siguen en WhatsApp para siempre" | No. La PRE-ETAPA los migra a Sumsub sin que el usuario haga nada; la próxima vez que entra ve el mismo banner "Estamos confirmando tus datos" del resto de la base, y si Sumsub le pide retomar, continúa en C5 con el botón Continuar — no vuelve a WhatsApp ni repite datos. |
+| "Fuera de Colombia todo vive en una sola pantalla de Dropi" | No. Información de cuenta y Datos de facturación son dos páginas separadas (Configurar y Financiero) para todos los países, igual que Colombia — comparten una sola sesión de Sumsub, pero no una sola pantalla. |
+| "Esperamos 72h a que el proveedor revise el caso" | No. El estado se refleja automáticamente vía webhook, típicamente en segundos. El único tiempo "en proceso" real es mientras el usuario está dentro del enlace del proveedor completando su parte — ver PRE-ETAPA. |
 
 ## Notas finales
 
@@ -469,6 +488,32 @@ Copy completo por caso, con la razón detrás de cada formato: [`UX-Writing-Vali
 
 ---
 
+## Matrices de referencia rápida
+
+Dos tablas para identificar de un vistazo qué pasa en cada caso, según país y estado. Complementan (no reemplazan) la tabla ["Colombia vs. Resto de países"](#colombia-vs-resto-de-países--la-diferencia-central) del inicio y la tabla de ruteo del [detalle de C5](#c5--validación-y-ruteo--país--lo-que-falta) — esas responden "qué proveedor lo valida"; estas responden "qué ve el usuario, según lo que ya tiene y dónde vive".
+
+### Matriz A — Estados iniciales posibles, por país
+
+| País / bloque | Nada completo | Solo identidad | Solo facturación | Ambas completas |
+|---|---|---|---|---|
+| Colombia | Posible | Posible — patrón normal (identidad antes que facturación) | ⚠️ Raro — caso de una configuración existente, no el patrón esperado. El flujo ya lo cubre (ver C6, "¡Datos de facturación listos!") | Sin aviso, opera normal |
+| Chile / Ecuador | Posible | Posible | No aplica — una sola sesión de Sumsub valida ambas juntas, no hay canal para aprobar solo facturación | Sin aviso, opera normal |
+| Argentina | Posible | Posible | No aplica — mismo patrón que Chile/Ecuador | Sin aviso, opera normal |
+| Resto de países (bloque A) | Posible | Posible | No aplica — mismo motivo que Chile/Ecuador | Sin aviso, opera normal |
+
+### Matriz B — Qué ve el usuario, por módulo y país
+
+| Módulo | Colombia | Chile / Ecuador / Argentina (bloque B) | Resto de países (bloque A) |
+|---|---|---|---|
+| Información de cuenta (Configurar → Cuenta) — vacío | Formulario propio de Dropi | Banner + enlace a Sumsub — antes era formulario manual, se convierte | Banner + enlace a Sumsub — módulo nuevo |
+| Información de cuenta — completo | Campos de solo lectura | Bloque de texto de solo lectura | Bloque de texto de solo lectura |
+| Datos de facturación (Financiero → Facturación Dropi) — vacío | Banner + enlace a Sumsub | Banner + enlace a Sumsub — antes era formulario manual, se convierte | Banner + enlace a Sumsub — módulo nuevo, no existe hoy |
+| Datos de facturación — completo | Campos de solo lectura | Bloque de texto de solo lectura | Bloque de texto de solo lectura |
+| Proveedor(es) | Truora (identidad) + Sumsub (facturación) — dos sesiones independientes | Sumsub — una sola sesión para las dos páginas | Sumsub — una sola sesión para las dos páginas |
+| Bloqueo financiero si falta algo | Regla G: sin bloqueo inicial para activos (lapso tentativo ~1 mes); nuevos, bloqueo inmediato al intentar una acción financiera | Regla G aplica igual | 🚧 No cubierto todavía por Regla G — punto abierto |
+
+---
+
 ## Addendum — Edición post-aprobación (Historia Fase 5)
 
 > Este addendum es el flujo **hermano**, no el eje de este blueprint. Corresponde a [`Historia.md`](Historia.md) línea 62: *edición post-validación con re-validación inteligente*.
@@ -477,7 +522,7 @@ Copy completo por caso, con la razón detrás de cada formato: [`UX-Writing-Vali
 
 | Pieza | Regla |
 |---|---|
-| RN-11 | Dueño: campos sensibles de identidad quedan en solo lectura tras la última validación, sin fecha de desbloqueo automática — editarlos pasa por soporte y dispara re-validación. Responsable Tributario: sin bloqueo, edición directa. |
+| RN-11 | Dueño: campos sensibles de identidad quedan en solo lectura tras la última validación, sin fecha de desbloqueo automática — editarlos pasa por soporte y dispara re-validación. Responsable Tributario: sin bloqueo, edición directa. 🚧 `RN-11` en `Historia.md` fija esto en 6 meses; este blueprint no adopta esa cifra todavía — ver Regla D. |
 | Sensibles | Nombre, tipo de persona, tipo/número de documento, documento adjunto → re-validación (mismo ruteo de ETAPA 3 / C5). |
 | No sensibles | Dirección, ciudad, correo de facturación → guardado directo + auditoría; costo de validación `0`. |
 | Precedencia | Un campo sensible en el lote manda todo el lote a re-validación. |
